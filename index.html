@@ -1,20 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>GeneDrNetwork</title>
+  <title>GeneDrNetwork</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7fbfd;
+      color: #1f2933;
+    }
+    header {
+      background: linear-gradient(135deg, #0b3c5d, #1f7a8c);
+      color: white;
+      padding: 70px 30px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 48px;
+      margin: 0;
+    }
+    header p {
+      font-size: 22px;
+      margin-top: 15px;
+    }
+    nav {
+      background: white;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    nav a {
+      margin: 0 18px;
+      color: #0b3c5d;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    section {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 0 25px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+    .card {
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+    .card h3 {
+      color: #0b3c5d;
+    }
+    footer {
+      background: #0b3c5d;
+      color: white;
+      text-align: center;
+      padding: 25px;
+      margin-top: 60px;
+    }
+  </style>
 </head>
+
 <body>
-<h1>GeneDrNetwork</h1>
 
-<h2>Advancing Genetics. Improving Lives.</h2>
+<header>
+  <h1>GeneDrNetwork</h1>
+  <p>Advancing Genetics. Improving Lives.</p>
+</header>
 
-<p>Welcome to GeneDrNetwork.</p>
+<nav>
+  <a href="#about">About</a>
+  <a href="#programs">Programs</a>
+  <a href="#education">Education</a>
+  <a href="#contact">Contact</a>
+</nav>
 
-<ul>
-<li>Pediatric Genetics Clinical Network (PGCN)</li>
-<li>Genetics Education</li>
-<li>Rare Disease Day</li>
-</ul>
+<section id="about">
+  <h2>About GeneDrNetwork</h2>
+  <p>
+    GeneDrNetwork is a professional platform designed to advance clinical genetics through education,
+    collaboration, and improved access to genetics expertise.
+  </p>
+</section>
+
+<section id="programs">
+  <h2>Programs</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Clinical Genetics Network</h3>
+      <p>A collaborative network supporting clinical genetics, rare disease diagnosis, and multidisciplinary care.</p>
+    </div>
+
+    <div class="card">
+      <h3>Genetics Education</h3>
+      <p>Educational resources, lectures, and training materials for clinicians, trainees, and healthcare teams.</p>
+    </div>
+
+    <div class="card">
+      <h3>Rare Disease Day</h3>
+      <p>Awareness, advocacy, and education for rare diseases and genomic medicine.</p>
+    </div>
+
+    <div class="card">
+      <h3>Future Centers</h3>
+      <p>Metabolic genetics, skeletal dysplasia, mitochondrial disease, cancer predisposition, and precision medicine.</p>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <h2>Mission</h2>
+  <p>
+    Our mission is to build a sustainable clinical genetics network that promotes education,
+    collaboration, early diagnosis, and better care for individuals and families affected by genetic disorders.
+  </p>
+</section>
+
+<section id="contact">
+  <h2>Founder</h2>
+  <p>
+    Hua Wang, MD, PhD, FACMG, DABOM<br>
+    Clinical Geneticist | Rare Disease & Obesity Physician | Founder of GeneDrNetwork
+  </p>
+</section>
+
+<footer>
+  <p>© 2026 GeneDrNetwork. All rights reserved.</p>
+</footer>
 
 </body>
 </html>
