@@ -416,6 +416,33 @@ a {
   color: var(--blue);
 }
 
+.program-card-rare {
+  color: #dc4f83;
+  border-top-color: #dc4f83;
+}
+
+.program-card-rare .program-icon {
+  color: #dc4f83;
+}
+
+.program-card-education {
+  color: #0f9f8f;
+  border-top-color: #0f9f8f;
+}
+
+.program-card-education .program-icon {
+  color: #0f9f8f;
+}
+
+.program-card-technology {
+  color: #d89418;
+  border-top-color: #d89418;
+}
+
+.program-card-technology .program-icon {
+  color: #d89418;
+}
+
 .program-card-research {
   color: var(--purple);
   border-top-color: var(--purple);
@@ -434,8 +461,11 @@ a {
   color: var(--green);
 }
 
-.program-card-news .program-label,
-.program-card-research .program-label {
+.program-card-rare .program-label,
+.program-card-education .program-label,
+.program-card-technology .program-label,
+.program-card-research .program-label,
+.program-card-news .program-label {
   color: #0e65d8;
 }
 
