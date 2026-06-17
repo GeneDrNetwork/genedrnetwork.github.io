@@ -138,6 +138,20 @@ a {
   filter:
     drop-shadow(0 24px 28px rgba(5, 40, 89, 0.28))
     drop-shadow(0 0 24px rgba(205, 246, 255, 0.28));
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.16) 7%, #000 23%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.16) 7%, #000 23%);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.hero-dna::before {
+  position: absolute;
+  inset: 0 auto 0 -1px;
+  z-index: 1;
+  width: 34%;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(45, 134, 194, 0.45), rgba(45, 134, 194, 0));
 }
 
 .hero-dna svg {
