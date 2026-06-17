@@ -131,15 +131,15 @@ a {
 .hero-dna {
   position: absolute;
   top: 53%;
-  right: clamp(-64px, 1.4vw, 28px);
+  right: clamp(-118px, -3vw, -34px);
   z-index: 1;
-  width: clamp(600px, 58vw, 960px);
+  width: clamp(660px, 62vw, 1040px);
   transform: translateY(-50%) rotate(-2deg);
   filter:
     drop-shadow(0 24px 28px rgba(5, 40, 89, 0.28))
     drop-shadow(0 0 24px rgba(205, 246, 255, 0.28));
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.16) 7%, #000 23%);
-  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.16) 7%, #000 23%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.28) 5%, #000 16%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.28) 5%, #000 16%);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
@@ -148,7 +148,7 @@ a {
   position: absolute;
   inset: 0 auto 0 -1px;
   z-index: 1;
-  width: 34%;
+  width: 24%;
   content: "";
   pointer-events: none;
   background: linear-gradient(90deg, rgba(45, 134, 194, 0.45), rgba(45, 134, 194, 0));
@@ -555,8 +555,8 @@ a {
   }
 
   .hero-dna {
-    right: -190px;
-    width: 640px;
+    right: -220px;
+    width: 700px;
   }
 
   .page-shell {
@@ -610,8 +610,8 @@ a {
   }
 
   .hero-dna {
-    right: -250px;
-    width: 520px;
+    right: -270px;
+    width: 560px;
     opacity: 0.88;
   }
 
