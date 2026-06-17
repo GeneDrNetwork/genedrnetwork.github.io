@@ -133,11 +133,11 @@ a {
   top: 53%;
   right: clamp(-64px, 1.4vw, 28px);
   z-index: 1;
-  width: clamp(520px, 54vw, 880px);
+  width: clamp(600px, 58vw, 960px);
   transform: translateY(-50%) rotate(-2deg);
   filter:
-    drop-shadow(0 22px 26px rgba(5, 40, 89, 0.22))
-    drop-shadow(0 0 18px rgba(255, 255, 255, 0.22));
+    drop-shadow(0 24px 28px rgba(5, 40, 89, 0.28))
+    drop-shadow(0 0 24px rgba(205, 246, 255, 0.28));
 }
 
 .hero-dna svg {
@@ -147,8 +147,15 @@ a {
 
 .dna-strand {
   fill: none;
-  stroke-width: 14;
+  stroke-width: 28;
   stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dna-strand-shadow {
+  stroke: rgba(7, 31, 80, 0.18);
+  stroke-width: 34;
+  transform: translateY(9px);
 }
 
 .dna-strand-left {
@@ -159,16 +166,49 @@ a {
   stroke: url("#dnaRight");
 }
 
-.dna-rungs line {
-  stroke: rgba(255, 255, 255, 0.92);
+.dna-strand-highlight {
+  fill: none;
+  stroke: url("#dnaHighlight");
   stroke-linecap: round;
-  stroke-width: 8;
+  stroke-width: 6;
+  opacity: 0.72;
+}
+
+.dna-rungs line {
+  stroke-linecap: round;
+  stroke-width: 15;
+  filter: drop-shadow(0 5px 5px rgba(5, 40, 89, 0.28));
+}
+
+.dna-rungs line:nth-child(odd) {
+  opacity: 0.94;
+}
+
+.rung-blue {
+  stroke: url("#rungBlue");
+}
+
+.rung-pink {
+  stroke: url("#rungPink");
+}
+
+.rung-green {
+  stroke: url("#rungGreen");
+}
+
+.rung-yellow {
+  stroke: url("#rungYellow");
+}
+
+.rung-purple {
+  stroke: url("#rungPurple");
 }
 
 .dna-nodes circle {
-  fill: rgba(255, 255, 255, 0.9);
-  stroke: #69d2e9;
-  stroke-width: 4;
+  fill: rgba(232, 252, 255, 0.96);
+  stroke: rgba(105, 210, 233, 0.88);
+  stroke-width: 5;
+  filter: drop-shadow(0 4px 5px rgba(5, 40, 89, 0.24));
 }
 
 .hero-overlay {
