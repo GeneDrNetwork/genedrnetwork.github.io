@@ -35,6 +35,48 @@
 
     <main id="top">
       <section class="hero-banner" aria-labelledby="page-title">
+        <canvas id="network-canvas" aria-hidden="true"></canvas>
+        <div class="hero-dna" aria-hidden="true">
+          <svg viewBox="0 0 360 260" role="img">
+            <defs>
+              <linearGradient id="dnaLeft" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0ea5e9" />
+                <stop offset="0.38" stop-color="#14b8a6" />
+                <stop offset="0.72" stop-color="#8b5cf6" />
+                <stop offset="1" stop-color="#ec4899" />
+              </linearGradient>
+              <linearGradient id="dnaRight" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#facc15" />
+                <stop offset="0.35" stop-color="#22c55e" />
+                <stop offset="0.68" stop-color="#06b6d4" />
+                <stop offset="1" stop-color="#a855f7" />
+              </linearGradient>
+            </defs>
+            <path class="dna-strand dna-strand-left" d="M88 18 C248 82 248 178 88 242" />
+            <path class="dna-strand dna-strand-right" d="M272 18 C112 82 112 178 272 242" />
+            <g class="dna-rungs">
+              <line x1="116" y1="35" x2="244" y2="35" />
+              <line x1="158" y1="70" x2="202" y2="70" />
+              <line x1="194" y1="105" x2="166" y2="105" />
+              <line x1="208" y1="130" x2="152" y2="130" />
+              <line x1="194" y1="155" x2="166" y2="155" />
+              <line x1="158" y1="190" x2="202" y2="190" />
+              <line x1="116" y1="225" x2="244" y2="225" />
+            </g>
+            <g class="dna-nodes">
+              <circle cx="88" cy="18" r="8" />
+              <circle cx="272" cy="18" r="8" />
+              <circle cx="158" cy="70" r="7" />
+              <circle cx="202" cy="70" r="7" />
+              <circle cx="208" cy="130" r="8" />
+              <circle cx="152" cy="130" r="8" />
+              <circle cx="158" cy="190" r="7" />
+              <circle cx="202" cy="190" r="7" />
+              <circle cx="88" cy="242" r="8" />
+              <circle cx="272" cy="242" r="8" />
+            </g>
+          </svg>
+        </div>
         <div class="hero-overlay">
           <h1 id="page-title">GeneDrNetwork</h1>
           <p>Advancing Genetics. Improving Lives.</p>
@@ -66,34 +108,43 @@
             <h2>Programs</h2>
             <div class="program-grid">
               <a class="program-card" href="programs/clinical-genetics-network.html">
-                <span>Program</span>
+                <span class="program-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 4h10a2 2 0 0 1 2 2v14H5V6a2 2 0 0 1 2-2Z" />
+                    <path d="M9 20v-5h6v5" />
+                    <path d="M12 8v4" />
+                    <path d="M10 10h4" />
+                  </svg>
+                </span>
                 <strong>Clinical Genetics Network (CGN)</strong>
-                <p>Clinical genetics expertise, referral pathways, education, and coordinated care.</p>
-              </a>
-              <a class="program-card" href="programs/rare-disease-day.html">
-                <span>Program</span>
-                <strong>Rare Disease Day</strong>
-                <p>Awareness, education, and collaboration for rare disease care and diagnosis.</p>
-              </a>
-              <a class="program-card" href="programs/genetics-education.html">
-                <span>Program</span>
-                <strong>Genetics Education</strong>
-                <p>Practical genetics learning for clinicians, trainees, and community partners.</p>
-              </a>
-              <a class="program-card" href="programs/therapeutics-technology-updates.html">
-                <span>Program</span>
-                <strong>Therapeutics &amp; Technology Updates</strong>
-                <p>Academic updates on emerging therapies and genetic testing technologies.</p>
+                <p>Clinical genetics expertise, referral pathways, education, and coordinated care for patients and clinicians.</p>
+                <span class="learn-more">Learn More</span>
               </a>
               <a class="program-card" href="/GeneDrResearch/">
-                <span>Program</span>
+                <span class="program-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M9 3v5l-4.8 8.4A3 3 0 0 0 6.8 21h10.4a3 3 0 0 0 2.6-4.6L15 8V3" />
+                    <path d="M8 3h8" />
+                    <path d="M7 16h10" />
+                    <path d="M10 13h4" />
+                  </svg>
+                </span>
                 <strong>GeneDrResearch</strong>
-                <p>Clinical research connections, registries, natural history studies, and collaborations.</p>
+                <p>Clinical research connections, registries, natural history studies, and academic collaborations.</p>
+                <span class="learn-more">Learn More</span>
               </a>
               <a class="program-card" href="/GeneDrNews/">
-                <span>Program</span>
+                <span class="program-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 5h11a3 3 0 0 1 3 3v11H8a3 3 0 0 1-3-3V5Z" />
+                    <path d="M8 9h7" />
+                    <path d="M8 13h8" />
+                    <path d="M8 17h5" />
+                  </svg>
+                </span>
                 <strong>GeneDrNews</strong>
-                <p>News and updates from GeneDrNetwork programs, education, research, and community work.</p>
+                <p>Professional updates from GeneDrNetwork programs, genetics education, research, and community work.</p>
+                <span class="learn-more">Learn More</span>
               </a>
             </div>
           </section>
@@ -108,5 +159,6 @@
         </article>
       </div>
     </main>
+    <script src="script.js"></script>
   </body>
 </html>
