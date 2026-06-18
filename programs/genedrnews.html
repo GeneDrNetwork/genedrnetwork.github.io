@@ -3,58 +3,102 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="GeneDrNews program at GeneDrNetwork." />
-    <title>GeneDrNews | GeneDrNetwork</title>
+    <meta name="description" content="GeneDrNews & Invest: daily AI, biotech, precision medicine, FDA, market, and investment intelligence." />
+    <title>GeneDrNews &amp; Invest | GeneDrNetwork</title>
     <link rel="icon" type="image/png" href="../assets/genedrnetwork-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css" />
   </head>
-  <body class="program-page">
+  <body class="news-dashboard-page">
     <header class="site-header">
       <a class="site-title" href="../index.html">GeneDrNetwork</a>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="../index.html#about">About</a>
         <a href="../index.html#programs">Programs</a>
+        <a href="clinical-genetics-network.html">CGN</a>
         <a href="../index.html#people">People</a>
         <a href="mailto:info@genedrnetwork.org">Contact</a>
       </nav>
     </header>
+
     <main>
-      <section class="hero-banner">
-        <div class="hero-overlay">
-          <h1>GeneDrNews</h1>
-          <p>Genetics advances, program news, events, and community stories.</p>
+      <section class="news-hero" aria-labelledby="news-title">
+        <div>
+          <a class="news-back-link" href="../index.html#programs">Back to programs</a>
+          <p class="news-eyebrow">Daily Intelligence Dashboard</p>
+          <h1 id="news-title">GeneDrNews &amp; Invest</h1>
+          <p>Daily AI, biotech, precision medicine, and investment intelligence.</p>
+        </div>
+        <div class="update-status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Last updated</span>
+          <strong id="last-updated">Loading...</strong>
         </div>
       </section>
-      <div class="page-shell">
-        <aside class="profile-sidebar">
-          <img class="profile-logo" src="../assets/genedrnetwork-logo.png" alt="GeneDrNetwork logo" />
-          <h2>GeneDrNetwork</h2>
-          <p class="profile-affiliation">Advancing Genetics. Improving Lives.</p>
-        </aside>
-        <article class="main-content">
-          <a class="back-link" href="../index.html#programs">← Back to programs</a>
-          <section>
-            <h2>Program Overview</h2>
-            <p>
-              GeneDrNews shares professional updates from GeneDrNetwork, including genetics
-              education, rare disease awareness, research activity, program milestones, and
-              community engagement.
-            </p>
-          </section>
-          <section>
-            <h2>Program Scope</h2>
-            <ul class="content-list">
-              <li>Genetics and rare disease program updates</li>
-              <li>Educational announcements, events, and community stories</li>
-              <li>Research, therapeutics, and technology highlights</li>
-              <li>News for patients, families, clinicians, trainees, and partners</li>
-            </ul>
-          </section>
-        </article>
+
+      <nav class="dashboard-nav" aria-label="Dashboard sections">
+        <a href="#brief">Brief</a><a href="#ai">AI</a><a href="#biotech">Biotech</a>
+        <a href="#fda">FDA</a><a href="#markets">Markets</a><a href="#watchlist">Watchlists</a>
+      </nav>
+
+      <div class="dashboard-shell">
+        <section class="brief-section" id="brief">
+          <div class="section-heading">
+            <div><span class="section-kicker">Daily Brief</span><h2>Today's Key Takeaways</h2></div>
+            <span class="source-note">Educational intelligence, refreshed daily</span>
+          </div>
+          <div class="brief-layout">
+            <article class="takeaway-panel"><ul id="key-takeaways" class="takeaway-list"><li>Loading today's intelligence...</li></ul></article>
+            <div class="summary-grid">
+              <article class="summary-card summary-ai"><span>AI</span><h3>Daily AI Summary</h3><p id="ai-summary">Loading...</p></article>
+              <article class="summary-card summary-market"><span>Markets</span><h3>Daily Market Summary</h3><p id="market-summary">Loading...</p></article>
+              <article class="summary-card summary-biotech"><span>Biotech</span><h3>Daily Biotech Summary</h3><p id="biotech-summary">Loading...</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-section" id="ai">
+          <div class="section-heading"><div><span class="section-kicker">Sector Intelligence</span><h2>AI Industry Dashboard</h2></div></div>
+          <div class="dashboard-subsection"><h3>Core AI Industry Leaders</h3><div id="ai-leaders" class="entity-grid"></div></div>
+          <div class="dashboard-subsection"><h3>Most Promising Emerging AI Companies</h3><div id="ai-emerging" class="entity-grid"></div></div>
+        </section>
+
+        <section class="dashboard-section" id="biotech">
+          <div class="section-heading"><div><span class="section-kicker">Life Sciences</span><h2>Biotechnology Dashboard</h2></div></div>
+          <div class="dashboard-subsection"><h3>Core Biotech Industry Leaders</h3><div id="biotech-leaders" class="entity-grid"></div></div>
+          <div class="dashboard-subsection"><h3>Most Promising Emerging Biotech Companies</h3><div id="biotech-emerging" class="entity-grid"></div></div>
+        </section>
+
+        <section class="dashboard-section" id="fda">
+          <div class="section-heading"><div><span class="section-kicker">Regulatory Monitor</span><h2>FDA &amp; Regulatory Updates</h2></div><a class="text-link" href="https://www.fda.gov/news-events/fda-newsroom/press-announcements" target="_blank" rel="noopener">FDA newsroom</a></div>
+          <div class="table-wrap"><table><thead><tr><th>Company</th><th>Product</th><th>Indication</th><th>Regulatory Event</th><th>Date</th><th>Source</th></tr></thead><tbody id="fda-updates"><tr><td colspan="6">Loading...</td></tr></tbody></table></div>
+        </section>
+
+        <section class="dashboard-section" id="markets">
+          <div class="section-heading"><div><span class="section-kicker">Market Pulse</span><h2>Market Dashboard</h2></div></div>
+          <div id="market-cards" class="market-grid"></div>
+          <article class="market-explainer"><span>Market context</span><h3>What moved the market today?</h3><p id="market-movers">Loading market context...</p></article>
+        </section>
+
+        <section class="dashboard-section" id="watchlist">
+          <div class="section-heading"><div><span class="section-kicker">Focused Tracking</span><h2>GeneDr Watchlist</h2></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Price</th><th>Daily</th><th>Weekly</th><th>Recent News &amp; Summary</th></tr></thead><tbody id="watchlist-rows"><tr><td colspan="6">Loading...</td></tr></tbody></table></div>
+        </section>
+
+        <section class="dashboard-section" id="opportunities">
+          <div class="section-heading"><div><span class="section-kicker">Research Radar</span><h2>High-Potential Opportunity Watchlist</h2></div><span class="source-note">Scores reflect signals, not recommendations</span></div>
+          <div id="opportunity-grid" class="opportunity-grid"></div>
+        </section>
+
+        <footer class="dashboard-disclaimer">
+          <strong>Important disclaimer</strong>
+          <p>GeneDrNews &amp; Invest is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice.</p>
+        </footer>
       </div>
     </main>
+    <script src="../assets/news-dashboard.js" defer></script>
   </body>
 </html>

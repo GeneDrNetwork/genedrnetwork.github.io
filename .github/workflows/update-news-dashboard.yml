@@ -1,0 +1,39 @@
+name: Update GeneDrNews Dashboard
+
+on:
+  schedule:
+    - cron: "17 11 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: genedrnews-daily-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Refresh dashboard data
+        run: python scripts/update_news_dashboard.py
+      - name: Commit updated intelligence
+        run: |
+          if git diff --quiet -- data/news-dashboard.json; then
+            echo "No dashboard changes to publish."
+            exit 0
+          fi
+          git config user.name "GeneDrNews Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/news-dashboard.json
+          git commit -m "GeneDrNews: daily intelligence update"
+          git push origin main
