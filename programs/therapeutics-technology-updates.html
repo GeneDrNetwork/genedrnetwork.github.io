@@ -3,87 +3,97 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Therapeutics and Technology Updates program at GeneDrNetwork."
-    />
-    <title>Therapeutics & Technology Updates | GeneDrNetwork</title>
+    <meta name="description" content="GeneDrNetwork resources for genetic therapeutics, testing technology, and responsible industry connection." />
+    <title>GeneDr Therapeutics, Technology and Industry Connection | GeneDrNetwork</title>
     <link rel="icon" type="image/png" href="../assets/genedrnetwork-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../assets/therapeutics-technology.css" />
   </head>
-  <body class="program-page">
+  <body class="program-page therapeutics-page">
     <header class="site-header">
       <a class="site-title" href="../index.html">GeneDrNetwork</a>
       <nav class="site-nav" aria-label="Primary navigation">
-        <a href="../index.html#about">About</a>
-        <a href="../index.html#programs">Programs</a>
-        <a href="../index.html#people">People</a>
-        <a href="mailto:info@genedrnetwork.org">Contact</a>
+        <a href="../index.html#about">About</a><a href="../index.html#programs">Programs</a>
+        <a href="../index.html#people">People</a><a href="mailto:info@genedrnetwork.org">Contact</a>
       </nav>
     </header>
     <main>
-      <section class="hero-banner">
+      <section class="hero-banner therapeutics-hero" aria-labelledby="page-title">
         <div class="hero-overlay">
-          <h1>Therapeutics & Technology Updates</h1>
-          <p>Academic updates in emerging therapies and genomic technologies.</p>
+          <p class="hero-kicker">Clinical Resource Program</p>
+          <h1 id="page-title">GeneDr Therapeutics, Technology and Industry Connection</h1>
+          <p>Clinician-friendly resources for genetic medicine and diagnostic innovation.</p>
         </div>
       </section>
-      <div class="page-shell">
+      <div class="page-shell therapeutics-shell">
         <aside class="profile-sidebar">
           <img class="profile-logo" src="../assets/genedrnetwork-logo.png" alt="GeneDrNetwork logo" />
           <h2>GeneDrNetwork</h2>
           <p class="profile-affiliation">Professional, academic, clinical, and non-commercial.</p>
+          <nav class="section-nav" aria-label="On this page">
+            <a href="#featured">Featured picks</a><a href="#therapeutics">Therapeutics</a>
+            <a href="#fda-therapies">FDA-approved therapies</a><a href="#technology">Technology</a>
+            <a href="#industry">Industry connection</a>
+          </nav>
         </aside>
-        <article class="main-content">
-          <a class="back-link" href="../index.html#programs">← Back to programs</a>
-          <section>
-            <h2>Program Overview</h2>
-            <p>
-              Therapeutics & Technology Updates is a GeneDrNetwork program for professional
-              review of emerging clinical therapeutics, genomic technologies, and diagnostic
-              platforms relevant to genetics and rare disease care.
-            </p>
-            <p class="section-note">
-              Content is intended for academic and clinical education and is non-commercial.
-            </p>
+        <article class="main-content therapeutics-content">
+          <a class="back-link" href="../index.html#programs">&larr; Back to programs</a>
+          <section class="program-intro">
+            <p class="eyebrow">Program overview</p>
+            <h2>A practical starting point for genetic care teams</h2>
+            <p>Explore selected therapies, genetic testing resources, and pathways for responsible collaboration. Listings support education and care discussions; they are not treatment recommendations or endorsements.</p>
           </section>
-          <section>
-            <h2>Therapeutics Updates</h2>
-            <p>
-              Updates may include new treatments, gene therapy, RNA therapy, enzyme
-              replacement therapy, targeted therapy, and clinical trial updates.
-            </p>
-            <ul class="content-list">
-              <li>New treatments and evolving standards of care</li>
-              <li>Gene therapy and genome-targeted therapeutic approaches</li>
-              <li>RNA therapy, including antisense and RNA-based treatment strategies</li>
-              <li>Enzyme replacement therapy and metabolic disease treatment updates</li>
-              <li>Targeted therapy and precision medicine developments</li>
-              <li>Clinical trial updates relevant to genetic and rare disease care</li>
-            </ul>
+
+          <section id="featured" class="resource-section featured-picks-section" aria-labelledby="featured-title">
+            <div class="resource-heading"><div><p class="eyebrow">Updated monthly</p><h2 id="featured-title">Monthly Featured Picks</h2></div><p id="featured-period" class="update-label"></p></div>
+            <div id="monthly-featured-picks" class="resource-card-grid" aria-live="polite"></div>
           </section>
-          <section>
-            <h2>Technology Updates</h2>
-            <p>
-              Updates may include WGS, long-read sequencing, RNA sequencing, methylation
-              testing, optical genome mapping, AI-assisted variant interpretation, and
-              new genetic testing platforms.
-            </p>
-            <ul class="content-list">
-              <li>Whole genome sequencing (WGS)</li>
-              <li>Long-read sequencing</li>
-              <li>RNA sequencing</li>
-              <li>Methylation testing</li>
-              <li>Optical genome mapping</li>
-              <li>AI-assisted variant interpretation</li>
-              <li>New genetic testing platforms and diagnostic workflows</li>
-            </ul>
+
+          <section id="therapeutics" class="resource-section" aria-labelledby="therapeutics-title">
+            <div class="resource-heading"><div><p class="eyebrow">Clinical reference</p><h2 id="therapeutics-title">Curated List: Therapeutics</h2></div><p>Select a disease group to compare available and emerging approaches.</p></div>
+            <div id="therapeutics-categories" class="accordion-stack"></div>
+            <div class="subsection-heading"><h3>Company List</h3><p>Selected organizations represented in the therapeutic resource.</p></div>
+            <div id="company-list" class="accordion-grid"></div>
           </section>
+
+          <section id="fda-therapies" class="resource-section" aria-labelledby="fda-title">
+            <div class="resource-heading"><div><p class="eyebrow">Regulatory reference</p><h2 id="fda-title">Current Available FDA-Approved Therapies for Genetic Disorders</h2></div><p>Curated static snapshot. Confirm current labeling and eligibility with FDA prescribing information.</p></div>
+            <p id="fda-updated" class="update-label"></p>
+            <div id="fda-approved-therapies" class="responsive-table"></div>
+          </section>
+
+          <section id="technology" class="resource-section" aria-labelledby="technology-title">
+            <div class="resource-heading"><div><p class="eyebrow">Diagnostic resources</p><h2 id="technology-title">Curated List: Technology</h2></div><p>Examples of laboratories and platforms used across clinical genetics workflows.</p></div>
+            <div class="subsection-heading"><h3>Genetic Testing Laboratory / Company List</h3></div>
+            <div id="technology-labs" class="accordion-grid"></div>
+          </section>
+
+          <section id="industry" class="resource-section industry-section" aria-labelledby="industry-title">
+            <div class="resource-heading"><div><p class="eyebrow">Collaboration pathway</p><h2 id="industry-title">Industry Connection</h2></div></div>
+            <div class="contact-panel">
+              <div><h3>Contact for Featured Products</h3><p>Industry partners may submit genetic therapeutics, technologies, or educational resources for editorial consideration. Submission does not guarantee inclusion.</p><p class="section-note">This form opens an email draft. No information is stored on this website.</p></div>
+              <form id="industry-contact-form">
+                <label>Company name<input name="company" required autocomplete="organization" /></label>
+                <label>Contact person<input name="contact" required autocomplete="name" /></label>
+                <label>Email<input name="email" type="email" required autocomplete="email" /></label>
+                <label>Product / technology name<input name="product" required /></label>
+                <label>Disease / therapeutic area<input name="area" required /></label>
+                <label class="full-field">Brief description<textarea name="description" rows="4" required></textarea></label>
+                <label class="full-field">Website link<input name="website" type="url" placeholder="https://" /></label>
+                <button class="submit-button full-field" type="submit">Prepare submission email</button>
+                <p id="form-status" class="form-status full-field" aria-live="polite"></p>
+              </form>
+            </div>
+          </section>
+
+          <footer class="clinical-disclaimer"><strong>Clinical and regulatory note</strong><p>Information is educational and may not reflect every indication, contraindication, jurisdiction, or recent label change. Clinicians should consult current FDA labeling, primary literature, and applicable guidelines.</p></footer>
         </article>
       </div>
     </main>
+    <script src="../data/therapeutics-technology-data.js" defer></script>
+    <script src="../assets/therapeutics-technology.js" defer></script>
   </body>
 </html>
