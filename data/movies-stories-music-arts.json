@@ -1,42 +1,35 @@
-[
-  {
-    "category": "movie",
-    "title": "Gattaca",
-    "description": "A thoughtful science-fiction film about genetic selection, identity, ambition, and the social consequences of judging people by their DNA.",
-    "link": "https://sonymovies.com/movies/gattaca",
-    "source_name": "Sony Movies",
-    "month": 6,
-    "year": 2026,
-    "last_updated": "2026-06-20"
-  },
-  {
-    "category": "story",
-    "title": "Diagnosis and Discovery: Insights from the NIH Undiagnosed Diseases Program",
-    "description": "Six medical mysteries show how deep clinical observation, genome sequencing, and collaborative investigation can lead families toward long-awaited answers.",
-    "link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12169816/",
-    "source_name": "NIH / PubMed Central",
-    "month": 6,
-    "year": 2026,
-    "last_updated": "2026-06-20"
-  },
-  {
-    "category": "music",
-    "title": "Music from the Genome: Allele",
-    "description": "A choral project in which DNA analysis from 40 singers shaped their individual musical parts, bringing genetics and human voices into one composition.",
-    "link": "https://www.musicfromthegenome.org.uk/",
-    "source_name": "Music from the Genome",
-    "month": 6,
-    "year": 2026,
-    "last_updated": "2026-06-20"
-  },
-  {
-    "category": "art",
-    "title": "The Ladder",
-    "description": "Artist Mara G. Haseltine's DNA-inspired sculpture at the NIH celebrates children, discovery, and public curiosity about genomics.",
-    "link": "https://www.genome.gov/news/news-release/new-dna-statue-to-be-unveiled-at-nih-on-national-dna-day",
-    "source_name": "National Human Genome Research Institute",
-    "month": 6,
-    "year": 2026,
-    "last_updated": "2026-06-20"
+{
+  "moviesAndDocumentaries": [
+    {"id":"gattaca","title":"GATTACA","year":"1997","description":"A science-fiction drama about a society that ranks people by their genetic profiles.","genetics_relevance":"Explores genetic selection, discrimination, identity, privacy, and the limits of genetic prediction.","link":"https://www.sonypictures.com/movies/gattaca","source_name":"Sony Pictures","tag":"Popular classic"},
+    {"id":"lorenzos-oil","title":"Lorenzo's Oil","year":"1992","description":"Parents of a child with adrenoleukodystrophy pursue an experimental treatment for his rare disorder.","genetics_relevance":"Centers on a rare inherited disease, family advocacy, research, and the uncertainties of medical discovery.","link":"https://www.imdb.com/title/tt0104756/","source_name":"IMDb","tag":"Popular classic"},
+    {"id":"the-gene","title":"The Gene: An Intimate History","year":"2020","description":"A documentary series tracing the history of genetics through scientists, patients, and families.","genetics_relevance":"Connects major discoveries, rare-disease research, gene editing, and the ethical questions raised by genomic medicine.","link":"https://www.pbs.org/show/gene/","source_name":"PBS","tag":"Popular classic"},
+    {"id":"human-nature","title":"Human Nature","year":"2019","description":"A documentary about CRISPR and the people shaping the future of gene editing.","genetics_relevance":"Examines the scientific promise and ethical consequences of changing DNA, including possible treatments for genetic disease.","link":"https://sciencecommunicationlab.org/science-documentaries/crispr/","source_name":"Science Communication Lab","tag":"New discovery"},
+    {"id":"henrietta-lacks","title":"The Immortal Life of Henrietta Lacks","year":"2017","description":"A drama about Henrietta Lacks, her family, and the cells taken from her that transformed biomedical research.","genetics_relevance":"Raises enduring questions about tissue research, consent, race, family, privacy, and genomic data.","link":"https://en.wikipedia.org/wiki/The_Immortal_Life_of_Henrietta_Lacks_(film)","source_name":"Wikipedia","tag":"Popular classic"}
+  ],
+  "dnaDetectiveStories": [
+    {"id":"golden-state-killer","title":"Golden State Killer and Genetic Genealogy","description":"Investigators used long-range familial searching and traditional police work to identify a suspect in a decades-old case.","importance":"A landmark example of forensic genetic genealogy and a prompt for continuing debate about DNA privacy and consent.","link":"https://le.fbi.gov/science-and-lab/biometrics-and-fingerprints/codis-2","source_name":"FBI CODIS","tag":"Popular classic"},
+    {"id":"boy-in-the-box","title":"The Boy in the Box Identified","description":"Philadelphia investigators used forensic genetic genealogy to identify a child known for decades only as the Boy in the Box.","importance":"Shows how DNA, records, and genealogy can restore a name to an unidentified person after many decades.","link":"https://www.phila.gov/2022-12-08-the-boy-in-the-box-identified-after-65-years/","source_name":"City of Philadelphia","tag":"New discovery"},
+    {"id":"dna-doe-project","title":"DNA Doe Project Case Stories","description":"A nonprofit initiative applies investigative genetic genealogy to unidentified-person cases across North America.","importance":"Its case work demonstrates how DNA matches and family-tree research can return names to unknown individuals.","link":"https://dnadoeproject.org/case-portfolio/","source_name":"DNA Doe Project","tag":"Popular classic"},
+    {"id":"undiagnosed-diseases","title":"Diagnosis and Discovery: NIH Undiagnosed Diseases Program","description":"Six medical mysteries illustrate how careful clinical work and genome sequencing can lead families toward answers.","importance":"Highlights collaborative diagnosis and the value of sequencing for people whose rare conditions have resisted routine testing.","link":"https://pmc.ncbi.nlm.nih.gov/articles/PMC12169816/","source_name":"NIH / PubMed Central","tag":"New discovery"}
+  ],
+  "dnaMusic": [
+    {"id":"music-from-genome","title":"Music from the Genome: Allele","artist":"Music from the Genome","description":"DNA analysis from 40 singers helped shape individual parts in a choral composition.","genetics_relevance":"Turns genetic variation into a shared musical experience while reflecting both individuality and connection.","link":"https://www.musicfromthegenome.org.uk/","source_name":"Music from the Genome","tag":"New discovery"},
+    {"id":"protein-music","title":"Protein Music","artist":"Susumu Ohno","description":"A pioneering approach assigns musical notes to DNA bases and uses genetic sequences as the foundation for compositions.","genetics_relevance":"Demonstrates an early method of translating biological sequence patterns into sound.","link":"https://pmc.ncbi.nlm.nih.gov/articles/PMC2766288/","source_name":"NIH / PubMed Central","tag":"Popular classic"},
+    {"id":"your-dna-song","title":"Your DNA Song","artist":"New London Chamber Choir","description":"A participatory work in which a listener's genetic information is transformed into a personalized choral phrase.","genetics_relevance":"Makes genetic difference audible by mapping selected DNA variations into music.","link":"https://www.musicfromthegenome.org.uk/","source_name":"Music from the Genome","tag":"New discovery"}
+  ],
+  "dnaArts": [
+    {"id":"the-ladder","title":"The Ladder","artist":"Mary Ellen Scherl / National Institutes of Health","description":"A public sculpture whose double-helical ladder and four child figures celebrate DNA and human diversity.","genetics_relevance":"Uses the familiar structure and four chemical letters of DNA to invite public curiosity about genomics.","link":"https://www.genome.gov/news/news-release/new-dna-statue-to-be-unveiled-at-nih-on-national-dna-day","source_name":"National Human Genome Research Institute","tag":"New discovery"},
+    {"id":"intersecting-data-fields","title":"Intersecting Data Fields","artist":"Jennifer Parker, Karolina Karlic, and the UCSC Genomics Institute","description":"A collaborative portrait exhibition exploring the people, objects, and stories behind genomics research.","genetics_relevance":"Uses socially engaged art to communicate the diversity, practice, and human impact of genomics.","link":"https://genomics.ucsc.edu/news/2020/02/intersecting-data-fields-an-art-and-genomics-collaboration-at-the-genomics-institute-at-ucsc-westside-research-park/","source_name":"UC Santa Cruz Genomics Institute","tag":"New discovery"},
+    {"id":"ferocious-beauty","title":"Ferocious Beauty: Genome","artist":"Liz Lerman Dance Exchange / NHGRI","description":"A performance project created with genetic scientists to explore inheritance, identity, and contemporary genomics.","genetics_relevance":"Brings genetics into dance and public dialogue through collaboration between artists and researchers.","link":"https://www.genome.gov/Pages/Newsroom/NHGRIRelatedReleases/WPASReleaseFinal-1-17-07.pdf","source_name":"National Human Genome Research Institute","tag":"Popular classic"},
+    {"id":"dna-origami","title":"DNA Origami","artist":"Alex Bateman / NHGRI","description":"A printable art-and-science activity for building a three-dimensional paper model of DNA.","genetics_relevance":"Makes base pairing and the twists of the double helix tangible through hands-on visual design.","link":"https://www.genome.gov/about-genomics/teaching-tools/dna-origami","source_name":"National Human Genome Research Institute","tag":"Popular classic"}
+  ],
+  "monthlyFeaturedPicks": {
+    "month":"June","year":2026,"last_updated":"2026-06-20",
+    "picks":[
+      {"category":"movie","item_id":"gattaca","reason_selected":"A widely recognized starting point for conversations about genetic discrimination and human potential."},
+      {"category":"story","item_id":"undiagnosed-diseases","reason_selected":"A recent, hopeful look at how genomics and teamwork can resolve difficult medical mysteries."},
+      {"category":"music","item_id":"music-from-genome","reason_selected":"A memorable example of real genetic variation becoming a communal work of music."},
+      {"category":"art","item_id":"the-ladder","reason_selected":"A welcoming public artwork that connects DNA, identity, family, and discovery."}
+    ]
   }
-]
+}
