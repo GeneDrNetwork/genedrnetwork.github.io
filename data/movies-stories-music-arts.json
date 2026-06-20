@@ -1,0 +1,42 @@
+[
+  {
+    "category": "movie",
+    "title": "Gattaca",
+    "description": "A thoughtful science-fiction film about genetic selection, identity, ambition, and the social consequences of judging people by their DNA.",
+    "link": "https://sonymovies.com/movies/gattaca",
+    "source_name": "Sony Movies",
+    "month": 6,
+    "year": 2026,
+    "last_updated": "2026-06-20"
+  },
+  {
+    "category": "story",
+    "title": "Diagnosis and Discovery: Insights from the NIH Undiagnosed Diseases Program",
+    "description": "Six medical mysteries show how deep clinical observation, genome sequencing, and collaborative investigation can lead families toward long-awaited answers.",
+    "link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12169816/",
+    "source_name": "NIH / PubMed Central",
+    "month": 6,
+    "year": 2026,
+    "last_updated": "2026-06-20"
+  },
+  {
+    "category": "music",
+    "title": "Music from the Genome: Allele",
+    "description": "A choral project in which DNA analysis from 40 singers shaped their individual musical parts, bringing genetics and human voices into one composition.",
+    "link": "https://www.musicfromthegenome.org.uk/",
+    "source_name": "Music from the Genome",
+    "month": 6,
+    "year": 2026,
+    "last_updated": "2026-06-20"
+  },
+  {
+    "category": "art",
+    "title": "The Ladder",
+    "description": "Artist Mara G. Haseltine's DNA-inspired sculpture at the NIH celebrates children, discovery, and public curiosity about genomics.",
+    "link": "https://www.genome.gov/news/news-release/new-dna-statue-to-be-unveiled-at-nih-on-national-dna-day",
+    "source_name": "National Human Genome Research Institute",
+    "month": 6,
+    "year": 2026,
+    "last_updated": "2026-06-20"
+  }
+]
