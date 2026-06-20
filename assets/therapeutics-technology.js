@@ -55,6 +55,39 @@
     }).join("");
   }
 
+  function renderCompanyDirectory() {
+    const companies = [...data.companyList].sort((a, b) => a.name.localeCompare(b.name));
+    const groups = companies.reduce((result, company) => {
+      const letter = company.name.charAt(0).toUpperCase();
+      if (!result[letter]) result[letter] = [];
+      result[letter].push(company);
+      return result;
+    }, {});
+
+    document.getElementById("company-directory-nav").innerHTML = Object.keys(groups)
+      .map((letter) => `<a href="#company-${letter}" aria-label="Companies beginning with ${letter}">${letter}</a>`)
+      .join("");
+
+    document.getElementById("company-list").innerHTML = Object.entries(groups).map(([letter, companiesInGroup]) => `
+      <section class="directory-letter-group" id="company-${letter}" aria-labelledby="company-${letter}-title">
+        <h4 id="company-${letter}-title">${letter}</h4>
+        <div class="accordion-grid">${companiesInGroup.map((company) => `
+          <details class="resource-accordion compact-accordion company-card">
+            <summary>${escapeHtml(company.name)}</summary>
+            <div class="accordion-content">
+              <p class="company-introduction">${escapeHtml(company.intro)}</p>
+              <dl>
+                <dt>Major therapeutic focus</dt><dd>${escapeHtml(company.area)}</dd>
+                <dt>Key approved products</dt><dd>${escapeHtml(company.products)}</dd>
+                <dt>Pipeline highlights</dt><dd>${escapeHtml(company.pipeline || `Clinical and research programs across ${company.area.toLowerCase()}; consult the official pipeline for current study status.`)}</dd>
+              </dl>
+              ${externalLink(company.url, "Official website")}
+            </div>
+          </details>`).join("")}
+        </div>
+      </section>`).join("");
+  }
+
   function renderFdaTherapies() {
     const columns = ["Product", "Company", "Disease / indication", "Gene", "Therapy type", "FDA approval", "Source"];
     const rows = data.fdaApprovedTherapies.map((item) => [item.product, item.company, item.indication, item.gene, item.type, item.approval, externalLink(item.url, "FDA")]);
@@ -80,7 +113,7 @@
 
   renderFeaturedPicks();
   renderTherapeutics();
-  renderAccordionCards("company-list", data.companyList, "company");
+  renderCompanyDirectory();
   renderFdaTherapies();
   renderAccordionCards("technology-labs", data.technologyLabs, "lab");
   setUpContactForm();
