@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-19T18:12:50+00:00",
+  "updated_at": "2026-06-20T16:09:27+00:00",
   "summaries": {
-    "ai": "Key developments: Sifted Wins \"Artificial Intelligence Innovation Award\" in 2026 SupplyTech Breakthrough Awards Program; Cognex CEO Matt Moschner on Advancing Industrial Automation with AI-Powered Machine Vision; The Next AI Wave: How to Distinguish Real Breakthroughs from Mere Optimization.",
-    "market": "Key developments: US Stock Market Today: S&P 500 Futures Rise As Higher For Longer Rate Jitters Linger; Is the stock market open on Juneteenth? Why you can't trade stocks; US Stock Market Today: S&P 500 Futures Climb On Strong Consumer Data And Fed Caution.",
-    "biotech": "Key developments: 3 US Pharmaceutical Stocks With Strong Margins And Earnings Growth; Gandeeva and Zymeworks Use Cryo-EM to Accelerate Antibody Drug Discovery; Redefining what success looks like in PSC: The evolution of clinical trial endpoints.",
-    "market_movers": "Russell 2000 led the tracked indexes at -0.72% today; Nasdaq was the weakest at -1.34%. Key developments: US Stock Market Today: S&P 500 Futures Rise As Higher For Longer Rate Jitters Linger; Is the stock market open on Juneteenth? Why you can't trade stocks; US Stock Market Today: S&P 500 Futures Climb On Strong Consumer Data And Fed Caution."
+    "ai": "Key developments: Orange and the CEA launch a world-class joint research laboratory on semantic communications, a major technological breakthrough for networks in the AI era; ASML Holding NV Stock (ASML) Moved Up by 3.31% on Jun 20: What Signal Does It Send?; Top 15 New Quantum Computing Breakthroughs (So Far) Alex Michelsen (Clr7GUyk7N).",
+    "market": "Key developments: Futures: Hormuz Closed, Iran Says; Five Stocks To Watch; The Fed, Kevin Warsh, and falling oil prices: What's driving stocks today; Dow Logs Worst Day Since March, S&P 500 And Nasdaq Snap Win Streak After US-Iran Exchange Fire \u2014 SNDK, TSLA, GOOGL, META, IREN In Focus.",
+    "biotech": "Key developments: Our Origin Story; 3 US Pharmaceutical Stocks With Cash Flow And Pricing Risk; Partnerships and Collaborations Driving Change in Global Healthcare.",
+    "market_movers": "Russell 2000 led the tracked indexes at +2.12% today; Dow Jones was the weakest at +0.14%. Key developments: Futures: Hormuz Closed, Iran Says; Five Stocks To Watch; The Fed, Kevin Warsh, and falling oil prices: What's driving stocks today; Dow Logs Worst Day Since March, S&P 500 And Nasdaq Snap Win Streak After US-Iran Exchange Fire \u2014 SNDK, TSLA, GOOGL, META, IREN In Focus."
   },
   "takeaways": [
-    "Sifted Wins \"Artificial Intelligence Innovation Award\" in 2026 SupplyTech Breakthrough Awards Program - StreetInsider",
-    "Cognex CEO Matt Moschner on Advancing Industrial Automation with AI-Powered Machine Vision - Tech Briefs",
-    "3 US Pharmaceutical Stocks With Strong Margins And Earnings Growth - simplywall.st",
-    "Gandeeva and Zymeworks Use Cryo-EM to Accelerate Antibody Drug Discovery - BioSpace",
+    "Orange and the CEA launch a world-class joint research laboratory on semantic communications, a major technological breakthrough for networks in the AI era - TyN Magazine",
+    "ASML Holding NV Stock (ASML) Moved Up by 3.31% on Jun 20: What Signal Does It Send? - TradingKey",
+    "Our Origin Story - BioMarin Pharmaceutical",
+    "3 US Pharmaceutical Stocks With Cash Flow And Pricing Risk - simplywall.st",
     "Rare Disease Nonprofits De-Risk Development With Orphan Drug Designation And Early Talks With The FDA - Clinical Leader",
-    "FDA U-Turns on Rare Disease Treatment: What it Means for Patients - Newsweek",
-    "US Stock Market Today: S&P 500 Futures Rise As Higher For Longer Rate Jitters Linger - Yahoo Finance"
+    "Weekly Rundown: uniQure will seek approval for Huntington's disease gene therapy after switchup at FDA - Drug Discovery News",
+    "Futures: Hormuz Closed, Iran Says; Five Stocks To Watch - Investor's Business Daily"
   ],
   "ai": {
     "leaders": [
@@ -25,9 +25,9 @@
           "Importance": "Frontier model development and broad platform adoption"
         },
         "news": {
-          "title": "Introducing the OpenAI Partner Network - OpenAI",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9uMkJtTlNBalBxNWxuLVlzbHlsaTFGdXdmUks2Z1pqZ0IyZkNyYmZUU1JkYlc4emNMclpXUWo1aEpyRVJRX3VKQnlScl93bkdrN1pBeWlaVVNSeWk2cmh5dlpWRF9ZTkY2LW9qMw?oc=5",
-          "date": "Mon, 15 Jun 2026 00:15:49 GMT"
+          "title": "Improving health intelligence in ChatGPT - OpenAI",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5vcjB4NGtoanAzaElMUVhXZEZydkl4M3F0Mk96ZWoyRHNGMG1xT0RMeHRwTVFNbG1NVzd1LVVMaWFmQ0NYRWtWYll2Skc3YU43TmlzbS0tRlJVTFB2RDNfV3dSQmgwMkhsZEhaUTMwVXFaZGpi?oc=5",
+          "date": "Wed, 17 Jun 2026 19:20:33 GMT"
         }
       },
       {
@@ -64,9 +64,9 @@
           "Importance": "Global enterprise distribution and cloud infrastructure"
         },
         "news": {
-          "title": "Beyond the benchmark: Advancing security at AI speed - Microsoft",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOeFdrMk11MnlkWEZYWjEyajVmbUo1a1NTd0loYm1KOGxtRFNyblhvZmUyc1c1d0c1bnZHWnNNOEczRFZob254aVJnVzdEX0RybWF3U2dvVTZiWW0tN2UtbzZHaHZLNGllV0J5cXpRS3I0TnExblZMdTBUVEV4WHpIZlhZbDU5ZU4tU0M3blNTNGNLdXRENF9XaTZBa0RJVjF2eUtscXN5Y3Mtd1lOWkE?oc=5",
-          "date": "Wed, 17 Jun 2026 19:30:00 GMT"
+          "title": "LINGUA Africa Open Call for Inclusive AI Language Projects - Microsoft",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOSDBhQk03cDFCR29MRFQ0bE1DUFYtQWZEQ3N4TVFOOUF2OEdPcXJrRkxkSWUyeXZENW9FTUVXWHRtZFdyeWlhX3JrWURMNmZkY3A4cTVkbWxrOHZqUGZaY1pkOXFqUjEtalY2aUc1aEswTzBtWEVtMVRBT2ZqQmhLUzV6M1I5VkI1OWhVN3laNWJhLXZ4Zk9LcmdSMmR2VnZPS252ck8tS1VmTzdITDF5UWdZdllVQ1RW?oc=5",
+          "date": "Mon, 15 Jun 2026 07:00:00 GMT"
         }
       },
       {
@@ -77,9 +77,9 @@
           "Importance": "Core compute platform for model training and inference"
         },
         "news": {
-          "title": "NVIDIA Achieves Leading Agentic Coding Performance on First Agentic AI Benchmark | NVIDIA Technical Blog - NVIDIA Developer",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOVmRyeDI4RWZPamRkOFZFejNSaHpZM2RRWmZGem5jeWp1YlRJclhuOE9Oa3VKZms3SGN0LXZJVWVldktxU1NyQmFXc3BHQjlGVUpfVEo1S2owc25oX0NWUEFPdFRIaUx1dkF5TjdjRVJVR0x1dXJQbUtEdlg1cnJOTHJGZF9KS2hnQzFuQ3B3MU1BdWdKbWdoUVJWUUdkUURkWFR3czI3blU0aVltelNjNmhIamRvQQ?oc=5",
-          "date": "Fri, 12 Jun 2026 21:14:20 GMT"
+          "title": "Build On-Device AI Companions with the NVIDIA ACE Game Agent SDK and Unreal Engine 5 Plugins - NVIDIA Developer",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNZmVjU1R0TVFVeTUtSUhQVVBHeHA0R05uZXh3UlQ3Y284VHJuazNVMks5X3Y3VGtaRG5GOHZXUHlJeDdmNlkybzA4YUFFdzBLQTJDOGRkUDNzRU9LWWYxWTA4aElWM1czeV9FblVGZUFwOUJsaXEwU0pfU00xSXlnbEl6bEpGWDFFZ242S1I0eXczYUdaTlAxRFl0Skd6NlVKNlJDZVl2VWxXSXBUVHFaYU9RWEFHeE9rbnU0U3NsTmtCWkJOZlE?oc=5",
+          "date": "Tue, 16 Jun 2026 17:37:32 GMT"
         }
       },
       {
@@ -148,9 +148,9 @@
           "Why promising": "European open and commercial models"
         },
         "news": {
-          "title": "ASML\u2019s Mistral AI Stake Adds New Angle To Hotly Valued Shares - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNZXI2dzNYMHpTbWFVamIyMUx2OGZxdE9RaWg1eUhrZllhampNUVR3MVRqNGxBN1BBS2U0bXpzX2pOLWlBaVd2cndvZTNYUFBYMWl4aHhoeGdDN1RKb3dxTDVyT2VkUGpYQ1Z4LXRXODJZS2c2QXZJRUZPeGQwWC1zcnFzc1oyalptWHBRWTVXM1FuUUJPaUE?oc=5",
-          "date": "Sat, 13 Jun 2026 12:11:32 GMT"
+          "title": "Anthropic's new models were restricted by the US. Europe's top AI startup has been waiting for this moment. - Business Insider",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQTXhyQ3NYOWxyS29FRkJ1U3RhWnc4RlBIZnhLa3FTM3U2eEJkMWMtUG52TS1rV2o2LXN5TVRpY05CWUJpN3VyaG8xMHRCUl9sQUQzMVJhbHQ0SU9reU5Ca1dySnZYMVJhc3ZvTWEwbGc4dUNKcVpuaFFQTDhEWmhEcjFrMWRFX243b2tVS1haanJqVXVMbWtrSkNDWjI?oc=5",
+          "date": "Mon, 15 Jun 2026 18:13:00 GMT"
         }
       },
       {
@@ -238,9 +238,9 @@
           "Why promising": "General-purpose embodied AI"
         },
         "news": {
-          "title": "Physical AI Steps in as Global Workforce Shrinks - PYMNTS.com",
-          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxONzhycWd1eEpLakx5SEhBNnpRYnltQVBsc0RGOUd3QkZMaWxwLXpkSzM0V1V0VEE4Qm1hcU1Za1dyS29UX1BnZU1IM1d3RlZQSlk0YzNWbEpDNllwa1V4Rm1QakNyR2pueWJ3UXBZX2dBRDljQzFaaF81eHFhSVViMWExd1p4SGtwalNVNmZNVkNkVFpfcF9kcno5TXpySm14U0dJbWdXYndVdw?oc=5",
-          "date": "Tue, 16 Jun 2026 18:26:15 GMT"
+          "title": "Humanoid Robots: 18 Companies Racing To Build The Next Big Thing In AI - Forbes",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOQTVDUTg1WFgtLWI5dlcwaXBSSHZkYjBEekR2UUNFU3gxRjh4WGFXcy1nX0xqZ1l0TE8wQ293N0Vxai1LT1AxZkhsNGtfVUdxUTB4UFhveWVuWWZ0eUxGYUh4b1RySGExY3hiVUtyc2ZzbThxYW9iY0FUMHZjWFpsZ01MeWxZWmdBTmllSFI3U2l1NG5faF9OZTBRV2tHQW00RUxmMzdTcndEUnloVTR0ZEZrdlQ3MEhiNG9MMnVhVQ?oc=5",
+          "date": "Fri, 19 Jun 2026 05:56:50 GMT"
         }
       },
       {
@@ -343,9 +343,9 @@
           "Why promising": "Enterprise conversational agents"
         },
         "news": {
-          "title": "Whole Foods, Sierra to take over empty shopping spaces near Cottonwood Mall - KOB.com",
-          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQVVE1NUV2MlhmYkllUGJDaUpiSVo4RWVQSGFCa0FtWUZjQVNvcXhLdmZENUpYaGdGczgxOGM1T0tXNnBUNEJuQVExZmVpM25YcUo1MFl3V09mLWdPMWpBSlg0TW93aGVDNzBxb0x6c19vOXBaZE1adHhqaDNQREthbVA4YllhVWpWTm1qeUNQTFgyc2NJNDhBUlpMU3d1ZHd0RG95N3RWMVBCZw?oc=5",
-          "date": "Tue, 16 Jun 2026 00:29:36 GMT"
+          "title": "BLM ANNOUNCES SEASONAL FIRE RESTRICTIONS IN THE EASTERN SIERRA - Bureau of Land Management (.gov)",
+          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOQlBqeWhET0RjcHdTRXJISzQ3MGFyeGJEeTBxbHlrSi1sQXVMSjQ3b0dCSkMtLWpqQjJQYnBVaWhTd3ZMcGt1OU9ZWmloclo4M2NVeXV6ZENLSzNRM19XcDVGanpkMDFOLWpodXZGMDZtc2Y5Sm5KVllkYjQyelN2Z3R3X1NOMVNqWVdVQWtrQ09CWXd5?oc=5",
+          "date": "Thu, 18 Jun 2026 12:00:00 GMT"
         }
       }
     ]
@@ -381,9 +381,9 @@
           "Strategic importance": "Established platform with clinically relevant pipeline"
         },
         "news": {
-          "title": "Regeneron Broadens Pipeline With Ebola Antibody Trials And Bispecific Cancer Bets - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPdVNJWGNSZmpkcTkxNmFkcnRCZm9BdWNSRzdaVHlUc1VFQ1Roa29NUF9EeFo1T2ZpRUNOQVJqV0dVakp3czd1TFZvYWxidHNsWXl6V1l3X0tHTk92Q2Y5cjRwWUNwd0lTSzdrZGJFOHJqMkg0eVFMeEVEN1VLTzNvcXlaVzlpZWpKdXBaLXh3azNVbk5zQnJkbzIwNVFDS19SSGFYUzB4NFcxcGl4MjR5Nw?oc=5",
-          "date": "Sat, 13 Jun 2026 03:10:00 GMT"
+          "title": "A man for all markets returns to the Regeneron Science Talent Search - Society for Science",
+          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE51ZjJKTzRtRU5Wd1dGUV9SdFJlaXpVZXJ0V2lRZ3E1VXBpQng5a1RGa1BLbUlSNlZldWpzVVlGc3llQ0xXVE5ySktlZ3dpbFVSRTdSa0swckw4azBBRVdoTXhjeE5aZDNvVURlNndzLWc1V2RTN2hTb21B?oc=5",
+          "date": "Tue, 16 Jun 2026 16:14:37 GMT"
         }
       },
       {
@@ -417,7 +417,7 @@
         "news": {
           "title": "Our Origin Story - BioMarin Pharmaceutical",
           "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFA3ZF9KRTJ1MHpIYkJ6UFhZUkR2SWNxZ2dXdlpvZkVjQXVzLU1SX2RlQ2pXZ1hVZF9kSEduaTJaMHlJN3h0blJiM3ZsRHZxMk1HeGRMbVhnV190dV9lQnJn?oc=5",
-          "date": "Wed, 17 Jun 2026 20:38:25 GMT"
+          "date": "Sat, 20 Jun 2026 14:58:58 GMT"
         }
       },
       {
@@ -432,9 +432,9 @@
           "Strategic importance": "Established platform with clinically relevant pipeline"
         },
         "news": {
-          "title": "Ultragenyx (RARE) Is Up 17.6% After ESOP Share Shelf And Conference Spotlight On Gene Therapies \u2013 Has The Bull Case Changed? - simplywall.st",
-          "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxNcnJDaUh3Z21HaGI2UTMwQkhwRjNrdW05OFBkWHBfdlVsM19DVzZlcTdNMldmbGtqbk05N0lpZUV6TXhpLUJTa25TbjBmS1VhR2JkWWROVmFjR0pTdm9CeVJ6WjgzMG1JMEdPTTZXRkFjRUtNMlFuc0ZqWmJud0JEU3hOZHBWQjBVZVpOVzVDa0t3bkdYUnd4VXF1NmFDVllzZXpWQ1BHRXdWQjhjck5mRXIzdE5hcWdzQ2JLRkpUZHR6ZnUtTEZPcnNGVG1lc1E2cjZvSzkwb2VvWWpoY0NPSDlRa2ZiN01Kc29JNmRfaUnSAfYBQVVfeXFMUFU3amkxNFJZbjNCdVp3MEppOXkxcEI0SzY4aks3T21jWDVibGxlYTdFRkMxR1hoR1NDWEVpZ0IwU2g4RHZnelJ4SWI4VHE5bUJ5Wk1za1Z3OXgwOVU5TGlGd1BrbFNOVVUxR1BYX1U3SDFsRUNZMERjbU9Tc0FQUFZZSWlZNV9iTENSRDlNbGxtVmpYQXFJQkRSeFZZdjlZZ3VOOHZ4dEhIdXFUbFV3YzlXQmRDaXVheWdUeGRkbW9RU2Z2ZWVfTnFjRHRXNFpJY3ZiQUFxR1ZMaWUxRG5fZVFsYmFyN0dLamZMdUFDbFJBWjk2MEZR?oc=5",
-          "date": "Tue, 16 Jun 2026 17:42:44 GMT"
+          "title": "Ultragenyx Reports Inducement Grant Under Nasdaq Listing Rule 5635(c)(4) - GlobeNewswire",
+          "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQdE91a2VRZEpJTGdGZjNOdGJ0aWtHSUVFS0R2NXVkcy1rTFA4RWxJX0JWWVc1bDBPMmlnalFLTVNKRUpwRzhWWVRTUTl6UkpEcEhNd1p3cWNScHFsLWxFVG40WUJreE5KYVhORkdLSktqWmJScnp5VllvNVpiUk5ZRWh5M0t1eXRzSTVfZVhqbEN4MzJGM3NZMHFnYzl6Vk5JVW01cThYREd5LWdkWEI3SGJULXdBbWYzSW5oeTQ4U0xBYW51bE0tTV9lSFd2cmxndWprb2MxcHgwQQ?oc=5",
+          "date": "Fri, 19 Jun 2026 20:30:00 GMT"
         }
       },
       {
@@ -466,9 +466,9 @@
           "Strategic importance": "Established platform with clinically relevant pipeline"
         },
         "news": {
-          "title": "Sarepta: Caution Still Warranted Despite FDA's Gene Therapy Friendly Stance (NASDAQ:SRPT) - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNak1SbjdNYTJ3T0Nvd1FweDl5YkVzdWtmek9BTUhBcmNORTR6aDhfb01JZlI4dmt5Z3RZejgyTi1FQWRXQzV1UTdnT1BPNUFzdnNZZ3lLbkpaQk42UXI1VzZ4M21GeW9oVjB5bloyOGJqd29OdDh5SG53LWo3R185OXpUbm1qZWNWUGVHTFZpTU42RDB6Y0ZoRkxjanpmRzlIZnlMUkk4aEpCU2ZyR2EzeUFmZUs?oc=5",
-          "date": "Thu, 18 Jun 2026 13:48:51 GMT"
+          "title": "Sarepta Shares Rise As Company Begins Enrollment In Gene Therapy Safety Enhancement Study - Stocktwits",
+          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxQNHZEQzFLNWtYN24xbFM3MURBc25jczl1WnM4MlN1OFJmUldtNEJpVlNrVXpMZGdMV0JleHFjMFFvU09tSU5KOUFNT0V1cEVfZ21PLVhaME5pYU00WEw2bF9rOURTRDZXSTRvOUhNQThJMGhmZzNVekVDS252b0l5b0xqLWJzQ2NZT2hXMktpOHVPMExwN09xTDlhcy1RWktycUdkM0VCalhnT2lVY2UwdWhOTXRyYkRDenluRnRyNXVROWhmMEJDS3hGUE55OGJSbW83VXJCZzBBd3ViOFgwXzBQaHBxaTk1?oc=5",
+          "date": "Fri, 19 Jun 2026 02:08:25 GMT"
         }
       },
       {
@@ -483,9 +483,9 @@
           "Strategic importance": "Established platform with clinically relevant pipeline"
         },
         "news": {
-          "title": "Argenx (ENXTBR:ARGX) Stock Valuation After Expanded FDA Approval For Vyvgart And Pipeline Progress - simplywall.st",
-          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPZEo1ZGZjOEpyLS1hd1VyUFB4OEFpOVdIUUc1aXRmc0VGM0RMMXQ5Z2x6QW9iUDNaYTd6bjNZcDFhUmx2cDZhanV1blBKLU5qQWpOWkVXX2tPVlZfS1RGNnlyVWtsSWNkdkZRVDF1VDk4WDBiN2F2SFhibWNKeVI2R2VQSWJQVUNZQVlDblBSVm9hYUotV3BwNS1iS3o5TUUxcUVVZ04xNlFOTHFqNWR5MEdHb1Nxb2NqMVEyeVFmWEp0UlBxazJYZXBZMnp6MHo0cUVFR0hFZ1ktY1NN0gHiAUFVX3lxTE1OYTY0aGlwMWsyY0pMcy1KMGQtbDR5SjQ4MmJrbXRpNjRwbHBPZnhxSXF3TmR0MllvZHRab2lMNTJYZm1xbnRiRGdVSnA3Z05RdERRRl9MVXhWTDE0MkJlX3ZvcG9kekI3ZWlYeU1fMWM0d2UtQkludDdxZWgxdFEwRXYxbTJOZ0JOTnRFN1k4MGZ4R2UySnpxRHl6eW9hbWxTQ3RKN0IzaGdDRHNua3FzUkJodDVYT01MVkpxaWtNUlFVbGRwRE5CMFNsT0twNEUydGxac0tkSkJxTDBJZ0JLX2c?oc=5",
-          "date": "Sat, 13 Jun 2026 11:03:45 GMT"
+          "title": "argenx (ARGX) Bank of America Global Healthcare Conference 2026 Summary - Quartr",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQM3Y3QlIwM014VEtmUjlrOW5IamdXMTJnV2hWd09mMzNWNy00NFppaHFNdmlfREh5b0h6aW92U1NqTXJ0aF9Cd2JIZlhha2VEb0FyX0hWTE16WWxzQmh2djFxTm1iU19ibWlsNVdVSDVpc3dCNjI4dU1jQklOYUw3MGhrdC16WmtlOWZPSmtpY2tXUjZCUWg1MEFXVlJqWmZj?oc=5",
+          "date": "Fri, 19 Jun 2026 19:30:57 GMT"
         }
       },
       {
@@ -553,9 +553,9 @@
           "Why promising": "Differentiated in vivo crispr editing platform"
         },
         "news": {
-          "title": "Intellia Therapeutics Reports Additional Positive Phase 3 Results for Lonvoguran Ziclumeran (lonvo-z) in Patients with Hereditary Angioedema - Intellia Therapeutics",
-          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNelhtVFRTNVk4MGhDM2NYSGViWEo0LUdkTmFWbHp6SGNPb0xxNUVDc1hRakpnYWw4X3VieHZ5RDVmcjFRaUZzNEVwYjYyTDVKYTdEaDdnS3FoZEllNVZsR1ljcmp2S0d2LWdCQ2ZYUzZPelJ5bVdVcXBLYkdxYU55dHZzcjlTTmRBSHhvN0tkTV9UUzFESGNPZFdYb1JuMzZaSHVQY1gwMDFqaE1GdHc1eWVpcG5VR09XdkE?oc=5",
-          "date": "Sat, 13 Jun 2026 12:04:29 GMT"
+          "title": "Intellia touts \u2018paradigm-shifting\u2019 phase 3 data for one-time HAE treatment - Fierce Biotech",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOMnJxRFRzUEg3aUcyZGdWNGFVRC01NHhQdG1VZFpLLVdsYTBRUjF0WUI1YjhLcE9veEtTTDVvdHpYTG1VeE1LLVV3ZTJOeHVyWXEtcFNrUDhpTDNnc2VSOWVxRXZVcmFxekdVUE1IOXAzTUl4bmJsWlI2TDdQYW5TQUc2UTZSaWNicW1aMTdGamZPMkFPNDZHZ0UzWmowUE5odUNkOExtMEdNVXFNbldWMjhZYw?oc=5",
+          "date": "Mon, 15 Jun 2026 14:37:53 GMT"
         }
       },
       {
@@ -570,9 +570,9 @@
           "Why promising": "Differentiated prime editing platform"
         },
         "news": {
-          "title": "Ocular Therapeutix vs. Prime Medicine: Which Healthcare Stock Is a Better Buy in 2026? - The Motley Fool",
-          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQZllJdWRvZFgyZmg3WTR4T2I0MG16eEtUOXk1RzNTRGhpLWhLUnFMVnRZN1JrT2JtUDhJRHIxT2pGdVR6UDdNcUtIS3B3YUdGUFFNbWlqWGJHbHRXajE5N3VXdnRzekdCeFM3S2tpbVF2bjQ4SUlkTG5OMUJpWkN1VWkwT2ZRWF9JdFljQi02S2J1UHZSLXRPWUk2SDRqMEJYUUxONWJHMFBGZnppTm9mTlQ0eko0blhKVUFIR2N4eEI3dDZTQTN6LUoyczNNQmJfeXc?oc=5",
-          "date": "Mon, 15 Jun 2026 21:10:00 GMT"
+          "title": "Prime Medicine Announces New Zealand Clearance of Clinical - GlobeNewswire",
+          "url": "https://news.google.com/rss/articles/CBMinAJBVV95cUxQSEtPSmJtbFFwc0Z6Mmk4VldCenFHLS1zbE1OVmx5N0N0VnVrUlM3UE1QczNyRTVYRUs0VXRRc1BvQkc5R0lWTzR2V0VzeS1nSkhzdjhvaE11TFFyOTUyR3dBQ3RmalY0M25uMnk0RmNLbUtjWmJxNGNKRmQ0LTNEQkZEbXppNkhydklkNlZXTEMxbm0xdF9EU2RxakJTdGt0UUxiVm5BYzF0ZnpGeU1uSVQ2V0p3SU5OYjBwMHRTeWhhSnRwZXZSdEFzVFRLVTJ0SlMxdEg5UkRITHNnUEpjaUlzR1E2ODNBRUxyNVAyV0E1eUtMRDQ0ZkNiLXh1OERSQzRwZXhVel9LUkdKMFB0QWZsNXgzOEEzVWVFXw?oc=5",
+          "date": "Thu, 18 Jun 2026 12:00:00 GMT"
         }
       },
       {
@@ -587,9 +587,9 @@
           "Why promising": "Differentiated in vivo base editing platform"
         },
         "news": {
-          "title": "Verve Therapeutics Inc (VERV) Revenue Breakdown: Business Segments, Regional Revenue & Profit Contribution - TradingKey",
-          "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1jSFpnbFRrZE1aNW13UFU0NmEwR1NGTGJzZmRqS3BZN3ZZWG1iZ0t0dGtHakMtamdfSEMxNk1veTVSUm5jQWlyWUlwcGRzTUdCVHMwai1aVmduWDJoZEs1bHZ6MWpkVmJIMDhrTG1B?oc=5",
-          "date": "Wed, 17 Jun 2026 16:59:22 GMT"
+          "title": "One-Time Solution To Heart Disease? Eli Lilly\u2019s Gene Therapy Says Yes | Vantage On Firstpost | 4K Kamel Ghribi (wSFUqrqkL5) - Mshale",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5mWm9kNGtwYWJGdGwzZ29PQ0xRNFluOG9kRFdkTEcwYWZsVUQtU3ozYlpLWGROODVtX2RYWExHZXQ2MXlvYkI4WlBoTnFRd2JFMmdQSDZRdC13WW8?oc=5",
+          "date": "Sat, 20 Jun 2026 04:32:52 GMT"
         }
       },
       {
@@ -621,9 +621,8 @@
           "Why promising": "Differentiated gene therapy platform"
         },
         "news": {
-          "title": "Rocket Pharma Reaps $180M From Sale of FDA Drug Review Fast Pass - MedCity News",
-          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPQjFmdDFzN3BCYzJUaUw5TVBCVmkwSUVVZDVSa3VvZmV2YXViTjV0Nm9FTmJuVkhGUUNnN1VHaC1SWmc3SkRjR19HQ01lQmRfSl96S0pxTUF5aVc5Wm1UUVVSMXBQMmZnVnV2OVlxWmdoUm1UZlRHRHMteThfM2JidkJGOWNpd3lFMFFJTmoyQm9qcWFPWVpHRVgxdzcyanY0MWNB?oc=5",
-          "date": "Sun, 14 Jun 2026 17:15:19 GMT"
+          "title": "View latest coverage",
+          "url": "https://news.google.com/search?q=Rocket%20Pharmaceuticals"
         }
       },
       {
@@ -723,9 +722,9 @@
           "Why promising": "Differentiated metagenomics-derived editing platform"
         },
         "news": {
-          "title": "Metagenomi Inc (MGX) Technical Analysis: Support, Resistance, Indicators & Moving Averages - TradingKey",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBHMmRmOUJEZXNzRTlWNU1vaHhIN2s2eEtFd04yNDZZZEhzQ3A1Y0RGTjNVRzNqWGpBMW90Z3VmWXIyb3N6LXpzX0s0TlhERDFoUGdiaUU5VV9jamU2NGttUUljLUU1MGFsaTA3YVByQQ?oc=5",
-          "date": "Tue, 16 Jun 2026 07:00:00 GMT"
+          "title": "Metagenomi general counsel Wein sells $724 in common stock By Investing.com - Investing.com Nigeria",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNbXp0di1RUVFSd0tneUJLczVfam0xYjdRQXBRZjV6MnN5WFZCR2l4Vk1YU2FoS1BJZXBGNTJrRTI2Y2RCWHJhUmkwQmZSZDltczJxUWY0VVZMR0trMVlKODNnem5faGtac1h5SVJUTTJnSUtRMkxZSFVCLWhZcXpEVUxVbUtWX29HWnN6TnVrVk1yRmt3M2ZPaDNmSzNDVThRTFFBSTlpbEZhYU9sMmtubzlyOUJVQ3VMekpVMU53?oc=5",
+          "date": "Sun, 14 Jun 2026 02:27:41 GMT"
         }
       },
       {
@@ -742,7 +741,7 @@
         "news": {
           "title": "Top Generate Biomedicines (GENB) Competitors 2026 - MarketBeat",
           "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQMHpDLXBNa2VYbUZId1luWnVudFgzUXFXUFpwV2doLVYzVVJzWEEtcDRqOUtmSW9jM0NSQi1JM1FaQnRaSURrX3pkTjRfNXdSVVZUamkzS0U4VnlwQkt3c1pkOTRwRFdWWm9DQzBmUlRPcGFEd3hmcUF5QkNHcGFVeA?oc=5",
-          "date": "Thu, 18 Jun 2026 18:24:54 GMT"
+          "date": "Fri, 19 Jun 2026 21:02:56 GMT"
         }
       }
     ]
@@ -760,9 +759,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Weekly Rundown: uniQure will seek approval for Huntington's disease gene therapy after switchup at FDA",
+      "date": "Fri, 19 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNYTJudHNtUDhXZjc4blRPYzFmWW01bjFFbjBnSElSS3l6VHV0MmhKZjdrOHZyUlpOX0NmNGdwMXB4ZEVmZ1lhWWpkUE5tcTR0VEd4enpFY3JvTkl6anZpc0V5VVRpNTN2ejlfdGVUa2JFMEloM3Z0alhoTTV6STRiNzVtb1pUUDRzR0x0amF5QkxkNTNFTjFnXzI4N0syc0VjMDh3UmxjSHJweGNfdjA4Nnh4Yy1DRVBZYS1SbVlLWUFMREs3ZHVkNEQ0NnpIWDJfX1p0OHhncGU?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "FDA U-Turns on Rare Disease Treatment: What it Means for Patients",
       "date": "Thu, 18 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNSG5udFlnUG9Ma0VzWHNRa3BNOXY2RTRHU0t6NnZkOXd1TU1UYjBqaVZqN3IwMVlFWU9oM2s1cFN0eDJxVFczckhPVlNXd0FQb2cyVlB6by0yMnBYY0tTaTJEckQ4VEZsTGFRMjVJNUVNb2ItY1E5ZGxwckNRYXQ5dVZYank?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Tinlarebant NDA submission completed for Stargardt disease type 1, targeting first approved therapy",
+      "date": "Wed, 17 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOM09KaW04aTNIaWRhdkx3dHh3YUdaUUd0UkU2bGJXQmZXX3ByekVabFduUEtINkNZV3JNbWJhSXVzc2xoeG9udlpoWEd6dk84NlR3ZUNsOWkzZWFicjRSbUlBRzdMQ19PbGM0eWlsR3lBd3pxVGRJTzhRQ0ppbTlGTlluTzRxYnB2VnF4dkpkbzRKR0ZIOGNxaVpn?oc=5"
     },
     {
       "company": "See source",
@@ -784,14 +799,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA to review Belite Bio oral therapy for retinal disease with no treatment",
-      "date": "Sat, 13 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOcDN0bmE2dXBwangxYW5GR2dRNXpoMUE3NVk2enI2d0FxMlMwdndOZ19jWnpQVE1PbzQtVnd5NXBDNUhWRVVSb1dxM2ZRY3hMcDFNZzY5QlZ5MVB5dUtoSk83RzF3UnhkV1dwc2lnOXIwMEtWVTQwSkpEZnlWNWllSV9xX19nd0hza19SQ0V1aHg2ZTNyWnZ0OGlLa0JfVXNBR1JmSmpzZkZGNXYydDhKSmJyVHBianRBVzhLVXBoTXk?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "FDA opens path for uniQure\u2019s Huntington\u2019s gene therapy filing",
       "date": "Thu, 18 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNYlg0aXMzd2V5S1JaVUFJT21vWGhGV0ZWZVZVUUh4bThrWnhpdFV1MGlUTWtTWU5aY1BoR2JQcTVvTkdITjZEbnlnajdpZEI3NXRNSmtTNFVvQUxXT2IzVWl3TFY1RXNNNUREVHhhM1kteVZJT1JtSE1rSGZaazFNbTFteEdaYnlnR3F1LUkya29fXzNYMk1kVEV5QzMwdnlMTDlOSlBqU184ODg?oc=5"
@@ -800,56 +807,48 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Cadrenal plans FDA rare pediatric disease request for tecarfarin in Kawasaki disease",
-      "date": "Fri, 19 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQQ2pTbkppd09ocWFIbUdWeDJxMTlWMzAtYmNMRk9oSnQ2aFBQV3k1RnpPLTVWRmdOSi1SdzlkZTBNOEpfcDNzUGcwZURHT3BxUWR2NHljbloyb1BMUDhXdEhQMDk5NURtQmVjQWNkWkp1MzVWS3RzN1RnTnF5THZNRW96SVdOZlh4OU9EMG1MZmZERVhSd1lHWEFtcjRxM01Oek13QXZFZlUwUUFZWW0tdUV6Z1RlVE94RGZDNDRrcVdxUQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Cadrenal Therapeutics to File for FDA Rare Pediatric Disease Designation for Tecarfarin in Kawasaki Disease",
-      "date": "Thu, 18 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxPd0ZJZE9SaHE2U2ppSVc4WXp3SUJiMWVNMGdvUlo2YVVFTVpMeGx6bC15VjloYW1xeWhraS1PaFZGZUtSNUp5X0JRODZRQS1SS2QxZW42QVB5VE5oTlJNWFEyZ2thdUhuN28tVkhObHpiRWszWkx4Ykg2eXNrbVdEc2lRaEJZaVJiaHBhdkNRN3I1bFplZGl6cmlndUxmMkliSVdGZjU3am8wYkx4ZW8weE9rOExUbWhzZEF6RnFTUU9KaVl1ME5KczNYUlJCemxoaVFGN3BLNm53SWVMcU9uemZWSzY0VGJiYWhEMmg4UkFlR2htVHNWdXM4TnBtUUEyRW5qQUFfTWZNYVU?oc=5"
+      "event": "Alkermes (ALKS) wins orphan drug designations in U.S. and Europe for alixorexton",
+      "date": "Mon, 15 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNSXFTX2EwNWVkZjhSSlh3dzRoamU0dDFSaTJac2RQcW1BVHRxZXIwZUwyc1FtYndZNzBSZk5GQU11MFFBWEQyYzV1R2lDSTAwMVdoNXFiUFlnWllYanFxT2M1XzZTV3kyVTJtWkpsS2NabzJvSWE5REY0Rm53ck9tNFNDTDQ3dXFweW80TVEtdFZsUy03bjdzMWNkdllEaU13NXdJ?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,420.10",
-      "daily": -1.21,
-      "weekly": 2.11,
-      "monthly": 0.9
+      "value": "7,500.58",
+      "daily": 1.08,
+      "weekly": 1.44,
+      "monthly": 2.0
     },
     {
       "name": "Nasdaq",
-      "value": "26,021.66",
-      "daily": -1.34,
-      "weekly": 3.39,
-      "monthly": 0.58
+      "value": "26,517.93",
+      "daily": 1.91,
+      "weekly": 2.74,
+      "monthly": 2.5
     },
     {
       "name": "Dow Jones",
-      "value": "51,492.55",
-      "daily": -0.98,
-      "weekly": 3.15,
-      "monthly": 4.31
+      "value": "51,564.70",
+      "daily": 0.14,
+      "weekly": 1.41,
+      "monthly": 4.46
     },
     {
       "name": "Russell 2000",
-      "value": "2,917.98",
-      "daily": -0.72,
-      "weekly": 2.91,
-      "monthly": 6.22
+      "value": "2,979.77",
+      "daily": 2.12,
+      "weekly": 2.01,
+      "monthly": 8.47
     }
   ],
   "watchlist": [
     {
       "ticker": "NVDA",
       "company": "NVIDIA",
-      "price": "204.65",
-      "daily": -1.33,
-      "weekly": 2.11,
+      "price": "210.69",
+      "daily": 2.95,
+      "weekly": 2.84,
       "news": {
         "title": "Nvidia: The AI Champion\u2019s Stock Is Too Cheap to Ignore - Morningstar",
         "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPU1V1Z21qaG1vcUhmZUt3Q0p4WUwyMW9ZR1N6X3NkaGF1bXZieFlqOFlTNnFpcHludS14ZXhLaEtVSXF0M0JncnN2cDhtSEVSc1dGSXFtLTVLN0pkWmxxdUlxSnJWdUdzOUdnamJuTWM4NkxPbFZrdVlLSUljRXUzaG1SS1hTbnRaUkNRa1pFb0NvRnM?oc=5",
@@ -860,9 +859,9 @@
     {
       "ticker": "MSFT",
       "company": "Microsoft",
-      "price": "378.91",
-      "daily": -3.79,
-      "weekly": -4.64,
+      "price": "379.40",
+      "daily": 0.13,
+      "weekly": -2.8,
       "news": {
         "title": "Why Microsoft Stock Slumped Today - Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPVHRUbGFGM3VHQnVncXJHUmJodGNYbktJWGVFa1FWbTJHa0ZlVTFaWTdRLV9iQ2l0Zk1MSTViVDIyVFBZTDk5alFmcHp1QVdQMjdZS0RqQ19TZDB3cG1NSjdKZ2hPS2VwVTRUSXlRbGFxZWN5ZkZQM0dtUlNOLVlKSWlSOXVKcGRyTW92eW1Ha3JGaHAxRGItLWhfbGhyck0?oc=5",
@@ -873,9 +872,9 @@
     {
       "ticker": "GOOGL",
       "company": "Alphabet",
-      "price": "363.79",
-      "daily": -2.53,
-      "weekly": 2.08,
+      "price": "368.03",
+      "daily": 1.17,
+      "weekly": 2.87,
       "news": {
         "title": "The 1 Tech Stock I'd Buy With My Eyes Closed at Today's Prices - Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOekoxZkh6cTNHb0dydm0zZkdianh2S3loRkU0YzVKNENSQU5tQUpMZlhrTHlqR0FoT0xTSzZ2ZVJLV1hTZ1R4SFBXaFRzUnB3dUctdk0wOFJGQ1M2bzFDLXMwRmVQTURpQmdySVJqSDhsdWFPUW1KVTRWdkRtcFdjVTlaQmVaeGlGYkxOWQ?oc=5",
@@ -886,9 +885,9 @@
     {
       "ticker": "AMZN",
       "company": "Amazon",
-      "price": "237.50",
-      "daily": -3.46,
-      "weekly": -0.21,
+      "price": "244.39",
+      "daily": 2.9,
+      "weekly": 1.19,
       "news": {
         "title": "Amazon stock falls while SpaceX soars \u2013 is this a buying opportunity? - Yahoo Finance UK",
         "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPS2EtRExzYlBDdWxDTmRSN0FFS1cxR1h6MGxKckhpYzF2RWtwdzJmOXBfWFlyb3ZMeUFmSEloeWIwQ21VSkJSRWZrZ3Rld3BXdVRpYnhEU3dEci1EVzJtX1Z4YldyanUwODZmeS1IcDBGTkU2Z2RrQ2pJYVlCdXA2aHh3dG1NV28?oc=5",
@@ -899,22 +898,22 @@
     {
       "ticker": "META",
       "company": "Meta Platforms",
-      "price": "567.58",
-      "daily": -5.44,
-      "weekly": -0.6,
+      "price": "577.22",
+      "daily": 1.7,
+      "weekly": 1.55,
       "news": {
-        "title": "Why Meta Platforms Stock Plummeted by Over 5% on Wednesday - Yahoo Finance",
-        "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxORVI4M2Zhd3hjREpNLXRWR2t4T09hX0RyTWM3ak1id3RYcHFRbTg5cGVxWHByWlAyT0RaR292d0ZDOEFJZEtzUHE1R1NfMkk5QTZZR0pUMHdPeVZzcHJjM2I4dUVSY29pUm54OG1zaXhBZ0hnaVdZTkhYUDdaSUh4cUMxTDd5LWVHQm9rQUJ0cDZPb0gtd1pDRVotYXZ3U1Jm?oc=5",
-        "date": "Wed, 17 Jun 2026 22:42:16 GMT"
+        "title": "Why Meta Platforms Stock Plummeted by Over 5% on Wednesday - The Motley Fool",
+        "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQa3ZpNGhQVlNKWEg0eUVJMEtjUGZMX0xDOFhuNU1IbENXeXZwMFNtZXgwSGUyMThybWJJX0loMWNsamVaZkg4Nk9RbjZ1TWxvM1BneE1CZUU4aU10ZWYxRmdRYWw5MkpEeTRydjA3emZfVmEwb3ZDd0Uya3NvN3lUakVySmRmTnRDQTRmTGhBTExmVU9FbURXUg?oc=5",
+        "date": "Wed, 17 Jun 2026 23:22:00 GMT"
       },
       "summary": "Monitor company-specific scientific, regulatory, financial, and partnership developments."
     },
     {
       "ticker": "TSM",
       "company": "Taiwan Semiconductor",
-      "price": "432.15",
-      "daily": 1.48,
-      "weekly": 5.72,
+      "price": "462.12",
+      "daily": 6.94,
+      "weekly": 9.75,
       "news": {
         "title": "Taiwan Semiconductor (TSM) Posts Strong May Sales, UBS Names Stock a Top Pick on Agentic AI Outlook - Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNaGhDcnVzUkxMbXE0ZTRpdlJuVVh5Sm9OOG93dWdvYkpaWXlHZ3FZdWFNbFc2cDZadWc5RkpsSlJtRzBpZmxWdVNkdHp1eHd6aUx4ZnpwNEJlVkNXd0tDVXRzRHdzV2NBWmdsZllMZzhrSklGY0lKcGtRdG9SVUJVakRzOVVMdzktb3J5aTM2ZzJTdWFMNHM1QkNYcmpPbkJFdzB1QQ?oc=5",
@@ -925,9 +924,9 @@
     {
       "ticker": "VRTX",
       "company": "Vertex Pharmaceuticals",
-      "price": "458.99",
-      "daily": 1.28,
-      "weekly": 5.34,
+      "price": "451.63",
+      "daily": -1.6,
+      "weekly": 1.48,
       "news": {
         "title": "Why the Market Dipped But Vertex Pharmaceuticals (VRTX) Gained Today - Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNUkxDSU1LNUUxbWo1WEdMWVNqN1hrX0phUERMVzNDUUgyOTZwaTNNZEhEZ0o5MldwMWxQUWxjVTdoY0ZNcC1UOVpydlIxS1hVdmtUcFdaR1JBUkZ1YlJhVVBDS3RSXzd2dnJIM2hPOHFPeGNzRGtrOEZqVU9RUVRvTkZqTWZKWFQ2TDFkLUp3czgxdWk2bk1ES1duMWx1bHdBWXprMks5T2M?oc=5",
@@ -938,9 +937,9 @@
     {
       "ticker": "REGN",
       "company": "Regeneron",
-      "price": "607.93",
-      "daily": -1.11,
-      "weekly": 1.04,
+      "price": "609.94",
+      "daily": 0.33,
+      "weekly": -0.25,
       "news": {
         "title": "How One Partnership Profit Line Reframes The Regeneron Pharmaceuticals Stock Story - Trefis",
         "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQbGo4ZVFYcnJnRkhueGsxemw5RzAyNVprSXRHcTd4RXlERTV0cjFTdGp4enhScnI1WHFzeWJ6R2loRk42Y0tQUU81cjNtc0ZIMWRwbHdFMGpvS0hmUFJzcEhnZlBTYW1mZ0Z1SGJSczhtX2cyd3VhdDRtc1hMdnFZbmZUVk5QN2JsdHg0NmJkY0tQZVZ6aktjMjVBSDFPVjdmQWhYMWtqV2tpeDlJamtSTHlUR0JuNGlfMFRxMldjenA2cWJJR1EyZ2w0b2tuQjV0OTdJazF3dFZwOEU?oc=5",
@@ -951,9 +950,9 @@
     {
       "ticker": "MRNA",
       "company": "Moderna",
-      "price": "61.80",
-      "daily": 11.55,
-      "weekly": 34.38,
+      "price": "63.96",
+      "daily": 3.5,
+      "weekly": 28.85,
       "news": {
         "title": "Why Is Moderna (MRNA) Stock Soaring Today - Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQZnNtcEZhOHNwSm1QLVBxYlNmQk9LNkRYai1IOVdtVVhpanBWN3NHRUpFV01STURBN2plT2tFWWhKcXlubnMzNlB1dUdBLWZKMnFNRXp2V3R1OUJCemNHS1E2YjVuLUxscXlPNmZEOWdOQUl5X3laX21Sc3p6ZXVzZ2RsYTBMV1RxZE0xTHlfeGJLLWp0cDBVNWtiZw?oc=5",
@@ -964,22 +963,22 @@
     {
       "ticker": "CRSP",
       "company": "CRISPR Therapeutics",
-      "price": "53.09",
-      "daily": 2.06,
-      "weekly": 7.38,
+      "price": "54.09",
+      "daily": 1.88,
+      "weekly": 7.68,
       "news": {
-        "title": "symbol__ Stock Quote Price and Forecast - CNN",
-        "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE9qTW1fUm1aQ0xIRHZxZi1XS204MVlzd2VVRlJsMUFkWHQ2ZHRqR1AwMkpteHFWaDhVRmJydjlHVGJ0RFZDdjJJLXAySHZRdlpE?oc=5",
-        "date": "Wed, 17 Jun 2026 20:15:52 GMT"
+        "title": "Why CRISPR Therapeutics Stock Has Been on a Roller-Coaster Ride This Year - Yahoo Finance",
+        "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNNmtka3hka041Y3M0YVBwVHY5NjN5WW5NT3JkcC1GNk1STG9WOFo4TjZGaHlaU2RkemlaeWYzd1NmSE1RcThkR3llNUJtVWEtVGxDbjl1MTNTRGlweWpWZ25DdERZdkR5WkhIT3djNi11RE1CX0w3clVYUmZhS2Roa3hZdkNieUlMSi13VGcyUjFXdzRLVFJCakJEcHhNZTNrSXF3?oc=5",
+        "date": "Thu, 18 Jun 2026 13:20:00 GMT"
       },
       "summary": "Monitor company-specific scientific, regulatory, financial, and partnership developments."
     },
     {
       "ticker": "BEAM",
       "company": "Beam Therapeutics",
-      "price": "32.48",
-      "daily": 4.81,
-      "weekly": 10.14,
+      "price": "34.14",
+      "daily": 5.11,
+      "weekly": 16.08,
       "news": {
         "title": "Beam Therapeutics Stock Soars 21% in Three Months: Here's Why - Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPRFNPSkdxamZCMWM0NDZ0N0dLRXBVU3hWRzJvSnBfUUJ6ME5uak9vOExZTjE4YmdtcG5lS2pjSk5Yb2tYNE02MjVIMmltSzV4aUx6OG1mc3dCNm5zZzgwOWQwYndpUGoxZE93WGpqX3pVcHRXYUpUbWxGV2VKaV9zdlJEbm4wcmVlalUxWFdaV3lxUFMwYU5vdQ?oc=5",
@@ -990,22 +989,22 @@
     {
       "ticker": "NTLA",
       "company": "Intellia Therapeutics",
-      "price": "15.20",
-      "daily": 4.47,
-      "weekly": 24.59,
+      "price": "15.67",
+      "daily": 3.09,
+      "weekly": 26.88,
       "news": {
-        "title": "Intellia Therapeutics Reports Additional Positive Phase 3 Results for Lonvoguran Ziclumeran (lonvo-z) in Patients with Hereditary Angioedema - Intellia Therapeutics",
-        "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNelhtVFRTNVk4MGhDM2NYSGViWEo0LUdkTmFWbHp6SGNPb0xxNUVDc1hRakpnYWw4X3VieHZ5RDVmcjFRaUZzNEVwYjYyTDVKYTdEaDdnS3FoZEllNVZsR1ljcmp2S0d2LWdCQ2ZYUzZPelJ5bVdVcXBLYkdxYU55dHZzcjlTTmRBSHhvN0tkTV9UUzFESGNPZFdYb1JuMzZaSHVQY1gwMDFqaE1GdHc1eWVpcG5VR09XdkE?oc=5",
-        "date": "Sat, 13 Jun 2026 12:04:29 GMT"
+        "title": "Strength Seen in Intellia Therapeutics (NTLA): Can Its 23.2% Jump Turn into More Strength? - Yahoo! Finance Canada",
+        "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxONHhzVm0tUXVoOVJ0RHdTZjA5VG1YMERtU25Rd29rZ0d2SngwMlN6cDk2VFZEWHZ4ZHNsa3RaV3lHblQxaTdneVNJbnRlbl9seFZsdHUzSUpROG4ybDMyWTdSUkc2NmJyUV9kQl9OTUI0aTNONDFrLVZNcjVEWmh5S0tOc0VtTHRkLVY2Ull2d19WLVE?oc=5",
+        "date": "Tue, 16 Jun 2026 12:43:00 GMT"
       },
       "summary": "Monitor company-specific scientific, regulatory, financial, and partnership developments."
     },
     {
       "ticker": "SRPT",
       "company": "Sarepta Therapeutics",
-      "price": "16.96",
-      "daily": 7.48,
-      "weekly": 12.24,
+      "price": "17.53",
+      "daily": 3.36,
+      "weekly": 16.87,
       "news": {
         "title": "SRPT Stock Snaps Hot Winning Streak Ahead Of Q4 Print \u2014 What Bear Positioning And Big Money Are Signaling - Stocktwits",
         "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxOZWt2VnJKTkZhQVA2bDFvMVU1dl8wZmtJZDVoMHdaakc0Rks3V0dodzVQMWhtU2ZSQUZpNWs0QjNPbUhldUhFQXlreFFmbnZINHdhWFY5MlppbkJycUJRV1k1X1JJd0E1dkkxTmlKV1lTZVNMLXdJakZ2andUejdib2w2UVBLRnRSVlc1NmtZU1pGbTE0OXBoT01CUUVUY2ExZkZ5UW0tU3g4V2VCNm16UVRHM0RtLXRSOWcwTmZaRm5WX2FFX0ZmN2NCekUtc1h6bWJXS3ZoWEM1aTRoMUtRR0NMY0RDeTUtT01Z?oc=5",
@@ -1016,22 +1015,22 @@
     {
       "ticker": "RARE",
       "company": "Ultragenyx",
-      "price": "26.91",
-      "daily": 8.29,
-      "weekly": 17.15,
+      "price": "27.44",
+      "daily": 1.97,
+      "weekly": 14.43,
       "news": {
-        "title": "Ultragenyx (RARE) director sells 2,000 shares at $25.05 - Stock Titan",
-        "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQV2hhRzZlTVpwbm9Ea1c5M1llbUgySVZxVU5Id3QzSWpPZFBPRmlyOUxjVUhROFVCUWt0clBtNDJWNGlubHFsT1dFczZ6NzhuTTREZEJtVXY0eXc3Vk9DSzlqTWNIRXRiOXJMVlFCeTNJRnFfd2Z4RFVQbm0xYUo5ZVE4UGVKcWpSbEV5N3NydDN4QXpuUWhUSC1CZzVHUjNXOFlta2g0QVcwazV3Mk9xc2tfTWNYakIzQl9udVRVc1o?oc=5",
-        "date": "Mon, 15 Jun 2026 22:50:54 GMT"
+        "title": "RARE Stock Slumps On Multiple Wall Street Price Target Slashes, Clinical Pipeline Uncertainty - Stocktwits",
+        "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxONWVITXd1YXlIamY1ZjN6QnJ0OWo0azdaMkg4S19BbHRMOV9kVm5JdDJtWmJlQ2pBRnRWU3I5X0I0SWl3clFoaE9aSUp0Vm9BOTA1b0NZRkU2QlU4Wmw5VWQxd2xoYl9sdGpzTUpNX0hDZFVrOGNQU01BNUhrbnFqazZ6NVpBOEtOa2FvSHNyTFRvYk9kUmwwYURsYm9SZy1tcE1qY3ZhUDFDQjBIS01XUE5MVXREdXFYSmRxWXNGVUZHU3pWOEN6WkJ0QXdFRDFyazlibHhuUlRTalVLSURMU3B0cEZDVEVyYkJFWA?oc=5",
+        "date": "Thu, 18 Jun 2026 21:14:12 GMT"
       },
       "summary": "Monitor company-specific scientific, regulatory, financial, and partnership developments."
     },
     {
       "ticker": "BMRN",
       "company": "BioMarin",
-      "price": "55.02",
-      "daily": -0.18,
-      "weekly": -2.05,
+      "price": "54.69",
+      "daily": -0.6,
+      "weekly": -1.53,
       "news": {
         "title": "BioMarin Pharmaceutical (BMRN) Stock Could Be 36.7% Undervalued After ENDO 2026 Data - simplywall.st",
         "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxNdDJwbm45T3I5eVE5OFVxcFZraGRPNmlRUy1LRDRjMS1sMUw3Vjc4UzRTM21IWU1RMzd1U3o5T1BQVW9qTzcwUHBKelBuUXRYMlU0OVZwaF80NG9QSmVvd2drRDA0bWg5a2xyVkpnRXlTUGV6ZjREUVBmNjhfR1ZCSFBKMC03Qy1hbDZzdGwxbGV3b0tuSVJFdFdWRGhoWG5NWG5mM0VqaVgxZXZtdURNSFBGbG55cEVzWExLeFRWaE5lNXEwaTB2eDhnUElwblhEMGIyTXhpQ2dHUkp0MzZtRVFTN29wNGtOWFRtbdIB8gFBVV95cUxQR0o2RTVmNWpiWGFEYW01ZFBBZVk2Mk9RMEJHZm5QZUp1dnJjWVhwWkRIak0zZlc4dTJmeTVpRnhDWVVvS3A1TlMwS1NGdVBiRjJGaGtnOVFESEx5dlJjYmhEX3hnX2lWWllKdTBGblhHeWRQNHIwNVJLN3hiTmEzMkxtS0lmd25zdGZxOVM4UDJjU0t3bWx1cFhGcllxU25nRnlhaEpOT0xIMEpaZm0tN0J1b2ZkbGh5Sm9BOTNpeGVScmRXQlgtS293WExuaDdfZXZMNTRRQ21BOEV2cmJtY3FzUVBvY0Q5Vk5MSmUtenZiUQ?oc=5",
@@ -1042,18 +1041,26 @@
     {
       "ticker": "TEM",
       "company": "Tempus AI",
-      "price": "48.79",
-      "daily": -3.5,
-      "weekly": -1.39,
+      "price": "50.84",
+      "daily": 4.2,
+      "weekly": 2.52,
       "news": {
-        "title": "Tempus AI (TEM) Stock After 23% Year-To-Date Decline Is Opportunity Emerging - Yahoo Finance",
-        "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNM296MHhURktSdGtJUHpDY05JTUZqWmtRSUJCOVdudElJZ3RBaXprN1pPUnowZGJDRmc1WHpFcVR1aUhXYjBkNmh3S0c5czdWTmZod09iUGo0Qlh3eDk0QjZpTmo3aURZZ29sOFUxU2QxOEFBVEoxSjBVQ29jUjFWX29ITjVDZEZfV0pQTU56MGE?oc=5",
-        "date": "Sat, 13 Jun 2026 02:10:00 GMT"
+        "title": "Should You Retain Tempus AI Stock In Your Portfolio Now? - Yahoo Finance",
+        "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPM2JWWGxNRzZuVktkdHJNaENxYTBDQXVoUDdHcFZWemJyX09QTFZCT2paNTFNbnJnWEF6TE16aUxSVGtDWmZuMHR2VzRJM3FvR1hFNGN6S2Q4SThjTXBIZHZ5c09iTE1QQ0dFQWJsU0VYMF9icUVMYUxGV2JWQmQ1VHhpM3BBbHk4VUNTdHlIOW9SVndMSnctag?oc=5",
+        "date": "Thu, 18 Jun 2026 16:47:00 GMT"
       },
       "summary": "Monitor company-specific scientific, regulatory, financial, and partnership developments."
     }
   ],
   "opportunities": [
+    {
+      "company": "Intellia Therapeutics",
+      "score": 7,
+      "potential": "In vivo CRISPR editing",
+      "risk": "Medium",
+      "catalyst": "Intellia touts \u2018paradigm-shifting\u2019 phase 3 data for one-time HAE treatment - Fierce Biotech",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOMnJxRFRzUEg3aUcyZGdWNGFVRC01NHhQdG1VZFpLLVdsYTBRUjF0WUI1YjhLcE9veEtTTDVvdHpYTG1VeE1LLVV3ZTJOeHVyWXEtcFNrUDhpTDNnc2VSOWVxRXZVcmFxekdVUE1IOXAzTUl4bmJsWlI2TDdQYW5TQUc2UTZSaWNicW1aMTdGamZPMkFPNDZHZ0UzWmowUE5odUNkOExtMEdNVXFNbldWMjhZYw?oc=5"
+    },
     {
       "company": "Maze Therapeutics",
       "score": 7,
@@ -1061,6 +1068,14 @@
       "risk": "Medium",
       "catalyst": "Maze Therapeutics Phase 2 Kidney Data Sparks Questions On Upside And Risk - Yahoo Finance",
       "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQWTEzbVZYeGRYeHZKam5iOFJiQ1lWYjBYOTlnSHRSdkFkNC1zMGdpNlRVNHd0UmJIRTZHWVE1cjBkcTVNcWdReWZhQkRFTV91WTNwcG4teWJqUVRiVGlhb3FkOE1kVXBPYVBxa0xqWlpwOEZ5VUduZmJZX1BSNE0xbENESGpUajZmTHJvLWRDSTlHRkQ3WDBNOVJwVHRUSGltNVJr?oc=5"
+    },
+    {
+      "company": "Prime Medicine",
+      "score": 7,
+      "potential": "Prime editing",
+      "risk": "Medium",
+      "catalyst": "Prime Medicine Announces New Zealand Clearance of Clinical - GlobeNewswire",
+      "url": "https://news.google.com/rss/articles/CBMinAJBVV95cUxQSEtPSmJtbFFwc0Z6Mmk4VldCenFHLS1zbE1OVmx5N0N0VnVrUlM3UE1QczNyRTVYRUs0VXRRc1BvQkc5R0lWTzR2V0VzeS1nSkhzdjhvaE11TFFyOTUyR3dBQ3RmalY0M25uMnk0RmNLbUtjWmJxNGNKRmQ0LTNEQkZEbXppNkhydklkNlZXTEMxbm0xdF9EU2RxakJTdGt0UUxiVm5BYzF0ZnpGeU1uSVQ2V0p3SU5OYjBwMHRTeWhhSnRwZXZSdEFzVFRLVTJ0SlMxdEg5UkRITHNnUEpjaUlzR1E2ODNBRUxyNVAyV0E1eUtMRDQ0ZkNiLXh1OERSQzRwZXhVel9LUkdKMFB0QWZsNXgzOEEzVWVFXw?oc=5"
     },
     {
       "company": "Scale AI",
@@ -1085,22 +1100,6 @@
       "risk": "Medium",
       "catalyst": "Beam Therapeutics Announces Clearance of Investigational - GlobeNewswire",
       "url": "https://news.google.com/rss/articles/CBMi7AJBVV95cUxNWXMtUGhXY2FiR19hSm9wRUF4aE5zNDBjQV9rMklyQnRJcHFqdzZGNFR1X1lMUkc0VXpKa3FtXzAtVVJqRmpVRTVTLXNHNkdXOVhjVjJ6ZzNJTk5xUWs4RlpBSkIyTzVNMjJjS2hteGxtMEpWVVgzbU0xblNOUlFyRzBScnlqRVU2ZHkyMFo4VnAxeFZPRHBVY0prSUgyWi0zZGsyMmVpdGtXRUpuc0FJeXRxWVItbUEtSkRRWmppdzBtZXdVU2stSnlyc25oRkVEeWJFY1JidjFyc1BsWTVtQW9TS1FxS0JaY3F4R3VBVld4UmJmNHZwSmFyaEstNFBHVXFGb245LVNSam1xTVQ5Y2xXNjRyZi1BWkNwUC1HLVplVFdhXzVmQjlDdXFHcm1mRUFOelRtWUQzaFhRNXRSYmlfZVZsV0FmUWxVTWhJTy1jMEo2djNweHAzdzFpSUw3LWNxQVNUU2dDLW1L?oc=5"
-    },
-    {
-      "company": "CRISPR Therapeutics",
-      "score": 6,
-      "potential": "CRISPR gene editing",
-      "risk": "Medium",
-      "catalyst": "CRISPR Therapeutics AG (CRSP) is Attracting Investor Attention: Here is What You Should Know - Yahoo Finance",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPTEdIbmlVQkY3VDhwVWRsYy1VbXVEbFpJc3dCcUM2R2g5RGlfT294WUJGb2tMaHFHTWVuZDc1TzlRMzBnRjZGVmg2bktYNHpCbXZqcHlVaEVtYjVRRkcyWXNicDc1djhkbWZ1WHc5SFZva0tIeVNJdHZrV3VlaUNOWlZWZ3EtV2V5dUFmdU5mazd3el9tZUthOGNwSmlKb1l2cnRUMThB?oc=5"
-    },
-    {
-      "company": "Cerebras",
-      "score": 6,
-      "potential": "AI compute systems",
-      "risk": "High",
-      "catalyst": "Gemma 4 on Cerebras\u2014The Fastest Inference is Now Multimodal - Cerebras",
-      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOLVZ1bFZHd3daMVVqQm93NGdVdG1ueVdtdXBzMXNHMVZaZTB1bEhZWU5HN1M4UzduT0tiMGhnamt3c2RJTEFDcFlCMXQybl9pNkh6MWhDakJEdnB5d1ZTNUJVWkFFUXJXeGhfRTJGbnlvQkJIMERKU0dmcEdheHVKSG5qVy1FbHptTldmcHBpV1BDQQ?oc=5"
     }
   ]
 }
