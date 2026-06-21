@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../styles.css?v=20260620-6" />
+    <link rel="stylesheet" href="../styles.css?v=20260620-7" />
   </head>
   <body class="program-page culture-page culture-center-page">
     <header class="site-header">
@@ -83,7 +83,17 @@
         <p id="culture-status" class="culture-error" role="status" hidden></p>
       </div>
     </main>
-    <script src="../data/movies-stories-music-arts-data.js?v=20260620-6"></script>
-    <script src="../assets/movies-stories-music-arts.js"></script>
+    <dialog id="art-viewer" class="art-viewer" aria-labelledby="art-viewer-title">
+      <button id="art-viewer-close" class="art-viewer-close" type="button" aria-label="Close art viewer">&times;</button>
+      <div id="art-viewer-image" class="art-viewer-image" role="img"></div>
+      <div class="art-viewer-copy">
+        <span id="art-viewer-category"></span>
+        <h2 id="art-viewer-title"></h2>
+        <p id="art-viewer-artist"></p>
+        <a id="art-viewer-link" href="#" target="_blank" rel="noopener noreferrer">View official source <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </dialog>
+    <script src="../data/movies-stories-music-arts-data.js?v=20260620-7"></script>
+    <script src="../assets/movies-stories-music-arts.js?v=20260620-7"></script>
   </body>
 </html>

@@ -63,10 +63,10 @@
     {"title": "DNA Sequence to Music", "artist": "Genomics sound projects", "monogram": "♪DNA", "visual": "sequence", "youtube": "https://www.youtube.com/results?search_query=DNA+sequence+converted+to+music"}
   ],
   "arts": [
-    {"id": "ladder", "title": "The Ladder", "artist": "Mary Ellen Scherl", "category": "Molecular sculpture", "monogram": "ACGT", "visual": "ladder"},
-    {"id": "genome-fields", "title": "Intersecting Data Fields", "artist": "Jennifer Parker & Karolina Karlic", "category": "Genome-inspired art", "monogram": "01", "visual": "data"},
-    {"id": "ferocious", "title": "Ferocious Beauty: Genome", "artist": "Liz Lerman Dance Exchange", "category": "Performance art", "monogram": "MOVE", "visual": "dance"},
-    {"id": "origami", "title": "DNA Origami", "artist": "Alex Bateman / NHGRI", "category": "Scientific illustration", "monogram": "FOLD", "visual": "origami"},
+    {"id": "ladder", "title": "The Ladder", "artist": "Mary Ellen Scherl", "category": "Molecular sculpture", "monogram": "ACGT", "visual": "ladder", "link": "https://www.genome.gov/news/news-release/new-dna-statue-to-be-unveiled-at-nih-on-national-dna-day"},
+    {"id": "genome-fields", "title": "Intersecting Data Fields", "artist": "Jennifer Parker & Karolina Karlic", "category": "Genome-inspired art", "monogram": "01", "visual": "data", "link": "https://genomics.ucsc.edu/news/2020/02/intersecting-data-fields-an-art-and-genomics-collaboration-at-the-genomics-institute-at-ucsc-westside-research-park/"},
+    {"id": "ferocious", "title": "Ferocious Beauty: Genome", "artist": "Liz Lerman Dance Exchange", "category": "Performance art", "monogram": "MOVE", "visual": "dance", "link": "https://www.genome.gov/Pages/Newsroom/NHGRIRelatedReleases/WPASReleaseFinal-1-17-07.pdf"},
+    {"id": "origami", "title": "DNA Origami", "artist": "Alex Bateman / NHGRI", "category": "Scientific illustration", "monogram": "FOLD", "visual": "origami", "link": "https://www.genome.gov/about-genomics/teaching-tools/dna-origami"},
     {"id": "helix-light", "title": "Helix in Light", "artist": "GeneDr visual study", "category": "DNA photography", "monogram": "∞", "visual": "light"}
   ],
   "scienceStories": [

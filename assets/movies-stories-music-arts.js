@@ -44,18 +44,40 @@ function musicCard(item) {
   </a>`;
 }
 
-function artCard(item) {
-  return `<article class="art-card visual-${escapeHtml(item.visual)}">
+function artCard(item, index) {
+  return `<button class="art-card visual-${escapeHtml(item.visual)}" type="button" data-art-index="${index}" aria-label="Open ${escapeHtml(item.title)} in art viewer">
     <div class="art-image" role="img" aria-label="Abstract interpretation of ${escapeHtml(item.title)}"><span aria-hidden="true">${escapeHtml(item.monogram)}</span></div>
-    <div class="art-caption"><span>${escapeHtml(item.category)}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.artist)}</p></div>
-  </article>`;
+    <div class="art-caption"><span>${escapeHtml(item.category)}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.artist)}</p><small>Open artwork</small></div>
+  </button>`;
 }
 
-function wireCarousel() {
+function wireCarousel(arts) {
   const carousel = $("#arts-carousel");
+  const viewer = $("#art-viewer");
+  const closeButton = $("#art-viewer-close");
   const scroll = (direction) => carousel.scrollBy({ left: direction * carousel.clientWidth * 0.78, behavior: "smooth" });
   $("#art-prev").addEventListener("click", () => scroll(-1));
   $("#art-next").addEventListener("click", () => scroll(1));
+  carousel.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-art-index]");
+    if (!card) return;
+    const item = arts[Number(card.dataset.artIndex)];
+    const image = $("#art-viewer-image");
+    image.className = `art-viewer-image visual-${item.visual}`;
+    image.setAttribute("aria-label", `Expanded abstract interpretation of ${item.title}`);
+    image.innerHTML = `<span aria-hidden="true">${escapeHtml(item.monogram)}</span>`;
+    $("#art-viewer-category").textContent = item.category;
+    $("#art-viewer-title").textContent = item.title;
+    $("#art-viewer-artist").textContent = item.artist;
+    const sourceLink = $("#art-viewer-link");
+    sourceLink.hidden = !item.link;
+    if (item.link) sourceLink.href = item.link;
+    viewer.showModal();
+  });
+  closeButton.addEventListener("click", () => viewer.close());
+  viewer.addEventListener("click", (event) => {
+    if (event.target === viewer) viewer.close();
+  });
   carousel.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
       event.preventDefault();
@@ -85,7 +107,7 @@ async function loadCultureCenter() {
     $("#arts-carousel").innerHTML = data.arts.map(artCard).join("");
     $("#science-list").innerHTML = data.scienceStories.map((item) => storyDetails(item, "science")).join("");
     $("#review-date").textContent = `Last reviewed ${data.lastReviewed}`;
-    wireCarousel();
+    wireCarousel(data.arts);
   } catch (error) {
     $("#culture-status").hidden = false;
     $("#culture-status").textContent = "The curated collections are temporarily unavailable. Please refresh or return soon.";
