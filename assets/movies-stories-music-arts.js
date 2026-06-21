@@ -1,131 +1,95 @@
-const featuredContainer = document.querySelector("#featured-picks");
-const featuredPeriod = document.querySelector("#featured-period");
-const featuredStatus = document.querySelector("#featured-status");
-const library = document.querySelector("#culture-library");
-const libraryTitle = document.querySelector("#library-title");
-const libraryIntro = document.querySelector("#library-intro");
-const libraryItems = document.querySelector("#library-items");
-const categoryButtons = [...document.querySelectorAll("[data-category]")];
+const $ = (selector) => document.querySelector(selector);
 
-const categories = {
-  moviesAndDocumentaries: { title: "Genetics Movies & Documentaries", intro: "Films and series that bring genetic discovery, rare disease, biotechnology, identity, and ethics into focus.", type: "movie", detail: "Why it connects to genetics" },
-  dnaDetectiveStories: { title: "DNA Detective Stories", intro: "True stories of forensic investigation, genetic genealogy, identity, and difficult diagnoses resolved through DNA.", type: "story", detail: "Why it matters" },
-  dnaMusic: { title: "DNA Music", intro: "Listen to projects that translate sequences and genetic variation into composition, sound, and shared experience.", type: "music", detail: "Why it connects to genetics" },
-  dnaArts: { title: "DNA Arts", intro: "Visual and performance projects that make genomics, inheritance, identity, and medical science visible.", type: "art", detail: "Why it connects to genetics" },
-};
-
-const categoryLabels = { movie: "Movie & documentary", story: "DNA detective story", music: "DNA music", art: "DNA art" };
-let programData;
-
-function externalLink(item) {
-  const link = document.createElement("a");
-  link.href = item.link;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  link.textContent = `Explore at ${item.source_name}`;
-  return link;
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>'"]/g, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
+  })[character]);
 }
 
-function createTag(text) {
-  const tag = document.createElement("span");
-  tag.className = "culture-tag";
-  tag.textContent = text;
-  return tag;
+function externalLink(url, label, className = "story-link") {
+  return `<a class="${className}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} <span aria-hidden="true">&nearr;</span></a>`;
 }
 
-function createLibraryCard(item, config) {
-  const card = document.createElement("article");
-  card.className = `library-card library-card-${config.type}`;
-  const meta = document.createElement("div");
-  meta.className = "library-meta";
-  meta.append(createTag(item.tag));
-  const creator = item.year || item.artist;
-  if (creator) {
-    const byline = document.createElement("span");
-    byline.textContent = creator;
-    meta.append(byline);
-  }
-  const title = document.createElement("h3");
-  title.textContent = item.title;
-  const description = document.createElement("p");
-  description.textContent = item.description;
-  const relevance = document.createElement("p");
-  relevance.className = "library-relevance";
-  const strong = document.createElement("strong");
-  strong.textContent = `${config.detail}: `;
-  relevance.append(strong, item.genetics_relevance || item.importance);
-  card.append(meta, title, description, relevance, externalLink(item));
-  return card;
+function storyDetails(item, type) {
+  const whyLabel = type === "movie" ? "Why watch" : type === "science" ? "Why it changed science" : "Why it matters";
+  const links = (item.links || []).map((link) => externalLink(link.url, link.label)).join("");
+  return `
+    <details class="culture-accordion">
+      <summary>
+        <span class="accordion-thumb visual-${escapeHtml(item.visual || "helix")}" aria-hidden="true"><span>${escapeHtml(item.monogram || "DNA")}</span></span>
+        <span class="accordion-summary-copy"><span class="item-category">${escapeHtml(item.category)}</span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.year || item.subtitle || "")}</small></span>
+        <span class="accordion-toggle" aria-hidden="true"></span>
+      </summary>
+      <div class="accordion-story">
+        <p>${escapeHtml(item.story)}</p>
+        ${item.background ? `<p class="story-background"><strong>Background:</strong> ${escapeHtml(item.background)}</p>` : ""}
+        <p class="why-story"><strong>${whyLabel}:</strong> ${escapeHtml(item.why)}</p>
+        ${links ? `<div class="story-links" aria-label="External resources">${links}</div>` : ""}
+      </div>
+    </details>`;
 }
 
-function showCategory(key, shouldFocus = true) {
-  const config = categories[key];
-  const items = programData[key] || [];
-  libraryTitle.textContent = config.title;
-  libraryIntro.textContent = config.intro;
-  libraryItems.replaceChildren(...items.map((item) => createLibraryCard(item, config)));
-  library.hidden = false;
-  categoryButtons.forEach((button) => {
-    const active = button.dataset.category === key;
-    button.setAttribute("aria-expanded", String(active));
-    button.classList.toggle("is-active", active);
+function featuredCard(pick, item) {
+  return `<article class="feature-pick visual-${escapeHtml(item.visual || "helix")}">
+    <div class="feature-copy"><span class="feature-type">${escapeHtml(pick.label)}</span><h3>${escapeHtml(item.title)}</h3>
+    <p>${escapeHtml(pick.teaser)}</p><a href="#${escapeHtml(pick.section)}">Explore the story <span aria-hidden="true">&darr;</span></a></div>
+    <div class="feature-mark" aria-hidden="true">${escapeHtml(item.monogram || "DNA")}</div>
+  </article>`;
+}
+
+function musicCard(item) {
+  return `<a class="music-card visual-${escapeHtml(item.visual)}" href="${escapeHtml(item.youtube)}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(item.title)} by ${escapeHtml(item.artist)} on YouTube">
+    <span class="music-art" aria-hidden="true"><span class="music-monogram">${escapeHtml(item.monogram)}</span><span class="play-button">&#9654;</span></span>
+    <span class="music-copy"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.artist)}</span><small>Play on YouTube &nearr;</small></span>
+  </a>`;
+}
+
+function artCard(item) {
+  return `<article class="art-card visual-${escapeHtml(item.visual)}">
+    <div class="art-image" role="img" aria-label="Abstract interpretation of ${escapeHtml(item.title)}"><span aria-hidden="true">${escapeHtml(item.monogram)}</span></div>
+    <div class="art-caption"><span>${escapeHtml(item.category)}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.artist)}</p></div>
+  </article>`;
+}
+
+function wireCarousel() {
+  const carousel = $("#arts-carousel");
+  const scroll = (direction) => carousel.scrollBy({ left: direction * carousel.clientWidth * 0.78, behavior: "smooth" });
+  $("#art-prev").addEventListener("click", () => scroll(-1));
+  $("#art-next").addEventListener("click", () => scroll(1));
+  carousel.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      scroll(event.key === "ArrowRight" ? 1 : -1);
+    }
   });
-  if (shouldFocus) {
-    library.focus({ preventScroll: true });
-    library.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
 }
 
-function findFeaturedItem(pick) {
-  const key = Object.keys(categories).find((category) => categories[category].type === pick.category);
-  return (programData[key] || []).find((item) => item.id === pick.item_id);
-}
-
-function createFeaturedCard(pick, monthly) {
-  const item = findFeaturedItem(pick);
-  if (!item) return null;
-  const card = document.createElement("article");
-  card.className = `featured-card featured-card-${pick.category}`;
-  const label = document.createElement("p");
-  label.className = "featured-card-label";
-  label.textContent = categoryLabels[pick.category];
-  const tag = createTag(item.tag);
-  const title = document.createElement("h3");
-  title.textContent = item.title;
-  const description = document.createElement("p");
-  description.className = "featured-description";
-  description.textContent = item.description;
-  const reason = document.createElement("p");
-  reason.className = "featured-reason";
-  reason.textContent = `Selected because: ${pick.reason_selected}`;
-  const updated = document.createElement("p");
-  updated.className = "featured-updated";
-  updated.textContent = `Last updated ${monthly.last_updated}`;
-  card.append(label, tag, title, description, reason, externalLink(item), updated);
-  return card;
-}
-
-async function loadProgram() {
+async function loadCultureCenter() {
   try {
-    const response = await fetch("../data/movies-stories-music-arts.json");
-    if (!response.ok) throw new Error("Program content could not be loaded.");
-    programData = await response.json();
-    categoryButtons.forEach((button) => button.addEventListener("click", () => showCategory(button.dataset.category)));
-    showCategory("moviesAndDocumentaries", false);
-
-    const monthly = programData.monthlyFeaturedPicks;
-    featuredPeriod.textContent = `${monthly.month} ${monthly.year} collection`;
-    const cards = monthly.picks.map((pick) => createFeaturedCard(pick, monthly)).filter(Boolean);
-    featuredContainer.replaceChildren(...cards);
-    if (!cards.length) throw new Error("No valid featured picks were found.");
+    let data = window.GENEDR_CULTURE_DATA;
+    if (!data) {
+      const response = await fetch("../data/movies-stories-music-arts.json");
+      if (!response.ok) throw new Error("The collection could not be loaded.");
+      data = await response.json();
+    }
+    const allItems = [...data.movies, ...data.detectiveStories, ...data.scienceStories];
+    const featured = data.featured.picks.map((pick) => {
+      const item = allItems.find((entry) => entry.id === pick.itemId) || data.arts.find((entry) => entry.id === pick.itemId);
+      return item ? featuredCard(pick, item) : "";
+    });
+    $("#featured-picks").innerHTML = featured.join("");
+    $("#featured-period").textContent = `${data.featured.month} ${data.featured.year} · ${featured.length} editor picks`;
+    $("#movies-list").innerHTML = data.movies.map((item) => storyDetails(item, "movie")).join("");
+    $("#detective-list").innerHTML = data.detectiveStories.map((item) => storyDetails(item, "detective")).join("");
+    $("#music-list").innerHTML = data.music.map(musicCard).join("");
+    $("#arts-carousel").innerHTML = data.arts.map(artCard).join("");
+    $("#science-list").innerHTML = data.scienceStories.map((item) => storyDetails(item, "science")).join("");
+    $("#review-date").textContent = `Last reviewed ${data.lastReviewed}`;
+    wireCarousel();
   } catch (error) {
-    library.hidden = false;
-    libraryTitle.textContent = "Curated library";
-    libraryIntro.textContent = "The collection is temporarily unavailable. Please check back soon.";
-    featuredPeriod.textContent = "Monthly collection";
-    featuredStatus.hidden = false;
-    featuredStatus.textContent = "Featured picks are temporarily unavailable. Please check back soon.";
+    $("#culture-status").hidden = false;
+    $("#culture-status").textContent = "The curated collections are temporarily unavailable. Please refresh or return soon.";
   }
 }
 
-loadProgram();
+loadCultureCenter();

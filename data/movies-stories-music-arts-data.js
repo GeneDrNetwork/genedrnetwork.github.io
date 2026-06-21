@@ -1,4 +1,4 @@
-{
+window.GENEDR_CULTURE_DATA = {
   "lastReviewed": "June 20, 2026",
   "featured": {
     "month": "June",
@@ -97,4 +97,4 @@
       "links": [{"label": "Nobel Prize scientific background", "url": "https://www.nobelprize.org/prizes/medicine/2022/press-release/"}]
     }
   ]
-}
+};
