@@ -13,6 +13,8 @@
 .news-dashboard-page { background: var(--dash-bg); }
 .news-dashboard-page .site-header { min-height: 70px; }
 .news-dashboard-page .site-nav { font-size: clamp(.92rem, 1.1vw, 1.05rem); }
+.brand-lockup { display: inline-flex; align-items: center; gap: 10px; }
+.brand-lockup img { width: 35px; height: 35px; object-fit: contain; }
 
 .news-hero {
   display: flex;
@@ -62,7 +64,7 @@
 .summary-biotech { border-top-color: var(--dash-green); }
 .summary-biotech > span { color: var(--dash-green); }
 
-.dashboard-subsection + .dashboard-subsection { margin-top: 36px; }
+.dashboard-subsection + .dashboard-subsection { margin-top: 44px; }
 .dashboard-subsection h3 { margin: 0 0 16px; font-size: 1.12rem; }
 .entity-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .entity-card { position: relative; min-width: 0; padding: 19px; border: 1px solid var(--dash-line); border-radius: 6px; background: var(--dash-surface); transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease; }
@@ -79,12 +81,46 @@
 .table-wrap { overflow-x: auto; border: 1px solid var(--dash-line); border-radius: 6px; background: #fff; }
 table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: .8rem; }
 th { padding: 13px 15px; color: #4e647f; background: #edf3f7; font-size: .68rem; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+th button { display: flex; align-items: center; justify-content: space-between; gap: 9px; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; letter-spacing: inherit; text-align: left; text-transform: inherit; cursor: pointer; }
+th button:hover, th button:focus-visible { color: var(--dash-blue); }
 td { padding: 14px 15px; border-top: 1px solid #e8eef3; color: #344a65; vertical-align: top; }
 tbody tr:hover { background: #f8fbfd; }
 .ticker { color: var(--dash-ink); font-weight: 800; }
 .change-up { color: #167c45; font-weight: 800; }
 .change-down { color: #b3333c; font-weight: 800; }
 .change-flat { color: #63758a; font-weight: 800; }
+
+.data-tools { display: flex; align-items: end; gap: 10px; margin-bottom: 10px; padding: 12px; border: 1px solid var(--dash-line); border-radius: 6px; background: #fff; }
+.data-tools label { display: grid; gap: 5px; color: var(--dash-muted); font-size: .66rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.data-tools input, .data-tools select { min-width: 125px; height: 35px; padding: 0 9px; border: 1px solid #cbd8e2; border-radius: 4px; color: var(--dash-ink); background: #fff; font: 500 .76rem Inter, sans-serif; }
+.search-control { flex: 1; }
+.search-control input { width: 100%; }
+.export-buttons { display: flex; gap: 6px; margin-left: auto; }
+.export-buttons button { height: 35px; padding: 0 11px; border: 1px solid #b7cad9; border-radius: 4px; color: #164f7a; background: #f7fafc; font-size: .7rem; font-weight: 800; cursor: pointer; }
+.export-buttons button:hover, .export-buttons button:focus-visible { border-color: var(--dash-blue); color: #fff; background: var(--dash-blue); }
+.data-badge { display: inline-block; padding: 3px 7px; border-radius: 3px; color: #3d5770; background: #edf3f7; font-size: .65rem; font-weight: 800; white-space: nowrap; text-transform: uppercase; }
+.data-badge.high, .data-badge.very-high { color: #9a3c24; background: #ffebe4; }
+.data-badge.medium { color: #805308; background: #fff1d8; }
+.data-badge.low { color: #176b43; background: #e2f6ea; }
+
+.split-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.split-panel > div { min-width: 0; }
+.split-panel h3 { margin: 0 0 13px; color: var(--dash-ink); font-size: 1.05rem; }
+.split-panel .data-tools { flex-wrap: wrap; }
+.split-panel .data-tools label:not(.search-control) { display: none; }
+.split-panel table { min-width: 1050px; }
+
+.demand-section { padding: 28px; border: 1px solid #bfd6e1; border-radius: 7px; background: #eaf3f7; }
+.demand-section > div:first-child { margin-bottom: 18px; }
+.demand-section h3 { margin: 0; color: var(--dash-ink); font-size: 1.4rem; }
+.demand-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.demand-card { position: relative; min-height: 190px; padding: 20px 20px 18px 58px; border: 1px solid #d2e2e9; border-radius: 6px; background: #fff; }
+.demand-card > span { position: absolute; top: 19px; left: 18px; display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; color: #fff; background: var(--dash-teal); font-size: .72rem; font-weight: 800; }
+.demand-card h4 { margin: 2px 0 8px; color: var(--dash-ink); }
+.demand-card p { margin: 0 0 14px; color: var(--dash-muted); font-size: .8rem; line-height: 1.5; }
+.demand-card dl { display: grid; grid-template-columns: 92px 1fr; gap: 5px 8px; margin: 0; font-size: .73rem; line-height: 1.4; }
+.demand-card dt { color: #6d7f92; font-weight: 800; }
+.demand-card dd { margin: 0; color: #304763; }
 
 .market-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; }
 .market-card { padding: 20px; border: 1px solid var(--dash-line); border-top: 3px solid var(--dash-teal); border-radius: 6px; background: #fff; }
@@ -110,6 +146,7 @@ tbody tr:hover { background: #f8fbfd; }
   .brief-layout { grid-template-columns: 1fr; }
   .entity-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .market-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .split-panel { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {
@@ -121,6 +158,11 @@ tbody tr:hover { background: #f8fbfd; }
   .source-note { text-align: left; }
   .summary-grid, .entity-grid, .opportunity-grid { grid-template-columns: 1fr; }
   .market-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .data-tools { align-items: stretch; flex-direction: column; }
+  .data-tools input, .data-tools select { width: 100%; }
+  .export-buttons { margin-left: 0; }
+  .demand-grid { grid-template-columns: 1fr; }
+  .demand-section { padding: 20px 14px; }
 }
 
 @media (max-width: 440px) {
