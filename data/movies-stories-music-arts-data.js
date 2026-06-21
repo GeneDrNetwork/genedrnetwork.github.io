@@ -58,7 +58,7 @@ window.GENEDR_CULTURE_DATA = {
     {"title": "DNA - 2026 World Cup Korean Translation", "artist": "Kael (카엘)", "monogram": "DNA", "visual": "dna-game", "youtube": "https://youtu.be/mXFoiaYNynw"},
     {"title": "The Invisible Fold", "artist": "Computational GenomeBiology", "monogram": "FOLD", "visual": "fold-song", "youtube": "https://youtube.com/shorts/AcDSshXh0Po"},
     {"title": "DNA", "artist": "BTS", "monogram": "DNA", "visual": "bts", "youtube": "https://www.youtube.com/watch?v=MBdVXkSdhwU"},
-    {"title": "DNA.", "artist": "Kendrick Lamar", "monogram": "DNA.", "visual": "kendrick", "youtube": "https://www.youtube.com/watch?v=NLZRYQMLDW4"},
+    {"title": "DNA & Genetics Explained in a Rap", "artist": "Fundamental Raps", "monogram": "RAP", "visual": "science-rap", "youtube": "https://youtu.be/aihFy83wlhs"},
     {"title": "Music from the Genome", "artist": "New London Chamber Choir", "monogram": "A C G T", "visual": "genome", "youtube": "https://www.youtube.com/results?search_query=Music+from+the+Genome+Allele"},
     {"title": "DNA Sequence to Music", "artist": "Genomics sound projects", "monogram": "♪DNA", "visual": "sequence", "youtube": "https://www.youtube.com/results?search_query=DNA+sequence+converted+to+music"}
   ],
