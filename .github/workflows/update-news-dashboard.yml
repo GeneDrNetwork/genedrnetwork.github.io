@@ -1,4 +1,4 @@
-name: Update GeneDrNews Dashboard
+name: Update GeneDr News Dashboard
 
 on:
   schedule:
@@ -32,8 +32,8 @@ jobs:
             echo "No dashboard changes to publish."
             exit 0
           fi
-          git config user.name "GeneDrNews Bot"
+          git config user.name "GeneDr News Bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/news-dashboard.json
-          git commit -m "GeneDrNews: daily intelligence update"
+          git commit -m "GeneDr News: daily intelligence update"
           git push origin main

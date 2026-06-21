@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="GeneDrNews & Invest: daily AI, biotech, precision medicine, FDA, market, and investment intelligence." />
-    <title>GeneDrNews &amp; Invest | GeneDrNetwork</title>
+    <meta name="description" content="GeneDr News &amp; Invest: curated AI, biotech, market, and investment intelligence." />
+    <title>GeneDr News &amp; Invest | GeneDrNetwork</title>
     <link rel="icon" type="image/png" href="../assets/genedrnetwork-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,89 +14,70 @@
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
-      <a class="site-title" href="../index.html">GeneDrNetwork</a>
+      <a class="site-title brand-lockup" href="../index.html"><img src="../assets/genedrnetwork-logo.png" alt="" />GeneDrNetwork</a>
       <nav class="site-nav" aria-label="Primary navigation">
-        <a href="../index.html#about">About</a>
-        <a href="../index.html#programs">Programs</a>
-        <a href="clinical-genetics-network.html">CGN</a>
-        <a href="../index.html#people">People</a>
+        <a href="../index.html#about">About</a><a href="../index.html#programs">Programs</a>
+        <a href="clinical-genetics-network.html">CGN</a><a href="../index.html#people">People</a>
         <a href="mailto:info@genedrnetwork.org">Contact</a>
       </nav>
     </header>
 
     <main>
       <section class="news-hero" aria-labelledby="news-title">
-        <div>
-          <a class="news-back-link" href="../index.html#programs">Back to programs</a>
-          <p class="news-eyebrow">Daily Intelligence Dashboard</p>
-          <h1 id="news-title">GeneDrNews &amp; Invest</h1>
-          <p>Daily AI, biotech, precision medicine, and investment intelligence.</p>
-        </div>
-        <div class="update-status" aria-live="polite">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span>Last updated</span>
-          <strong id="last-updated">Loading...</strong>
-        </div>
+        <div><a class="news-back-link" href="../index.html#programs">Back to programs</a><p class="news-eyebrow">Curated Intelligence Dashboard</p>
+          <h1 id="news-title">GeneDr News &amp; Invest</h1><p>High-conviction intelligence across AI and biotechnology.</p></div>
+        <div class="update-status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span>Last updated</span><strong id="last-updated">Loading...</strong></div>
       </section>
 
       <nav class="dashboard-nav" aria-label="Dashboard sections">
-        <a href="#brief">Brief</a><a href="#ai">AI</a><a href="#biotech">Biotech</a>
-        <a href="#fda">FDA</a><a href="#markets">Markets</a><a href="#watchlist">Watchlists</a>
+        <a href="#brief">Brief</a><a href="#picks">Top Picks</a><a href="#ai">AI</a><a href="#biotech">Biotech</a>
+        <a href="#watchlist">Watchlists</a><a href="#fda">FDA</a><a href="#markets">Markets</a>
       </nav>
 
       <div class="dashboard-shell">
         <section class="brief-section" id="brief">
-          <div class="section-heading">
-            <div><span class="section-kicker">Daily Brief</span><h2>Today's Key Takeaways</h2></div>
-            <span class="source-note">Educational intelligence, refreshed daily</span>
-          </div>
-          <div class="brief-layout">
-            <article class="takeaway-panel"><ul id="key-takeaways" class="takeaway-list"><li>Loading today's intelligence...</li></ul></article>
-            <div class="summary-grid">
-              <article class="summary-card summary-ai"><span>AI</span><h3>Daily AI Summary</h3><p id="ai-summary">Loading...</p></article>
+          <div class="section-heading"><div><span class="section-kicker">Daily Brief</span><h2>Today's Key Takeaways</h2></div><span class="source-note">Educational intelligence, refreshed daily</span></div>
+          <div class="brief-layout"><article class="takeaway-panel"><ul id="key-takeaways" class="takeaway-list"><li>Loading today's intelligence...</li></ul></article>
+            <div class="summary-grid"><article class="summary-card summary-ai"><span>AI</span><h3>Daily AI Summary</h3><p id="ai-summary">Loading...</p></article>
               <article class="summary-card summary-market"><span>Markets</span><h3>Daily Market Summary</h3><p id="market-summary">Loading...</p></article>
-              <article class="summary-card summary-biotech"><span>Biotech</span><h3>Daily Biotech Summary</h3><p id="biotech-summary">Loading...</p></article>
-            </div>
-          </div>
+              <article class="summary-card summary-biotech"><span>Biotech</span><h3>Daily Biotech Summary</h3><p id="biotech-summary">Loading...</p></article></div></div>
+        </section>
+
+        <section class="dashboard-section" id="picks">
+          <div class="section-heading"><div><span class="section-kicker">Highest-Conviction Research</span><h2>Monthly High Conviction Picks</h2></div><span class="source-note">Five ideas per sector; reviewed monthly</span></div>
+          <div class="split-panel"><div><h3>Top 5 AI Ideas</h3><div id="ai-picks"></div></div><div><h3>Top 5 Biotech Ideas</h3><div id="biotech-picks"></div></div></div>
         </section>
 
         <section class="dashboard-section" id="ai">
-          <div class="section-heading"><div><span class="section-kicker">Sector Intelligence</span><h2>AI Industry Dashboard</h2></div></div>
-          <div class="dashboard-subsection"><h3>Core AI Industry Leaders</h3><div id="ai-leaders" class="entity-grid"></div></div>
-          <div class="dashboard-subsection"><h3>Most Promising Emerging AI Companies</h3><div id="ai-emerging" class="entity-grid"></div></div>
+          <div class="section-heading"><div><span class="section-kicker">Sector Intelligence</span><h2>AI Industry Dashboard</h2></div><span class="source-note">Focused on beneficiaries of future AI demand</span></div>
+          <div class="dashboard-subsection"><h3>AI Infrastructure Leaders</h3><div id="ai-infrastructure"></div></div>
+          <div class="dashboard-subsection"><h3>AI Platform &amp; Foundation Model Leaders</h3><div id="ai-platforms"></div></div>
+          <div class="dashboard-subsection"><h3>Most Promising Emerging AI Companies</h3><div id="ai-emerging"></div></div>
+          <div class="dashboard-subsection demand-section"><div><span class="section-kicker">Five-to-Ten-Year Outlook</span><h3>Future AI Demand Drivers</h3></div><div id="demand-map" class="demand-grid"></div></div>
         </section>
 
         <section class="dashboard-section" id="biotech">
-          <div class="section-heading"><div><span class="section-kicker">Life Sciences</span><h2>Biotechnology Dashboard</h2></div></div>
-          <div class="dashboard-subsection"><h3>Core Biotech Industry Leaders</h3><div id="biotech-leaders" class="entity-grid"></div></div>
-          <div class="dashboard-subsection"><h3>Most Promising Emerging Biotech Companies</h3><div id="biotech-emerging" class="entity-grid"></div></div>
+          <div class="section-heading"><div><span class="section-kicker">Life Sciences</span><h2>Biotechnology Dashboard</h2></div><span class="source-note">Proven leaders and transformative platforms</span></div>
+          <div class="dashboard-subsection"><h3>Core Biotech Leaders</h3><div id="biotech-leaders"></div></div>
+          <div class="dashboard-subsection"><h3>Most Promising Emerging Biotech Companies</h3><div id="biotech-emerging"></div></div>
+        </section>
+
+        <section class="dashboard-section" id="watchlist">
+          <div class="section-heading"><div><span class="section-kicker">Focused Tracking</span><h2>High-Upside Watch Lists</h2></div><span class="source-note">Emerging innovators; not recommendations</span></div>
+          <div class="split-panel"><div><h3>AI Watch List</h3><div id="ai-watchlist"></div></div><div><h3>Biotech Watch List</h3><div id="biotech-watchlist"></div></div></div>
         </section>
 
         <section class="dashboard-section" id="fda">
           <div class="section-heading"><div><span class="section-kicker">Regulatory Monitor</span><h2>FDA &amp; Regulatory Updates</h2></div><a class="text-link" href="https://www.fda.gov/news-events/fda-newsroom/press-announcements" target="_blank" rel="noopener">FDA newsroom</a></div>
-          <div class="table-wrap"><table><thead><tr><th>Company</th><th>Product</th><th>Indication</th><th>Regulatory Event</th><th>Date</th><th>Source</th></tr></thead><tbody id="fda-updates"><tr><td colspan="6">Loading...</td></tr></tbody></table></div>
+          <div id="fda-table"></div>
         </section>
 
         <section class="dashboard-section" id="markets">
           <div class="section-heading"><div><span class="section-kicker">Market Pulse</span><h2>Market Dashboard</h2></div></div>
-          <div id="market-cards" class="market-grid"></div>
-          <article class="market-explainer"><span>Market context</span><h3>What moved the market today?</h3><p id="market-movers">Loading market context...</p></article>
+          <div id="market-cards" class="market-grid"></div><article class="market-explainer"><span>Market context</span><h3>What moved the market today?</h3><p id="market-movers">Loading market context...</p></article>
         </section>
 
-        <section class="dashboard-section" id="watchlist">
-          <div class="section-heading"><div><span class="section-kicker">Focused Tracking</span><h2>GeneDr Watchlist</h2></div></div>
-          <div class="table-wrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Price</th><th>Daily</th><th>Weekly</th><th>Recent News &amp; Summary</th></tr></thead><tbody id="watchlist-rows"><tr><td colspan="6">Loading...</td></tr></tbody></table></div>
-        </section>
-
-        <section class="dashboard-section" id="opportunities">
-          <div class="section-heading"><div><span class="section-kicker">Research Radar</span><h2>High-Potential Opportunity Watchlist</h2></div><span class="source-note">Scores reflect signals, not recommendations</span></div>
-          <div id="opportunity-grid" class="opportunity-grid"></div>
-        </section>
-
-        <footer class="dashboard-disclaimer">
-          <strong>Important disclaimer</strong>
-          <p>GeneDrNews &amp; Invest is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice.</p>
-        </footer>
+        <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr News &amp; Invest is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
     <script src="../assets/news-dashboard.js" defer></script>

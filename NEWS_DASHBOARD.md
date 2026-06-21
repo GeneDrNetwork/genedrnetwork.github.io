@@ -1,4 +1,4 @@
-# GeneDrNews & Invest Automation
+# GeneDr News & Invest Automation
 
 The dashboard reads `data/news-dashboard.json`. GitHub Actions runs
 `scripts/update_news_dashboard.py` every day at 11:17 UTC and commits refreshed
@@ -7,7 +7,7 @@ public RSS headlines and delayed public market data to `main`.
 ## Manual refresh
 
 Run `python3 scripts/update_news_dashboard.py`, or start the
-**Update GeneDrNews Dashboard** workflow from the Actions tab.
+**Update GeneDr News Dashboard** workflow from the Actions tab.
 
 ## Data and API configuration
 
