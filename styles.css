@@ -1068,7 +1068,7 @@ a {
 .compact-heading { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(260px,.7fr); gap: 28px; align-items: end; margin-bottom: 21px; }
 .compact-heading h2 { margin: 0; color: var(--cc-ink); font-size: clamp(1.75rem,3vw,2.8rem); line-height: 1.12; }
 .compact-heading>p { margin: 0; color: var(--cc-muted); }
-.culture-featured { padding: clamp(28px,4vw,48px); border-radius: 25px; background: #0a2146; }
+.culture-featured { padding: clamp(28px,4vw,48px); border-radius: 25px; background: linear-gradient(135deg,#116f88 0%,#315f94 52%,#6550a0 100%); box-shadow:0 18px 44px rgba(35,63,113,.18); }
 .light-heading h2 { color: #fff; }.light-heading .eyebrow { color: #70d9dc; }
 .collection-date { align-self: end; color: #b9d9e2!important; font-size: .78rem; font-weight: 800; letter-spacing: .09em; text-align: right; text-transform: uppercase; }
 .culture-featured .featured-grid { gap: 14px; }
