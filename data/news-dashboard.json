@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-21T17:09:39+00:00",
+  "updated_at": "2026-06-22T21:30:02+00:00",
   "summaries": {
-    "ai": "Key developments: Tesla plans to sell modular AI data center hardware called \u2018Megapod\u2019; 3 US Chip Stocks For AI Infrastructure And Valuation Risk; AI giants may soon enter your retirement portfolio. Should you worry?.",
-    "biotech": "Key developments: ALS treatment lands FDA designation; GLP-1 Drugs Expand Beyond Obesity to Treat Multiple Conditions; Is Clinuvel Pharmaceuticals (ASX: CUV) Expanding Beyond SCENESSE\u00ae?.",
-    "market": "Key developments: Stock market bounces back to finish winning week as tech leads recovery; Nasdaq, S&P 500 Futures Climb Despite Fresh US-Iran Strikes: Why NVDA, MU, NVTS, RDW, RACE Are Keeping Traders Engaged Today; Dow Jones Futures: Iran Says Hormuz Closed But New Talks To Start; Nvidia, SpaceX Are Stocks To Watch.",
-    "market_movers": "Russell 2000 led tracked indexes at +2.12% today; Dow Jones was weakest at +0.14%. Key developments: Stock market bounces back to finish winning week as tech leads recovery; Nasdaq, S&P 500 Futures Climb Despite Fresh US-Iran Strikes: Why NVDA, MU, NVTS, RDW, RACE Are Keeping Traders Engaged Today; Dow Jones Futures: Iran Says Hormuz Closed But New Talks To Start; Nvidia, SpaceX Are Stocks To Watch."
+    "ai": "Key developments: 3 US AI Infrastructure Stocks For Data Center Demand And Valuation Risk; Nebius Has 40% Upside in 2026 as Global AI Data Center Shortage Worsens; Nvidia Touts \u2018100% Reduction in Water Use\u2019 With New Data Center Design.",
+    "biotech": "Key developments: Redefining what success looks like in PSC: The evolution of clinical trial endpoints; Beyond the Biotech Race \u2014 Right-Sizing U.S.-China Competition in a Human-Centered Industry; Exclusive | FDA Gives Third Rare-Disease Drug Another Shot, Regenxbio Says.",
+    "market": "Key developments: Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28; S&P 500, Nasdaq end in the red as tech suffers, traders weigh in Middle East peace talks; US Stock Market Today: S&P 500, Dow Rise As Investors Cheer Iran Talks Progress; Tech-Heavy Nasdaq In Red.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.83% today; Nasdaq was weakest at -1.32%. Key developments: Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28; S&P 500, Nasdaq end in the red as tech suffers, traders weigh in Middle East peace talks; US Stock Market Today: S&P 500, Dow Rise As Investors Cheer Iran Talks Progress; Tech-Heavy Nasdaq In Red."
   },
   "takeaways": [
-    "Tesla plans to sell modular AI data center hardware called \u2018Megapod\u2019 - Electrek",
-    "3 US Chip Stocks For AI Infrastructure And Valuation Risk - simplywall.st",
-    "ALS treatment lands FDA designation - The Business Journals",
-    "GLP-1 Drugs Expand Beyond Obesity to Treat Multiple Conditions - \uc870\uc120\uc77c\ubcf4",
-    "Tinlarebant NDA submission completed for Stargardt disease type 1, targeting first approved therapy - Ophthalmology Times",
+    "3 US AI Infrastructure Stocks For Data Center Demand And Valuation Risk - simplywall.st",
+    "Nebius Has 40% Upside in 2026 as Global AI Data Center Shortage Worsens - 24/7 Wall St.",
+    "Redefining what success looks like in PSC: The evolution of clinical trial endpoints - Fierce Biotech",
+    "Beyond the Biotech Race \u2014 Right-Sizing U.S.-China Competition in a Human-Centered Industry - Asia Society",
+    "Palvella Therapeutics Announces FDA Rolling Review for QTORIN Rapamycin NDA in Microcystic Lymphatic Malformations - Quiver Quantitative",
     "Cadrenal plans FDA rare pediatric disease request for tecarfarin in Kawasaki disease - Contemporary Pediatrics",
-    "Stock market bounces back to finish winning week as tech leads recovery - eciks.org"
+    "Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28 - TV News Check"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,9 +786,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Tinlarebant NDA submission completed for Stargardt disease type 1, targeting first approved therapy",
-      "date": "Wed, 17 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOM09KaW04aTNIaWRhdkx3dHh3YUdaUUd0UkU2bGJXQmZXX3ByekVabFduUEtINkNZV3JNbWJhSXVzc2xoeG9udlpoWEd6dk84NlR3ZUNsOWkzZWFicjRSbUlBRzdMQ19PbGM0eWlsR3lBd3pxVGRJTzhRQ0ppbTlGTlluTzRxYnB2VnF4dkpkbzRKR0ZIOGNxaVpn?oc=5"
+      "event": "Palvella Therapeutics Announces FDA Rolling Review for QTORIN Rapamycin NDA in Microcystic Lymphatic Malformations",
+      "date": "Mon, 22 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOeVdvdVlFcm9CT1ZjZXdRWVdMMnJiNVFteFdLeERScjJ6ZGNXX2phRlBfN0V3OENMM2FadUVMSjhfV2Y0VXlmaE1MZkxiRlpDa1lBMW1UUm1Sd3l4MDJxTGlxNUV3T0R5aHJXNlFhNTRkOWd2eXlMbXcxU00yWVIyZkoxUlJRdDB5LUlyRVFxbENvcXQ5bTNuT0FvcjNEZ3ZOVWliNmRreWFST2M4aEFGZmV1NkpqRXQ0TTBrT3dYTWRWdWVaMHd5eE1nU2dVYUJDZzFxU29oWWM3ZDZ0R2pXQw?oc=5"
     },
     {
       "company": "See source",
@@ -802,6 +802,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Palvella Therapeutics granted FDA rolling review for QTORIN",
+      "date": "Mon, 22 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOUVJ2WGQtVjRfSkU4NGJwY2RJNUdKZmhocVNMVFpDcHl6SDZsM3M1NVZmbjNxVGF2NmRBLXJZTWlQcXBTa2ZudFVLZ2xjYVlxaGlUT1piLU1tUHc3UmZBQlVyR280ZWtFUlhKWFUxT2FmRHJYdVZiSVZ6Z3N3M3dINXBseE1nczBxWHdDb1l6aVM?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Cadrenal targets FDA rare pediatric status for tecarfarin in Kawasaki disease",
       "date": "Thu, 18 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOdkNQODZ5YlU0akN5VEowZFYyckRIVURKTTY4UDRQT19aV2VRR25Xenk5ZjZCVTZlZEdHWTVSbkRKSi0xekhRUTByYUVKcEsxY1hsLWVTVXIwVGY2dGItX0c3ZnJtbDNmRmhjY1dQWjNnRldfaVEwSGgyQkNMZUpzVkdyajVUdHlvZXY0Ul94MEZ4a1Y3WnkxQVNpQVlfdHN1clpITVp5VDhDVnFSTkpHaExCMUhTUQ?oc=5"
@@ -810,25 +818,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Spruce Biosciences Appoints Eric Jordan as Vice President, Marketing and Tina Gullotta as Vice President, Finance and Corporate Controller",
-      "date": "Mon, 15 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMingJBVV95cUxOZ1JpS0kxZUprUmFZLUZxeHEzQmJWQWZ1dWhiX19ReElUT1Q0bmpEemZlSGlKV3c3bmlWR2NEbVV5dXh1ckFQMGFVZXNqZFJHWUVwaWJVR1JIbS1xUVIyQTNheDRrdlkwS0NZQ1ZBTHlvTExwRUtXX3NzYkQwZ3NTbEFwNTg0S0c4NExSTktUNlhYbWFkVkdDczNSQ202M1lGWVRFbDNNQWRrVDRvQXpZQmtKb21RQVpTWXR3dHBUX0tfR3BUNVFhdjdVMkQwcF92c0pUcGFLVGg0My0yZzZjWG9nRkRrZWJmbHdtcUFCT1ZqbjRCTXA4NEpwQ0c0RHQ5UkhEejd0SEFyMjdyU3p1UjJKLTYwSjROZTdCbjRR?oc=5"
+      "event": "Palvella stock rises on FDA rolling review for rare disease drug By Investing.com",
+      "date": "Mon, 22 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNNVdqRmRocWp2YzFXb1U0UkxWdGl4Z3ZoWTNGT1l5MFJobEoxcUk4ak5IQVI1UnhmVnlFZGx1T3pqVHQyZktaVm84NzFaQkNTMGVvZ3pXLUxwSW1aenc3ZDBua0NMdkJOUkxwbUJHSkM4MnpMbGp4em1TUDJONVl3S1h6Wkw0QkIyNDRRWGt1VnZYZm1McFpWVWtIc0Q0SFUycW5lMERnR05oQlRZZGtQQW1xdW5YQ0JtZFlwcXhxNXVIUW8?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Spruce Biosciences names two executives ahead of potential FDA decision By Investing.com",
-      "date": "Mon, 15 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNM2pDMGFiLWprQVhFRU9VVXoxdjhIcGtDcDlyeEY2aFlieTdkWEh2NjBWNnNXQkRyVEV6Y3lQN3ZJZ3BlRzJMdUlGYWotenVBeHo0WFM4emJicGUxYjk5OFp5b2JhSnlMMS1EVFEwWlN5X1lST1FZREVDRjRURlltaHY0NDBGNmc5ckF4dkFBUlhFQzI4bkR3eUdsUHcxeUFTcFphRlg3LW5fazlFZlZNOUY2ejJSeVZmUnRfX2hIRGg2YjhPRUtMUC1oU1ZsYjZ5X044Q2RGSzBGMTNk?oc=5"
+      "event": "Prime Medicine Receives U.S. FDA Regenerative Medicine",
+      "date": "Mon, 22 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxNRVVkMVVGWkNQUFhyNXVfRVFfNTBoWHlDaUdXLUh4akVqNjNUZTl4VktVandHbXh1aEladm54UGRQUDl0X2hVeW1FSVNtVnROT19rdG4zRklRYmJDY1BGd2FpX0R5WGxZanBaWXhKbmR3YmxUMTJ1d0paOTBNMGRNTndOcUp6eU5heWRxYXozUTQxdnZDd0RyY3RfV003Wi1MY0RnMXFSQ3psV1pfZ1NOV3VXTUNzaTRmRWVldVRpS0JFaEYweVBsVXBCMENpdmtNRGFmZDJLb1lLSHNFSFh6MU5qT09SMFQ3ZDQ2NWl2YWhCMmVISFQ3OUFKc2lIUWIxRk5jT1JFSnRjb0F0Tkp5RG55dHB0ekFxRHZ4YTVGejkzbWxLZDFENXBILVc1bTBxWm5QMWVvTUJyRFFuVXVwOFdadTU2WHM?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Spruce Biosciences Appoints Eric Jordan and Tina Gullotta to Leadership Roles Ahead of Potential TA-ERT Launch",
-      "date": "Mon, 15 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxNSnl6MmVheE5qWnN0VWpCT01CNkt0bWNHUWF6REY3eXBFZkxLZ0hCZm55Mk5KMHcxZ0pfM01mM0V4TlN6VlpXVDU2YlRmb2p2TVhxMHBGOThFcG9FVHhpNkZsYmU4ZldDcVdMaVBwOVFTbXp6NlpEQ1N1T3pSR00yNWNjVmxsd05XcG1VQmg3V3dScnNQUWxhUWlVWTI0WHloNWxVcnowZkRXS3VyTThoZ3lBcVlyb0VNQkluSV9zNHlmbTZzZklOOFA3S1ZINXMtSUdoR0RydGVlQnRlcC14cC1wdw?oc=5"
+      "event": "Prime Medicine\u2019s CGD therapy gets FDA RMAT, speeding review",
+      "date": "Mon, 22 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPMlhTckNtdDNhejQ0RmJ2cWtPVENKOVRTeGZScjNmWnBtOVViMXJHTDg1Mk9iMXlyY0NMTkJIVERMWWNrRmloc0stR2ZVSVdXZHJiYkZKbEtMTmxqRy13LTZwLTFGNWNkak1QTTVtS3ZwWnQzYk14dDBpZC1obnlicmpSeDNrRGgzQzdlUXFEWnNaSzRCZTU0cE5rRXppN0xSVEo3SEROWGh0N0dnR0wzMjhrVVhJS1pZ?oc=5"
     },
     {
       "company": "See source",
@@ -837,44 +845,36 @@
       "event": "Pediatric voucher play: Cadrenal (NASDAQ: CVKD) eyes tecarfarin RPDD",
       "date": "Thu, 18 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPalhGTU5DR2dyZHZ4MzJUUlliT2hKUWo3UjJuQXpYMFJHSHRnZFpBdWlOZ2pzUlhBSjBLSmdNRkpiemFuNlhuN1laVjJBcFBrenl2ckx0eElGNFFWR0llazRsLUhBblg3cDctX2tLVVJfcGhKNGlZOUJTX2pBa1ZsUl82UzJMV2RlRW5pQlBqY1pyYW1PX3dJV2N6TGhtNXNjMkwxX183X19lX3k2a2RvdHkwOVc?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Belite Bio stock price target maintained at $200 by H.C. Wainwright on NDA completion",
-      "date": "Tue, 16 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNUWV2VmlmVXZtdUJKZ29hX001UGV5V3ExZjdZVGdLVWdXOXAxU29HV0RzQXhycGlpY0tMSzJkdEZmWndLaWtnT29STG1lZEcyV1kyRkU4aXhPRld5VkJMWWFiMm9DazhrUDlhcHpjc2s4Ym16dXl4SjdDTWxLdW1vbmcxR2J5eVVIOXVGem1zc0M4a2NnVklRNUU4RVdzajFfOTN2ci1tMS1DcHhreFF6YXpFTDBrLTl6Qk9jVUJOQ0FtN3NPV1FoZi1vN1lfN1FrYTI2SUVLOE9YUQ?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,500.58",
-      "daily": 1.08,
-      "weekly": 1.44,
-      "monthly": 2.0
+      "value": "7,472.79",
+      "daily": -0.37,
+      "weekly": 0.56,
+      "monthly": -0.62
     },
     {
       "name": "Nasdaq",
-      "value": "26,517.93",
-      "daily": 1.91,
-      "weekly": 2.74,
-      "monthly": 2.5
+      "value": "26,166.60",
+      "daily": -1.32,
+      "weekly": 1.07,
+      "monthly": -1.84
     },
     {
       "name": "Dow Jones",
-      "value": "51,564.70",
-      "daily": 0.14,
-      "weekly": 1.41,
-      "monthly": 4.46
+      "value": "51,712.71",
+      "daily": 0.29,
+      "weekly": 1.0,
+      "monthly": 2.48
     },
     {
       "name": "Russell 2000",
-      "value": "2,979.77",
-      "daily": 2.12,
-      "weekly": 2.01,
-      "monthly": 8.47
+      "value": "3,004.40",
+      "daily": 0.83,
+      "weekly": 2.05,
+      "monthly": 2.87
     }
   ]
 }
