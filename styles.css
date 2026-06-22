@@ -709,6 +709,7 @@ a {
   border-top: 1px solid #e7edf2;
 }
 
+.answer-subsection h3,
 .answer-subsection h4 {
   margin: 0;
   color: var(--navy);
