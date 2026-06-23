@@ -253,23 +253,44 @@ a {
 }
 
 .education-page .hero-banner {
-  min-height: clamp(166px, 18vw, 260px);
+  min-height: clamp(78px, 8vw, 112px);
 }
 
 .education-page .hero-overlay {
-  padding-top: clamp(28px, 3.5vw, 54px);
-  padding-bottom: clamp(28px, 3.5vw, 54px);
+  padding-top: clamp(12px, 1.45vw, 20px);
+  padding-bottom: clamp(12px, 1.45vw, 20px);
 }
 
 .education-page .hero-banner h1 {
-  font-size: clamp(2.25rem, 4.1vw, 4.35rem);
-  line-height: 1;
+  font-size: clamp(1.45rem, 2.45vw, 2.65rem);
+  line-height: 1.04;
 }
 
 .education-page .hero-banner p {
-  margin-top: clamp(10px, 1.2vw, 18px);
-  font-size: clamp(1.05rem, 1.55vw, 1.65rem);
-  line-height: 1.32;
+  margin-top: clamp(4px, 0.55vw, 8px);
+  font-size: clamp(0.78rem, 0.95vw, 1rem);
+  line-height: 1.24;
+}
+
+.education-page .page-shell {
+  padding-top: clamp(16px, 2vw, 26px);
+}
+
+.education-page .back-link {
+  margin-bottom: 12px;
+}
+
+.education-page #education-overview h2 {
+  font-size: clamp(1.65rem, 2.2vw, 2.35rem);
+}
+
+.education-page #education-overview > p:not(.eyebrow) {
+  max-width: 860px;
+  font-size: 0.98rem;
+}
+
+.education-page .education-paths {
+  margin-top: 18px;
 }
 
 .page-shell {
@@ -1325,20 +1346,34 @@ a {
   }
 
   .education-page .hero-banner {
-    min-height: 164px;
+    min-height: 96px;
   }
 
   .education-page .hero-overlay {
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-top: 16px;
+    padding-bottom: 16px;
   }
 
   .education-page .hero-banner h1 {
-    font-size: clamp(2rem, 5.7vw, 3rem);
+    font-size: clamp(1.5rem, 4.4vw, 2.2rem);
   }
 
   .education-page .hero-banner p {
-    font-size: clamp(0.98rem, 2.55vw, 1.25rem);
+    margin-top: 5px;
+    font-size: clamp(0.78rem, 1.85vw, 0.94rem);
+  }
+
+  .education-page .page-shell {
+    gap: 24px;
+    padding-top: 20px;
+  }
+
+  .education-page .profile-sidebar {
+    padding-bottom: 20px;
+  }
+
+  .education-page .education-paths {
+    margin-top: 16px;
   }
 
   .hero-dna {
@@ -1432,21 +1467,37 @@ a {
   }
 
   .education-page .hero-banner {
-    min-height: 152px;
+    min-height: 92px;
   }
 
   .education-page .hero-overlay {
-    padding: 28px 76px 28px 20px;
+    padding: 14px 68px 14px 18px;
   }
 
   .education-page .hero-banner h1 {
-    font-size: clamp(1.62rem, 7.1vw, 2.2rem);
+    font-size: clamp(1.22rem, 5.6vw, 1.65rem);
   }
 
   .education-page .hero-banner p {
-    margin-top: 8px;
-    font-size: 0.95rem;
-    line-height: 1.28;
+    margin-top: 4px;
+    font-size: 0.76rem;
+    line-height: 1.2;
+  }
+
+  .education-page .page-shell {
+    padding-top: 18px;
+  }
+
+  .education-page #education-overview h2 {
+    font-size: clamp(1.45rem, 6vw, 1.85rem);
+  }
+
+  .education-page #education-overview > p:not(.eyebrow) {
+    font-size: 0.92rem;
+  }
+
+  .education-page .education-paths {
+    margin-top: 14px;
   }
 
   .profile-sidebar {
