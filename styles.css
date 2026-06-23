@@ -729,6 +729,61 @@ a {
 .education-accordion-trainee summary::after { color: #6844b8; background: #f0ebfa; }
 .education-accordion-trainee details[open] summary { color: #6040a6; background: #f9f7fc; }
 
+.education-card-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(220px, 0.8fr));
+  gap: clamp(18px, 2.2vw, 28px);
+  margin-top: 28px;
+  align-items: stretch;
+}
+
+.education-resource-card {
+  display: flex;
+  min-height: 260px;
+  padding: clamp(22px, 2vw, 30px);
+  border: 1px solid #dbe4ed;
+  border-top: 5px solid currentColor;
+  border-radius: 12px;
+  flex-direction: column;
+  color: #1769bc;
+  background: linear-gradient(145deg, #fff 0%, #f5f9fe 100%);
+  box-shadow: 0 14px 34px rgba(6, 25, 71, 0.08);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.education-resource-card:hover,
+.education-resource-card:focus-within {
+  border-color: color-mix(in srgb, currentColor 34%, white);
+  box-shadow: 0 22px 42px rgba(6, 25, 71, 0.14);
+  transform: translateY(-3px);
+}
+
+.education-resource-card h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(1.16rem, 1.25vw, 1.42rem);
+  line-height: 1.25;
+}
+
+.education-resource-card .education-accordion {
+  margin-top: 20px;
+}
+
+.education-resource-card .status-pill {
+  width: max-content;
+  margin-top: auto;
+}
+
+.education-resource-card-guide {
+  color: #0f8b72;
+  background: linear-gradient(145deg, #fff 0%, #f2fbf8 100%);
+}
+
+.education-resource-card-guidelines {
+  color: #704cc2;
+  background: linear-gradient(145deg, #fff 0%, #f8f5fd 100%);
+}
+
 .accordion-answer {
   padding: 2px 58px 20px 20px;
   border-top: 1px solid #edf1f4;
@@ -1303,6 +1358,7 @@ a {
   }
 
   .education-paths,
+  .education-card-grid,
   .coming-soon-panel {
     grid-template-columns: 1fr;
   }
