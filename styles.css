@@ -508,6 +508,77 @@ a {
   margin-bottom: 10px;
 }
 
+.guideline-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2.2vw, 28px);
+}
+
+.guideline-card {
+  display: flex;
+  min-height: 330px;
+  padding: clamp(24px, 2.3vw, 34px);
+  border: 1px solid color-mix(in srgb, currentColor 18%, white);
+  border-top: 5px solid currentColor;
+  border-radius: 12px;
+  flex-direction: column;
+  color: #1769bc;
+  background: linear-gradient(145deg, #fff 0%, color-mix(in srgb, currentColor 8%, white) 100%);
+  box-shadow: 0 14px 34px rgba(6, 25, 71, 0.08);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.guideline-card:hover,
+.guideline-card:focus-within {
+  border-color: color-mix(in srgb, currentColor 34%, white);
+  box-shadow: 0 22px 42px rgba(6, 25, 71, 0.14);
+  transform: translateY(-3px);
+}
+
+.guideline-card-rare {
+  color: #704cc2;
+}
+
+.guideline-card-iem {
+  color: #0f8b72;
+}
+
+.guideline-card-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 22px;
+  border-radius: 14px;
+  color: #fff;
+  background: currentColor;
+}
+
+.guideline-card-icon svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  color: #fff;
+}
+
+.guideline-card h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(1.18rem, 1.35vw, 1.48rem);
+  line-height: 1.25;
+}
+
+.guideline-card p {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: clamp(0.98rem, 1.02vw, 1.08rem);
+  line-height: 1.58;
+}
+
 .education-content {
   width: 100%;
   max-width: 1180px;
@@ -1190,6 +1261,10 @@ a {
 
   .program-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .guideline-card-grid {
+    grid-template-columns: 1fr;
   }
 
   .profile-sidebar {
