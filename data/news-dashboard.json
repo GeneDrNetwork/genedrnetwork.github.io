@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-22T21:30:02+00:00",
+  "updated_at": "2026-06-23T18:21:25+00:00",
   "summaries": {
-    "ai": "Key developments: 3 US AI Infrastructure Stocks For Data Center Demand And Valuation Risk; Nebius Has 40% Upside in 2026 as Global AI Data Center Shortage Worsens; Nvidia Touts \u2018100% Reduction in Water Use\u2019 With New Data Center Design.",
-    "biotech": "Key developments: Redefining what success looks like in PSC: The evolution of clinical trial endpoints; Beyond the Biotech Race \u2014 Right-Sizing U.S.-China Competition in a Human-Centered Industry; Exclusive | FDA Gives Third Rare-Disease Drug Another Shot, Regenxbio Says.",
-    "market": "Key developments: Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28; S&P 500, Nasdaq end in the red as tech suffers, traders weigh in Middle East peace talks; US Stock Market Today: S&P 500, Dow Rise As Investors Cheer Iran Talks Progress; Tech-Heavy Nasdaq In Red.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.83% today; Nasdaq was weakest at -1.32%. Key developments: Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28; S&P 500, Nasdaq end in the red as tech suffers, traders weigh in Middle East peace talks; US Stock Market Today: S&P 500, Dow Rise As Investors Cheer Iran Talks Progress; Tech-Heavy Nasdaq In Red."
+    "ai": "Key developments: Nvidia's Latest AI Breakthrough May Not Be a Chip - And It Could Fuel the Next Data Center Boom; Super Micro-Backed AI Firm Bags $7.8 Billion Deals With Nvidia Chips in Demand; SanDisk shares reach record $2,354 as memory chip demand from AI infrastructure accelerates.",
+    "biotech": "Key developments: Redefining what success looks like in PSC: The evolution of clinical trial endpoints; BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex; Our Origin Story.",
+    "market": "Key developments: Stock Market Today: Stock Market News And Analysis; Tech Stocks Drive \u2018Unnerving\u2019 Sell-Off in Global Markets; US Stock Market Today: S&P 500 Futures Ease As Traders Eye PCE Inflation Data.",
+    "market_movers": "Dow Jones led tracked indexes at +0.03% today; Nasdaq was weakest at -1.84%. Key developments: Stock Market Today: Stock Market News And Analysis; Tech Stocks Drive \u2018Unnerving\u2019 Sell-Off in Global Markets; US Stock Market Today: S&P 500 Futures Ease As Traders Eye PCE Inflation Data."
   },
   "takeaways": [
-    "3 US AI Infrastructure Stocks For Data Center Demand And Valuation Risk - simplywall.st",
-    "Nebius Has 40% Upside in 2026 as Global AI Data Center Shortage Worsens - 24/7 Wall St.",
+    "Nvidia's Latest AI Breakthrough May Not Be a Chip - And It Could Fuel the Next Data Center Boom - 24/7 Wall St.",
+    "Super Micro-Backed AI Firm Bags $7.8 Billion Deals With Nvidia Chips in Demand - Barron's",
     "Redefining what success looks like in PSC: The evolution of clinical trial endpoints - Fierce Biotech",
-    "Beyond the Biotech Race \u2014 Right-Sizing U.S.-China Competition in a Human-Centered Industry - Asia Society",
-    "Palvella Therapeutics Announces FDA Rolling Review for QTORIN Rapamycin NDA in Microcystic Lymphatic Malformations - Quiver Quantitative",
-    "Cadrenal plans FDA rare pediatric disease request for tecarfarin in Kawasaki disease - Contemporary Pediatrics",
-    "Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28 - TV News Check"
+    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - Business Wire",
+    "Tinlarebant NDA submission completed for Stargardt disease type 1, targeting first approved therapy - Ophthalmology Times",
+    "FDA conditionally approves Quoin's QYLEKI name for rare skin drug - Stock Titan",
+    "Stock Market Today: Stock Market News And Analysis - Investor's Business Daily"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,6 +786,38 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Tinlarebant NDA submission completed for Stargardt disease type 1, targeting first approved therapy",
+      "date": "Wed, 17 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOM09KaW04aTNIaWRhdkx3dHh3YUdaUUd0UkU2bGJXQmZXX3ByekVabFduUEtINkNZV3JNbWJhSXVzc2xoeG9udlpoWEd6dk84NlR3ZUNsOWkzZWFicjRSbUlBRzdMQ19PbGM0eWlsR3lBd3pxVGRJTzhRQ0ppbTlGTlluTzRxYnB2VnF4dkpkbzRKR0ZIOGNxaVpn?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA conditionally approves Quoin's QYLEKI name for rare skin drug",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPSW44NG5KUzItb2hEYURMZ1JVQjhKTGNiZzBjR1RvWVJJajR4ZGhyZXlDQ3Fla0FxSGxpSTlNVUlaa1JpbEstekVDME1kejR4ck83YkRQSVA5SkxtYUQ1R2V2SGlwLVJWajlZM09yeHJHYm5VNWN0Mmt3ZmlmVnJTV3JpZTdWWVZqd2JkaVYwcWlEemYzelROX1lBMTdYTDF5ZTBJQWtUWUJOTzRaRmdpN19ReU9RQ1pDajQzM3VnUQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Quoin Pharmaceuticals Receives FDA Conditional Approval of",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMipAJBVV95cUxNMk9qeV83U0VUTU1jbEk2aTMzX1RFaHV0bG1pUGIxV3NoMEpBbFpJSU9DTFF5aG1Yb2NURVFpSUFESlREempLanNOMW9jQzN6Snd1cW9vVHpMTEZrT243M0x4OXNRSzRyVXlVRnJvcmJERUZsd0xCT205dmp0WTYyTG1oTUhqd3ZaOEY1amVMMkQyREZYc3hGdXRhN2xtejdPU1pOVHVMWTYyZG05SmpXN0dkUGRnMHVqZ09VTWpNaWV5TlJESGs4UmM2ZXNZVUcwWVp3YTJkb3FONmt0VUt6NkFnSXE1cmZKRzlMdUlCbFlqdWFobTB3MFd5MTFreHpQRU5FZkE4eExJNW1HYzJlb2U5TjFna1gtWUJ2LXhVRFpFTkYt?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOWU5kQk1ucUNTbER0NHhKbmRiUTAwU0pNblV2NGpGX1cyb2xNQkRjckd5SGdaTFVjYmVsOFlXT1ZXVXlYckRqMlFwUC1ranNEdS1tdlBSS1Z1VEhkaWFYT3Vub1dOdXJrQ2F3bktkOTU3YzlWWjAwLWlKMTJkZUpMZHIwMFN5VF9pRGk0YjNTa2N4cWRzbVNpWXRGa2xWTzdTTHVHODBxZDdYNk1OMHk0RklpMXVsVXZJc3R4cnRoWDZVX2dKWEdoTWNaOEZXdFJJaGt6bEpkT1EyQWFGaTVITlB1c1czQWRFcndhWVlMYWR5RjZs?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Palvella Therapeutics Announces FDA Rolling Review for QTORIN Rapamycin NDA in Microcystic Lymphatic Malformations",
       "date": "Mon, 22 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOeVdvdVlFcm9CT1ZjZXdRWVdMMnJiNVFteFdLeERScjJ6ZGNXX2phRlBfN0V3OENMM2FadUVMSjhfV2Y0VXlmaE1MZkxiRlpDa1lBMW1UUm1Sd3l4MDJxTGlxNUV3T0R5aHJXNlFhNTRkOWd2eXlMbXcxU00yWVIyZkoxUlJRdDB5LUlyRVFxbENvcXQ5bTNuT0FvcjNEZ3ZOVWliNmRreWFST2M4aEFGZmV1NkpqRXQ0TTBrT3dYTWRWdWVaMHd5eE1nU2dVYUJDZzFxU29oWWM3ZDZ0R2pXQw?oc=5"
@@ -794,17 +826,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Cadrenal plans FDA rare pediatric disease request for tecarfarin in Kawasaki disease",
-      "date": "Fri, 19 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQQ2pTbkppd09ocWFIbUdWeDJxMTlWMzAtYmNMRk9oSnQ2aFBQV3k1RnpPLTVWRmdOSi1SdzlkZTBNOEpfcDNzUGcwZURHT3BxUWR2NHljbloyb1BMUDhXdEhQMDk5NURtQmVjQWNkWkp1MzVWS3RzN1RnTnF5THZNRW96SVdOZlh4OU9EMG1MZmZERVhSd1lHWEFtcjRxM01Oek13QXZFZlUwUUFZWW0tdUV6Z1RlVE94RGZDNDRrcVdxUQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Palvella Therapeutics granted FDA rolling review for QTORIN",
-      "date": "Mon, 22 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOUVJ2WGQtVjRfSkU4NGJwY2RJNUdKZmhocVNMVFpDcHl6SDZsM3M1NVZmbjNxVGF2NmRBLXJZTWlQcXBTa2ZudFVLZ2xjYVlxaGlUT1piLU1tUHc3UmZBQlVyR280ZWtFUlhKWFUxT2FmRHJYdVZiSVZ6Z3N3M3dINXBseE1nczBxWHdDb1l6aVM?oc=5"
+      "event": "BioMendics' Strategic Play: Fast-Tracking a Therapy for a Forgotten Disease",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOSmd5R0hyTTg4Y2RQU0s3b0k3WXNnZ25vNzNfTVh6b24tMGtQbUZlcVExSGVhd3N3bGxmZjhKYndJTXNQRFRidlZsQWJzTTkzejdOVWdIak5NWGpid1hrNC1IUl92cFBJUWVla0NfU1hhRnRnbDRjODVaT0JIRS1DYi0yY1FZcHF3Q3N5ZEl2NkxJb25jRGktaEJjNGEtWDZNby1reGdMeTludw?oc=5"
     },
     {
       "company": "See source",
@@ -818,63 +842,39 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Palvella stock rises on FDA rolling review for rare disease drug By Investing.com",
-      "date": "Mon, 22 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNNVdqRmRocWp2YzFXb1U0UkxWdGl4Z3ZoWTNGT1l5MFJobEoxcUk4ak5IQVI1UnhmVnlFZGx1T3pqVHQyZktaVm84NzFaQkNTMGVvZ3pXLUxwSW1aenc3ZDBua0NMdkJOUkxwbUJHSkM4MnpMbGp4em1TUDJONVl3S1h6Wkw0QkIyNDRRWGt1VnZYZm1McFpWVWtIc0Q0SFUycW5lMERnR05oQlRZZGtQQW1xdW5YQ0JtZFlwcXhxNXVIUW8?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Prime Medicine Receives U.S. FDA Regenerative Medicine",
-      "date": "Mon, 22 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxNRVVkMVVGWkNQUFhyNXVfRVFfNTBoWHlDaUdXLUh4akVqNjNUZTl4VktVandHbXh1aEladm54UGRQUDl0X2hVeW1FSVNtVnROT19rdG4zRklRYmJDY1BGd2FpX0R5WGxZanBaWXhKbmR3YmxUMTJ1d0paOTBNMGRNTndOcUp6eU5heWRxYXozUTQxdnZDd0RyY3RfV003Wi1MY0RnMXFSQ3psV1pfZ1NOV3VXTUNzaTRmRWVldVRpS0JFaEYweVBsVXBCMENpdmtNRGFmZDJLb1lLSHNFSFh6MU5qT09SMFQ3ZDQ2NWl2YWhCMmVISFQ3OUFKc2lIUWIxRk5jT1JFSnRjb0F0Tkp5RG55dHB0ekFxRHZ4YTVGejkzbWxLZDFENXBILVc1bTBxWm5QMWVvTUJyRFFuVXVwOFdadTU2WHM?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Prime Medicine\u2019s CGD therapy gets FDA RMAT, speeding review",
-      "date": "Mon, 22 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPMlhTckNtdDNhejQ0RmJ2cWtPVENKOVRTeGZScjNmWnBtOVViMXJHTDg1Mk9iMXlyY0NMTkJIVERMWWNrRmloc0stR2ZVSVdXZHJiYkZKbEtMTmxqRy13LTZwLTFGNWNkak1QTTVtS3ZwWnQzYk14dDBpZC1obnlicmpSeDNrRGgzQzdlUXFEWnNaSzRCZTU0cE5rRXppN0xSVEo3SEROWGh0N0dnR0wzMjhrVVhJS1pZ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Pediatric voucher play: Cadrenal (NASDAQ: CVKD) eyes tecarfarin RPDD",
-      "date": "Thu, 18 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPalhGTU5DR2dyZHZ4MzJUUlliT2hKUWo3UjJuQXpYMFJHSHRnZFpBdWlOZ2pzUlhBSjBLSmdNRkpiemFuNlhuN1laVjJBcFBrenl2ckx0eElGNFFWR0llazRsLUhBblg3cDctX2tLVVJfcGhKNGlZOUJTX2pBa1ZsUl82UzJMV2RlRW5pQlBqY1pyYW1PX3dJV2N6TGhtNXNjMkwxX183X19lX3k2a2RvdHkwOVc?oc=5"
+      "event": "A Name, A Hope: QYLEKI\u2122 Signals a New Dawn for Netherton Syndrome",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPS0NiM2g0NDdGWVJrVU5MbW1fako1SG1iWWRkd2c0QjV0R2QtSlZ4cG1NREQ3WWRjLXFOeHNMTlpXNUFsckxxQlRqN1VlUmY0RFRwa25wOWtTN19JRWVKdkJvYXhIazVfMEZKemQxMGlKUkozM29rTkdLVktlWFhBeGVEMlJ4dHVfbU54dVJqRnFnd0JsZGJWOGpJaw?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,472.79",
-      "daily": -0.37,
-      "weekly": 0.56,
-      "monthly": -0.62
+      "value": "7,381.67",
+      "daily": -1.22,
+      "weekly": -2.29,
+      "monthly": -1.83
     },
     {
       "name": "Nasdaq",
-      "value": "26,166.60",
-      "daily": -1.32,
-      "weekly": 1.07,
-      "monthly": -1.84
+      "value": "25,686.11",
+      "daily": -1.84,
+      "weekly": -3.74,
+      "monthly": -3.64
     },
     {
       "name": "Dow Jones",
-      "value": "51,712.71",
-      "daily": 0.29,
-      "weekly": 1.0,
-      "monthly": 2.48
+      "value": "51,729.20",
+      "daily": 0.03,
+      "weekly": 0.11,
+      "monthly": 2.51
     },
     {
       "name": "Russell 2000",
-      "value": "3,004.40",
-      "daily": 0.83,
-      "weekly": 2.05,
-      "monthly": 2.87
+      "value": "2,982.70",
+      "daily": -0.72,
+      "weekly": 0.59,
+      "monthly": 2.13
     }
   ]
 }
