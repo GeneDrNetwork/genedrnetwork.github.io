@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-23T18:21:25+00:00",
+  "updated_at": "2026-06-24T18:15:09+00:00",
   "summaries": {
-    "ai": "Key developments: Nvidia's Latest AI Breakthrough May Not Be a Chip - And It Could Fuel the Next Data Center Boom; Super Micro-Backed AI Firm Bags $7.8 Billion Deals With Nvidia Chips in Demand; SanDisk shares reach record $2,354 as memory chip demand from AI infrastructure accelerates.",
-    "biotech": "Key developments: Redefining what success looks like in PSC: The evolution of clinical trial endpoints; BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex; Our Origin Story.",
-    "market": "Key developments: Stock Market Today: Stock Market News And Analysis; Tech Stocks Drive \u2018Unnerving\u2019 Sell-Off in Global Markets; US Stock Market Today: S&P 500 Futures Ease As Traders Eye PCE Inflation Data.",
-    "market_movers": "Dow Jones led tracked indexes at +0.03% today; Nasdaq was weakest at -1.84%. Key developments: Stock Market Today: Stock Market News And Analysis; Tech Stocks Drive \u2018Unnerving\u2019 Sell-Off in Global Markets; US Stock Market Today: S&P 500 Futures Ease As Traders Eye PCE Inflation Data."
+    "ai": "Key developments: Nations race to secure sovereign AI as chips, energy become strategic assets; Qualcomm inks deal for AI startup Modular to bolster software stack, data center build-out; Microsoft Stock And 2 AI Infrastructure Names Facing Cash Flow Pressure.",
+    "biotech": "Key developments: Wagering on FDA changes, Regenxbio will submit Duchenne gene therapy for approval; To Wall Street, psychedelics biotechs are more teammates than rivals; The FDA's industry-friendly about-face.",
+    "market": "Key developments: Wall St rebounds with broad gains as oil slides sharply; US Stock Market Today S&P 500 Futures Drop On Global Growth And Rate Worries; Stock Market Today: Stock Market News And Analysis.",
+    "market_movers": "Dow Jones led tracked indexes at +0.32% today; Nasdaq was weakest at -0.35%. Key developments: Wall St rebounds with broad gains as oil slides sharply; US Stock Market Today S&P 500 Futures Drop On Global Growth And Rate Worries; Stock Market Today: Stock Market News And Analysis."
   },
   "takeaways": [
-    "Nvidia's Latest AI Breakthrough May Not Be a Chip - And It Could Fuel the Next Data Center Boom - 24/7 Wall St.",
-    "Super Micro-Backed AI Firm Bags $7.8 Billion Deals With Nvidia Chips in Demand - Barron's",
-    "Redefining what success looks like in PSC: The evolution of clinical trial endpoints - Fierce Biotech",
-    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - Business Wire",
-    "Tinlarebant NDA submission completed for Stargardt disease type 1, targeting first approved therapy - Ophthalmology Times",
+    "Nations race to secure sovereign AI as chips, energy become strategic assets - The Jerusalem Post",
+    "Qualcomm inks deal for AI startup Modular to bolster software stack, data center build-out - CNBC",
+    "Wagering on FDA changes, Regenxbio will submit Duchenne gene therapy for approval - statnews.com",
+    "To Wall Street, psychedelics biotechs are more teammates than rivals - BioPharma Dive",
+    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - BioSpace",
     "FDA conditionally approves Quoin's QYLEKI name for rare skin drug - Stock Titan",
-    "Stock Market Today: Stock Market News And Analysis - Investor's Business Daily"
+    "Wall St rebounds with broad gains as oil slides sharply - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,9 +786,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Tinlarebant NDA submission completed for Stargardt disease type 1, targeting first approved therapy",
-      "date": "Wed, 17 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOM09KaW04aTNIaWRhdkx3dHh3YUdaUUd0UkU2bGJXQmZXX3ByekVabFduUEtINkNZV3JNbWJhSXVzc2xoeG9udlpoWEd6dk84NlR3ZUNsOWkzZWFicjRSbUlBRzdMQ19PbGM0eWlsR3lBd3pxVGRJTzhRQ0ppbTlGTlluTzRxYnB2VnF4dkpkbzRKR0ZIOGNxaVpn?oc=5"
+      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
+      "date": "Wed, 24 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNbFZ3YUpabF9makxaOURnMmYwRkhGaWlNazNWQy1vWW0tRk1tYXpXMXpSOGRiTVl1c25ZVzlTcmFYVjl0OEpaZlZBRVdnWk9ndGUzYmVaYVFuOTNwLWZUZXVSbHNYZnNvMUFLME5RR3lrVTExdm4zQXd4b3NURjk4c3FzTFNtTHZZNEhNUmJVa0RfQmRnRHZFVVFwSW5ZZHRWNjNvb2dMS1BnemZ2aU45YWJTaERXRHJHWGFnMGlNTlBWVnRESHh1aEduSldQUFRSbFdZMHM3TU9LbFE5eUE?oc=5"
     },
     {
       "company": "See source",
@@ -804,15 +804,7 @@
       "indication": "See source",
       "event": "Quoin Pharmaceuticals Receives FDA Conditional Approval of",
       "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMipAJBVV95cUxNMk9qeV83U0VUTU1jbEk2aTMzX1RFaHV0bG1pUGIxV3NoMEpBbFpJSU9DTFF5aG1Yb2NURVFpSUFESlREempLanNOMW9jQzN6Snd1cW9vVHpMTEZrT243M0x4OXNRSzRyVXlVRnJvcmJERUZsd0xCT205dmp0WTYyTG1oTUhqd3ZaOEY1amVMMkQyREZYc3hGdXRhN2xtejdPU1pOVHVMWTYyZG05SmpXN0dkUGRnMHVqZ09VTWpNaWV5TlJESGs4UmM2ZXNZVUcwWVp3YTJkb3FONmt0VUt6NkFnSXE1cmZKRzlMdUlCbFlqdWFobTB3MFd5MTFreHpQRU5FZkE4eExJNW1HYzJlb2U5TjFna1gtWUJ2LXhVRFpFTkYt?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOWU5kQk1ucUNTbER0NHhKbmRiUTAwU0pNblV2NGpGX1cyb2xNQkRjckd5SGdaTFVjYmVsOFlXT1ZXVXlYckRqMlFwUC1ranNEdS1tdlBSS1Z1VEhkaWFYT3Vub1dOdXJrQ2F3bktkOTU3YzlWWjAwLWlKMTJkZUpMZHIwMFN5VF9pRGk0YjNTa2N4cWRzbVNpWXRGa2xWTzdTTHVHODBxZDdYNk1OMHk0RklpMXVsVXZJc3R4cnRoWDZVX2dKWEdoTWNaOEZXdFJJaGt6bEpkT1EyQWFGaTVITlB1c1czQWRFcndhWVlMYWR5RjZs?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMipAJBVV95cUxQYWlySjdid0NzZ0NleFFaZmpMS0tyUWJiXzY5WEswamRrX1QtT3NpVG9NT2ZXR2UwalZxNmhoLURJd3JJMEpzMTJfT0M0MEo5LUIyTmtOS1c4SEstVmNJR19tWjlkeVlFb2Mxdk5NU2oxWkVHTzA1cmt3U2JiM0lIdTd2VHFYcU56dmItY0ZabGxoZUxxV1lsZlZQZHZKOEJjS1lkbGZ5WVMySGFDUk1fSW9pdVktR2FybGV1aE1GRUIxUEJ1YXNjYmVHSGFKUWxnUFQ5cG4wSk9KZkNSeDhZTmFzc1ctWFFvT1NvbjFJN29sd21mTmJ5aGhzU0kwNTctZkYxZWtPcFczSk9DVVJldVliOHdldzlDajY4YjdJbWxUOEk5?oc=5"
     },
     {
       "company": "See source",
@@ -834,47 +826,55 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Cadrenal targets FDA rare pediatric status for tecarfarin in Kawasaki disease",
-      "date": "Thu, 18 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOdkNQODZ5YlU0akN5VEowZFYyckRIVURKTTY4UDRQT19aV2VRR25Xenk5ZjZCVTZlZEdHWTVSbkRKSi0xekhRUTByYUVKcEsxY1hsLWVTVXIwVGY2dGItX0c3ZnJtbDNmRmhjY1dQWjNnRldfaVEwSGgyQkNMZUpzVkdyajVUdHlvZXY0Ul94MEZ4a1Y3WnkxQVNpQVlfdHN1clpITVp5VDhDVnFSTkpHaExCMUhTUQ?oc=5"
+      "event": "Quoin Pharmaceuticals: FDA Conditionally Accepts QYLEKI as Proposed Brand Name for QRX003",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxNM3lVUFFqWWFlZjRQVTY5a3llZ3NMV3phRWNWTHlrNHQ5RjBjNFlVQjFTTUlQVUVFczR1dVFPdS0xaWd2ZVZTc3VKa1gxYTlBRTU4bVNpRzNoTG1GTXkzMXExdjRER0s0ZDNmNV9Xa2lrRFQ3b1VYQTBqVUZreWtvMVF2dEZBOUdTdWpOY1VMRV9hbDRlaGJ0TU9tNWpyaUFrYWxDbGJzeG13VVo3Yllzbk1mRXJCV2VfSURUQ3dKck1wOGVUN2QwcG9wQnRWTFo2NjhrWW0yQlIweHZLWDVYYXNPOG0?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "A Name, A Hope: QYLEKI\u2122 Signals a New Dawn for Netherton Syndrome",
+      "event": "FDA backs QYLEKI name as Quoin (NASDAQ: QNRX) advances QRX003",
       "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPS0NiM2g0NDdGWVJrVU5MbW1fako1SG1iWWRkd2c0QjV0R2QtSlZ4cG1NREQ3WWRjLXFOeHNMTlpXNUFsckxxQlRqN1VlUmY0RFRwa25wOWtTN19JRWVKdkJvYXhIazVfMEZKemQxMGlKUkozM29rTkdLVktlWFhBeGVEMlJ4dHVfbU54dVJqRnFnd0JsZGJWOGpJaw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQRWxmb1FBSW9WZ01NcXA1UjRjNURxVmRQMGZ3OW1EdEJjb3RHeTRzcHBnYTRJdmFHRzZPb3lhUENsRFdDSFFvQXZ6UGhibDNEYjZ6dUdKdGJ3bFpHaFBpLWthS29oVEJGLW9WLTV0OFM2RjdXRHZ6RjBvSHFQMVZTWXBRczk3ZmVmUnp6U0ZEWFRoMHgwZGw2RTlWeU52VkJnaWtJQkxSV0JfRVBoVVFvVWRxMW4?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Spruce Biosciences Signals Commercial Shift with Key Hire for Rare Disease Drug",
+      "date": "Mon, 22 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQU3VNal8ybGJwd0lNdkVmX185NXhJZUU0RUxUR2NYZEFlaG9CWW1yQnpPc2tFdXdBbkluNE5JdlFUODQyYWNUeVhqLVhXS3pKbmQ0TmdueEJ4QnlyN25oVlFRLVY0aEtNSmN2RlRJMi01WXA2T0RfWUdXU0pScjktOUNCSUdJbTl6YU5sV012UjJVbHUzUnFfakxkZTVWWmpkQ3kzQ1JJUk5pMmtFRU41eXZ3?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,381.67",
-      "daily": -1.22,
-      "weekly": -2.29,
-      "monthly": -1.83
+      "value": "7,358.38",
+      "daily": -0.1,
+      "weekly": -2.04,
+      "monthly": -2.14
     },
     {
       "name": "Nasdaq",
-      "value": "25,686.11",
-      "daily": -1.84,
-      "weekly": -3.74,
-      "monthly": -3.64
+      "value": "25,497.50",
+      "daily": -0.35,
+      "weekly": -3.33,
+      "monthly": -4.35
     },
     {
       "name": "Dow Jones",
-      "value": "51,729.20",
-      "daily": 0.03,
-      "weekly": 0.11,
-      "monthly": 2.51
+      "value": "51,833.26",
+      "daily": 0.32,
+      "weekly": -0.32,
+      "monthly": 2.72
     },
     {
       "name": "Russell 2000",
-      "value": "2,982.70",
-      "daily": -0.72,
-      "weekly": 0.59,
-      "monthly": 2.13
+      "value": "2,981.22",
+      "daily": 0.19,
+      "weekly": 1.43,
+      "monthly": 2.08
     }
   ]
 }
