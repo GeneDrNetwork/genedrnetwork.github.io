@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-25T19:16:34+00:00",
+  "updated_at": "2026-06-26T17:25:19+00:00",
   "summaries": {
-    "ai": "Key developments: AI Infrastructure Stocks With Real Exposure to Data Center and Chip Demand; AI Data Centers Will Consume 70% of All Memory Chips in 2026. Here Are the Only 2 Stocks That Matter.; AI Demand Begins to Justify Massive Cost of Data-Center Buildout.",
-    "biotech": "Key developments: BIO 2026: FDA Leadership Confront Workforce Losses, China Competition in Drug Development; Friday Five \u2014 FDA looks to counter China threat, AbbVie acquires Apogee, psychedelics hype delivers compelling data\u2026and more; FDA\u2019s uniQure, REGENXBIO reversals could bolster other near-term rare disease applications.",
-    "market": "Key developments: Stock Market Today: Stock Market News And Analysis; Stock market today: Dow, S&P 500, Nasdaq futures rise as Micron eases AI fears, PCE hits 3-year high; US Stock Market Today: S&P 500, Nasdaq Bounce Back From Selloff As Micron Earnings Reignite AI Frenzy.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.30% today; Nasdaq was weakest at -0.63%. Key developments: Stock Market Today: Stock Market News And Analysis; Stock market today: Dow, S&P 500, Nasdaq futures rise as Micron eases AI fears, PCE hits 3-year high; US Stock Market Today: S&P 500, Nasdaq Bounce Back From Selloff As Micron Earnings Reignite AI Frenzy."
+    "ai": "Key developments: Data Centers in Colorado \u2013 Local Governments Take the Lead in Regulating Siting; Hundreds of data centers are coming to Texas; Beyond Cloud & Memory: Infrastructure ETFs to Buy Amid AI Data Center Boom.",
+    "biotech": "Key developments: Siren Biotechnology Awarded $8M in Non-Dilutive Grant; Biogen ends Apellis research programs, cuts \u2018small number\u2019 of roles after $5.6B buyout; What's Driving Rallybio's Recent Surge and Investor Interest.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq waver as report of OpenAI IPO delay rattles chip stocks; Dow Jones Futures: S&P 500 Set To Break Key Level As Techs Tumble; What To Do Now; Stock market today: Dow, S&P 500, Nasdaq slide as report of OpenAI IPO delay rattles techs.",
+    "market_movers": "S&P 500 led tracked indexes at +0.13% today; Dow Jones was weakest at +0.04%. Key developments: Stock market today: Dow, S&P 500, Nasdaq waver as report of OpenAI IPO delay rattles chip stocks; Dow Jones Futures: S&P 500 Set To Break Key Level As Techs Tumble; What To Do Now; Stock market today: Dow, S&P 500, Nasdaq slide as report of OpenAI IPO delay rattles techs."
   },
   "takeaways": [
-    "AI Infrastructure Stocks With Real Exposure to Data Center and Chip Demand - simplywall.st",
-    "AI Data Centers Will Consume 70% of All Memory Chips in 2026. Here Are the Only 2 Stocks That Matter. - The Motley Fool",
-    "BIO 2026: FDA Leadership Confront Workforce Losses, China Competition in Drug Development - Genetic Engineering and Biotechnology News",
-    "Friday Five \u2014 FDA looks to counter China threat, AbbVie acquires Apogee, psychedelics hype delivers compelling data\u2026and more - FirstWord PHARMA",
-    "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex - Contemporary Pediatrics",
-    "FDA conditionally approves Quoin's QYLEKI name for rare skin drug - Stock Titan",
-    "Stock Market Today: Stock Market News And Analysis - Investor's Business Daily"
+    "Data Centers in Colorado \u2013 Local Governments Take the Lead in Regulating Siting - Spencer Fane",
+    "Hundreds of data centers are coming to Texas - SouthTexasNews.com",
+    "Siren Biotechnology Awarded $8M in Non-Dilutive Grant - GlobeNewswire",
+    "Biogen ends Apellis research programs, cuts \u2018small number\u2019 of roles after $5.6B buyout - Fierce Biotech",
+    "Quoin Pharmaceuticals Receives FDA Conditional Approval of - GlobeNewswire",
+    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - Business Wire",
+    "Stock market today: Dow, S&P 500, Nasdaq waver as report of OpenAI IPO delay rattles chip stocks - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,9 +786,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex",
-      "date": "Wed, 24 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPYjNtRkRyQXFlMTNENmtUbDJDVm9QbmNzQjBZWkpRY2ptTGFBdEgyUnpzMnZlZ3VrZ2lMc0t6QkNvdjZiMXlhYkFfdzRLWEpiX1ZlM0Vlam95cmZvU0pqdFFORnFxZGhHamZoX2tYTDZLMmFwQUtiUjBSRllkQ3dQblpWY3ZNOThMTHd0dElGa196UGtsT1JlOENnUjdvVVlPUTgzLTBDUng?oc=5"
+      "event": "Quoin Pharmaceuticals Receives FDA Conditional Approval of",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMipAJBVV95cUxNMk9qeV83U0VUTU1jbEk2aTMzX1RFaHV0bG1pUGIxV3NoMEpBbFpJSU9DTFF5aG1Yb2NURVFpSUFESlREempLanNOMW9jQzN6Snd1cW9vVHpMTEZrT243M0x4OXNRSzRyVXlVRnJvcmJERUZsd0xCT205dmp0WTYyTG1oTUhqd3ZaOEY1amVMMkQyREZYc3hGdXRhN2xtejdPU1pOVHVMWTYyZG05SmpXN0dkUGRnMHVqZ09VTWpNaWV5TlJESGs4UmM2ZXNZVUcwWVp3YTJkb3FONmt0VUt6NkFnSXE1cmZKRzlMdUlCbFlqdWFobTB3MFd5MTFreHpQRU5FZkE4eExJNW1HYzJlb2U5TjFna1gtWUJ2LXhVRFpFTkYt?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOWU5kQk1ucUNTbER0NHhKbmRiUTAwU0pNblV2NGpGX1cyb2xNQkRjckd5SGdaTFVjYmVsOFlXT1ZXVXlYckRqMlFwUC1ranNEdS1tdlBSS1Z1VEhkaWFYT3Vub1dOdXJrQ2F3bktkOTU3YzlWWjAwLWlKMTJkZUpMZHIwMFN5VF9pRGk0YjNTa2N4cWRzbVNpWXRGa2xWTzdTTHVHODBxZDdYNk1OMHk0RklpMXVsVXZJc3R4cnRoWDZVX2dKWEdoTWNaOEZXdFJJaGt6bEpkT1EyQWFGaTVITlB1c1czQWRFcndhWVlMYWR5RjZs?oc=5"
     },
     {
       "company": "See source",
@@ -802,9 +810,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Quoin Pharmaceuticals Receives FDA Conditional Approval of",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMipAJBVV95cUxQYWlySjdid0NzZ0NleFFaZmpMS0tyUWJiXzY5WEswamRrX1QtT3NpVG9NT2ZXR2UwalZxNmhoLURJd3JJMEpzMTJfT0M0MEo5LUIyTmtOS1c4SEstVmNJR19tWjlkeVlFb2Mxdk5NU2oxWkVHTzA1cmt3U2JiM0lIdTd2VHFYcU56dmItY0ZabGxoZUxxV1lsZlZQZHZKOEJjS1lkbGZ5WVMySGFDUk1fSW9pdVktR2FybGV1aE1GRUIxUEJ1YXNjYmVHSGFKUWxnUFQ5cG4wSk9KZkNSeDhZTmFzc1ctWFFvT1NvbjFJN29sd21mTmJ5aGhzU0kwNTctZkYxZWtPcFczSk9DVVJldVliOHdldzlDajY4YjdJbWxUOEk5?oc=5"
+      "event": "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex",
+      "date": "Wed, 24 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOMlVvRHZOVFgwRXBTdzNCVkV3OGN4dDVEdUIwenJ0cGRoTzRyOWZkY3U0d2pwUTFiOFVRUEVIcHhtSC0zVlVhbnZLeU1RcUd0MlV0dUl4bFZMQ2ZGWGQzUkZiY1JVYUNLQUpSSEZSa2RJU1g3ajJ3SFc4a0U4TEhGcThmdVJtdmVqdl9XdEZkbG1OajJITjd2RkRzOUVrM0l6MFpoYWRTYw?oc=5"
     },
     {
       "company": "See source",
@@ -818,9 +826,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "A Name, A Hope: QYLEKI\u2122 Signals a New Dawn for Netherton Syndrome",
+      "event": "Quoin Pharmaceuticals: FDA Conditionally Accepts QYLEKI as Proposed Brand Name for QRX003",
       "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPS0NiM2g0NDdGWVJrVU5MbW1fako1SG1iWWRkd2c0QjV0R2QtSlZ4cG1NREQ3WWRjLXFOeHNMTlpXNUFsckxxQlRqN1VlUmY0RFRwa25wOWtTN19JRWVKdkJvYXhIazVfMEZKemQxMGlKUkozM29rTkdLVktlWFhBeGVEMlJ4dHVfbU54dVJqRnFnd0JsZGJWOGpJaw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxNM3lVUFFqWWFlZjRQVTY5a3llZ3NMV3phRWNWTHlrNHQ5RjBjNFlVQjFTTUlQVUVFczR1dVFPdS0xaWd2ZVZTc3VKa1gxYTlBRTU4bVNpRzNoTG1GTXkzMXExdjRER0s0ZDNmNV9Xa2lrRFQ3b1VYQTBqVUZreWtvMVF2dEZBOUdTdWpOY1VMRV9hbDRlaGJ0TU9tNWpyaUFrYWxDbGJzeG13VVo3Yllzbk1mRXJCV2VfSURUQ3dKck1wOGVUN2QwcG9wQnRWTFo2NjhrWW0yQlIweHZLWDVYYXNPOG0?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Spruce Biosciences Signals Commercial Shift with Key Hire for Rare Disease Drug",
+      "date": "Mon, 22 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQU3VNal8ybGJwd0lNdkVmX185NXhJZUU0RUxUR2NYZEFlaG9CWW1yQnpPc2tFdXdBbkluNE5JdlFUODQyYWNUeVhqLVhXS3pKbmQ0TmdueEJ4QnlyN25oVlFRLVY0aEtNSmN2RlRJMi01WXA2T0RfWUdXU0pScjktOUNCSUdJbTl6YU5sV012UjJVbHUzUnFfakxkZTVWWmpkQ3kzQ1JJUk5pMmtFRU41eXZ3?oc=5"
     },
     {
       "company": "See source",
@@ -829,52 +845,36 @@
       "event": "FDA backs QYLEKI name as Quoin (NASDAQ: QNRX) advances QRX003",
       "date": "Tue, 23 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQRWxmb1FBSW9WZ01NcXA1UjRjNURxVmRQMGZ3OW1EdEJjb3RHeTRzcHBnYTRJdmFHRzZPb3lhUENsRFdDSFFvQXZ6UGhibDNEYjZ6dUdKdGJ3bFpHaFBpLWthS29oVEJGLW9WLTV0OFM2RjdXRHZ6RjBvSHFQMVZTWXBRczk3ZmVmUnp6U0ZEWFRoMHgwZGw2RTlWeU52VkJnaWtJQkxSV0JfRVBoVVFvVWRxMW4?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Prime Medicine\u2019s CGD therapy gets FDA RMAT, speeding review",
-      "date": "Mon, 22 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPMlhTckNtdDNhejQ0RmJ2cWtPVENKOVRTeGZScjNmWnBtOVViMXJHTDg1Mk9iMXlyY0NMTkJIVERMWWNrRmloc0stR2ZVSVdXZHJiYkZKbEtMTmxqRy13LTZwLTFGNWNkak1QTTVtS3ZwWnQzYk14dDBpZC1obnlicmpSeDNrRGgzQzdlUXFEWnNaSzRCZTU0cE5rRXppN0xSVEo3SEROWGh0N0dnR0wzMjhrVVhJS1pZ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "NeOnc Technologies Receives UAE IND Approval for NEO100, Expanding Global Development Ahead of Anticipated Phase 2 Data Milestone",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMirwJBVV95cUxOa2pEcTZ4OHJuTTFkUThYN1RDaUY1VXl5ZmtVUG9IU2wtajZHMGw3UFpIWFBxUHYzZmg2NlNYX1F5WGdwbklPSFVQbWpDTlFFaDZRVjIzLXZTLVM0SFNkR3AwZHpYTkp2R0JQMk13Z3k3V0Q1SndvU202c0JYRFRrODd5bzkwejd5M1h2VXpiazlHcmhWZG52bGFtM1VPeVpyeGZ5SDY1My1Ecl9TY1VYQXdGLXNId2NJamE2TllyTHVFbjRwMTVicG5ma1dzUkpGWDlVMDZhZXc5X21IcE1CQVN2b21LQ1lTanJXT0EtcW8yU3VpTWV6V19EYVprTTFkczE3QjBKQmdIYjk5MEVuSEkweWliOG8tc2pOVi1XejM0bVFnLTZIWUdZc0hwZ1HSAa8CQVVfeXFMTmtqRHE2eDhybk0xZFE4WDdUQ2lGNVV5eWZrVVBvSFNsLWo2RzBsN1BaSFhQcVB2M2ZoNjZTWF9ReVhncG5JT0hVUG1qQ05RRWg2UVYyMy12Uy1TNEhTZEdwMGR6WE5KdkdCUDJNd2d5N1dENUp3b1NtNnNCWERUazg3eW85MHo3eTNYdlV6Yms5R3JoVmRudmxhbTNVT3lacnhmeUg2NTMtRHJfU2NVWEF3Ri1zSHdjSWphNk5Zckx1RW40cDE1YnBuZmtXc1JKRlg5VTA2YWV3OV9tSHBNQkFTdm9tS0NZU2pyV09BLXFvMlN1aU1leldfRGFaa00xZHMxN0IwSkJnSGI5OTBFbkhJMHlpYjhvLXNqTlYtV3ozNG1RZy02SFlHWXNIcGdR?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,351.87",
-      "daily": -0.09,
-      "weekly": -0.92,
-      "monthly": -2.22
+      "value": "7,367.11",
+      "daily": 0.13,
+      "weekly": -1.78,
+      "monthly": -2.04
     },
     {
       "name": "Nasdaq",
-      "value": "25,316.10",
-      "daily": -0.63,
-      "weekly": -2.71,
-      "monthly": -5.03
+      "value": "25,391.33",
+      "daily": 0.13,
+      "weekly": -4.25,
+      "monthly": -4.81
     },
     {
       "name": "Dow Jones",
-      "value": "51,967.12",
-      "daily": 0.23,
-      "weekly": 0.92,
-      "monthly": 2.98
+      "value": "51,943.76",
+      "daily": 0.04,
+      "weekly": 0.74,
+      "monthly": 2.57
     },
     {
       "name": "Russell 2000",
-      "value": "2,995.49",
-      "daily": 0.3,
-      "weekly": 2.66,
-      "monthly": 2.57
+      "value": "3,010.73",
+      "daily": 0.1,
+      "weekly": 1.04,
+      "monthly": 3.11
     }
   ]
 }
