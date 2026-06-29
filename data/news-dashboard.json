@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-28T15:56:09+00:00",
+  "updated_at": "2026-06-29T18:32:17+00:00",
   "summaries": {
-    "ai": "Key developments: AI Demand Is Outstripping Supply \u2014 Even Google Can\u2019t Keep Up; AI Startup Firmus to Build Indonesia Data Center With Nvidia; The Data Center Build-Out Is Accelerating. Here Are 3 Stocks to Buy Beyond Chips..",
-    "biotech": "Key developments: Our Origin Story; Inside the high-stakes gamble to revive tanked biotech Opthea; What to Know About This $476,000 Palvella Therapeutics Insider Sale After a 620% Stock Rally.",
-    "market": "Key developments: Dow Jones Futures: Market At Tipping Point As U.S.-Iran Attacks Escalate. Tesla, Jobs On Tap.; Dow Logs Worst Day Since March, S&P 500 And Nasdaq Snap Win Streak After US-Iran Exchange Fire \u2014 SNDK, TSLA, GOOGL, META, IREN In Focus; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.07% today; Nasdaq was weakest at -0.24%. Key developments: Dow Jones Futures: Market At Tipping Point As U.S.-Iran Attacks Escalate. Tesla, Jobs On Tap.; Dow Logs Worst Day Since March, S&P 500 And Nasdaq Snap Win Streak After US-Iran Exchange Fire \u2014 SNDK, TSLA, GOOGL, META, IREN In Focus; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus."
+    "ai": "Key developments: South Korean tech giants will invest $518 billion in chip plants to serve soaring AI demand; AI spending boom accelerates as Big Tech pours trillions into infrastructure; Kevin McCarthy Says Both 2028 Nominees Could End Up Running Against AI.",
+    "biotech": "Key developments: BioCryst ends internal discovery programs, closes Alabama facility in pivot to cost-saving partnerships; Palisade Bio Receives FDA Clearance of IND for PALI-2108 and Plans to Initiate Global Phase 2 ASCENTRA-UC Study in Ulcerative Colitis; AstraZeneca rare disease therapy improves bone health in Phase III HPP study.",
+    "market": "Key developments: Stock market today: S&P 500, Nasdaq, Dow rise as tech gains, US and Iran call to halt attacks; Dow Jones Futures Rise On U.S.-Iran News, S&P 500 To Reclaim Key Level; Tesla, Jobs Report Loom.; Stock Market Today: Dow Jones, S&P 500 Futures Gain As Trump Admin Says US, Iran Will 'Stand Down' - Stat.",
+    "market_movers": "Nasdaq led tracked indexes at +1.83% today; Russell 2000 was weakest at -0.31%. Key developments: Stock market today: S&P 500, Nasdaq, Dow rise as tech gains, US and Iran call to halt attacks; Dow Jones Futures Rise On U.S.-Iran News, S&P 500 To Reclaim Key Level; Tesla, Jobs Report Loom.; Stock Market Today: Dow Jones, S&P 500 Futures Gain As Trump Admin Says US, Iran Will 'Stand Down' - Stat."
   },
   "takeaways": [
-    "AI Demand Is Outstripping Supply \u2014 Even Google Can\u2019t Keep Up - 24/7 Wall St.",
-    "AI Startup Firmus to Build Indonesia Data Center With Nvidia - Bloomberg.com",
-    "Our Origin Story - BioMarin Pharmaceutical",
-    "Inside the high-stakes gamble to revive tanked biotech Opthea - AFR",
+    "South Korean tech giants will invest $518 billion in chip plants to serve soaring AI demand - PBS",
+    "AI spending boom accelerates as Big Tech pours trillions into infrastructure - Fortune",
+    "BioCryst ends internal discovery programs, closes Alabama facility in pivot to cost-saving partnerships - Fierce Biotech",
+    "Palisade Bio Receives FDA Clearance of IND for PALI-2108 and Plans to Initiate Global Phase 2 ASCENTRA-UC Study in Ulcerative Colitis - BioSpace",
+    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - Business Wire",
     "FDA conditionally approves Quoin's QYLEKI name for rare skin drug - Stock Titan",
-    "NeOnc Technologies Receives UAE IND Approval for NEO100, - GlobeNewswire",
-    "Dow Jones Futures: Market At Tipping Point As U.S.-Iran Attacks Escalate. Tesla, Jobs On Tap. - Investor's Business Daily"
+    "Stock market today: S&P 500, Nasdaq, Dow rise as tech gains, US and Iran call to halt attacks - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,6 +786,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
+      "date": "Tue, 23 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOWU5kQk1ucUNTbER0NHhKbmRiUTAwU0pNblV2NGpGX1cyb2xNQkRjckd5SGdaTFVjYmVsOFlXT1ZXVXlYckRqMlFwUC1ranNEdS1tdlBSS1Z1VEhkaWFYT3Vub1dOdXJrQ2F3bktkOTU3YzlWWjAwLWlKMTJkZUpMZHIwMFN5VF9pRGk0YjNTa2N4cWRzbVNpWXRGa2xWTzdTTHVHODBxZDdYNk1OMHk0RklpMXVsVXZJc3R4cnRoWDZVX2dKWEdoTWNaOEZXdFJJaGt6bEpkT1EyQWFGaTVITlB1c1czQWRFcndhWVlMYWR5RjZs?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "FDA conditionally approves Quoin's QYLEKI name for rare skin drug",
       "date": "Tue, 23 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPSW44NG5KUzItb2hEYURMZ1JVQjhKTGNiZzBjR1RvWVJJajR4ZGhyZXlDQ3Fla0FxSGxpSTlNVUlaa1JpbEstekVDME1kejR4ck83YkRQSVA5SkxtYUQ1R2V2SGlwLVJWajlZM09yeHJHYm5VNWN0Mmt3ZmlmVnJTV3JpZTdWWVZqd2JkaVYwcWlEemYzelROX1lBMTdYTDF5ZTBJQWtUWUJOTzRaRmdpN19ReU9RQ1pDajQzM3VnUQ?oc=5"
@@ -794,9 +802,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "NeOnc Technologies Receives UAE IND Approval for NEO100,",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMipwJBVV95cUxOWXhJNUFkS2dOUl9iSjlib0JnS3h6VGo1RWJHSHlJMDZXOVlGOU1rQ19tb0JKTE55aXRzV1VieGltSlUwVFNFVmtJdzhzZFc1ZFlXQlFnNElqXzFiYk9Jb19wRVU2cHhtOUM0NTV1V2d3RGVINHpFdXNXazY3TU8zNEkxN3U5Q28zSDhUQXlLa1g0YkdVcU5mOVYzRkpna3gweVY5eE1hQnhHYlJoVWRaWTgzRFdqNVBVSTh5bzdtNEU5YWRnbTNZS2tzNDByZi1HeG1YZWFJN1A0UDNuZGtwUWViZFM3M3VQSnV1MEtJQWpkeTdlclg5VWpBN3pUOElic3lrVmduWm55bW9rTXFOcjVQVWdsQjBhOFFwNExzcHhnaHdRRHZV?oc=5"
+      "event": "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients",
+      "date": "Sat, 27 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNVzF2WUVkMFhVQi05cGZQclRxNGowLTFEODYtaVFWZmlicVA5Sm5zc0wyalRTaTN6WUluVWdyUjRnRmV6ZUFGWk9HU0NCX1gtQmFFLUplV3lwMU9vbm5CZmhxZkFlenJrSmZ5aXBmc3FERFBsTnVLaG1PTlV3eVVUVGhuT2pDWDZaTkNoblJXNF9GQWFjWWttYnJzLVYwUWprb2prNkJvYmFtSDIxSWc?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Palvella Therapeutics Submits First Module of Rolling New",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi0AJBVV95cUxNUVc0NlNBaFlkNTNDVzlwVXdubHg4eTU0Z3haYW05S09fbC1WU1gtbDZWOXZOQzJBQ3dDNGJ4c3hvMTFuelZHSXZrNVRoN2psTjFKNDVMdWticmpNY0IwZUptRTBXblhJR2tUTzJTcFQ2dDNiT2hJSGUyU2dyeGVXQ01DdF9TV0w2T3NOcjAzV18tZVBteGRUS2pWLWNkZGNNS1AwQnkwUm9nYWpZd3JFemg1UEFMVnVIUGJ0a1lWdnh4WUY4R1k3WDFzWlF1cnJrNHBNNmd2bTUwc0xwSnlRa0E1c3Vuc1pWckkzZlZUaURCNDVJQkJnWUpBV1c3RFlUZjJUM2htWnFTOUNjUE92ZUtfTGQ3TWVkblM3YVF2MDBrT0xtR3pyXzc4ZG9yY2JiOG5rQ0JGOF9WWEhvejZmX0JrbWR6T3JyT2VvcldJUW8?oc=5"
     },
     {
       "company": "See source",
@@ -810,63 +826,55 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Grants Rolling Review of Palvella\u2019s QTORIN\u2122 Rapamycin NDA for Microcystic Lymphatic Malformations",
-      "date": "Mon, 22 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiggJBVV95cUxQVWw4TVFXQWVSVzNFS0J1V2ZWbWhES09EdWdhNVV4OHhWdGZxc0c2a2xSQTZBc04zT0tKT2JNVXFZV1A5Sk5LMGhsWGlYT3pTWExIdmpmd1B6VlVEUU5RS09GekdWZHRIeVo1NWc3eDV2bmtMN3BFZDNqV3lPanRmRy1xNHBmcDhDUk9ITF9ZZzJxMUVlbnFuTTdNbElpZTd0eDVaVzB2aHRMX0hJdW1OQTBfZm5fczNoaFVtaFRhYmVDNE1hZFphaEdZdm9uUWxWaGd4WTc5aEJ6N2pkQklldnBOOW1NRU1TZjdtenphZkJ3S2tKeVpsYjJiQlpES1hVemc?oc=5"
+      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA backs QYLEKI name as Quoin (NASDAQ: QNRX) advances QRX003",
+      "event": "A Name, A Hope: QYLEKI\u2122 Signals a New Dawn for Netherton Syndrome",
       "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQRWxmb1FBSW9WZ01NcXA1UjRjNURxVmRQMGZ3OW1EdEJjb3RHeTRzcHBnYTRJdmFHRzZPb3lhUENsRFdDSFFvQXZ6UGhibDNEYjZ6dUdKdGJ3bFpHaFBpLWthS29oVEJGLW9WLTV0OFM2RjdXRHZ6RjBvSHFQMVZTWXBRczk3ZmVmUnp6U0ZEWFRoMHgwZGw2RTlWeU52VkJnaWtJQkxSV0JfRVBoVVFvVWRxMW4?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPS0NiM2g0NDdGWVJrVU5MbW1fako1SG1iWWRkd2c0QjV0R2QtSlZ4cG1NREQ3WWRjLXFOeHNMTlpXNUFsckxxQlRqN1VlUmY0RFRwa25wOWtTN19JRWVKdkJvYXhIazVfMEZKemQxMGlKUkozM29rTkdLVktlWFhBeGVEMlJ4dHVfbU54dVJqRnFnd0JsZGJWOGpJaw?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "NeOnc wins another UAE clearance as brain-cancer data nears",
+      "event": "NeOnc Technologies Receives UAE IND Approval for NEO100, Expanding Global Development Ahead of Anticipated Phase 2 Data Milestone",
       "date": "Wed, 24 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxORlk3ZFNnMWZGdmhxbWtOSm9Td2lnM29kVGpFempjeVJBdW82NXRnY3cwNkVOLU94c0VrSFRsWGlkMTN2OUkzcHVhYWtRM2g3TUZabVpscllVYlE0U3Q4NlA0Xy1TMnh0VFlmZ3cyd0tYRjRnc1RuaER5NkFnRDhCU21PNmlwdkhKODJ2ckNUQkFqMlFrcTBCUVd4TjNoTEpBMWo4UEZ0S2xyT3pGQWx2dUpxZUxsTDZZWlJF?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "NeOnc wins UAE approval to test NEO100 in brain cancer, including children",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNRmZzSXdKck13ZnRweF9zRWVneHVxV0JaZ193aTF2QTJHQ01JazBYLUljZ2pSbmROSExmTGFQbG9OT2dSRXNlaHp6Z2l2NUk5Mko0MmE5akxrWklET0lDOHZCbkVIRVBzRThObVBMSHR4ZkJpM2ljRkl2NS12eDY1cmdHR3BuZnlMN0N6UERVamF6X3UtUWZSdXQ3WFREU0NqVzF3RXF0dVBxRzFVVVlZRmhZQmstcVZOOEpzbVFB?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxPNGowaUhLSW1abDZlelFUNTVhakdzakNnTUZnTkxxWTVrOGxEZHdHcjdLY0x6S0dFaDFNOTlmUTRNUWYxeWVtR0FBUlJ1TFh3OTljZWhxdzBRSEFJRXZFVDBnTkljek5WOEZfbEhIQXVwcVVQbk9NMXlPWXpPSVFqYmEwUlNZRWktd2RBREV1X2Zlc3NHaFhSNGlhR01TMXRNcndLR1JyRnphNU85dzl0cHQ4Q1Nya2N6dG9TcFNJUUdmRjh2YUJfdGFKLW9GbHNMXzFmY0JQU0lSZld2QXJra2pLZkc5am5kc2FVcUctaThxV1dEQVF3VGhxYzJuVWZ0TFpQc3NleEhtdHBQ?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,354.02",
-      "daily": -0.05,
-      "weekly": -1.95,
-      "monthly": -2.21
+      "value": "7,432.39",
+      "daily": 1.07,
+      "weekly": -0.54,
+      "monthly": -1.95
     },
     {
       "name": "Nasdaq",
-      "value": "25,297.62",
-      "daily": -0.24,
-      "weekly": -4.6,
-      "monthly": -5.16
+      "value": "25,759.49",
+      "daily": 1.83,
+      "weekly": -1.56,
+      "monthly": -4.5
     },
     {
       "name": "Dow Jones",
-      "value": "51,876.11",
-      "daily": -0.09,
-      "weekly": 0.6,
-      "monthly": 2.43
+      "value": "52,228.63",
+      "daily": 0.68,
+      "weekly": 1.0,
+      "monthly": 2.34
     },
     {
       "name": "Russell 2000",
-      "value": "3,010.08",
-      "daily": 0.07,
-      "weekly": 1.02,
-      "monthly": 3.09
+      "value": "3,000.88",
+      "daily": -0.31,
+      "weekly": -0.12,
+      "monthly": 2.79
     }
   ]
 }
