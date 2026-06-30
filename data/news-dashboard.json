@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-29T18:32:17+00:00",
+  "updated_at": "2026-06-30T18:22:26+00:00",
   "summaries": {
-    "ai": "Key developments: South Korean tech giants will invest $518 billion in chip plants to serve soaring AI demand; AI spending boom accelerates as Big Tech pours trillions into infrastructure; Kevin McCarthy Says Both 2028 Nominees Could End Up Running Against AI.",
-    "biotech": "Key developments: BioCryst ends internal discovery programs, closes Alabama facility in pivot to cost-saving partnerships; Palisade Bio Receives FDA Clearance of IND for PALI-2108 and Plans to Initiate Global Phase 2 ASCENTRA-UC Study in Ulcerative Colitis; AstraZeneca rare disease therapy improves bone health in Phase III HPP study.",
-    "market": "Key developments: Stock market today: S&P 500, Nasdaq, Dow rise as tech gains, US and Iran call to halt attacks; Dow Jones Futures Rise On U.S.-Iran News, S&P 500 To Reclaim Key Level; Tesla, Jobs Report Loom.; Stock Market Today: Dow Jones, S&P 500 Futures Gain As Trump Admin Says US, Iran Will 'Stand Down' - Stat.",
-    "market_movers": "Nasdaq led tracked indexes at +1.83% today; Russell 2000 was weakest at -0.31%. Key developments: Stock market today: S&P 500, Nasdaq, Dow rise as tech gains, US and Iran call to halt attacks; Dow Jones Futures Rise On U.S.-Iran News, S&P 500 To Reclaim Key Level; Tesla, Jobs Report Loom.; Stock Market Today: Dow Jones, S&P 500 Futures Gain As Trump Admin Says US, Iran Will 'Stand Down' - Stat."
+    "ai": "Key developments: Firmus Plans 360MW Nvidia AI Data Center in Indonesia; Helix Digital Infrastructure seeks US data center acquisition backed by $10B from KKR, NVIDIA, and sovereign wealth; 4 Semiconductor Stocks to Buy Right Now to Ride on the AI Capex Boom.",
+    "biotech": "Key developments: Palvella Therapeutics Appoints Accomplished Rare Disease; Stoke Therapeutics Announces Completion of Enrollment of 162 Patients Into the Phase 3 EMPEROR Study of Zorevunersen, an Investigational Medicine for the Treatment of Dravet Syndrome; Imviva Biotech Gains FDA IDE Authorization for clonoSEQ Assay in TENACITY-01 Clinical Trial.",
+    "market": "Key developments: Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; US Stock Market Today: S&P 500, Nasdaq Open Flat; Dow Heads For Best First Half Since 2021.",
+    "market_movers": "Nasdaq led tracked indexes at +1.44% today; Dow Jones was weakest at +0.29%. Key developments: Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; US Stock Market Today: S&P 500, Nasdaq Open Flat; Dow Heads For Best First Half Since 2021."
   },
   "takeaways": [
-    "South Korean tech giants will invest $518 billion in chip plants to serve soaring AI demand - PBS",
-    "AI spending boom accelerates as Big Tech pours trillions into infrastructure - Fortune",
-    "BioCryst ends internal discovery programs, closes Alabama facility in pivot to cost-saving partnerships - Fierce Biotech",
-    "Palisade Bio Receives FDA Clearance of IND for PALI-2108 and Plans to Initiate Global Phase 2 ASCENTRA-UC Study in Ulcerative Colitis - BioSpace",
-    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - Business Wire",
-    "FDA conditionally approves Quoin's QYLEKI name for rare skin drug - Stock Titan",
-    "Stock market today: S&P 500, Nasdaq, Dow rise as tech gains, US and Iran call to halt attacks - Yahoo Finance"
+    "Firmus Plans 360MW Nvidia AI Data Center in Indonesia - TechRepublic",
+    "Helix Digital Infrastructure seeks US data center acquisition backed by $10B from KKR, NVIDIA, and sovereign wealth - Crypto Briefing",
+    "Palvella Therapeutics Appoints Accomplished Rare Disease - GlobeNewswire",
+    "Stoke Therapeutics Announces Completion of Enrollment of 162 Patients Into the Phase 3 EMPEROR Study of Zorevunersen, an Investigational Medicine for the Treatment of Dravet Syndrome - BioSpace",
+    "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex - Contemporary Pediatrics",
+    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - BioSpace",
+    "Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOWU5kQk1ucUNTbER0NHhKbmRiUTAwU0pNblV2NGpGX1cyb2xNQkRjckd5SGdaTFVjYmVsOFlXT1ZXVXlYckRqMlFwUC1ranNEdS1tdlBSS1Z1VEhkaWFYT3Vub1dOdXJrQ2F3bktkOTU3YzlWWjAwLWlKMTJkZUpMZHIwMFN5VF9pRGk0YjNTa2N4cWRzbVNpWXRGa2xWTzdTTHVHODBxZDdYNk1OMHk0RklpMXVsVXZJc3R4cnRoWDZVX2dKWEdoTWNaOEZXdFJJaGt6bEpkT1EyQWFGaTVITlB1c1czQWRFcndhWVlMYWR5RjZs?oc=5"
+      "event": "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex",
+      "date": "Wed, 24 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPYjNtRkRyQXFlMTNENmtUbDJDVm9QbmNzQjBZWkpRY2ptTGFBdEgyUnpzMnZlZ3VrZ2lMc0t6QkNvdjZiMXlhYkFfdzRLWEpiX1ZlM0Vlam95cmZvU0pqdFFORnFxZGhHamZoX2tYTDZLMmFwQUtiUjBSRllkQ3dQblpWY3ZNOThMTHd0dElGa196UGtsT1JlOENnUjdvVVlPUTgzLTBDUng?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA conditionally approves Quoin's QYLEKI name for rare skin drug",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPSW44NG5KUzItb2hEYURMZ1JVQjhKTGNiZzBjR1RvWVJJajR4ZGhyZXlDQ3Fla0FxSGxpSTlNVUlaa1JpbEstekVDME1kejR4ck83YkRQSVA5SkxtYUQ1R2V2SGlwLVJWajlZM09yeHJHYm5VNWN0Mmt3ZmlmVnJTV3JpZTdWWVZqd2JkaVYwcWlEemYzelROX1lBMTdYTDF5ZTBJQWtUWUJOTzRaRmdpN19ReU9RQ1pDajQzM3VnUQ?oc=5"
+      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
+      "date": "Wed, 24 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNbFZ3YUpabF9makxaOURnMmYwRkhGaWlNazNWQy1vWW0tRk1tYXpXMXpSOGRiTVl1c25ZVzlTcmFYVjl0OEpaZlZBRVdnWk9ndGUzYmVaYVFuOTNwLWZUZXVSbHNYZnNvMUFLME5RR3lrVTExdm4zQXd4b3NURjk4c3FzTFNtTHZZNEhNUmJVa0RfQmRnRHZFVVFwSW5ZZHRWNjNvb2dMS1BnemZ2aU45YWJTaERXRHJHWGFnMGlNTlBWVnRESHh1aEduSldQUFRSbFdZMHM3TU9LbFE5eUE?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
     },
     {
       "company": "See source",
@@ -818,63 +826,55 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Quoin Pharmaceuticals Receives FDA Conditional Approval of QYLEKI\u2122 as the Proposed Brand Name for QRX003 for Netherton Syndrome",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMipwJBVV95cUxNNjkwVHJ2WHAtcU9LbHE2c2o1OE0wWl82eXZrNXd4alhjejZPQ0lPd0dvRzNJRWlxSU1DRkNuSXNfbWNhaXZjRWJ4V2RxWk1mV0dybnRDemJOOGtYZEt5QjZDWEhwT2JSMEpkX0x3UXNKdnhDMDZuV1dHQkJQTDdyRmRJVjRVYUVhU3hRN2NINjduWXo1bFhLRGNyZkZWZVdNMTIzWGFsbTRuUFZxSWFuOXZmTHpqcmo0OFV6NjlySG5keDhWajE0WWlNdW9LbWRYNndLN1B0cGFmY3hxc1VOWS0yZkxpNWVtYWZSUGVGazBuX3BEaU95cTRFU1BWNVRXZzZ2NVRlTnhhQ09HY0tweHhCcVV3OURaWE03Y2JfOXNTVk1Ec0xZ0gGsAkFVX3lxTFA2RmN0alNIbWk3ZEJVUG0yRTY1QzMyWmZKb1piM29MVlFHWE0xZ3VkMl9jbVRaRDRCc2Y5cVo0SFhEbkYzTWRIZW5Za0IyLWh5cF8wUVFZRGFLbGlBZjhrVzBMS1dYZWllVklsSTQ3ZkdqS0RPc1dLdlZiRzZyQm9Wd3dtdDB6Sy1lOGgxaURvekdBWG04cXgxU3B1QU1lY1BJdzV3Nmx4Z2NvZEJZMUkwREdBZUY3ZTY4NTg1YXJOYWVjZEVOX3gzV1ZJUlFvOE1YR3FTeXplc3FBakQwWUd5Y2dISDNMek55MFRtb0RmSmV4RFNyZnk1OVlHUEk5ZkN5ME5vYkhYdFdWZm5IUzlrTlVMNHlfN1FZQkdfM1l5VFRoQ09Pb214SmlMTg?oc=5"
+      "event": "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI",
+      "date": "Fri, 26 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNNkpXNXl0ZHR5NlJJNFFvZkdCaFJtdUdDZkVVUDI4SWM2RlVvaTkyMWljd1hDMUNfWGZTM3hLWXdpV0dRTVBld0pUSklFR3Q4LUM0cG9fUDYtWEdHVUlfaDRMMlEwX1A0MHg1d2d2RHVWZERvRU9vT1NycmJqQUNnYm1OVTdETm1OYmlVT1VHdEVLNjNXeGljRE1kQjRZUDA?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
+      "event": "Spruce Biosciences Joins the Russell 3000\u00ae Index",
       "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNWnlXRnBLSERKdHpCWjdJMkdiaXVRcmd0VGVqZTdKUHlXR3ZBRlRkZzNnYlVzWFg5T2JmWTFJT05iVG42enBNczV4LTduQk1DekI1UE5HRFdfQkRTWWNJS3lfM0Fmek90aDNEa1k3bUxqV3c5LXdjcmpEcjF6WEVGVTRNeHljby1CaERjeGxod2dkWTl1NE1MdmFDdGdDYXFyQi1wVU9ydw?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "A Name, A Hope: QYLEKI\u2122 Signals a New Dawn for Netherton Syndrome",
-      "date": "Tue, 23 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPS0NiM2g0NDdGWVJrVU5MbW1fako1SG1iWWRkd2c0QjV0R2QtSlZ4cG1NREQ3WWRjLXFOeHNMTlpXNUFsckxxQlRqN1VlUmY0RFRwa25wOWtTN19JRWVKdkJvYXhIazVfMEZKemQxMGlKUkozM29rTkdLVktlWFhBeGVEMlJ4dHVfbU54dVJqRnFnd0JsZGJWOGpJaw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "NeOnc Technologies Receives UAE IND Approval for NEO100, Expanding Global Development Ahead of Anticipated Phase 2 Data Milestone",
-      "date": "Wed, 24 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxPNGowaUhLSW1abDZlelFUNTVhakdzakNnTUZnTkxxWTVrOGxEZHdHcjdLY0x6S0dFaDFNOTlmUTRNUWYxeWVtR0FBUlJ1TFh3OTljZWhxdzBRSEFJRXZFVDBnTkljek5WOEZfbEhIQXVwcVVQbk9NMXlPWXpPSVFqYmEwUlNZRWktd2RBREV1X2Zlc3NHaFhSNGlhR01TMXRNcndLR1JyRnphNU85dzl0cHQ4Q1Nya2N6dG9TcFNJUUdmRjh2YUJfdGFKLW9GbHNMXzFmY0JQU0lSZld2QXJra2pLZkc5am5kc2FVcUctaThxV1dEQVF3VGhxYzJuVWZ0TFpQc3NleEhtdHBQ?oc=5"
+      "event": "FDA Fast Track boosts Satellos (NASDAQ: MSLE) SAT-3247 Duchenne program",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPZzFQbXNSNTRUczVOVkZrVGs4Z1Vidjg1TExWLVpvRncxb2NpNGRNTk1kODdFd3V2SVV0TmdiQ0JRSjFyTVhNVXJHbVRpNlcwOEVkVWNFT19DUWN2eDJMRkNmWWNUUTJnRGI3cHpSZ2xMZXJkV3VkdE5ERjJPNWJOekRUU3YxdnVsVlN1b1BuUkhwTnpFOGtJUWRtS18wdURoVzg5TV9NRmk2X0VKRDVWWlBnWW9UdUlqVGRn?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,432.39",
-      "daily": 1.07,
-      "weekly": -0.54,
-      "monthly": -1.95
+      "value": "7,498.60",
+      "daily": 0.78,
+      "weekly": 1.81,
+      "monthly": -1.33
     },
     {
       "name": "Nasdaq",
-      "value": "25,759.49",
-      "daily": 1.83,
-      "weekly": -1.56,
-      "monthly": -4.5
+      "value": "26,192.73",
+      "daily": 1.44,
+      "weekly": 2.37,
+      "monthly": -3.3
     },
     {
       "name": "Dow Jones",
-      "value": "52,228.63",
-      "daily": 0.68,
-      "weekly": 1.0,
-      "monthly": 2.34
+      "value": "52,332.50",
+      "daily": 0.29,
+      "weekly": 1.29,
+      "monthly": 2.45
     },
     {
       "name": "Russell 2000",
-      "value": "3,000.88",
-      "daily": -0.31,
-      "weekly": -0.12,
-      "monthly": 2.79
+      "value": "3,025.90",
+      "daily": 0.51,
+      "weekly": 1.69,
+      "monthly": 4.13
     }
   ]
 }
