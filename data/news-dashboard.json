@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-06-30T18:22:26+00:00",
+  "updated_at": "2026-07-01T18:27:59+00:00",
   "summaries": {
-    "ai": "Key developments: Firmus Plans 360MW Nvidia AI Data Center in Indonesia; Helix Digital Infrastructure seeks US data center acquisition backed by $10B from KKR, NVIDIA, and sovereign wealth; 4 Semiconductor Stocks to Buy Right Now to Ride on the AI Capex Boom.",
-    "biotech": "Key developments: Palvella Therapeutics Appoints Accomplished Rare Disease; Stoke Therapeutics Announces Completion of Enrollment of 162 Patients Into the Phase 3 EMPEROR Study of Zorevunersen, an Investigational Medicine for the Treatment of Dravet Syndrome; Imviva Biotech Gains FDA IDE Authorization for clonoSEQ Assay in TENACITY-01 Clinical Trial.",
-    "market": "Key developments: Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; US Stock Market Today: S&P 500, Nasdaq Open Flat; Dow Heads For Best First Half Since 2021.",
-    "market_movers": "Nasdaq led tracked indexes at +1.44% today; Dow Jones was weakest at +0.29%. Key developments: Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter; US Stock Market Today: S&P 500, Nasdaq Open Flat; Dow Heads For Best First Half Since 2021."
+    "ai": "Key developments: Meta plots AI cloud business to challenge Amazon, Microsoft and Google; Nvidia says it can cut data center water use. The AI boom has a bigger problem; Meta, like SpaceX, looks to turn excess AI compute into cash.",
+    "biotech": "Key developments: Ipsen gets the Memo, penning \u20ac700M deal to buy rare disease biotech for clinical-stage asset; Ipsen sends clear Memo to rare diseases with up to $796M buyout; Our Origin Story.",
+    "market": "Key developments: Stock market today: Nasdaq dips, Dow and S&P 500 rise as markets weigh Kevin Warsh's remarks; S&P 500, Nasdaq register best quarter since 2020 despite Iran war; Stock Market Today: Dow, Nasdaq, S&P 500 Futures Fall As Iran Rules Out Direct Talks With US\u2014 Nike, Const.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.12% today; Nasdaq was weakest at -0.34%. Key developments: Stock market today: Nasdaq dips, Dow and S&P 500 rise as markets weigh Kevin Warsh's remarks; S&P 500, Nasdaq register best quarter since 2020 despite Iran war; Stock Market Today: Dow, Nasdaq, S&P 500 Futures Fall As Iran Rules Out Direct Talks With US\u2014 Nike, Const."
   },
   "takeaways": [
-    "Firmus Plans 360MW Nvidia AI Data Center in Indonesia - TechRepublic",
-    "Helix Digital Infrastructure seeks US data center acquisition backed by $10B from KKR, NVIDIA, and sovereign wealth - Crypto Briefing",
-    "Palvella Therapeutics Appoints Accomplished Rare Disease - GlobeNewswire",
-    "Stoke Therapeutics Announces Completion of Enrollment of 162 Patients Into the Phase 3 EMPEROR Study of Zorevunersen, an Investigational Medicine for the Treatment of Dravet Syndrome - BioSpace",
+    "Meta plots AI cloud business to challenge Amazon, Microsoft and Google - Los Angeles Times",
+    "Nvidia says it can cut data center water use. The AI boom has a bigger problem - Fast Company",
+    "Ipsen gets the Memo, penning \u20ac700M deal to buy rare disease biotech for clinical-stage asset - Fierce Biotech",
+    "Ipsen sends clear Memo to rare diseases with up to $796M buyout - BioSpace",
     "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex - Contemporary Pediatrics",
-    "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex - BioSpace",
-    "Stock market today: S&P 500, Nasdaq rise, Dow eyes fresh record to wrap up standout quarter - Yahoo Finance"
+    "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients - Epidermolysis Bullosa News",
+    "Stock market today: Nasdaq dips, Dow and S&P 500 rise as markets weigh Kevin Warsh's remarks - Yahoo! Finance Canada"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,9 +794,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "BioMendics Receives FDA Fast Track Designation for BM-3103 (TolaSure\u00ae Gel\u2122) for Epidermolysis Bullosa Simplex",
-      "date": "Wed, 24 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNbFZ3YUpabF9makxaOURnMmYwRkhGaWlNazNWQy1vWW0tRk1tYXpXMXpSOGRiTVl1c25ZVzlTcmFYVjl0OEpaZlZBRVdnWk9ndGUzYmVaYVFuOTNwLWZUZXVSbHNYZnNvMUFLME5RR3lrVTExdm4zQXd4b3NURjk4c3FzTFNtTHZZNEhNUmJVa0RfQmRnRHZFVVFwSW5ZZHRWNjNvb2dMS1BnemZ2aU45YWJTaERXRHJHWGFnMGlNTlBWVnRESHh1aEduSldQUFRSbFdZMHM3TU9LbFE5eUE?oc=5"
+      "event": "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients",
+      "date": "Sat, 27 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNVzF2WUVkMFhVQi05cGZQclRxNGowLTFEODYtaVFWZmlicVA5Sm5zc0wyalRTaTN6WUluVWdyUjRnRmV6ZUFGWk9HU0NCX1gtQmFFLUplV3lwMU9vbm5CZmhxZkFlenJrSmZ5aXBmc3FERFBsTnVLaG1PTlV3eVVUVGhuT2pDWDZaTkNoblJXNF9GQWFjWWttYnJzLVYwUWprb2prNkJvYmFtSDIxSWc?oc=5"
     },
     {
       "company": "See source",
@@ -810,17 +810,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients",
-      "date": "Sat, 27 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNVzF2WUVkMFhVQi05cGZQclRxNGowLTFEODYtaVFWZmlicVA5Sm5zc0wyalRTaTN6WUluVWdyUjRnRmV6ZUFGWk9HU0NCX1gtQmFFLUplV3lwMU9vbm5CZmhxZkFlenJrSmZ5aXBmc3FERFBsTnVLaG1PTlV3eVVUVGhuT2pDWDZaTkNoblJXNF9GQWFjWWttYnJzLVYwUWprb2prNkJvYmFtSDIxSWc?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Palvella Therapeutics Submits First Module of Rolling New",
+      "event": "Satellos Receives FDA Fast Track Designation for SAT-3247 for the Treatment of Duchenne Muscular Dystrophy",
       "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi0AJBVV95cUxNUVc0NlNBaFlkNTNDVzlwVXdubHg4eTU0Z3haYW05S09fbC1WU1gtbDZWOXZOQzJBQ3dDNGJ4c3hvMTFuelZHSXZrNVRoN2psTjFKNDVMdWticmpNY0IwZUptRTBXblhJR2tUTzJTcFQ2dDNiT2hJSGUyU2dyeGVXQ01DdF9TV0w2T3NOcjAzV18tZVBteGRUS2pWLWNkZGNNS1AwQnkwUm9nYWpZd3JFemg1UEFMVnVIUGJ0a1lWdnh4WUY4R1k3WDFzWlF1cnJrNHBNNmd2bTUwc0xwSnlRa0E1c3Vuc1pWckkzZlZUaURCNDVJQkJnWUpBV1c3RFlUZjJUM2htWnFTOUNjUE92ZUtfTGQ3TWVkblM3YVF2MDBrT0xtR3pyXzc4ZG9yY2JiOG5rQ0JGOF9WWEhvejZmX0JrbWR6T3JyT2VvcldJUW8?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiigJBVV95cUxQMHg5amJJYUwxRzVxZnRzRkZTMldlSU80VF9sQ2J1V2laWXdJejdaTU4xX1YzTS15RFFnMmNPZ21EVXBaRXN4UVhkMkthTnBkMjJVd0ZvV1NKY0FGbmtYSTV2WnlmTEI1MDRpNHJyV1NGZDVJTmVxNnEwNWl4THViU0JRRmdlaWp1cmRjR0JZelVaNnJobElLNUhOYnRBNGhHTVEwUkI5RldLamQtWHo5WkN4RkQ5NU1VQ1FmQWtQd25JVVlhQ0RZRjlFX2RzOHhUVVdkOER6S3lUR0Rpa2VET3BVamNDcEVfZk5FSmkyRHN2QXZjbGlTM0FPS1hhWDJaOGpzWkhkaW5oUQ?oc=5"
     },
     {
       "company": "See source",
@@ -834,6 +826,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Palvella Therapeutics Submits First Rolling NDA Module for QTORIN Rapamycin in Microcystic Lymphatic Malformations",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOb0p2UzZFWE5LTGtZZUdXeEJSdlZKY0hZZkNweEVBd1lrVGpyLUFWbXpRamdrTHVOOEQxX0hoWlhqRGtRSi1sZjdFYjhzN2tkMUNsQTVxdm9XNnc3Skx1T0RwUUFtQTY0VFFRc3NLc3FNTHdtOUJmYkhhcEhldTF3aGRYTlhWRWRfNlpBa3F0WE9xdWYxUU1vVWVXWDdqdnV5NVNocl9BWjQtS0MxLWVEc05LX2NpMEZBUmRyT21maDZZUmc3ZGRkTWl0dFZKcDZGdGpOS3VUXzF6Q19pblMxUw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Spruce Biosciences Joins the Russell 3000\u00ae Index",
       "date": "Mon, 29 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNWnlXRnBLSERKdHpCWjdJMkdiaXVRcmd0VGVqZTdKUHlXR3ZBRlRkZzNnYlVzWFg5T2JmWTFJT05iVG42enBNczV4LTduQk1DekI1UE5HRFdfQkRTWWNJS3lfM0Fmek90aDNEa1k3bUxqV3c5LXdjcmpEcjF6WEVGVTRNeHljby1CaERjeGxod2dkWTl1NE1MdmFDdGdDYXFyQi1wVU9ydw?oc=5"
@@ -842,39 +842,39 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Fast Track boosts Satellos (NASDAQ: MSLE) SAT-3247 Duchenne program",
+      "event": "Palvella submits FDA NDA for QTORIN gel",
       "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPZzFQbXNSNTRUczVOVkZrVGs4Z1Vidjg1TExWLVpvRncxb2NpNGRNTk1kODdFd3V2SVV0TmdiQ0JRSjFyTVhNVXJHbVRpNlcwOEVkVWNFT19DUWN2eDJMRkNmWWNUUTJnRGI3cHpSZ2xMZXJkV3VkdE5ERjJPNWJOekRUU3YxdnVsVlN1b1BuUkhwTnpFOGtJUWRtS18wdURoVzg5TV9NRmk2X0VKRDVWWlBnWW9UdUlqVGRn?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxONC0zQW5hZUhaemowY2lCVk4xUXpEN2R0YjVya2Rqal95R2ZveWFnXzRITkpJR2NROGZRTlYxTERZNGFtTk5ZNGhrdlc3dkRSTlpSMlFTd3I5b2xqeU9LXy1lU2hWNFRYVW90dzVxNm5RRlRqNkVIZEZ3VUlDSUFZNFhNVFQ2czA3TERscWNXeVhIZw?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,498.60",
-      "daily": 0.78,
-      "weekly": 1.81,
-      "monthly": -1.33
+      "value": "7,499.84",
+      "daily": 0.01,
+      "weekly": 1.92,
+      "monthly": -1.32
     },
     {
       "name": "Nasdaq",
-      "value": "26,192.73",
-      "daily": 1.44,
-      "weekly": 2.37,
-      "monthly": -3.3
+      "value": "26,125.20",
+      "daily": -0.34,
+      "weekly": 2.55,
+      "monthly": -3.55
     },
     {
       "name": "Dow Jones",
-      "value": "52,332.50",
-      "daily": 0.29,
-      "weekly": 1.29,
-      "monthly": 2.45
+      "value": "52,348.30",
+      "daily": 0.06,
+      "weekly": 0.96,
+      "monthly": 2.49
     },
     {
       "name": "Russell 2000",
-      "value": "3,025.90",
-      "daily": 0.51,
-      "weekly": 1.69,
-      "monthly": 4.13
+      "value": "3,028.03",
+      "daily": 0.12,
+      "weekly": 1.39,
+      "monthly": 4.21
     }
   ]
 }
