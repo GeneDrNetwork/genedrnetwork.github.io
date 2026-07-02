@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-01T18:27:59+00:00",
+  "updated_at": "2026-07-02T17:20:27+00:00",
   "summaries": {
-    "ai": "Key developments: Meta plots AI cloud business to challenge Amazon, Microsoft and Google; Nvidia says it can cut data center water use. The AI boom has a bigger problem; Meta, like SpaceX, looks to turn excess AI compute into cash.",
-    "biotech": "Key developments: Ipsen gets the Memo, penning \u20ac700M deal to buy rare disease biotech for clinical-stage asset; Ipsen sends clear Memo to rare diseases with up to $796M buyout; Our Origin Story.",
-    "market": "Key developments: Stock market today: Nasdaq dips, Dow and S&P 500 rise as markets weigh Kevin Warsh's remarks; S&P 500, Nasdaq register best quarter since 2020 despite Iran war; Stock Market Today: Dow, Nasdaq, S&P 500 Futures Fall As Iran Rules Out Direct Talks With US\u2014 Nike, Const.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.12% today; Nasdaq was weakest at -0.34%. Key developments: Stock market today: Nasdaq dips, Dow and S&P 500 rise as markets weigh Kevin Warsh's remarks; S&P 500, Nasdaq register best quarter since 2020 despite Iran war; Stock Market Today: Dow, Nasdaq, S&P 500 Futures Fall As Iran Rules Out Direct Talks With US\u2014 Nike, Const."
+    "ai": "Key developments: AI Infrastructure Stocks Retail Investors Are Watching After OpenAI\u2019s Government Stake Proposal; What Meta, Oracle moves say about data center economics; AI: Meta & 'Zuck' aiming for the AI Clouds. AI-RTZ #1135.",
+    "biotech": "Key developments: In Silico Clinical Trials Market Size to Reach USD 8.51; Wall Street Thinks This Biotech Stock Can Soar 45%. Here's Why Analysts Are Right.; The Future of Biotech? BridgeBio, Ionis and BioMarin Are Worth Watching.",
+    "market": "Key developments: Stock market today: Dow rises, S&P 500 and Nasdaq dip after June jobs report falls short; US stock markets rally despite Middle East tensions, inflation concerns in Q2; Wall Street ends choppy session lower as tech shares drop.",
+    "market_movers": "Dow Jones led tracked indexes at +0.46% today; Nasdaq was weakest at -1.35%. Key developments: Stock market today: Dow rises, S&P 500 and Nasdaq dip after June jobs report falls short; US stock markets rally despite Middle East tensions, inflation concerns in Q2; Wall Street ends choppy session lower as tech shares drop."
   },
   "takeaways": [
-    "Meta plots AI cloud business to challenge Amazon, Microsoft and Google - Los Angeles Times",
-    "Nvidia says it can cut data center water use. The AI boom has a bigger problem - Fast Company",
-    "Ipsen gets the Memo, penning \u20ac700M deal to buy rare disease biotech for clinical-stage asset - Fierce Biotech",
-    "Ipsen sends clear Memo to rare diseases with up to $796M buyout - BioSpace",
-    "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex - Contemporary Pediatrics",
+    "AI Infrastructure Stocks Retail Investors Are Watching After OpenAI\u2019s Government Stake Proposal - simplywall.st",
+    "What Meta, Oracle moves say about data center economics - cio.com",
+    "In Silico Clinical Trials Market Size to Reach USD 8.51 - GlobeNewswire",
+    "Wall Street Thinks This Biotech Stock Can Soar 45%. Here's Why Analysts Are Right. - The Motley Fool",
+    "Satellos wins FDA Fast Track for Duchenne drug SAT-3247 - Stock Titan",
     "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients - Epidermolysis Bullosa News",
-    "Stock market today: Nasdaq dips, Dow and S&P 500 rise as markets weigh Kevin Warsh's remarks - Yahoo! Finance Canada"
+    "Stock market today: Dow rises, S&P 500 and Nasdaq dip after June jobs report falls short - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,9 +786,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA fast tracks BM-3103 gel for epidermolysis bullosa simplex",
-      "date": "Wed, 24 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPYjNtRkRyQXFlMTNENmtUbDJDVm9QbmNzQjBZWkpRY2ptTGFBdEgyUnpzMnZlZ3VrZ2lMc0t6QkNvdjZiMXlhYkFfdzRLWEpiX1ZlM0Vlam95cmZvU0pqdFFORnFxZGhHamZoX2tYTDZLMmFwQUtiUjBSRllkQ3dQblpWY3ZNOThMTHd0dElGa196UGtsT1JlOENnUjdvVVlPUTgzLTBDUng?oc=5"
+      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
     },
     {
       "company": "See source",
@@ -802,14 +802,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Satellos Receives FDA Fast Track Designation for SAT-3247 for the Treatment of Duchenne Muscular Dystrophy",
       "date": "Mon, 29 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMiigJBVV95cUxQMHg5amJJYUwxRzVxZnRzRkZTMldlSU80VF9sQ2J1V2laWXdJejdaTU4xX1YzTS15RFFnMmNPZ21EVXBaRXN4UVhkMkthTnBkMjJVd0ZvV1NKY0FGbmtYSTV2WnlmTEI1MDRpNHJyV1NGZDVJTmVxNnEwNWl4THViU0JRRmdlaWp1cmRjR0JZelVaNnJobElLNUhOYnRBNGhHTVEwUkI5RldLamQtWHo5WkN4RkQ5NU1VQ1FmQWtQd25JVVlhQ0RZRjlFX2RzOHhUVVdkOER6S3lUR0Rpa2VET3BVamNDcEVfZk5FSmkyRHN2QXZjbGlTM0FPS1hhWDJaOGpzWkhkaW5oUQ?oc=5"
@@ -818,17 +810,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI",
-      "date": "Fri, 26 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNNkpXNXl0ZHR5NlJJNFFvZkdCaFJtdUdDZkVVUDI4SWM2RlVvaTkyMWljd1hDMUNfWGZTM3hLWXdpV0dRTVBld0pUSklFR3Q4LUM0cG9fUDYtWEdHVUlfaDRMMlEwX1A0MHg1d2d2RHVWZERvRU9vT1NycmJqQUNnYm1OVTdETm1OYmlVT1VHdEVLNjNXeGljRE1kQjRZUDA?oc=5"
+      "event": "Palvella Therapeutics Submits First Rolling NDA Module for QTORIN Rapamycin in Microcystic Lymphatic Malformations",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOb0p2UzZFWE5LTGtZZUdXeEJSdlZKY0hZZkNweEVBd1lrVGpyLUFWbXpRamdrTHVOOEQxX0hoWlhqRGtRSi1sZjdFYjhzN2tkMUNsQTVxdm9XNnc3Skx1T0RwUUFtQTY0VFFRc3NLc3FNTHdtOUJmYkhhcEhldTF3aGRYTlhWRWRfNlpBa3F0WE9xdWYxUU1vVWVXWDdqdnV5NVNocl9BWjQtS0MxLWVEc05LX2NpMEZBUmRyT21maDZZUmc3ZGRkTWl0dFZKcDZGdGpOS3VUXzF6Q19pblMxUw?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Palvella Therapeutics Submits First Rolling NDA Module for QTORIN Rapamycin in Microcystic Lymphatic Malformations",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOb0p2UzZFWE5LTGtZZUdXeEJSdlZKY0hZZkNweEVBd1lrVGpyLUFWbXpRamdrTHVOOEQxX0hoWlhqRGtRSi1sZjdFYjhzN2tkMUNsQTVxdm9XNnc3Skx1T0RwUUFtQTY0VFFRc3NLc3FNTHdtOUJmYkhhcEhldTF3aGRYTlhWRWRfNlpBa3F0WE9xdWYxUU1vVWVXWDdqdnV5NVNocl9BWjQtS0MxLWVEc05LX2NpMEZBUmRyT21maDZZUmc3ZGRkTWl0dFZKcDZGdGpOS3VUXzF6Q19pblMxUw?oc=5"
+      "event": "Ipsen sends clear Memo to rare diseases with up to $796M buyout",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPNUZnZXFGR1FSUnVDRnpNaFY5WGRFQVo0QmZtaUtjVmVTbkxRckJDZ1dYQS1HdUsyV3Ezd0ZwbGxUVGFELWgtWkQ3Y3ViZ3lScmNQU1k1aFRCQlI3MS0ybzFReGNoYzV4NjR3Ym96VHE4ZDc0aGJvREowOTVCX2c0dEwzWWVzLTJOa2dLakJJN2dvQVlE?oc=5"
     },
     {
       "company": "See source",
@@ -845,36 +837,44 @@
       "event": "Palvella submits FDA NDA for QTORIN gel",
       "date": "Mon, 29 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxONC0zQW5hZUhaemowY2lCVk4xUXpEN2R0YjVya2Rqal95R2ZveWFnXzRITkpJR2NROGZRTlYxTERZNGFtTk5ZNGhrdlc3dkRSTlpSMlFTd3I5b2xqeU9LXy1lU2hWNFRYVW90dzVxNm5RRlRqNkVIZEZ3VUlDSUFZNFhNVFQ2czA3TERscWNXeVhIZw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA approves ZYCUBO\u00ae, first treatment for Menkes disease, marking major milestone for Sentynl and Zydus Group",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPeGc3NG1kMU10d3RSU3pZQk5kSmc2ZFJqZUZqSm9fQkFITnk3RXVhTk1KN3FUa0pmNWJMT0RQZ2VnaUNKb2FJSHBuSmF5M09UNjJsR1NLQnRfS3Z0c3doYzJDcDlDcWN2a0tEcy1JdmdxR1pYb2RGOFhMaFFaN3Ruc2xkSzAzMWIyRUU4VFc5RDZvMTRlRXdmU0Y0YmxyS3dQNXJjWUxsV1l5V1lhMVBFTXM2SzlEVkZZWU9sRUFRdl8tTGVybWJJcTBVUGlDc1Vj?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,499.84",
-      "daily": 0.01,
-      "weekly": 1.92,
-      "monthly": -1.32
+      "value": "7,440.36",
+      "daily": -0.57,
+      "weekly": 1.13,
+      "monthly": -2.23
     },
     {
       "name": "Nasdaq",
-      "value": "26,125.20",
-      "daily": -0.34,
-      "weekly": 2.55,
-      "monthly": -3.55
+      "value": "25,687.82",
+      "daily": -1.35,
+      "weekly": 1.3,
+      "monthly": -5.19
     },
     {
       "name": "Dow Jones",
-      "value": "52,348.30",
-      "daily": 0.06,
-      "weekly": 0.96,
-      "monthly": 2.49
+      "value": "52,544.29",
+      "daily": 0.46,
+      "weekly": 1.2,
+      "monthly": 2.41
     },
     {
       "name": "Russell 2000",
-      "value": "3,028.03",
-      "daily": 0.12,
-      "weekly": 1.39,
-      "monthly": 4.21
+      "value": "2,978.69",
+      "daily": -1.13,
+      "weekly": -0.97,
+      "monthly": 1.59
     }
   ]
 }
