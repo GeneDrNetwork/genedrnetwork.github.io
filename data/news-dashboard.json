@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-02T17:20:27+00:00",
+  "updated_at": "2026-07-03T16:48:15+00:00",
   "summaries": {
-    "ai": "Key developments: AI Infrastructure Stocks Retail Investors Are Watching After OpenAI\u2019s Government Stake Proposal; What Meta, Oracle moves say about data center economics; AI: Meta & 'Zuck' aiming for the AI Clouds. AI-RTZ #1135.",
-    "biotech": "Key developments: In Silico Clinical Trials Market Size to Reach USD 8.51; Wall Street Thinks This Biotech Stock Can Soar 45%. Here's Why Analysts Are Right.; The Future of Biotech? BridgeBio, Ionis and BioMarin Are Worth Watching.",
-    "market": "Key developments: Stock market today: Dow rises, S&P 500 and Nasdaq dip after June jobs report falls short; US stock markets rally despite Middle East tensions, inflation concerns in Q2; Wall Street ends choppy session lower as tech shares drop.",
-    "market_movers": "Dow Jones led tracked indexes at +0.46% today; Nasdaq was weakest at -1.35%. Key developments: Stock market today: Dow rises, S&P 500 and Nasdaq dip after June jobs report falls short; US stock markets rally despite Middle East tensions, inflation concerns in Q2; Wall Street ends choppy session lower as tech shares drop."
+    "ai": "Key developments: AI Infrastructure Stocks With High Expectations Deserve A Closer Look; AI Workloads Expose Network Bottleneck, Driving Data Center Costs; America\u2019s Data Centre Backlash And The Global AI Balance \u2013 OpEd.",
+    "biotech": "Key developments: United Therapeutics pays $140M for thymic cell therapy startup; Imviva Gets FDA Clearance for clonoSEQ in CTD402 T-ALL Trial; AstraZeneca and CSPC add renal disease to RNA pact run.",
+    "market": "Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Tech Futures Rise After AI Dive; U.S. Markets Closed; Dow jumps to record closing high after soft US jobs data, Nasdaq down with chip shares.",
+    "market_movers": "Dow Jones led tracked indexes at +1.14% today; Nasdaq was weakest at -0.80%. Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Tech Futures Rise After AI Dive; U.S. Markets Closed; Dow jumps to record closing high after soft US jobs data, Nasdaq down with chip shares."
   },
   "takeaways": [
-    "AI Infrastructure Stocks Retail Investors Are Watching After OpenAI\u2019s Government Stake Proposal - simplywall.st",
-    "What Meta, Oracle moves say about data center economics - cio.com",
-    "In Silico Clinical Trials Market Size to Reach USD 8.51 - GlobeNewswire",
-    "Wall Street Thinks This Biotech Stock Can Soar 45%. Here's Why Analysts Are Right. - The Motley Fool",
-    "Satellos wins FDA Fast Track for Duchenne drug SAT-3247 - Stock Titan",
+    "AI Infrastructure Stocks With High Expectations Deserve A Closer Look - simplywall.st",
+    "AI Workloads Expose Network Bottleneck, Driving Data Center Costs - Indiatimes",
+    "United Therapeutics pays $140M for thymic cell therapy startup - Fierce Biotech",
+    "Imviva Gets FDA Clearance for clonoSEQ in CTD402 T-ALL Trial - The Clinical Trial Vanguard",
     "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients - Epidermolysis Bullosa News",
-    "Stock market today: Dow rises, S&P 500 and Nasdaq dip after June jobs report falls short - Yahoo Finance"
+    "Satellos wins FDA Fast Track for Duchenne drug SAT-3247 - Stock Titan",
+    "Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91 - TV News Check"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
+      "event": "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients",
+      "date": "Sat, 27 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNVzF2WUVkMFhVQi05cGZQclRxNGowLTFEODYtaVFWZmlicVA5Sm5zc0wyalRTaTN6WUluVWdyUjRnRmV6ZUFGWk9HU0NCX1gtQmFFLUplV3lwMU9vbm5CZmhxZkFlenJrSmZ5aXBmc3FERFBsTnVLaG1PTlV3eVVUVGhuT2pDWDZaTkNoblJXNF9GQWFjWWttYnJzLVYwUWprb2prNkJvYmFtSDIxSWc?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients",
-      "date": "Sat, 27 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNVzF2WUVkMFhVQi05cGZQclRxNGowLTFEODYtaVFWZmlicVA5Sm5zc0wyalRTaTN6WUluVWdyUjRnRmV6ZUFGWk9HU0NCX1gtQmFFLUplV3lwMU9vbm5CZmhxZkFlenJrSmZ5aXBmc3FERFBsTnVLaG1PTlV3eVVUVGhuT2pDWDZaTkNoblJXNF9GQWFjWWttYnJzLVYwUWprb2prNkJvYmFtSDIxSWc?oc=5"
+      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
     },
     {
       "company": "See source",
@@ -818,14 +818,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Ipsen sends clear Memo to rare diseases with up to $796M buyout",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPNUZnZXFGR1FSUnVDRnpNaFY5WGRFQVo0QmZtaUtjVmVTbkxRckJDZ1dYQS1HdUsyV3Ezd0ZwbGxUVGFELWgtWkQ3Y3ViZ3lScmNQU1k1aFRCQlI3MS0ybzFReGNoYzV4NjR3Ym96VHE4ZDc0aGJvREowOTVCX2c0dEwzWWVzLTJOa2dLakJJN2dvQVlE?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Spruce Biosciences Joins the Russell 3000\u00ae Index",
       "date": "Mon, 29 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNWnlXRnBLSERKdHpCWjdJMkdiaXVRcmd0VGVqZTdKUHlXR3ZBRlRkZzNnYlVzWFg5T2JmWTFJT05iVG42enBNczV4LTduQk1DekI1UE5HRFdfQkRTWWNJS3lfM0Fmek90aDNEa1k3bUxqV3c5LXdjcmpEcjF6WEVGVTRNeHljby1CaERjeGxod2dkWTl1NE1MdmFDdGdDYXFyQi1wVU9ydw?oc=5"
@@ -834,47 +826,55 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Palvella submits FDA NDA for QTORIN gel",
+      "event": "FDA approves ZYCUBO\u00ae, first treatment for Menkes disease, marking major milestone for Sentynl and Zydus Group",
       "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxONC0zQW5hZUhaemowY2lCVk4xUXpEN2R0YjVya2Rqal95R2ZveWFnXzRITkpJR2NROGZRTlYxTERZNGFtTk5ZNGhrdlc3dkRSTlpSMlFTd3I5b2xqeU9LXy1lU2hWNFRYVW90dzVxNm5RRlRqNkVIZEZ3VUlDSUFZNFhNVFQ2czA3TERscWNXeVhIZw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPeGc3NG1kMU10d3RSU3pZQk5kSmc2ZFJqZUZqSm9fQkFITnk3RXVhTk1KN3FUa0pmNWJMT0RQZ2VnaUNKb2FJSHBuSmF5M09UNjJsR1NLQnRfS3Z0c3doYzJDcDlDcWN2a0tEcy1JdmdxR1pYb2RGOFhMaFFaN3Ruc2xkSzAzMWIyRUU4VFc5RDZvMTRlRXdmU0Y0YmxyS3dQNXJjWUxsV1l5V1lhMVBFTXM2SzlEVkZZWU9sRUFRdl8tTGVybWJJcTBVUGlDc1Vj?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA approves ZYCUBO\u00ae, first treatment for Menkes disease, marking major milestone for Sentynl and Zydus Group",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPeGc3NG1kMU10d3RSU3pZQk5kSmc2ZFJqZUZqSm9fQkFITnk3RXVhTk1KN3FUa0pmNWJMT0RQZ2VnaUNKb2FJSHBuSmF5M09UNjJsR1NLQnRfS3Z0c3doYzJDcDlDcWN2a0tEcy1JdmdxR1pYb2RGOFhMaFFaN3Ruc2xkSzAzMWIyRUU4VFc5RDZvMTRlRXdmU0Y0YmxyS3dQNXJjWUxsV1l5V1lhMVBFTXM2SzlEVkZZWU9sRUFRdl8tTGVybWJJcTBVUGlDc1Vj?oc=5"
+      "event": "Cumberland Pharmaceuticals Sells Branded Drug Portfolio to Apotex for $100M, Refocuses on Rare Disease Pipeline 1",
+      "date": "Thu, 02 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQZldVMXVQeWFSVjNNaFp6SHJoUlN4Z3Y4Y0NvSkx2ako0NmhJN1FJVGJVT2kwSlNaand5NjdtQUhJaFFsOGR3M25RTXJFa245ZnQyU2g3X25NZ3ppcGhMWWxjU1QxcUk4bkFDNTFqNWdRVElZcjBGWGNNc21zdmM4MG5nWDI0cms1d21ZaW5qV2lLbDc4dExNcFVzTWMzVWNJNFFqeXN1Z0xqSklSM0lvQk9wVVJrZkg5VVVfMmZ0T3RQeEc5SlNFelIxVjRRVkx6UUhPSFR4RkxqbjJGZF9ySWRDUzhwM1E?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Cumberland sells branded U.S. drugs to Apotex for $100M",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQYjVFbFBJdnE0ZlZ0ODVoUko2b1o4VFRNTzhVRUFvQTlGVFgzRG9QSUVUTXpJcmpIR1Njd3RpV2ZvUDVYa1VrbFhlMndyMVpBVTNPNWRvTWJDS2VSenJ2aVVPV1lWS2lSWkxZUFhsVm5QWFoxZGVuYTJyUDRObEVVNUJaLXdxWnVMLUsweDRKVWR4LWdDZG1LcG5ldi1VSVp6MDY0Q0gwYUtLVm1OR09McHlkRUp0dw?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,440.36",
-      "daily": -0.57,
-      "weekly": 1.13,
-      "monthly": -2.23
+      "value": "7,483.24",
+      "daily": 0.0,
+      "weekly": 1.71,
+      "monthly": -0.93
     },
     {
       "name": "Nasdaq",
-      "value": "25,687.82",
-      "daily": -1.35,
-      "weekly": 1.3,
-      "monthly": -5.19
+      "value": "25,832.67",
+      "daily": -0.8,
+      "weekly": 1.87,
+      "monthly": -3.8
     },
     {
       "name": "Dow Jones",
-      "value": "52,544.29",
-      "daily": 0.46,
-      "weekly": 1.2,
-      "monthly": 2.41
+      "value": "52,900.07",
+      "daily": 1.14,
+      "weekly": 1.89,
+      "monthly": 4.37
     },
     {
       "name": "Russell 2000",
-      "value": "2,978.69",
-      "daily": -1.13,
-      "weekly": -0.97,
-      "monthly": 1.59
+      "value": "2,996.11",
+      "daily": -0.55,
+      "weekly": -0.39,
+      "monthly": 3.55
     }
   ]
 }
