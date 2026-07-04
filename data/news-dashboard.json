@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-03T16:48:15+00:00",
+  "updated_at": "2026-07-04T15:43:48+00:00",
   "summaries": {
-    "ai": "Key developments: AI Infrastructure Stocks With High Expectations Deserve A Closer Look; AI Workloads Expose Network Bottleneck, Driving Data Center Costs; America\u2019s Data Centre Backlash And The Global AI Balance \u2013 OpEd.",
-    "biotech": "Key developments: United Therapeutics pays $140M for thymic cell therapy startup; Imviva Gets FDA Clearance for clonoSEQ in CTD402 T-ALL Trial; AstraZeneca and CSPC add renal disease to RNA pact run.",
-    "market": "Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Tech Futures Rise After AI Dive; U.S. Markets Closed; Dow jumps to record closing high after soft US jobs data, Nasdaq down with chip shares.",
-    "market_movers": "Dow Jones led tracked indexes at +1.14% today; Nasdaq was weakest at -0.80%. Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Tech Futures Rise After AI Dive; U.S. Markets Closed; Dow jumps to record closing high after soft US jobs data, Nasdaq down with chip shares."
+    "ai": "Key developments: America's data centre backlash and the global AI balance - middle-east-online.com; 3 Stocks to Buy on the AI Infrastructure Sell-Off; The Future World Will Need Taiwan Even More: AI Geopolitics Is Moving From Chips to National Resilience.",
+    "biotech": "Key developments: If You Invested $1,000 in Larimar Therapeutics Inc (LRMR); DoH signs agreements to reinforce intelligent life sciences through genomics, AI, research, and healthcare investment; BPGbio moves closer to Phase 3 in rare mitochondrial disease.",
+    "market": "Key developments: Tech Futures Jump Into Holiday Weekend; Nasdaq heads for best quarter since 2020; QQQ vs. VOO: Should the Nasdaq-100 or the S&P 500 Be Your Core Holding?.",
+    "market_movers": "Dow Jones led tracked indexes at +1.14% today; Nasdaq was weakest at -0.80%. Key developments: Tech Futures Jump Into Holiday Weekend; Nasdaq heads for best quarter since 2020; QQQ vs. VOO: Should the Nasdaq-100 or the S&P 500 Be Your Core Holding?."
   },
   "takeaways": [
-    "AI Infrastructure Stocks With High Expectations Deserve A Closer Look - simplywall.st",
-    "AI Workloads Expose Network Bottleneck, Driving Data Center Costs - Indiatimes",
-    "United Therapeutics pays $140M for thymic cell therapy startup - Fierce Biotech",
-    "Imviva Gets FDA Clearance for clonoSEQ in CTD402 T-ALL Trial - The Clinical Trial Vanguard",
-    "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients - Epidermolysis Bullosa News",
+    "America's data centre backlash and the global AI balance - middle-east-online.com",
+    "3 Stocks to Buy on the AI Infrastructure Sell-Off - The Globe and Mail",
+    "If You Invested $1,000 in Larimar Therapeutics Inc (LRMR) - Stock Titan",
+    "DoH signs agreements to reinforce intelligent life sciences through genomics, AI, research, and healthcare investment - \u0645\u0643\u062a\u0628 \u0623\u0628\u0648\u0638\u0628\u064a \u0627\u0644\u0625\u0639\u0644\u0627\u0645\u064a",
     "Satellos wins FDA Fast Track for Duchenne drug SAT-3247 - Stock Titan",
-    "Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91 - TV News Check"
+    "Satellos Receives FDA Fast Track Designation for SAT-3247 for the Treatment of Duchenne Muscular Dystrophy - GlobeNewswire",
+    "Tech Futures Jump Into Holiday Weekend - Investor's Business Daily"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,14 +786,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA fast track status aiming to speed TolaSure Gel to fragile skin patients",
-      "date": "Sat, 27 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNVzF2WUVkMFhVQi05cGZQclRxNGowLTFEODYtaVFWZmlicVA5Sm5zc0wyalRTaTN6WUluVWdyUjRnRmV6ZUFGWk9HU0NCX1gtQmFFLUplV3lwMU9vbm5CZmhxZkFlenJrSmZ5aXBmc3FERFBsTnVLaG1PTlV3eVVUVGhuT2pDWDZaTkNoblJXNF9GQWFjWWttYnJzLVYwUWprb2prNkJvYmFtSDIxSWc?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
       "date": "Mon, 29 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
@@ -813,6 +805,14 @@
       "event": "Palvella Therapeutics Submits First Rolling NDA Module for QTORIN Rapamycin in Microcystic Lymphatic Malformations",
       "date": "Mon, 29 Jun 2026",
       "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOb0p2UzZFWE5LTGtZZUdXeEJSdlZKY0hZZkNweEVBd1lrVGpyLUFWbXpRamdrTHVOOEQxX0hoWlhqRGtRSi1sZjdFYjhzN2tkMUNsQTVxdm9XNnc3Skx1T0RwUUFtQTY0VFFRc3NLc3FNTHdtOUJmYkhhcEhldTF3aGRYTlhWRWRfNlpBa3F0WE9xdWYxUU1vVWVXWDdqdnV5NVNocl9BWjQtS0MxLWVEc05LX2NpMEZBUmRyT21maDZZUmc3ZGRkTWl0dFZKcDZGdGpOS3VUXzF6Q19pblMxUw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Ipsen sends clear Memo to rare diseases with up to $796M buyout",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPNUZnZXFGR1FSUnVDRnpNaFY5WGRFQVo0QmZtaUtjVmVTbkxRckJDZ1dYQS1HdUsyV3Ezd0ZwbGxUVGFELWgtWkQ3Y3ViZ3lScmNQU1k1aFRCQlI3MS0ybzFReGNoYzV4NjR3Ym96VHE4ZDc0aGJvREowOTVCX2c0dEwzWWVzLTJOa2dLakJJN2dvQVlE?oc=5"
     },
     {
       "company": "See source",
