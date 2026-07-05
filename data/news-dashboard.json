@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-04T15:43:48+00:00",
+  "updated_at": "2026-07-05T15:50:04+00:00",
   "summaries": {
-    "ai": "Key developments: America's data centre backlash and the global AI balance - middle-east-online.com; 3 Stocks to Buy on the AI Infrastructure Sell-Off; The Future World Will Need Taiwan Even More: AI Geopolitics Is Moving From Chips to National Resilience.",
-    "biotech": "Key developments: If You Invested $1,000 in Larimar Therapeutics Inc (LRMR); DoH signs agreements to reinforce intelligent life sciences through genomics, AI, research, and healthcare investment; BPGbio moves closer to Phase 3 in rare mitochondrial disease.",
-    "market": "Key developments: Tech Futures Jump Into Holiday Weekend; Nasdaq heads for best quarter since 2020; QQQ vs. VOO: Should the Nasdaq-100 or the S&P 500 Be Your Core Holding?.",
-    "market_movers": "Dow Jones led tracked indexes at +1.14% today; Nasdaq was weakest at -0.80%. Key developments: Tech Futures Jump Into Holiday Weekend; Nasdaq heads for best quarter since 2020; QQQ vs. VOO: Should the Nasdaq-100 or the S&P 500 Be Your Core Holding?."
+    "ai": "Key developments: The AI Boom Runs on Debt. Global Regulators Want to Shut Off the Tap; SK Telecom targets 15 GW AI data center capacity by 2035; AI Stocks to Watch as Data Center and Cybersecurity Demand Builds.",
+    "biotech": "Key developments: The week in pharma: action, reaction and insight \u2013 week to July 3, 2026; Biogen Inc. explores long-term growth in neurology and rare diseases; APAC Healthcare Weekly (July 5) \u2013 CSPC, Abbisko, Insilico, Takeda, Nippon Shinyaku, Otsuka, CSL.",
+    "market": "Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Expect Fireworks As Futures Open; Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today.",
+    "market_movers": "Dow Jones led tracked indexes at +1.14% today; Nasdaq was weakest at -0.80%. Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Expect Fireworks As Futures Open; Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today."
   },
   "takeaways": [
-    "America's data centre backlash and the global AI balance - middle-east-online.com",
-    "3 Stocks to Buy on the AI Infrastructure Sell-Off - The Globe and Mail",
-    "If You Invested $1,000 in Larimar Therapeutics Inc (LRMR) - Stock Titan",
-    "DoH signs agreements to reinforce intelligent life sciences through genomics, AI, research, and healthcare investment - \u0645\u0643\u062a\u0628 \u0623\u0628\u0648\u0638\u0628\u064a \u0627\u0644\u0625\u0639\u0644\u0627\u0645\u064a",
+    "The AI Boom Runs on Debt. Global Regulators Want to Shut Off the Tap - 24/7 Wall St.",
+    "SK Telecom targets 15 GW AI data center capacity by 2035 - The Korea Herald",
+    "The week in pharma: action, reaction and insight \u2013 week to July 3, 2026 - The Pharma Letter",
+    "Biogen Inc. explores long-term growth in neurology and rare diseases - AD HOC NEWS",
     "Satellos wins FDA Fast Track for Duchenne drug SAT-3247 - Stock Titan",
     "Satellos Receives FDA Fast Track Designation for SAT-3247 for the Treatment of Duchenne Muscular Dystrophy - GlobeNewswire",
-    "Tech Futures Jump Into Holiday Weekend - Investor's Business Daily"
+    "Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91 - TV News Check"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,17 +802,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Palvella Therapeutics Submits First Rolling NDA Module for QTORIN Rapamycin in Microcystic Lymphatic Malformations",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOb0p2UzZFWE5LTGtZZUdXeEJSdlZKY0hZZkNweEVBd1lrVGpyLUFWbXpRamdrTHVOOEQxX0hoWlhqRGtRSi1sZjdFYjhzN2tkMUNsQTVxdm9XNnc3Skx1T0RwUUFtQTY0VFFRc3NLc3FNTHdtOUJmYkhhcEhldTF3aGRYTlhWRWRfNlpBa3F0WE9xdWYxUU1vVWVXWDdqdnV5NVNocl9BWjQtS0MxLWVEc05LX2NpMEZBUmRyT21maDZZUmc3ZGRkTWl0dFZKcDZGdGpOS3VUXzF6Q19pblMxUw?oc=5"
+      "event": "Ipsen sends clear Memo to rare diseases with up to $796M buyout",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNTmZsRThpcF9MZ1p2eVVDZEJRU0ptTnh2ODE1WDhvNmlCYjl0M1RnNmo4ajB2ck1xVHBuem15Y0Y0V2NBNkNoenZqYzNyeURFVmxWWjZDSEVVRDBjMlNJcFN2X2JLN1dpbkRUeE0zVDQ4bUs0eE9scUVIYUIyUjFTVDM3YUEtb1lsX3ZJTS16LVhHN1lteUhYag?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Ipsen sends clear Memo to rare diseases with up to $796M buyout",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPNUZnZXFGR1FSUnVDRnpNaFY5WGRFQVo0QmZtaUtjVmVTbkxRckJDZ1dYQS1HdUsyV3Ezd0ZwbGxUVGFELWgtWkQ3Y3ViZ3lScmNQU1k1aFRCQlI3MS0ybzFReGNoYzV4NjR3Ym96VHE4ZDc0aGJvREowOTVCX2c0dEwzWWVzLTJOa2dLakJJN2dvQVlE?oc=5"
+      "event": "Palvella Therapeutics Submits First Rolling NDA Module for QTORIN Rapamycin in Microcystic Lymphatic Malformations",
+      "date": "Mon, 29 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOb0p2UzZFWE5LTGtZZUdXeEJSdlZKY0hZZkNweEVBd1lrVGpyLUFWbXpRamdrTHVOOEQxX0hoWlhqRGtRSi1sZjdFYjhzN2tkMUNsQTVxdm9XNnc3Skx1T0RwUUFtQTY0VFFRc3NLc3FNTHdtOUJmYkhhcEhldTF3aGRYTlhWRWRfNlpBa3F0WE9xdWYxUU1vVWVXWDdqdnV5NVNocl9BWjQtS0MxLWVEc05LX2NpMEZBUmRyT21maDZZUmc3ZGRkTWl0dFZKcDZGdGpOS3VUXzF6Q19pblMxUw?oc=5"
     },
     {
       "company": "See source",
