@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-05T15:50:04+00:00",
+  "updated_at": "2026-07-06T18:28:10+00:00",
   "summaries": {
-    "ai": "Key developments: The AI Boom Runs on Debt. Global Regulators Want to Shut Off the Tap; SK Telecom targets 15 GW AI data center capacity by 2035; AI Stocks to Watch as Data Center and Cybersecurity Demand Builds.",
-    "biotech": "Key developments: The week in pharma: action, reaction and insight \u2013 week to July 3, 2026; Biogen Inc. explores long-term growth in neurology and rare diseases; APAC Healthcare Weekly (July 5) \u2013 CSPC, Abbisko, Insilico, Takeda, Nippon Shinyaku, Otsuka, CSL.",
-    "market": "Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Expect Fireworks As Futures Open; Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today.",
-    "market_movers": "Dow Jones led tracked indexes at +1.14% today; Nasdaq was weakest at -0.80%. Key developments: Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91; Expect Fireworks As Futures Open; Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today."
+    "ai": "Key developments: Korean operators ramp up AI investments to make country an AI superpower; Why Vertiv and Eaton Are the Ultimate Infrastructure Plays for the AI Boom; Here's Why AI Data Center Infrastructure Stock, Vertiv, Shot Higher Today.",
+    "biotech": "Key developments: Gene editing developer Scribe plots an IPO; Scribe notes down IPO ambition to fund lipid-lowering genetic meds through clinical trials; Opinion: The FDA must put biotech at its center or continue to cede early research to China.",
+    "market": "Key developments: Stock market today: Nasdaq leads S&P 500, Dow higher as tech jitters ease; S&P 500, Nasdaq rise as chips recover, Broadcom gains on Apple deal; Stock Market Today: Stock Market News And Analysis.",
+    "market_movers": "Nasdaq led tracked indexes at +1.15% today; Dow Jones was weakest at +0.17%. Key developments: Stock market today: Nasdaq leads S&P 500, Dow higher as tech jitters ease; S&P 500, Nasdaq rise as chips recover, Broadcom gains on Apple deal; Stock Market Today: Stock Market News And Analysis."
   },
   "takeaways": [
-    "The AI Boom Runs on Debt. Global Regulators Want to Shut Off the Tap - 24/7 Wall St.",
-    "SK Telecom targets 15 GW AI data center capacity by 2035 - The Korea Herald",
-    "The week in pharma: action, reaction and insight \u2013 week to July 3, 2026 - The Pharma Letter",
-    "Biogen Inc. explores long-term growth in neurology and rare diseases - AD HOC NEWS",
-    "Satellos wins FDA Fast Track for Duchenne drug SAT-3247 - Stock Titan",
-    "Satellos Receives FDA Fast Track Designation for SAT-3247 for the Treatment of Duchenne Muscular Dystrophy - GlobeNewswire",
-    "Dow Drops 507, Nasdaq Sinks 355, S&P 500 Loses 91 - TV News Check"
+    "Korean operators ramp up AI investments to make country an AI superpower - Fierce Network",
+    "Why Vertiv and Eaton Are the Ultimate Infrastructure Plays for the AI Boom - The Motley Fool",
+    "Gene editing developer Scribe plots an IPO - BioPharma Dive",
+    "Scribe notes down IPO ambition to fund lipid-lowering genetic meds through clinical trials - Fierce Biotech",
+    "Ipsen sends clear Memo to rare diseases with up to $796M buyout - BioSpace",
+    "Cumberland sells branded U.S. drugs to Apotex for $100M - Stock Titan",
+    "Stock market today: Nasdaq leads S&P 500, Dow higher as tech jitters ease - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,22 +786,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Satellos wins FDA Fast Track for Duchenne drug SAT-3247",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNbGYyRUdETFNEVHJqTXlfbGxsVk90cTg3UHVUdmR6Ml9hZkszYVFuTTRacFRXcm1jQ2FDR0xOMXY5WE1JcUpLd1pqYzJHUXNfNDFaa1lIOEpzZU1MS29hRDNRUGJ0UkNuT3pKLUNEd2hGUTJTMVFsWllLdmM4ZEhUeHE3b1ctOEk3QVUtLWZyanBxX1c4SUZKaFBzWjRoMEN6cnVqTlBZLXI1NGRxZGNtbjJGYXdhZ1gzR0JyVA?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Satellos Receives FDA Fast Track Designation for SAT-3247 for the Treatment of Duchenne Muscular Dystrophy",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMiigJBVV95cUxQMHg5amJJYUwxRzVxZnRzRkZTMldlSU80VF9sQ2J1V2laWXdJejdaTU4xX1YzTS15RFFnMmNPZ21EVXBaRXN4UVhkMkthTnBkMjJVd0ZvV1NKY0FGbmtYSTV2WnlmTEI1MDRpNHJyV1NGZDVJTmVxNnEwNWl4THViU0JRRmdlaWp1cmRjR0JZelVaNnJobElLNUhOYnRBNGhHTVEwUkI5RldLamQtWHo5WkN4RkQ5NU1VQ1FmQWtQd25JVVlhQ0RZRjlFX2RzOHhUVVdkOER6S3lUR0Rpa2VET3BVamNDcEVfZk5FSmkyRHN2QXZjbGlTM0FPS1hhWDJaOGpzWkhkaW5oUQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Ipsen sends clear Memo to rare diseases with up to $796M buyout",
       "date": "Wed, 01 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNTmZsRThpcF9MZ1p2eVVDZEJRU0ptTnh2ODE1WDhvNmlCYjl0M1RnNmo4ajB2ck1xVHBuem15Y0Y0V2NBNkNoenZqYzNyeURFVmxWWjZDSEVVRDBjMlNJcFN2X2JLN1dpbkRUeE0zVDQ4bUs0eE9scUVIYUIyUjFTVDM3YUEtb1lsX3ZJTS16LVhHN1lteUhYag?oc=5"
@@ -810,25 +794,49 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Palvella Therapeutics Submits First Rolling NDA Module for QTORIN Rapamycin in Microcystic Lymphatic Malformations",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOb0p2UzZFWE5LTGtZZUdXeEJSdlZKY0hZZkNweEVBd1lrVGpyLUFWbXpRamdrTHVOOEQxX0hoWlhqRGtRSi1sZjdFYjhzN2tkMUNsQTVxdm9XNnc3Skx1T0RwUUFtQTY0VFFRc3NLc3FNTHdtOUJmYkhhcEhldTF3aGRYTlhWRWRfNlpBa3F0WE9xdWYxUU1vVWVXWDdqdnV5NVNocl9BWjQtS0MxLWVEc05LX2NpMEZBUmRyT21maDZZUmc3ZGRkTWl0dFZKcDZGdGpOS3VUXzF6Q19pblMxUw?oc=5"
+      "event": "Cumberland sells branded U.S. drugs to Apotex for $100M",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQYjVFbFBJdnE0ZlZ0ODVoUko2b1o4VFRNTzhVRUFvQTlGVFgzRG9QSUVUTXpJcmpIR1Njd3RpV2ZvUDVYa1VrbFhlMndyMVpBVTNPNWRvTWJDS2VSenJ2aVVPV1lWS2lSWkxZUFhsVm5QWFoxZGVuYTJyUDRObEVVNUJaLXdxWnVMLUsweDRKVWR4LWdDZG1LcG5ldi1VSVp6MDY0Q0gwYUtLVm1OR09McHlkRUp0dw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Amyotrophic Lateral Sclerosis Market Gains Momentum with Expanding Pipeline and Investment Potential by 2034 \u2013 DelveInsight | Helixmith, Sanofi, Denali Therapeutics, Transposon Therapeutics, GSK",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMizwJBVV95cUxOTllBNzZmVDFQOXdaem8yRGRrZktHcEpHdkZ3a3Qzc3o1cnZvcVNidk5yb3djbkhGVktUWldaaVQydzJZUjRjNjJ0TWxqLXprRnR6cmFPamNjVFFTeXdZWWttMElPM3RUNVpnNHFzYWRud2RwWjVlRUoxYXBUYjhpX0dqc3dlSTd0S0E0RlRSeWlBOEpXbnl4LVIyXy1uNHlZNlNMOXlwSWpNS3JIQk5QalVkazBIOUtkNUlmQ0p4SHVrOTR5VTNDZC01QWtheTBTUlpZQU1ObDlrT0Q4RjZMYV9OQmRWM0NGMXJ2MHc1aTBtVFFucVRubzlKbFFWWC10UGV5Qng4dWVvZGlSNV8taGx5bHdsaGpsN1U1NUpmODlOVWlhdGZpRkZ3YmZHRnFISTBxcS1Lb2RwZ2o3TlVrVTZ4MDBfaTYySTluZ2ZzUQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Cumberland sells branded drug portfolio to Apotex for $100m",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOY05NVUw5LW94cW5uUTdpdEMza0RSb3ZmZnNhZURqOERFN3p4eHFwc0VsZTdmemhsUm5uaXRXWUZJdkxrZmUyQmpEZV9DbVdUOVNNM0hwSHFwaU1DTkVCYUdWVE9CN3Z6NEZwdEN3WW9iU0sxTVpHUTZxZUF5S1g0eGRlMEJVbkg1d2VmZ3l2bnZiNTM1VTR3M2hqbFBfZ3NpOFBfOXFYVEtUeUtxbER3cHRpck1IZw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Ipsen to acquire Memo Therapeutics AG, adding first-in-class BK polyomavirus antibody, expanding rare disease portfolio",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMimwJBVV95cUxQMGdYTUM3ckw5UVdKcFJYWjBiek03dk90VVVjMlJCemN1M08ySkNaM3AtNmpqamFNaG1CSlFjZ1k4V0V0RTRVTUdJQnJTLTVyeUJraksxWExVWnN6ZXFKVDBQRTBOMFlQTHFhSDNocktSbmF2M1B6NjM0ZnYxdmkwa0JwYm9wekprU1BLQkM5VE5lSzFzUDFkV2RGc2t5Q1lZdXdiUEFGc1NlbTU0TXZnTFVvWmpDQjFqZXhvVEw4S0VMYlZIeTdZdVRyMkVCbkI4Q1FfYXVQQjBoZUplb2hpMXBjWldJSVh6eV9LQTloS2hwakhiTW1xblZUc3otbkxDak1qam96LTNXM1ZVeVFBendrLWoybW5LLVBV0gGgAkFVX3lxTE4wN0xCeWlQSk1QYjJPRlF3VDRTazlhTXljWnJJa0RCZmU5U0xjSVRWa3RfeWQzM2RmQnp3RVZERVprMGlxME9oZ1hkbmtvRGxTVldLSjh5OHdvRjdIcHJaSVhSc05BMlVwSTVWeWpvZW85a0JtWjFpTW1La3RLaWxzaWRwZHc3cjRINldnaVJaaUw2YmUyZDd1VUxvR0FZUk9UQW14d1FZYnZXeU9vSmpSTFRPYTRzeTVBdzl1LWE4OF94WG04SFFOamJmU1BYVTNCQkc5b2dsT2dzU1JZQ0VxaVBpWWpCZVNSbmNiQ0hJblY0LVNGMVZJMEY5aGpYbmN1dmhMZ2tNWThwVEZEcW9SSVp6dmZ3YVZNdTJXNllmZA?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "OS Therapies seeks FDA alignment on OST-HER2 survival data",
+      "date": "Tue, 30 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOTjllUmtUV1FTTTVNNnJqbUJKY2V3aE5HR2RQUGphUXdRenhrbnNrRnJScUhGalFTSjlpZmZvMWlUYzRtMVlSOGZjV0hPNF9vYkxyM1p6VHl4RVpUYU5BeXlHRFhJS3NIblFudjcwN1ZZTFdwdWh5b1B5eG42TGxweFBoZ3BNOEdvTld4WHhLZTBOaDR3QUE?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
       "event": "Spruce Biosciences Joins the Russell 3000\u00ae Index",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNWnlXRnBLSERKdHpCWjdJMkdiaXVRcmd0VGVqZTdKUHlXR3ZBRlRkZzNnYlVzWFg5T2JmWTFJT05iVG42enBNczV4LTduQk1DekI1UE5HRFdfQkRTWWNJS3lfM0Fmek90aDNEa1k3bUxqV3c5LXdjcmpEcjF6WEVGVTRNeHljby1CaERjeGxod2dkWTl1NE1MdmFDdGdDYXFyQi1wVU9ydw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "FDA approves ZYCUBO\u00ae, first treatment for Menkes disease, marking major milestone for Sentynl and Zydus Group",
-      "date": "Mon, 29 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPeGc3NG1kMU10d3RSU3pZQk5kSmc2ZFJqZUZqSm9fQkFITnk3RXVhTk1KN3FUa0pmNWJMT0RQZ2VnaUNKb2FJSHBuSmF5M09UNjJsR1NLQnRfS3Z0c3doYzJDcDlDcWN2a0tEcy1JdmdxR1pYb2RGOFhMaFFaN3Ruc2xkSzAzMWIyRUU4VFc5RDZvMTRlRXdmU0Y0YmxyS3dQNXJjWUxsV1l5V1lhMVBFTXM2SzlEVkZZWU9sRUFRdl8tTGVybWJJcTBVUGlDc1Vj?oc=5"
+      "date": "Tue, 30 Jun 2026",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPT3lmbzhSaUU0dFVDM0tRZ2s4NjdBNXdMdE80VnVpSUIyaXMtNGNzRWItODF6WXdaR20wWExrc0Jlem8wdmY3SjhhR1l2eXgyTnNOTktEbFFZM1pKSmZYT2lLNU41eE9HRzYwemNjSmxDMGF4R2FILWxSaVkyZlRZZkdPUmwxbHJBYnFJdDN4aGI?oc=5"
     },
     {
       "company": "See source",
@@ -837,44 +845,36 @@
       "event": "Cumberland Pharmaceuticals Sells Branded Drug Portfolio to Apotex for $100M, Refocuses on Rare Disease Pipeline 1",
       "date": "Thu, 02 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQZldVMXVQeWFSVjNNaFp6SHJoUlN4Z3Y4Y0NvSkx2ako0NmhJN1FJVGJVT2kwSlNaand5NjdtQUhJaFFsOGR3M25RTXJFa245ZnQyU2g3X25NZ3ppcGhMWWxjU1QxcUk4bkFDNTFqNWdRVElZcjBGWGNNc21zdmM4MG5nWDI0cms1d21ZaW5qV2lLbDc4dExNcFVzTWMzVWNJNFFqeXN1Z0xqSklSM0lvQk9wVVJrZkg5VVVfMmZ0T3RQeEc5SlNFelIxVjRRVkx6UUhPSFR4RkxqbjJGZF9ySWRDUzhwM1E?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Cumberland sells branded U.S. drugs to Apotex for $100M",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQYjVFbFBJdnE0ZlZ0ODVoUko2b1o4VFRNTzhVRUFvQTlGVFgzRG9QSUVUTXpJcmpIR1Njd3RpV2ZvUDVYa1VrbFhlMndyMVpBVTNPNWRvTWJDS2VSenJ2aVVPV1lWS2lSWkxZUFhsVm5QWFoxZGVuYTJyUDRObEVVNUJaLXdxWnVMLUsweDRKVWR4LWdDZG1LcG5ldi1VSVp6MDY0Q0gwYUtLVm1OR09McHlkRUp0dw?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,483.24",
-      "daily": 0.0,
-      "weekly": 1.71,
-      "monthly": -0.93
+      "value": "7,541.68",
+      "daily": 0.78,
+      "weekly": 2.55,
+      "monthly": 1.84
     },
     {
       "name": "Nasdaq",
-      "value": "25,832.67",
-      "daily": -0.8,
-      "weekly": 1.87,
-      "monthly": -3.8
+      "value": "26,129.79",
+      "daily": 1.15,
+      "weekly": 3.29,
+      "monthly": 0.77
     },
     {
       "name": "Dow Jones",
-      "value": "52,900.07",
-      "daily": 1.14,
-      "weekly": 1.89,
-      "monthly": 4.37
+      "value": "52,988.72",
+      "daily": 0.17,
+      "weekly": 2.14,
+      "monthly": 4.34
     },
     {
       "name": "Russell 2000",
-      "value": "2,996.11",
-      "daily": -0.55,
-      "weekly": -0.39,
-      "monthly": 3.55
+      "value": "3,018.81",
+      "daily": 0.76,
+      "weekly": 0.29,
+      "monthly": 5.72
     }
   ]
 }
