@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-06T18:28:10+00:00",
+  "updated_at": "2026-07-07T18:35:09+00:00",
   "summaries": {
-    "ai": "Key developments: Korean operators ramp up AI investments to make country an AI superpower; Why Vertiv and Eaton Are the Ultimate Infrastructure Plays for the AI Boom; Here's Why AI Data Center Infrastructure Stock, Vertiv, Shot Higher Today.",
-    "biotech": "Key developments: Gene editing developer Scribe plots an IPO; Scribe notes down IPO ambition to fund lipid-lowering genetic meds through clinical trials; Opinion: The FDA must put biotech at its center or continue to cede early research to China.",
-    "market": "Key developments: Stock market today: Nasdaq leads S&P 500, Dow higher as tech jitters ease; S&P 500, Nasdaq rise as chips recover, Broadcom gains on Apple deal; Stock Market Today: Stock Market News And Analysis.",
-    "market_movers": "Nasdaq led tracked indexes at +1.15% today; Dow Jones was weakest at +0.17%. Key developments: Stock market today: Nasdaq leads S&P 500, Dow higher as tech jitters ease; S&P 500, Nasdaq rise as chips recover, Broadcom gains on Apple deal; Stock Market Today: Stock Market News And Analysis."
+    "ai": "Key developments: AI Data Centers Face a Networking Bottleneck as GPU Clusters Grow; AI\u2019s $11 trillion compute boom may leave Wall Street holding a $7 trillion debt market; Anthropic inks $19B AI data center lease with TeraWulf.",
+    "biotech": "Key developments: Our Origin Story; Gene Editing Market to Reach US$30.5 Billion by 2033 as Precision Medicine and CRISPR Innovation Accelerate Growth - Persistence Market Research; Cancer Research UK opens Phase II trial of Cytovation\u2019s CY-101 in rare adrenal cancer.",
+    "market": "Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower after Samsung, DeepSeek spark chip sell-off; Nasdaq slides over 1% as chip rout deepens; S&P 500, Nasdaq rebound after their worst session of the year while Dow slips.",
+    "market_movers": "Dow Jones led tracked indexes at -0.25% today; Nasdaq was weakest at -0.78%. Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower after Samsung, DeepSeek spark chip sell-off; Nasdaq slides over 1% as chip rout deepens; S&P 500, Nasdaq rebound after their worst session of the year while Dow slips."
   },
   "takeaways": [
-    "Korean operators ramp up AI investments to make country an AI superpower - Fierce Network",
-    "Why Vertiv and Eaton Are the Ultimate Infrastructure Plays for the AI Boom - The Motley Fool",
-    "Gene editing developer Scribe plots an IPO - BioPharma Dive",
-    "Scribe notes down IPO ambition to fund lipid-lowering genetic meds through clinical trials - Fierce Biotech",
+    "AI Data Centers Face a Networking Bottleneck as GPU Clusters Grow - TechRepublic",
+    "AI\u2019s $11 trillion compute boom may leave Wall Street holding a $7 trillion debt market - MIXED Reality News",
+    "Our Origin Story - BioMarin Pharmaceutical",
+    "Gene Editing Market to Reach US$30.5 Billion by 2033 as Precision Medicine and CRISPR Innovation Accelerate Growth - Persistence Market Research - PR Newswire UK",
     "Ipsen sends clear Memo to rare diseases with up to $796M buyout - BioSpace",
-    "Cumberland sells branded U.S. drugs to Apotex for $100M - Stock Titan",
-    "Stock market today: Nasdaq leads S&P 500, Dow higher as tech jitters ease - Yahoo Finance"
+    "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434 - Stock Titan",
+    "Stock market today: Nasdaq leads Dow, S&P 500 lower after Samsung, DeepSeek spark chip sell-off - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,9 +794,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Cumberland sells branded U.S. drugs to Apotex for $100M",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQYjVFbFBJdnE0ZlZ0ODVoUko2b1o4VFRNTzhVRUFvQTlGVFgzRG9QSUVUTXpJcmpIR1Njd3RpV2ZvUDVYa1VrbFhlMndyMVpBVTNPNWRvTWJDS2VSenJ2aVVPV1lWS2lSWkxZUFhsVm5QWFoxZGVuYTJyUDRObEVVNUJaLXdxWnVMLUsweDRKVWR4LWdDZG1LcG5ldi1VSVp6MDY0Q0gwYUtLVm1OR09McHlkRUp0dw?oc=5"
+      "event": "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434",
+      "date": "Tue, 07 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPb2lOVDVvSGZZN1A4SzJ5MU8xSU5QWGh1dTdZSVl4bVprVnNfUFFybG90QzhjSkdVN0s0bERyanI4S0xTNW5zWkt4TzBvQzAwc1RXOVAwR08xUHA0UnBIaVczcTN2WTFaNy0tSXFDTUEtUGNtRzhqLTFlR2pLS1Z1TV8xTHdjUW1zNTlnWXZyb0Z3anlxdXA0Z2h5RU15aEdGd1gyX0ZOckRtSW5fXzZFV0prRGxVWUxHdkxZTVJR?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Korean NF2 drug candidate Trineumin wins FDA rare pediatric disease designation",
+      "date": "Tue, 07 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5lX01DNWpPSE1PbUZLcTBmM2ktSzBLSHJLZlFwcUNjb2VjOVVsbTgtYnJ4T0dvb0M3dFl1cVVEcGNzY21ib2VCdlRnd19qSGJ5eWJZbF9lSWtwdllZTFJNbmxVaW1UZTBZV0JwUWFB0gFyQVVfeXFMTTB3TUlNalRaOVJKUThfUUV2MGhJSE5hU1BBamNMck1zVng4Tk5KR0ExRUlSeTZOanRNQ0RjWGZQX0NtYUg1TW9QOVh6TDBETzlPam9IcHhmSTBEdEhHOWlMYVlQODA4cm9yTW1PWnNlYXFR?oc=5"
     },
     {
       "company": "See source",
@@ -818,25 +826,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Ipsen to acquire Memo Therapeutics AG, adding first-in-class BK polyomavirus antibody, expanding rare disease portfolio",
+      "event": "Cumberland sells branded U.S. drugs to Apotex for $100M",
       "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMimwJBVV95cUxQMGdYTUM3ckw5UVdKcFJYWjBiek03dk90VVVjMlJCemN1M08ySkNaM3AtNmpqamFNaG1CSlFjZ1k4V0V0RTRVTUdJQnJTLTVyeUJraksxWExVWnN6ZXFKVDBQRTBOMFlQTHFhSDNocktSbmF2M1B6NjM0ZnYxdmkwa0JwYm9wekprU1BLQkM5VE5lSzFzUDFkV2RGc2t5Q1lZdXdiUEFGc1NlbTU0TXZnTFVvWmpDQjFqZXhvVEw4S0VMYlZIeTdZdVRyMkVCbkI4Q1FfYXVQQjBoZUplb2hpMXBjWldJSVh6eV9LQTloS2hwakhiTW1xblZUc3otbkxDak1qam96LTNXM1ZVeVFBendrLWoybW5LLVBV0gGgAkFVX3lxTE4wN0xCeWlQSk1QYjJPRlF3VDRTazlhTXljWnJJa0RCZmU5U0xjSVRWa3RfeWQzM2RmQnp3RVZERVprMGlxME9oZ1hkbmtvRGxTVldLSjh5OHdvRjdIcHJaSVhSc05BMlVwSTVWeWpvZW85a0JtWjFpTW1La3RLaWxzaWRwZHc3cjRINldnaVJaaUw2YmUyZDd1VUxvR0FZUk9UQW14d1FZYnZXeU9vSmpSTFRPYTRzeTVBdzl1LWE4OF94WG04SFFOamJmU1BYVTNCQkc5b2dsT2dzU1JZQ0VxaVBpWWpCZVNSbmNiQ0hJblY0LVNGMVZJMEY5aGpYbmN1dmhMZ2tNWThwVEZEcW9SSVp6dmZ3YVZNdTJXNllmZA?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "OS Therapies seeks FDA alignment on OST-HER2 survival data",
-      "date": "Tue, 30 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOTjllUmtUV1FTTTVNNnJqbUJKY2V3aE5HR2RQUGphUXdRenhrbnNrRnJScUhGalFTSjlpZmZvMWlUYzRtMVlSOGZjV0hPNF9vYkxyM1p6VHl4RVpUYU5BeXlHRFhJS3NIblFudjcwN1ZZTFdwdWh5b1B5eG42TGxweFBoZ3BNOEdvTld4WHhLZTBOaDR3QUE?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Spruce Biosciences Joins the Russell 3000\u00ae Index",
-      "date": "Tue, 30 Jun 2026",
-      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPT3lmbzhSaUU0dFVDM0tRZ2s4NjdBNXdMdE80VnVpSUIyaXMtNGNzRWItODF6WXdaR20wWExrc0Jlem8wdmY3SjhhR1l2eXgyTnNOTktEbFFZM1pKSmZYT2lLNU41eE9HRzYwemNjSmxDMGF4R2FILWxSaVkyZlRZZkdPUmwxbHJBYnFJdDN4aGI?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQYjVFbFBJdnE0ZlZ0ODVoUko2b1o4VFRNTzhVRUFvQTlGVFgzRG9QSUVUTXpJcmpIR1Njd3RpV2ZvUDVYa1VrbFhlMndyMVpBVTNPNWRvTWJDS2VSenJ2aVVPV1lWS2lSWkxZUFhsVm5QWFoxZGVuYTJyUDRObEVVNUJaLXdxWnVMLUsweDRKVWR4LWdDZG1LcG5ldi1VSVp6MDY0Q0gwYUtLVm1OR09McHlkRUp0dw?oc=5"
     },
     {
       "company": "See source",
@@ -845,36 +837,44 @@
       "event": "Cumberland Pharmaceuticals Sells Branded Drug Portfolio to Apotex for $100M, Refocuses on Rare Disease Pipeline 1",
       "date": "Thu, 02 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQZldVMXVQeWFSVjNNaFp6SHJoUlN4Z3Y4Y0NvSkx2ako0NmhJN1FJVGJVT2kwSlNaand5NjdtQUhJaFFsOGR3M25RTXJFa245ZnQyU2g3X25NZ3ppcGhMWWxjU1QxcUk4bkFDNTFqNWdRVElZcjBGWGNNc21zdmM4MG5nWDI0cms1d21ZaW5qV2lLbDc4dExNcFVzTWMzVWNJNFFqeXN1Z0xqSklSM0lvQk9wVVJrZkg5VVVfMmZ0T3RQeEc5SlNFelIxVjRRVkx6UUhPSFR4RkxqbjJGZF9ySWRDUzhwM1E?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Amyotrophic Lateral Sclerosis Market Trends, Innovation, and Future Growth Outlook to 2036 \u2013 DelveInsight | Helixmith, Sanofi, Denali Therapeutics, Transposon Therapeutics, GSK, Biogen, Ionis Pharma",
+      "date": "Tue, 07 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMizwJBVV95cUxNNnlNVi0ydlItQzY1M3dRNThpaFdqdXlJdUZSalp1dXluZThSOHpacUgwZmYyTFhfRWNTNWxMdWNwUTk5Uk9PWDU1TXZ1MFdvTlY5N1NNOVBqRFBYUFdvaXpPSkY1UXhPYTlVaFpybmEyMHdjZUpncHRYRDFXc2ZUWTJ6dVNKRW5SNEZySmlnX21lMDRzR0l6OGh4Zkx0RTNzdlpqZzc5bjJhdVpLSTRGdXgwbmtWQ3NIb1NXZERiVlBwSlRBYjFZNWd5TjhUd2VyckJIUTU5MVRCbm9rVjRWMGdYQ2V2eFJ4Um9pT0dpUTRzZmV4QmtIRmNESFo3bTN1UVRncFB3OW5pUDFKVHl1emRvaGFrMWpSLTNzTmdtZW5QNFZhR0o0Smt3NGViVEZPcG1sZEt3MlNxVFR6RTRad0t1TDVtZ180Y2JLcDhQQQ?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,541.68",
-      "daily": 0.78,
-      "weekly": 2.55,
-      "monthly": 1.84
+      "value": "7,513.14",
+      "daily": -0.32,
+      "weekly": 0.98,
+      "monthly": 1.45
     },
     {
       "name": "Nasdaq",
-      "value": "26,129.79",
-      "daily": 1.15,
-      "weekly": 3.29,
-      "monthly": 0.77
+      "value": "25,918.50",
+      "daily": -0.78,
+      "weekly": 0.38,
+      "monthly": -0.04
     },
     {
       "name": "Dow Jones",
-      "value": "52,988.72",
-      "daily": 0.17,
-      "weekly": 2.14,
-      "monthly": 4.34
+      "value": "52,923.68",
+      "daily": -0.25,
+      "weekly": 1.42,
+      "monthly": 4.21
     },
     {
       "name": "Russell 2000",
-      "value": "3,018.81",
-      "daily": 0.76,
-      "weekly": 0.29,
-      "monthly": 5.72
+      "value": "2,995.43",
+      "daily": -0.47,
+      "weekly": -0.5,
+      "monthly": 4.9
     }
   ]
 }
