@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-07T18:35:09+00:00",
+  "updated_at": "2026-07-08T16:54:36+00:00",
   "summaries": {
-    "ai": "Key developments: AI Data Centers Face a Networking Bottleneck as GPU Clusters Grow; AI\u2019s $11 trillion compute boom may leave Wall Street holding a $7 trillion debt market; Anthropic inks $19B AI data center lease with TeraWulf.",
-    "biotech": "Key developments: Our Origin Story; Gene Editing Market to Reach US$30.5 Billion by 2033 as Precision Medicine and CRISPR Innovation Accelerate Growth - Persistence Market Research; Cancer Research UK opens Phase II trial of Cytovation\u2019s CY-101 in rare adrenal cancer.",
-    "market": "Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower after Samsung, DeepSeek spark chip sell-off; Nasdaq slides over 1% as chip rout deepens; S&P 500, Nasdaq rebound after their worst session of the year while Dow slips.",
-    "market_movers": "Dow Jones led tracked indexes at -0.25% today; Nasdaq was weakest at -0.78%. Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower after Samsung, DeepSeek spark chip sell-off; Nasdaq slides over 1% as chip rout deepens; S&P 500, Nasdaq rebound after their worst session of the year while Dow slips."
+    "ai": "Key developments: Wall Street Thinks AI Is Slowing. Wall Street Is Wrong; 3 Top-Ranked Stocks Riding on Massive AI Infrastructure Spending; HD Hyundai, Schneider target AI boom with data centers at sea.",
+    "biotech": "Key developments: Through flux and fluidity, FDA keeps coming back to rare disease; Prime Medicine claims victory in dispute over gene-editing technology with Beam Therapeutics; FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq fall as oil surges, Trump declares ceasefire 'over'; Dow Jones Futures Fall, Oil Prices Soar As Trump Says U.S.-Iran Ceasefire 'Over'; Stock Market Today: S&P 500, Dow, Nasdaq Futures Fall as Trump Says Iran Ceasefire Is 'Over'\u2014 Saratoga, E.",
+    "market_movers": "Nasdaq led tracked indexes at -0.17% today; Russell 2000 was weakest at -1.43%. Key developments: Stock market today: Dow, S&P 500, Nasdaq fall as oil surges, Trump declares ceasefire 'over'; Dow Jones Futures Fall, Oil Prices Soar As Trump Says U.S.-Iran Ceasefire 'Over'; Stock Market Today: S&P 500, Dow, Nasdaq Futures Fall as Trump Says Iran Ceasefire Is 'Over'\u2014 Saratoga, E."
   },
   "takeaways": [
-    "AI Data Centers Face a Networking Bottleneck as GPU Clusters Grow - TechRepublic",
-    "AI\u2019s $11 trillion compute boom may leave Wall Street holding a $7 trillion debt market - MIXED Reality News",
-    "Our Origin Story - BioMarin Pharmaceutical",
-    "Gene Editing Market to Reach US$30.5 Billion by 2033 as Precision Medicine and CRISPR Innovation Accelerate Growth - Persistence Market Research - PR Newswire UK",
-    "Ipsen sends clear Memo to rare diseases with up to $796M buyout - BioSpace",
-    "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434 - Stock Titan",
-    "Stock market today: Nasdaq leads Dow, S&P 500 lower after Samsung, DeepSeek spark chip sell-off - Yahoo Finance"
+    "Wall Street Thinks AI Is Slowing. Wall Street Is Wrong - 24/7 Wall St.",
+    "3 Top-Ranked Stocks Riding on Massive AI Infrastructure Spending - The Globe and Mail",
+    "Through flux and fluidity, FDA keeps coming back to rare disease - BioSpace",
+    "Prime Medicine claims victory in dispute over gene-editing technology with Beam Therapeutics - STAT",
+    "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA - The Clinical Trial Vanguard",
+    "FDA expands exagamglogene autotemcel to children ages 2 and older with SCD - Contemporary Pediatrics",
+    "Stock market today: Dow, S&P 500, Nasdaq fall as oil surges, Trump declares ceasefire 'over' - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,33 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Ipsen sends clear Memo to rare diseases with up to $796M buyout",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNTmZsRThpcF9MZ1p2eVVDZEJRU0ptTnh2ODE1WDhvNmlCYjl0M1RnNmo4ajB2ck1xVHBuem15Y0Y0V2NBNkNoenZqYzNyeURFVmxWWjZDSEVVRDBjMlNJcFN2X2JLN1dpbkRUeE0zVDQ4bUs0eE9scUVIYUIyUjFTVDM3YUEtb1lsX3ZJTS16LVhHN1lteUhYag?oc=5"
+      "event": "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA",
+      "date": "Wed, 08 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPY2pMQ3hGR0I2TjU0SkdHamREMm1KRHBhcnVNSVc3UVBuRlVPaDR4NFhTcVJMUkV1b2tzY2JzajhlV0tXWlNaNTJXUXFlV1lLLW0tdzlkYU1tU0ZGaHh6dXJsRnJUM3VxTW9oQVNmeEo3NmU3MkdoVEhXNVpiWEstanBVYktpd0JybGFsUEhnSFdvaldPMVF1MFB5NFZyQVg3aVEzYTBvZ1ZfODc5bUgw?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434",
-      "date": "Tue, 07 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPb2lOVDVvSGZZN1A4SzJ5MU8xSU5QWGh1dTdZSVl4bVprVnNfUFFybG90QzhjSkdVN0s0bERyanI4S0xTNW5zWkt4TzBvQzAwc1RXOVAwR08xUHA0UnBIaVczcTN2WTFaNy0tSXFDTUEtUGNtRzhqLTFlR2pLS1Z1TV8xTHdjUW1zNTlnWXZyb0Z3anlxdXA0Z2h5RU15aEdGd1gyX0ZOckRtSW5fXzZFV0prRGxVWUxHdkxZTVJR?oc=5"
+      "event": "FDA expands exagamglogene autotemcel to children ages 2 and older with SCD",
+      "date": "Wed, 01 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPT3Utb3pRQ2loaXVTN1BuYk1JTG9jQUxsZTl2Y3dlUU4xVFZkeTFua0tzNjM2aVczZzVuX0xxeHRlTDhDMjhRenVpZUhoUnRtMThleEVnMzdOLVQzMHZMZ3pPZHRUQm54RGRRQ21FVVpTZUJVSklfeEdSSWhUWEtjdXB0UzMxUG5reXJxdFBfV3JLRm5saVRyM1E5ZVhlLVpockxaQmlSaFNKanhqbVUwMmpXbUw1Vk4zd2c?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "OS Therapies gets another FDA meeting on OST-HER2 biomarker data",
+      "date": "Wed, 08 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQWnBTYW5wUXZmTVdQR1h6eUVFNlJoSE0wNGUwQkExLTRtc0R4cElpRlRLdEVqN1drZkNKclRXdHBEQ2taZTh6bzhIclg0by1CQ0liWWt2YW1QLUllRlRpWnJValctUE11elhNQUpsSFNpZ0dRUEswdDJsY3hKNjNPM1RQSE1Tbm55S3ZHNVl0bXR2ekt4SmxiZTh1T1diZ2kxbXkxUHBWbnZOMXg3MWUzX0E5bzNfTHVRempN?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "OS Therapies Accepts New FDA Meeting Request to Review Biomarker Data as Part of BEST Program",
+      "date": "Wed, 08 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQMlh1THlqZVlkRUhsV2FLZEZwUU5IQWx3T1B1RjVjNTl1NUx1WnJJY1JGc2FUd1VUZF9pcmd5MEJlTXRlazE0aWRVaUZma2Q0RzhXX1RxRkVuZ2ttMTE3dVhCRXY5RGh3czRZdHdUWWw0dDVzUnN5bV9wR1FyazBvdmJNQm1Pekx2TU5LNTRTRjJVTnZySVpkeXZaU2Uta2pSaE9EeWE2cWMySEcwSnhUaFZZd0J6NjVJaVNZbEZnVEl1NzhreEttLUlJaWlNcEFtX01n?oc=5"
     },
     {
       "company": "See source",
@@ -810,71 +826,55 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Amyotrophic Lateral Sclerosis Market Gains Momentum with Expanding Pipeline and Investment Potential by 2034 \u2013 DelveInsight | Helixmith, Sanofi, Denali Therapeutics, Transposon Therapeutics, GSK",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMizwJBVV95cUxOTllBNzZmVDFQOXdaem8yRGRrZktHcEpHdkZ3a3Qzc3o1cnZvcVNidk5yb3djbkhGVktUWldaaVQydzJZUjRjNjJ0TWxqLXprRnR6cmFPamNjVFFTeXdZWWttMElPM3RUNVpnNHFzYWRud2RwWjVlRUoxYXBUYjhpX0dqc3dlSTd0S0E0RlRSeWlBOEpXbnl4LVIyXy1uNHlZNlNMOXlwSWpNS3JIQk5QalVkazBIOUtkNUlmQ0p4SHVrOTR5VTNDZC01QWtheTBTUlpZQU1ObDlrT0Q4RjZMYV9OQmRWM0NGMXJ2MHc1aTBtVFFucVRubzlKbFFWWC10UGV5Qng4dWVvZGlSNV8taGx5bHdsaGpsN1U1NUpmODlOVWlhdGZpRkZ3YmZHRnFISTBxcS1Lb2RwZ2o3TlVrVTZ4MDBfaTYySTluZ2ZzUQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Cumberland sells branded drug portfolio to Apotex for $100m",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOY05NVUw5LW94cW5uUTdpdEMza0RSb3ZmZnNhZURqOERFN3p4eHFwc0VsZTdmemhsUm5uaXRXWUZJdkxrZmUyQmpEZV9DbVdUOVNNM0hwSHFwaU1DTkVCYUdWVE9CN3Z6NEZwdEN3WW9iU0sxTVpHUTZxZUF5S1g0eGRlMEJVbkg1d2VmZ3l2bnZiNTM1VTR3M2hqbFBfZ3NpOFBfOXFYVEtUeUtxbER3cHRpck1IZw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Cumberland sells branded U.S. drugs to Apotex for $100M",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQYjVFbFBJdnE0ZlZ0ODVoUko2b1o4VFRNTzhVRUFvQTlGVFgzRG9QSUVUTXpJcmpIR1Njd3RpV2ZvUDVYa1VrbFhlMndyMVpBVTNPNWRvTWJDS2VSenJ2aVVPV1lWS2lSWkxZUFhsVm5QWFoxZGVuYTJyUDRObEVVNUJaLXdxWnVMLUsweDRKVWR4LWdDZG1LcG5ldi1VSVp6MDY0Q0gwYUtLVm1OR09McHlkRUp0dw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Cumberland Pharmaceuticals Sells Branded Drug Portfolio to Apotex for $100M, Refocuses on Rare Disease Pipeline 1",
-      "date": "Thu, 02 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQZldVMXVQeWFSVjNNaFp6SHJoUlN4Z3Y4Y0NvSkx2ako0NmhJN1FJVGJVT2kwSlNaand5NjdtQUhJaFFsOGR3M25RTXJFa245ZnQyU2g3X25NZ3ppcGhMWWxjU1QxcUk4bkFDNTFqNWdRVElZcjBGWGNNc21zdmM4MG5nWDI0cms1d21ZaW5qV2lLbDc4dExNcFVzTWMzVWNJNFFqeXN1Z0xqSklSM0lvQk9wVVJrZkg5VVVfMmZ0T3RQeEc5SlNFelIxVjRRVkx6UUhPSFR4RkxqbjJGZF9ySWRDUzhwM1E?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Amyotrophic Lateral Sclerosis Market Trends, Innovation, and Future Growth Outlook to 2036 \u2013 DelveInsight | Helixmith, Sanofi, Denali Therapeutics, Transposon Therapeutics, GSK, Biogen, Ionis Pharma",
       "date": "Tue, 07 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMizwJBVV95cUxNNnlNVi0ydlItQzY1M3dRNThpaFdqdXlJdUZSalp1dXluZThSOHpacUgwZmYyTFhfRWNTNWxMdWNwUTk5Uk9PWDU1TXZ1MFdvTlY5N1NNOVBqRFBYUFdvaXpPSkY1UXhPYTlVaFpybmEyMHdjZUpncHRYRDFXc2ZUWTJ6dVNKRW5SNEZySmlnX21lMDRzR0l6OGh4Zkx0RTNzdlpqZzc5bjJhdVpLSTRGdXgwbmtWQ3NIb1NXZERiVlBwSlRBYjFZNWd5TjhUd2VyckJIUTU5MVRCbm9rVjRWMGdYQ2V2eFJ4Um9pT0dpUTRzZmV4QmtIRmNESFo3bTN1UVRncFB3OW5pUDFKVHl1emRvaGFrMWpSLTNzTmdtZW5QNFZhR0o0Smt3NGViVEZPcG1sZEt3MlNxVFR6RTRad0t1TDVtZ180Y2JLcDhQQQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Incyte Completes Acquisition of Vega Therapeutics, a Wholly Owned Subsidiary of Star Therapeutics, Expanding its Hematology Portfolio",
+      "date": "Tue, 07 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxPQU9OQlZMTlRiWlVjd3dJaC16emZrbkh1bmMteERSbWpZRG9MY2tYcXBMaVZaRWtCN0dsWEgxQmxKZHhfNUkxMDZUSTlGMHR2VXZ5SWJ1TVp0U01iWGZfa1VpblF2Uk5FX2x5R1Y4Tjk0MjliMzBKWEtrbi1kV2FoZUNiZWRDZVBMX2lHZklCVjBJdVlObjBGVURDTnpuYXNyODVqZkhDR3lfb0tnWWhEa2cybF9Xenk3NW1kSjJkNGg4b21tRFNNWEI0MWVHMHpMWG5JOHQ3QnduZW0xQXp0NXFjMWs2bUlDWHFiQ3Q2dGlGOTdGenRDY3p0S0xqX1VQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434",
+      "date": "Tue, 07 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPb2lOVDVvSGZZN1A4SzJ5MU8xSU5QWGh1dTdZSVl4bVprVnNfUFFybG90QzhjSkdVN0s0bERyanI4S0xTNW5zWkt4TzBvQzAwc1RXOVAwR08xUHA0UnBIaVczcTN2WTFaNy0tSXFDTUEtUGNtRzhqLTFlR2pLS1Z1TV8xTHdjUW1zNTlnWXZyb0Z3anlxdXA0Z2h5RU15aEdGd1gyX0ZOckRtSW5fXzZFV0prRGxVWUxHdkxZTVJR?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,513.14",
-      "daily": -0.32,
-      "weekly": 0.98,
-      "monthly": 1.45
+      "value": "7,471.41",
+      "daily": -0.43,
+      "weekly": -0.37,
+      "monthly": 0.89
     },
     {
       "name": "Nasdaq",
-      "value": "25,918.50",
-      "daily": -0.78,
-      "weekly": 0.38,
-      "monthly": -0.04
+      "value": "25,776.04",
+      "daily": -0.17,
+      "weekly": -1.67,
+      "monthly": -0.59
     },
     {
       "name": "Dow Jones",
-      "value": "52,923.68",
-      "daily": -0.25,
-      "weekly": 1.42,
-      "monthly": 4.21
+      "value": "52,307.60",
+      "daily": -1.17,
+      "weekly": -0.02,
+      "monthly": 3.0
     },
     {
       "name": "Russell 2000",
-      "value": "2,995.43",
-      "daily": -0.47,
-      "weekly": -0.5,
-      "monthly": 4.9
+      "value": "2,939.95",
+      "daily": -1.43,
+      "weekly": -2.79,
+      "monthly": 2.96
     }
   ]
 }
