@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-08T16:54:36+00:00",
+  "updated_at": "2026-07-09T18:15:33+00:00",
   "summaries": {
-    "ai": "Key developments: Wall Street Thinks AI Is Slowing. Wall Street Is Wrong; 3 Top-Ranked Stocks Riding on Massive AI Infrastructure Spending; HD Hyundai, Schneider target AI boom with data centers at sea.",
-    "biotech": "Key developments: Through flux and fluidity, FDA keeps coming back to rare disease; Prime Medicine claims victory in dispute over gene-editing technology with Beam Therapeutics; FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA.",
-    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq fall as oil surges, Trump declares ceasefire 'over'; Dow Jones Futures Fall, Oil Prices Soar As Trump Says U.S.-Iran Ceasefire 'Over'; Stock Market Today: S&P 500, Dow, Nasdaq Futures Fall as Trump Says Iran Ceasefire Is 'Over'\u2014 Saratoga, E.",
-    "market_movers": "Nasdaq led tracked indexes at -0.17% today; Russell 2000 was weakest at -1.43%. Key developments: Stock market today: Dow, S&P 500, Nasdaq fall as oil surges, Trump declares ceasefire 'over'; Dow Jones Futures Fall, Oil Prices Soar As Trump Says U.S.-Iran Ceasefire 'Over'; Stock Market Today: S&P 500, Dow, Nasdaq Futures Fall as Trump Says Iran Ceasefire Is 'Over'\u2014 Saratoga, E."
+    "ai": "Key developments: AI, Data Centers, And European Strategic Autonomy In A U.S.-China Tech Rivalry \u2013 Analysis; EXCLUSIVE: Meta to put AI chip into production in September as it looks to double computing capacity, memo shows; Vertiv Stock And 2 AI Data Center Picks Backed By Earnings Growth.",
+    "biotech": "Key developments: The quest to save Grace \u2014 and clear the way for rare disease patients everywhere; Why biotech revenue projections \u2018won\u2019t look as sunny\u2019 once Trump tax bill hits Medicaid enrollment; Biotech\u2019s digital twin dilemma.",
+    "market": "Key developments: Stock market today: S&P 500, Dow, Nasdaq edge up as focus turns to AI despite war jitters; Wall St rises as chip rally offsets renewed Iran worries; S&P 500, Nasdaq, Dow Rise To Record Highs As Strong Tech Gains Outpower US-Iran War Uncertainty \u2014 MSFT, UBER, MRVL, HPE, MSTR Stocks In Focus.",
+    "market_movers": "Russell 2000 led tracked indexes at +1.34% today; Dow Jones was weakest at +0.38%. Key developments: Stock market today: S&P 500, Dow, Nasdaq edge up as focus turns to AI despite war jitters; Wall St rises as chip rally offsets renewed Iran worries; S&P 500, Nasdaq, Dow Rise To Record Highs As Strong Tech Gains Outpower US-Iran War Uncertainty \u2014 MSFT, UBER, MRVL, HPE, MSTR Stocks In Focus."
   },
   "takeaways": [
-    "Wall Street Thinks AI Is Slowing. Wall Street Is Wrong - 24/7 Wall St.",
-    "3 Top-Ranked Stocks Riding on Massive AI Infrastructure Spending - The Globe and Mail",
-    "Through flux and fluidity, FDA keeps coming back to rare disease - BioSpace",
-    "Prime Medicine claims victory in dispute over gene-editing technology with Beam Therapeutics - STAT",
+    "AI, Data Centers, And European Strategic Autonomy In A U.S.-China Tech Rivalry \u2013 Analysis - Eurasia Review",
+    "EXCLUSIVE: Meta to put AI chip into production in September as it looks to double computing capacity, memo shows - Reuters",
+    "The quest to save Grace \u2014 and clear the way for rare disease patients everywhere - STAT",
+    "Why biotech revenue projections \u2018won\u2019t look as sunny\u2019 once Trump tax bill hits Medicaid enrollment - Fierce Biotech",
+    "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis - BioSpace",
     "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA - The Clinical Trial Vanguard",
-    "FDA expands exagamglogene autotemcel to children ages 2 and older with SCD - Contemporary Pediatrics",
-    "Stock market today: Dow, S&P 500, Nasdaq fall as oil surges, Trump declares ceasefire 'over' - Yahoo Finance"
+    "Stock market today: S&P 500, Dow, Nasdaq edge up as focus turns to AI despite war jitters - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA",
-      "date": "Wed, 08 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPY2pMQ3hGR0I2TjU0SkdHamREMm1KRHBhcnVNSVc3UVBuRlVPaDR4NFhTcVJMUkV1b2tzY2JzajhlV0tXWlNaNTJXUXFlV1lLLW0tdzlkYU1tU0ZGaHh6dXJsRnJUM3VxTW9oQVNmeEo3NmU3MkdoVEhXNVpiWEstanBVYktpd0JybGFsUEhnSFdvaldPMVF1MFB5NFZyQVg3aVEzYTBvZ1ZfODc5bUgw?oc=5"
+      "event": "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis",
+      "date": "Thu, 09 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMixgJBVV95cUxQQXZHZTNKNkhFckotSHdfbnZPb0hZSUFLQmdldzkxSEItRzIzbWJRc3ZvQjVrZ1kyeFRqNWxzQTlOeHJNdnhXbzZ3YktTXzdjcHpTLXM1cjFyYmlfM0xPakd5NzQ5M29ONmhHc3MxblFXb19CU3BhS1FDcU1jNjY1SXVsaDhvUzAxS2tzZTVQUi1rci1YNlNxN2ZiMFlOWW56UG5WQmdrZHhieFpESnh2eDhJU3pqcXVlYnhEMmhJbDNGX3liTDJiWWV0T1RyRDJiazVUZ2V4RnhFWGNBT1MteWNub0ZidzBNRi15WmxrdWJWZ0lUT2VYbG9iOXRHZFUxYjE0T2Z3d2VEd1d4RmdTMkp6Yjd3RnpBT3lpMWk5b2tNVFNDWmlMTXpMc0tkd19NMUExNFRDd2MwNGYySzVFeUxIMVg3QQ?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA expands exagamglogene autotemcel to children ages 2 and older with SCD",
-      "date": "Wed, 01 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPT3Utb3pRQ2loaXVTN1BuYk1JTG9jQUxsZTl2Y3dlUU4xVFZkeTFua0tzNjM2aVczZzVuX0xxeHRlTDhDMjhRenVpZUhoUnRtMThleEVnMzdOLVQzMHZMZ3pPZHRUQm54RGRRQ21FVVpTZUJVSklfeEdSSWhUWEtjdXB0UzMxUG5reXJxdFBfV3JLRm5saVRyM1E5ZVhlLVpockxaQmlSaFNKanhqbVUwMmpXbUw1Vk4zd2c?oc=5"
+      "event": "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA",
+      "date": "Wed, 08 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPY2pMQ3hGR0I2TjU0SkdHamREMm1KRHBhcnVNSVc3UVBuRlVPaDR4NFhTcVJMUkV1b2tzY2JzajhlV0tXWlNaNTJXUXFlV1lLLW0tdzlkYU1tU0ZGaHh6dXJsRnJUM3VxTW9oQVNmeEo3NmU3MkdoVEhXNVpiWEstanBVYktpd0JybGFsUEhnSFdvaldPMVF1MFB5NFZyQVg3aVEzYTBvZ1ZfODc5bUgw?oc=5"
     },
     {
       "company": "See source",
@@ -818,25 +818,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Korean NF2 drug candidate Trineumin wins FDA rare pediatric disease designation",
-      "date": "Tue, 07 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5lX01DNWpPSE1PbUZLcTBmM2ktSzBLSHJLZlFwcUNjb2VjOVVsbTgtYnJ4T0dvb0M3dFl1cVVEcGNzY21ib2VCdlRnd19qSGJ5eWJZbF9lSWtwdllZTFJNbmxVaW1UZTBZV0JwUWFB0gFyQVVfeXFMTTB3TUlNalRaOVJKUThfUUV2MGhJSE5hU1BBamNMck1zVng4Tk5KR0ExRUlSeTZOanRNQ0RjWGZQX0NtYUg1TW9QOVh6TDBETzlPam9IcHhmSTBEdEhHOWlMYVlQODA4cm9yTW1PWnNlYXFR?oc=5"
+      "event": "Spruce Biosciences to Participate in the B. Riley Securities 2026 Mind, Muscle & Vision Healthcare Summit",
+      "date": "Wed, 08 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxOYmR4czZyUE9ZYzY4cjVMMDZJNGo5bzhzbDBicUZzbWZHekVlYWYwU1o4THRtUERXQ2xOQkNFSjltNDAycDFDSHkzM3BmZDVfTmhfRE04YXlJSFdRWDlxd0RrS3hoem15WXNoTHZibWNhRWE1S1F1eEZBa1VObDBqTWVmQjBWWEdoQzdnTnZvcEx0U2JDZzZ2b3ZlQ29fOVZHWWJJLThWdWFRQVlGbDhsWEVGa0FGUG9rZ2puNXJXMW5OS3p2N01yanZmSno4YUQ2MXZkWkdZY2otanBsOUZpWS1MUUJBTEVHVWNzdzIxeG8?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Amyotrophic Lateral Sclerosis Market Trends, Innovation, and Future Growth Outlook to 2036 \u2013 DelveInsight | Helixmith, Sanofi, Denali Therapeutics, Transposon Therapeutics, GSK, Biogen, Ionis Pharma",
-      "date": "Tue, 07 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMizwJBVV95cUxNNnlNVi0ydlItQzY1M3dRNThpaFdqdXlJdUZSalp1dXluZThSOHpacUgwZmYyTFhfRWNTNWxMdWNwUTk5Uk9PWDU1TXZ1MFdvTlY5N1NNOVBqRFBYUFdvaXpPSkY1UXhPYTlVaFpybmEyMHdjZUpncHRYRDFXc2ZUWTJ6dVNKRW5SNEZySmlnX21lMDRzR0l6OGh4Zkx0RTNzdlpqZzc5bjJhdVpLSTRGdXgwbmtWQ3NIb1NXZERiVlBwSlRBYjFZNWd5TjhUd2VyckJIUTU5MVRCbm9rVjRWMGdYQ2V2eFJ4Um9pT0dpUTRzZmV4QmtIRmNESFo3bTN1UVRncFB3OW5pUDFKVHl1emRvaGFrMWpSLTNzTmdtZW5QNFZhR0o0Smt3NGViVEZPcG1sZEt3MlNxVFR6RTRad0t1TDVtZ180Y2JLcDhQQQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Incyte Completes Acquisition of Vega Therapeutics, a Wholly Owned Subsidiary of Star Therapeutics, Expanding its Hematology Portfolio",
-      "date": "Tue, 07 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxPQU9OQlZMTlRiWlVjd3dJaC16emZrbkh1bmMteERSbWpZRG9MY2tYcXBMaVZaRWtCN0dsWEgxQmxKZHhfNUkxMDZUSTlGMHR2VXZ5SWJ1TVp0U01iWGZfa1VpblF2Uk5FX2x5R1Y4Tjk0MjliMzBKWEtrbi1kV2FoZUNiZWRDZVBMX2lHZklCVjBJdVlObjBGVURDTnpuYXNyODVqZkhDR3lfb0tnWWhEa2cybF9Xenk3NW1kSjJkNGg4b21tRFNNWEI0MWVHMHpMWG5JOHQ3QnduZW0xQXp0NXFjMWs2bUlDWHFiQ3Q2dGlGOTdGenRDY3p0S0xqX1VQ?oc=5"
+      "event": "Quoin Pharmaceuticals Receives FDA IND Clearance to Initiate Phase 2 Study of QRX003 in Peeling Skin Syndrome",
+      "date": "Thu, 09 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMikAJBVV95cUxObnlVSzFCdEFxYlJwbHN4clFQclRsQ2ZuLXZKT051dHBrcjRheWlCbUtDNkZWOHNDSFVudGFGVW9PWkNZOG5vWmlzVTlKMEJNZmxJRzcydjd0bXpKVGpEc2F2TlBoQ0hNOVdfclRLNXpuNldJWk9meE05czJDSmZMNlFXRmJTbVVVTUxnVEd5M0JpcG0yMVZORmd2OFAyYjd3Y0FuYkdZR0J2MFoxdU03aXRkMmVXbnJZdlgxYmJVbGZJUmhQTnV6Z2FHNFFobEJXdkdFbTVSTVNwa1FtVktkLVd0WUI5cmlDZlhIOGY5c0d6allmQ0ljNnczN2xEa09RSEIzekFDVndPRzF2SkU5YdIBlgJBVV95cUxNR0lDYkJZdWh3M3l2M2p5eGwxYjBvYkVBODNMM2pqSkpVMWpNNy1BWHBRLThuX3FSQ3ZZMHFfMlIzTE5sdlM1eGVNamtlSlQ3Tnl3aTBJNHdtSTVia3UxY2pyeWp1a0VzZ0F4T0M5WTlZUThJbXBVT3ZMSkxENkUtS1RTRklNWTZJTzJJSkNNS2JXUkFMRGN5TVRvR0VGQlJQenJ4b3lUcTJYdTBQMkZoQWNmNXJKMW13LUEyWDBQTnR1bWhKaVh6eFZXc3RoWk5TLWxrYldxOUxJdERESTJtellvUUlMTHpSMjFLS3RuaTFiY3hkYVMzc0drbzFQbUVXcmdJLXlGSU5ucVlFQkFITGxXOTlRdw?oc=5"
     },
     {
       "company": "See source",
@@ -845,36 +837,44 @@
       "event": "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434",
       "date": "Tue, 07 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPb2lOVDVvSGZZN1A4SzJ5MU8xSU5QWGh1dTdZSVl4bVprVnNfUFFybG90QzhjSkdVN0s0bERyanI4S0xTNW5zWkt4TzBvQzAwc1RXOVAwR08xUHA0UnBIaVczcTN2WTFaNy0tSXFDTUEtUGNtRzhqLTFlR2pLS1Z1TV8xTHdjUW1zNTlnWXZyb0Z3anlxdXA0Z2h5RU15aEdGd1gyX0ZOckRtSW5fXzZFV0prRGxVWUxHdkxZTVJR?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Rare skin disease gets first company-backed clinical trial as Quoin wins FDA clearance",
+      "date": "Thu, 09 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPX2kzaHdtSnE3NWhMWWdEZ0ZLZV9TYU9FQllzSWN1MjN6RzRCUnhHNTI4UVpUeDNZbHJvcWstZF9Gc05fbHBwaTlSTHNoU0g5ekhuT19MbEVUOVc2WndGT2NNQ29yaXdCUHpQVHUwdVd0VGRnWW80bmhKWHNjTnhNTV9uSE1jV3M3NzhtTHdaallNZ01ZR0NWSk9SYTFNeVlnX1FWelI4akF4WFhMRldMQ096TVpFTThCM2tsOU5HSnQ?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,471.41",
-      "daily": -0.43,
-      "weekly": -0.37,
-      "monthly": 0.89
+      "value": "7,545.80",
+      "daily": 0.84,
+      "weekly": 0.84,
+      "monthly": 2.15
     },
     {
       "name": "Nasdaq",
-      "value": "25,776.04",
-      "daily": -0.17,
-      "weekly": -1.67,
-      "monthly": -0.59
+      "value": "26,199.51",
+      "daily": 1.27,
+      "weekly": 0.61,
+      "monthly": 2.03
     },
     {
       "name": "Dow Jones",
-      "value": "52,307.60",
-      "daily": -1.17,
-      "weekly": -0.02,
-      "monthly": 3.0
+      "value": "52,548.89",
+      "daily": 0.38,
+      "weekly": 0.47,
+      "monthly": 3.3
     },
     {
       "name": "Russell 2000",
-      "value": "2,939.95",
-      "daily": -1.43,
-      "weekly": -2.79,
-      "monthly": 2.96
+      "value": "2,996.13",
+      "daily": 1.34,
+      "weekly": -0.55,
+      "monthly": 4.5
     }
   ]
 }
