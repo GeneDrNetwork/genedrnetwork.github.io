@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-09T18:15:33+00:00",
+  "updated_at": "2026-07-10T17:31:24+00:00",
   "summaries": {
-    "ai": "Key developments: AI, Data Centers, And European Strategic Autonomy In A U.S.-China Tech Rivalry \u2013 Analysis; EXCLUSIVE: Meta to put AI chip into production in September as it looks to double computing capacity, memo shows; Vertiv Stock And 2 AI Data Center Picks Backed By Earnings Growth.",
-    "biotech": "Key developments: The quest to save Grace \u2014 and clear the way for rare disease patients everywhere; Why biotech revenue projections \u2018won\u2019t look as sunny\u2019 once Trump tax bill hits Medicaid enrollment; Biotech\u2019s digital twin dilemma.",
-    "market": "Key developments: Stock market today: S&P 500, Dow, Nasdaq edge up as focus turns to AI despite war jitters; Wall St rises as chip rally offsets renewed Iran worries; S&P 500, Nasdaq, Dow Rise To Record Highs As Strong Tech Gains Outpower US-Iran War Uncertainty \u2014 MSFT, UBER, MRVL, HPE, MSTR Stocks In Focus.",
-    "market_movers": "Russell 2000 led tracked indexes at +1.34% today; Dow Jones was weakest at +0.38%. Key developments: Stock market today: S&P 500, Dow, Nasdaq edge up as focus turns to AI despite war jitters; Wall St rises as chip rally offsets renewed Iran worries; S&P 500, Nasdaq, Dow Rise To Record Highs As Strong Tech Gains Outpower US-Iran War Uncertainty \u2014 MSFT, UBER, MRVL, HPE, MSTR Stocks In Focus."
+    "ai": "Key developments: EXCLUSIVE: Meta to put AI chip into production in September as it looks to double computing capacity, memo shows; Meta Weighs Renting AI Compute as Cloud Business Takes Shape; Meta to start AI chip production as $13B Canada centre begins.",
+    "biotech": "Key developments: Roche ends Huntington\u2019s gene-silencing programs; Roche scraps 2 Huntington\u2019s studies, handing Ionis more bad news; Avance Clinical to Showcase Asia and China Growth Strategy at BIO Asia\u2013Taiwan 2026.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures diverge ahead of SK Hynix's mega US IPO; US Stock Market Today: Dow Jones, Nasdaq Flat As SK Hynix Debuts; S&P 500 Heads For Winning Week; Nasdaq Futures Lag Amid Sell-Off In Chip Stocks \u2014 All Eyes On SK Hynix\u2019s Debut Today.",
+    "market_movers": "S&P 500 led tracked indexes at +0.32% today; Russell 2000 was weakest at -0.53%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures diverge ahead of SK Hynix's mega US IPO; US Stock Market Today: Dow Jones, Nasdaq Flat As SK Hynix Debuts; S&P 500 Heads For Winning Week; Nasdaq Futures Lag Amid Sell-Off In Chip Stocks \u2014 All Eyes On SK Hynix\u2019s Debut Today."
   },
   "takeaways": [
-    "AI, Data Centers, And European Strategic Autonomy In A U.S.-China Tech Rivalry \u2013 Analysis - Eurasia Review",
     "EXCLUSIVE: Meta to put AI chip into production in September as it looks to double computing capacity, memo shows - Reuters",
-    "The quest to save Grace \u2014 and clear the way for rare disease patients everywhere - STAT",
-    "Why biotech revenue projections \u2018won\u2019t look as sunny\u2019 once Trump tax bill hits Medicaid enrollment - Fierce Biotech",
+    "Meta Weighs Renting AI Compute as Cloud Business Takes Shape - TradingView",
+    "Roche ends Huntington\u2019s gene-silencing programs - STAT",
+    "Roche scraps 2 Huntington\u2019s studies, handing Ionis more bad news - BioSpace",
     "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis - BioSpace",
     "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA - The Clinical Trial Vanguard",
-    "Stock market today: S&P 500, Dow, Nasdaq edge up as focus turns to AI despite war jitters - Yahoo Finance"
+    "Stock market today: Dow, S&P 500, Nasdaq futures diverge ahead of SK Hynix's mega US IPO - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -818,6 +818,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Korean NF2 drug candidate Trineumin wins FDA rare pediatric disease designation",
+      "date": "Tue, 07 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5lX01DNWpPSE1PbUZLcTBmM2ktSzBLSHJLZlFwcUNjb2VjOVVsbTgtYnJ4T0dvb0M3dFl1cVVEcGNzY21ib2VCdlRnd19qSGJ5eWJZbF9lSWtwdllZTFJNbmxVaW1UZTBZV0JwUWFB0gFyQVVfeXFMTTB3TUlNalRaOVJKUThfUUV2MGhJSE5hU1BBamNMck1zVng4Tk5KR0ExRUlSeTZOanRNQ0RjWGZQX0NtYUg1TW9QOVh6TDBETzlPam9IcHhmSTBEdEhHOWlMYVlQODA4cm9yTW1PWnNlYXFR?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Spruce Biosciences to Participate in the B. Riley Securities 2026 Mind, Muscle & Vision Healthcare Summit",
       "date": "Wed, 08 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxOYmR4czZyUE9ZYzY4cjVMMDZJNGo5bzhzbDBicUZzbWZHekVlYWYwU1o4THRtUERXQ2xOQkNFSjltNDAycDFDSHkzM3BmZDVfTmhfRE04YXlJSFdRWDlxd0RrS3hoem15WXNoTHZibWNhRWE1S1F1eEZBa1VObDBqTWVmQjBWWEdoQzdnTnZvcEx0U2JDZzZ2b3ZlQ29fOVZHWWJJLThWdWFRQVlGbDhsWEVGa0FGUG9rZ2puNXJXMW5OS3p2N01yanZmSno4YUQ2MXZkWkdZY2otanBsOUZpWS1MUUJBTEVHVWNzdzIxeG8?oc=5"
@@ -837,44 +845,36 @@
       "event": "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434",
       "date": "Tue, 07 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPb2lOVDVvSGZZN1A4SzJ5MU8xSU5QWGh1dTdZSVl4bVprVnNfUFFybG90QzhjSkdVN0s0bERyanI4S0xTNW5zWkt4TzBvQzAwc1RXOVAwR08xUHA0UnBIaVczcTN2WTFaNy0tSXFDTUEtUGNtRzhqLTFlR2pLS1Z1TV8xTHdjUW1zNTlnWXZyb0Z3anlxdXA0Z2h5RU15aEdGd1gyX0ZOckRtSW5fXzZFV0prRGxVWUxHdkxZTVJR?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Rare skin disease gets first company-backed clinical trial as Quoin wins FDA clearance",
-      "date": "Thu, 09 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPX2kzaHdtSnE3NWhMWWdEZ0ZLZV9TYU9FQllzSWN1MjN6RzRCUnhHNTI4UVpUeDNZbHJvcWstZF9Gc05fbHBwaTlSTHNoU0g5ekhuT19MbEVUOVc2WndGT2NNQ29yaXdCUHpQVHUwdVd0VGRnWW80bmhKWHNjTnhNTV9uSE1jV3M3NzhtTHdaallNZ01ZR0NWSk9SYTFNeVlnX1FWelI4akF4WFhMRldMQ096TVpFTThCM2tsOU5HSnQ?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,545.80",
-      "daily": 0.84,
-      "weekly": 0.84,
-      "monthly": 2.15
+      "value": "7,567.53",
+      "daily": 0.32,
+      "weekly": 1.13,
+      "monthly": 4.14
     },
     {
       "name": "Nasdaq",
-      "value": "26,199.51",
-      "daily": 1.27,
-      "weekly": 0.61,
-      "monthly": 2.03
+      "value": "26,272.16",
+      "daily": 0.25,
+      "weekly": 1.7,
+      "monthly": 4.38
     },
     {
       "name": "Dow Jones",
-      "value": "52,548.89",
-      "daily": 0.38,
-      "weekly": 0.47,
-      "monthly": 3.3
+      "value": "52,627.86",
+      "daily": 0.27,
+      "weekly": -0.51,
+      "monthly": 5.43
     },
     {
       "name": "Russell 2000",
-      "value": "2,996.13",
-      "daily": 1.34,
-      "weekly": -0.55,
-      "monthly": 4.5
+      "value": "2,976.82",
+      "daily": -0.53,
+      "weekly": -0.64,
+      "monthly": 4.99
     }
   ]
 }
