@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-10T17:31:24+00:00",
+  "updated_at": "2026-07-11T14:39:04+00:00",
   "summaries": {
-    "ai": "Key developments: EXCLUSIVE: Meta to put AI chip into production in September as it looks to double computing capacity, memo shows; Meta Weighs Renting AI Compute as Cloud Business Takes Shape; Meta to start AI chip production as $13B Canada centre begins.",
-    "biotech": "Key developments: Roche ends Huntington\u2019s gene-silencing programs; Roche scraps 2 Huntington\u2019s studies, handing Ionis more bad news; Avance Clinical to Showcase Asia and China Growth Strategy at BIO Asia\u2013Taiwan 2026.",
-    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures diverge ahead of SK Hynix's mega US IPO; US Stock Market Today: Dow Jones, Nasdaq Flat As SK Hynix Debuts; S&P 500 Heads For Winning Week; Nasdaq Futures Lag Amid Sell-Off In Chip Stocks \u2014 All Eyes On SK Hynix\u2019s Debut Today.",
-    "market_movers": "S&P 500 led tracked indexes at +0.32% today; Russell 2000 was weakest at -0.53%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures diverge ahead of SK Hynix's mega US IPO; US Stock Market Today: Dow Jones, Nasdaq Flat As SK Hynix Debuts; S&P 500 Heads For Winning Week; Nasdaq Futures Lag Amid Sell-Off In Chip Stocks \u2014 All Eyes On SK Hynix\u2019s Debut Today."
+    "ai": "Key developments: Data centers enter the battlefield; Meta\u2019s Custom AI Chip Could Redefine the Economics of AI; Big Tech Doubles Down on AI Infrastructure.",
+    "biotech": "Key developments: Gene Editing at Scale: ARPA-H Awards $160M to Mass-Produce Rare Disease Cures; Is Edgewise Therapeutics (EWTX) on the Cusp of a Breakthrough Year; Is This Biotech Stock a Buy Near Its 52-Week High?.",
+    "market": "Key developments: Wall Street ends higher as investors turn to earnings season; Dow, S&P 500, Nasdaq Futures Rise: Analysts Warn US Oil Reserves Could Hit 1980s Lows; Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28.",
+    "market_movers": "S&P 500 led tracked indexes at +0.42% today; Russell 2000 was weakest at -0.49%. Key developments: Wall Street ends higher as investors turn to earnings season; Dow, S&P 500, Nasdaq Futures Rise: Analysts Warn US Oil Reserves Could Hit 1980s Lows; Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28."
   },
   "takeaways": [
-    "EXCLUSIVE: Meta to put AI chip into production in September as it looks to double computing capacity, memo shows - Reuters",
-    "Meta Weighs Renting AI Compute as Cloud Business Takes Shape - TradingView",
-    "Roche ends Huntington\u2019s gene-silencing programs - STAT",
-    "Roche scraps 2 Huntington\u2019s studies, handing Ionis more bad news - BioSpace",
-    "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis - BioSpace",
+    "Data centers enter the battlefield - thecradle.co",
+    "Meta\u2019s Custom AI Chip Could Redefine the Economics of AI - HPCwire",
+    "Gene Editing at Scale: ARPA-H Awards $160M to Mass-Produce Rare Disease Cures - Tech Times",
+    "Is Edgewise Therapeutics (EWTX) on the Cusp of a Breakthrough Year - Kavout | AI",
     "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA - The Clinical Trial Vanguard",
-    "Stock market today: Dow, S&P 500, Nasdaq futures diverge ahead of SK Hynix's mega US IPO - Yahoo Finance"
+    "FDA grants regenerative medicine advanced therapy designation to ATSN-201 for X-linked retinoschisis - Ophthalmology Times Europe",
+    "Wall Street ends higher as investors turn to earnings season - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,33 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis",
-      "date": "Thu, 09 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMixgJBVV95cUxQQXZHZTNKNkhFckotSHdfbnZPb0hZSUFLQmdldzkxSEItRzIzbWJRc3ZvQjVrZ1kyeFRqNWxzQTlOeHJNdnhXbzZ3YktTXzdjcHpTLXM1cjFyYmlfM0xPakd5NzQ5M29ONmhHc3MxblFXb19CU3BhS1FDcU1jNjY1SXVsaDhvUzAxS2tzZTVQUi1rci1YNlNxN2ZiMFlOWW56UG5WQmdrZHhieFpESnh2eDhJU3pqcXVlYnhEMmhJbDNGX3liTDJiWWV0T1RyRDJiazVUZ2V4RnhFWGNBT1MteWNub0ZidzBNRi15WmxrdWJWZ0lUT2VYbG9iOXRHZFUxYjE0T2Z3d2VEd1d4RmdTMkp6Yjd3RnpBT3lpMWk5b2tNVFNDWmlMTXpMc0tkd19NMUExNFRDd2MwNGYySzVFeUxIMVg3QQ?oc=5"
+      "event": "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA",
+      "date": "Wed, 08 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPY2pMQ3hGR0I2TjU0SkdHamREMm1KRHBhcnVNSVc3UVBuRlVPaDR4NFhTcVJMUkV1b2tzY2JzajhlV0tXWlNaNTJXUXFlV1lLLW0tdzlkYU1tU0ZGaHh6dXJsRnJUM3VxTW9oQVNmeEo3NmU3MkdoVEhXNVpiWEstanBVYktpd0JybGFsUEhnSFdvaldPMVF1MFB5NFZyQVg3aVEzYTBvZ1ZfODc5bUgw?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA",
-      "date": "Wed, 08 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPY2pMQ3hGR0I2TjU0SkdHamREMm1KRHBhcnVNSVc3UVBuRlVPaDR4NFhTcVJMUkV1b2tzY2JzajhlV0tXWlNaNTJXUXFlV1lLLW0tdzlkYU1tU0ZGaHh6dXJsRnJUM3VxTW9oQVNmeEo3NmU3MkdoVEhXNVpiWEstanBVYktpd0JybGFsUEhnSFdvaldPMVF1MFB5NFZyQVg3aVEzYTBvZ1ZfODc5bUgw?oc=5"
+      "event": "FDA grants regenerative medicine advanced therapy designation to ATSN-201 for X-linked retinoschisis",
+      "date": "Mon, 06 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNbzZ0Skp6UFg5NFpad1FTYW52TG0wRU1xbExudzQycG9LZDBQa1N6RWtWSEpJRE1takcydDQ3NDNfd0JBMTFJMFQ5UzFjdmI2UURYcEJzbFpNSUdxVlZvdy1nVl93MTJtNW9peGNSX1lhbjVPUDJjbUxZQTRRdmtRUTJsT29hMWVpT1VnSVRFbFU0NU4zaDM4YXhKQnFtM2xqTUpIRWVBZTVJVHNwSS1ESjZVM0w1bmN5b2pWU2o3Mnl1SVA0X1dOaHhXaWhmcElfZnVWbTNBWQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis",
+      "date": "Thu, 09 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3gJBVV95cUxOc1JfdU9HbFlPeGZxT3I4NHdaLTVOS1R3QURaZEloTkpzS3dVbl9GX3hUSENXVGpUNnpuaUhRd3FZeFZTNVhPekRoVFJhb0U2ejBmenpKdkFDVEdxNWx5LWdsSTZJSkJlb3liVDZ2MFdkQ2xOTGRLaG81T0IySlF6RXktTFNsT2w0RFo0QWVsXzNwZWdRX2lmSU5iS1IyRzYxM3JQc0dkbkZxNlluWWVKOGpNQ1NwVDZSN0hiNVZlc1k4ZG1wVjlKczBKS0h6MFZ6NUJocmxXNFNjdEdvMnF3Tnk1elgwTDNLczN2cVpLQjg5Y3AxQm8teF9RSXV6bE9hTlFkcVY5M0h0NW9fLXg0LTBnSFV4TkVMQUpsNVFLWlFXazd6Z1hnWE1MUzJUd3BrOTJkTlBOTVdBYzIzWjQ3cjgtNWlLdXdweEQzUkRhWF9Kc1ZFbkd1WmtHRGRhZw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Teva submits FDA application for paediatric Tourette syndrome therapy",
+      "date": "Thu, 09 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQeTdBTEVoS0d0SWFxSlRXN2VJZWlWakxuQmlHMWZST2ZOVjFRWm5icnVqek1kM1FYRjg3aFRwbzZSWndNMy1qOVdSYzIxTmp3NVlYRi1YV0M0MVZqVHlncWFJd1M0cVpGMmlXYkJnQWZvaVZHakZ6aTA3SUFiYjYxVS0yaTJSWU9RaWZMSEtTZ0FqdnBCZ2lSWnIxU0hGMXB3a0dz?oc=5"
     },
     {
       "company": "See source",
@@ -810,25 +826,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "OS Therapies Accepts New FDA Meeting Request to Review Biomarker Data as Part of BEST Program",
-      "date": "Wed, 08 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQMlh1THlqZVlkRUhsV2FLZEZwUU5IQWx3T1B1RjVjNTl1NUx1WnJJY1JGc2FUd1VUZF9pcmd5MEJlTXRlazE0aWRVaUZma2Q0RzhXX1RxRkVuZ2ttMTE3dVhCRXY5RGh3czRZdHdUWWw0dDVzUnN5bV9wR1FyazBvdmJNQm1Pekx2TU5LNTRTRjJVTnZySVpkeXZaU2Uta2pSaE9EeWE2cWMySEcwSnhUaFZZd0J6NjVJaVNZbEZnVEl1NzhreEttLUlJaWlNcEFtX01n?oc=5"
+      "event": "What's Driving Telix's Latest FDA Resubmission for Pixclara\u00ae",
+      "date": "Sat, 11 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQdGZBVjdHbkZYRjNuempxa29tM01CR1VRSFFpSTRLdEV4Z29ZMHFnanZyOF9DZUkwS3lnNnBXR01aSUNjQS15M1FBUnJKT2MwZUdCU0ZpeDg1NmtKYk5sckl2amxfdFhZMXh1WWJ4MW41TEwzZzlELTZ1UVduX0tzdWFBUHM2TmxicnBsQXc2a0l4M1UxQ3kzaEV3?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Korean NF2 drug candidate Trineumin wins FDA rare pediatric disease designation",
-      "date": "Tue, 07 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5lX01DNWpPSE1PbUZLcTBmM2ktSzBLSHJLZlFwcUNjb2VjOVVsbTgtYnJ4T0dvb0M3dFl1cVVEcGNzY21ib2VCdlRnd19qSGJ5eWJZbF9lSWtwdllZTFJNbmxVaW1UZTBZV0JwUWFB0gFyQVVfeXFMTTB3TUlNalRaOVJKUThfUUV2MGhJSE5hU1BBamNMck1zVng4Tk5KR0ExRUlSeTZOanRNQ0RjWGZQX0NtYUg1TW9QOVh6TDBETzlPam9IcHhmSTBEdEhHOWlMYVlQODA4cm9yTW1PWnNlYXFR?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Spruce Biosciences to Participate in the B. Riley Securities 2026 Mind, Muscle & Vision Healthcare Summit",
-      "date": "Wed, 08 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxOYmR4czZyUE9ZYzY4cjVMMDZJNGo5bzhzbDBicUZzbWZHekVlYWYwU1o4THRtUERXQ2xOQkNFSjltNDAycDFDSHkzM3BmZDVfTmhfRE04YXlJSFdRWDlxd0RrS3hoem15WXNoTHZibWNhRWE1S1F1eEZBa1VObDBqTWVmQjBWWEdoQzdnTnZvcEx0U2JDZzZ2b3ZlQ29fOVZHWWJJLThWdWFRQVlGbDhsWEVGa0FGUG9rZ2puNXJXMW5OS3p2N01yanZmSno4YUQ2MXZkWkdZY2otanBsOUZpWS1MUUJBTEVHVWNzdzIxeG8?oc=5"
+      "event": "Satellos Bioscience Delivers Promising DMD Data With Fast Track Win",
+      "date": "Fri, 10 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOeXBWa0wxWEota0ZBM1VzV2tHU1hDRmZ5dnU5d2JKVW5IRlpET09TS1p4VXFKWEFaY25LZXhDQ2ZKT3FjYzhDSGZ1MUhBTjh5SG92cFp6Q1dFc2k5Z3dWU24wR2Z6TkJKbl91TFRERm9uUEs0eG1sSjZXb004aktfdVY0a2tYZnV5ZlFpeENiaDFzWFpCODdXLUthcllYNlI3dGdFQy1lR0g4VU8tVkp6Q0FTRlBvY1JsdTJ0NjN3SXlJbUU?oc=5"
     },
     {
       "company": "See source",
@@ -837,44 +845,36 @@
       "event": "Quoin Pharmaceuticals Receives FDA IND Clearance to Initiate Phase 2 Study of QRX003 in Peeling Skin Syndrome",
       "date": "Thu, 09 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMikAJBVV95cUxObnlVSzFCdEFxYlJwbHN4clFQclRsQ2ZuLXZKT051dHBrcjRheWlCbUtDNkZWOHNDSFVudGFGVW9PWkNZOG5vWmlzVTlKMEJNZmxJRzcydjd0bXpKVGpEc2F2TlBoQ0hNOVdfclRLNXpuNldJWk9meE05czJDSmZMNlFXRmJTbVVVTUxnVEd5M0JpcG0yMVZORmd2OFAyYjd3Y0FuYkdZR0J2MFoxdU03aXRkMmVXbnJZdlgxYmJVbGZJUmhQTnV6Z2FHNFFobEJXdkdFbTVSTVNwa1FtVktkLVd0WUI5cmlDZlhIOGY5c0d6allmQ0ljNnczN2xEa09RSEIzekFDVndPRzF2SkU5YdIBlgJBVV95cUxNR0lDYkJZdWh3M3l2M2p5eGwxYjBvYkVBODNMM2pqSkpVMWpNNy1BWHBRLThuX3FSQ3ZZMHFfMlIzTE5sdlM1eGVNamtlSlQ3Tnl3aTBJNHdtSTVia3UxY2pyeWp1a0VzZ0F4T0M5WTlZUThJbXBVT3ZMSkxENkUtS1RTRklNWTZJTzJJSkNNS2JXUkFMRGN5TVRvR0VGQlJQenJ4b3lUcTJYdTBQMkZoQWNmNXJKMW13LUEyWDBQTnR1bWhKaVh6eFZXc3RoWk5TLWxrYldxOUxJdERESTJtellvUUlMTHpSMjFLS3RuaTFiY3hkYVMzc0drbzFQbUVXcmdJLXlGSU5ucVlFQkFITGxXOTlRdw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "FDA outlines single Phase 3 trial plan for Alterity (NASDAQ: ATHE) ATH434",
-      "date": "Tue, 07 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPb2lOVDVvSGZZN1A4SzJ5MU8xSU5QWGh1dTdZSVl4bVprVnNfUFFybG90QzhjSkdVN0s0bERyanI4S0xTNW5zWkt4TzBvQzAwc1RXOVAwR08xUHA0UnBIaVczcTN2WTFaNy0tSXFDTUEtUGNtRzhqLTFlR2pLS1Z1TV8xTHdjUW1zNTlnWXZyb0Z3anlxdXA0Z2h5RU15aEdGd1gyX0ZOckRtSW5fXzZFV0prRGxVWUxHdkxZTVJR?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,567.53",
-      "daily": 0.32,
-      "weekly": 1.13,
-      "monthly": 4.14
+      "value": "7,575.39",
+      "daily": 0.42,
+      "weekly": 1.23,
+      "monthly": 2.45
     },
     {
       "name": "Nasdaq",
-      "value": "26,272.16",
-      "daily": 0.25,
-      "weekly": 1.7,
-      "monthly": 4.38
+      "value": "26,281.61",
+      "daily": 0.29,
+      "weekly": 1.74,
+      "monthly": 1.83
     },
     {
       "name": "Dow Jones",
-      "value": "52,627.86",
-      "daily": 0.27,
-      "weekly": -0.51,
-      "monthly": 5.43
+      "value": "52,637.01",
+      "daily": 0.29,
+      "weekly": -0.5,
+      "monthly": 3.52
     },
     {
       "name": "Russell 2000",
-      "value": "2,976.82",
-      "daily": -0.53,
-      "weekly": -0.64,
-      "monthly": 4.99
+      "value": "2,977.81",
+      "daily": -0.49,
+      "weekly": -0.61,
+      "monthly": 1.94
     }
   ]
 }
