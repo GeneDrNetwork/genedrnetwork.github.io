@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-11T14:39:04+00:00",
+  "updated_at": "2026-07-12T14:43:23+00:00",
   "summaries": {
-    "ai": "Key developments: Data centers enter the battlefield; Meta\u2019s Custom AI Chip Could Redefine the Economics of AI; Big Tech Doubles Down on AI Infrastructure.",
-    "biotech": "Key developments: Gene Editing at Scale: ARPA-H Awards $160M to Mass-Produce Rare Disease Cures; Is Edgewise Therapeutics (EWTX) on the Cusp of a Breakthrough Year; Is This Biotech Stock a Buy Near Its 52-Week High?.",
-    "market": "Key developments: Wall Street ends higher as investors turn to earnings season; Dow, S&P 500, Nasdaq Futures Rise: Analysts Warn US Oil Reserves Could Hit 1980s Lows; Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28.",
-    "market_movers": "S&P 500 led tracked indexes at +0.42% today; Russell 2000 was weakest at -0.49%. Key developments: Wall Street ends higher as investors turn to earnings season; Dow, S&P 500, Nasdaq Futures Rise: Analysts Warn US Oil Reserves Could Hit 1980s Lows; Dow Adds 148, Nasdaq Falls 351, S&P 500 Drops 28."
+    "ai": "Key developments: The U.S. Economy Is Addicted to AI Spending. What Happens If It Slows?; Morgan Stanley Warns of \"Chipflation\" as Hyperscalers Invest More in Compute Capacity: 2 No-Brainer Artificial Intelligence (AI) Chip Stocks to Buy Right Now; Wall Street Thinks AI Is Slowing. Wall Street Is Wrong.",
+    "biotech": "Key developments: Quantum Computing Meets AI to Unlock Rare Disease Drugs; The week in pharma: action, reaction and insight \u2013 week to July 10, 2026; Ionis Pharmaceuticals Drops Another 9% as Bad News Piles Up.",
+    "market": "Key developments: How Will Futures React To New U.S.-Iran Attacks?; June, Second Quarter 2026 Review and Outlook; Nasdaq, S&P 500 Futures Edge Lower Ahead Of CPI Data: Why NVDA, AAPL, TSLA, RIVN, MRNA, AMAT, IREN Are On Traders' Radar Today.",
+    "market_movers": "S&P 500 led tracked indexes at +0.42% today; Russell 2000 was weakest at -0.49%. Key developments: How Will Futures React To New U.S.-Iran Attacks?; June, Second Quarter 2026 Review and Outlook; Nasdaq, S&P 500 Futures Edge Lower Ahead Of CPI Data: Why NVDA, AAPL, TSLA, RIVN, MRNA, AMAT, IREN Are On Traders' Radar Today."
   },
   "takeaways": [
-    "Data centers enter the battlefield - thecradle.co",
-    "Meta\u2019s Custom AI Chip Could Redefine the Economics of AI - HPCwire",
-    "Gene Editing at Scale: ARPA-H Awards $160M to Mass-Produce Rare Disease Cures - Tech Times",
-    "Is Edgewise Therapeutics (EWTX) on the Cusp of a Breakthrough Year - Kavout | AI",
+    "The U.S. Economy Is Addicted to AI Spending. What Happens If It Slows? - 24/7 Wall St.",
+    "Morgan Stanley Warns of \"Chipflation\" as Hyperscalers Invest More in Compute Capacity: 2 No-Brainer Artificial Intelligence (AI) Chip Stocks to Buy Right Now - The Motley Fool",
+    "Quantum Computing Meets AI to Unlock Rare Disease Drugs - The Tech Buzz",
+    "The week in pharma: action, reaction and insight \u2013 week to July 10, 2026 - The Pharma Letter",
     "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA - The Clinical Trial Vanguard",
     "FDA grants regenerative medicine advanced therapy designation to ATSN-201 for X-linked retinoschisis - Ophthalmology Times Europe",
-    "Wall Street ends higher as investors turn to earnings season - Reuters"
+    "How Will Futures React To New U.S.-Iran Attacks? - Investor's Business Daily"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -834,17 +834,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Satellos Bioscience Delivers Promising DMD Data With Fast Track Win",
-      "date": "Fri, 10 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOeXBWa0wxWEota0ZBM1VzV2tHU1hDRmZ5dnU5d2JKVW5IRlpET09TS1p4VXFKWEFaY25LZXhDQ2ZKT3FjYzhDSGZ1MUhBTjh5SG92cFp6Q1dFc2k5Z3dWU24wR2Z6TkJKbl91TFRERm9uUEs0eG1sSjZXb004aktfdVY0a2tYZnV5ZlFpeENiaDFzWFpCODdXLUthcllYNlI3dGdFQy1lR0g4VU8tVkp6Q0FTRlBvY1JsdTJ0NjN3SXlJbUU?oc=5"
+      "event": "Quoin Pharmaceuticals Receives FDA IND Clearance to Initiate Phase 2 Study of QRX003 in Peeling Skin Syndrome",
+      "date": "Thu, 09 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxNTnZwdHJuOWEySnEzYnNJV3B2ekwtd25tVXpGOVZaeWlCa3J3dWRvU3JGek5jR0ZQWm13RDlrYnVVSGVFTjhuWmhNYmZkSm95UWxGSFdRWWVCbVlwdWZjOE9PYmxaaGtWX3lHbXdmV0dtVTBhNHp0QU9TRDJFUzlRWkVBR0lVczNrNmpVd0lnWUx1UDh2Q09WQlFSSkRBR1FFdTVNbHFaY0JzQmJxMXREYmlLdTB3bVFJQ0k4Ulg3YTZYQzlvVlAtYWVpa2xLTVdCMkc3U2Q5dS01VTNKRWd0TS1YV0w1QjEydEU0WXRubVNTM2s?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Quoin Pharmaceuticals Receives FDA IND Clearance to Initiate Phase 2 Study of QRX003 in Peeling Skin Syndrome",
+      "event": "New oral drug shows big promise in small trial as a porphyria treatment",
       "date": "Thu, 09 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMikAJBVV95cUxObnlVSzFCdEFxYlJwbHN4clFQclRsQ2ZuLXZKT051dHBrcjRheWlCbUtDNkZWOHNDSFVudGFGVW9PWkNZOG5vWmlzVTlKMEJNZmxJRzcydjd0bXpKVGpEc2F2TlBoQ0hNOVdfclRLNXpuNldJWk9meE05czJDSmZMNlFXRmJTbVVVTUxnVEd5M0JpcG0yMVZORmd2OFAyYjd3Y0FuYkdZR0J2MFoxdU03aXRkMmVXbnJZdlgxYmJVbGZJUmhQTnV6Z2FHNFFobEJXdkdFbTVSTVNwa1FtVktkLVd0WUI5cmlDZlhIOGY5c0d6allmQ0ljNnczN2xEa09RSEIzekFDVndPRzF2SkU5YdIBlgJBVV95cUxNR0lDYkJZdWh3M3l2M2p5eGwxYjBvYkVBODNMM2pqSkpVMWpNNy1BWHBRLThuX3FSQ3ZZMHFfMlIzTE5sdlM1eGVNamtlSlQ3Tnl3aTBJNHdtSTVia3UxY2pyeWp1a0VzZ0F4T0M5WTlZUThJbXBVT3ZMSkxENkUtS1RTRklNWTZJTzJJSkNNS2JXUkFMRGN5TVRvR0VGQlJQenJ4b3lUcTJYdTBQMkZoQWNmNXJKMW13LUEyWDBQTnR1bWhKaVh6eFZXc3RoWk5TLWxrYldxOUxJdERESTJtellvUUlMTHpSMjFLS3RuaTFiY3hkYVMzc0drbzFQbUVXcmdJLXlGSU5ucVlFQkFITGxXOTlRdw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxQaVgyczZTVWZCLTZJeDRmTFFwQWZpdUtlZnl6WFFnTU8yS1VKRkZlZnZpeThRc05ZRW1jTUd2MWl2YTBscUVmMGpSYWFNYS12WUVmSVJsZE1GdmtiLU9Hd2p1VEpRTkFtZTdySkMwN2RPUldQZ2xkTkY3R3duaG1vU0JwT0FxcXBoR2hRRlpJMU8tUU4xMlZPcjlLNlVrdHR6WWc?oc=5"
     }
   ],
   "markets": [
