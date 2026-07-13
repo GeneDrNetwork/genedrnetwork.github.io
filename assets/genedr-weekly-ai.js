@@ -34,6 +34,14 @@
     if (missing.length || !draft.articleSections?.mainArticle || !draft.articleSections?.whyThisMatters || !Array.isArray(draft.keyPoints) || !Array.isArray(draft.references)) {
       throw new DraftGenerationError("MISSING_FIELDS", `The generated draft is missing required fields: ${missing.join(", ") || "article content, key points, or references"}.`);
     }
+    const wordCount = String(draft.articleSections.mainArticle).trim().split(/\s+/).filter(Boolean).length;
+    const combined = `${draft.scenario} ${draft.articleSections.whyThisMatters} ${draft.articleSections.mainArticle}`.toLowerCase();
+    if (wordCount < 500 || /article content will be added|placeholder text|content goes here/.test(combined)) {
+      throw new DraftGenerationError("INCOMPLETE_DRAFT", "The generated article was incomplete or contained placeholder text. Please regenerate it.");
+    }
+    if (draft.keyPoints.length < 3 || draft.keyPoints.length > 5) {
+      throw new DraftGenerationError("INCOMPLETE_DRAFT", "The generated draft must contain 3–5 key points.");
+    }
     return draft;
   }
 
@@ -60,15 +68,7 @@
     }
   }
 
-  async function generateDraft({ topic, category, issueNumber, date, recentTopics = [] }) {
-    if (!topic || !category || !issueNumber || !date) {
-      throw new DraftGenerationError("MISSING_FIELDS", "Topic, category, issue number, and date are required.");
-    }
-    const payload = {
-      systemPrompt: promptTemplate.systemPrompt,
-      userPrompt: promptTemplate.buildUserPrompt({ topic, category, issueNumber, date, recentTopics }),
-      responseFormat: "genedr-weekly-issue-json"
-    };
+  async function requestGeneration(payload) {
     const controller = new AbortController();
     const timeoutMs = Number(config.timeoutMs) || 45000;
     let timeoutId;
@@ -82,9 +82,7 @@
       const generation = config.endpoint
         ? generateWithEndpoint(payload, controller.signal)
         : generateWithBrowserAI(payload);
-      const response = await Promise.race([generation, timeout]);
-      const draft = validateDraft(parseResponse(response));
-      return { ...draft, issueNumber, date, category, status: "draft", referencesNeedVerification: true };
+      return parseResponse(await Promise.race([generation, timeout]));
     } catch (error) {
       if (error.name === "AbortError") throw new DraftGenerationError("TIMEOUT", "Draft generation timed out. Please try again.");
       if (error instanceof DraftGenerationError) throw error;
@@ -94,5 +92,38 @@
     }
   }
 
-  window.GeneDrWeeklyAI = { DraftGenerationError, generateDraft, validateDraft };
+  async function generateDraft({ topic, category, issueNumber, date, recentTopics = [] }) {
+    if (!topic || !category || !issueNumber || !date) {
+      throw new DraftGenerationError("MISSING_FIELDS", "Topic, category, issue number, and date are required.");
+    }
+    const payload = {
+      systemPrompt: promptTemplate.systemPrompt,
+      userPrompt: promptTemplate.buildUserPrompt({ topic, category, issueNumber, date, recentTopics }),
+      responseFormat: "genedr-weekly-issue-json"
+    };
+    const draft = validateDraft(await requestGeneration(payload));
+    return { ...draft, issueNumber, date, category, status: "draft", referencesNeedVerification: true };
+  }
+
+  async function generateSection({ section, issue }) {
+    const supported = ["clinicalScenario", "whyThisMatters", "mainArticle", "keyPoints"];
+    if (!supported.includes(section) || !issue?.title || !issue?.category) {
+      throw new DraftGenerationError("MISSING_FIELDS", "A supported section, issue title, and category are required.");
+    }
+    const result = await requestGeneration({
+      systemPrompt: promptTemplate.systemPrompt,
+      userPrompt: promptTemplate.buildSectionPrompt({ section, issue }),
+      responseFormat: `genedr-weekly-${section}-json`
+    });
+    const valid = {
+      clinicalScenario: () => typeof result.scenario === "string" && typeof result.question === "string",
+      whyThisMatters: () => typeof result.whyThisMatters === "string",
+      mainArticle: () => typeof result.mainArticle === "string" && result.mainArticle.trim().split(/\s+/).length >= 500 && !/placeholder text|content goes here/i.test(result.mainArticle),
+      keyPoints: () => Array.isArray(result.keyPoints) && result.keyPoints.length >= 3 && result.keyPoints.length <= 5
+    }[section]();
+    if (!valid) throw new DraftGenerationError("MISSING_FIELDS", `The regenerated ${section} response is incomplete.`);
+    return result;
+  }
+
+  window.GeneDrWeeklyAI = { DraftGenerationError, generateDraft, generateSection, validateDraft };
 })();

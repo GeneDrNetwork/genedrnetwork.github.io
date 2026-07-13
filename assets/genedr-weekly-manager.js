@@ -4,7 +4,7 @@
   const emailHistoryKey = "genedr-weekly-email-history-v1";
   const statuses = ["draft", "ready-for-review", "approved", "published", "archived"];
   const publicCategories = window.GeneDrWeekly.categories.filter((category) => category !== "All");
-  const { escapeHtml, formatDate, issueLabel, normalizeIssue } = window.GeneDrWeekly;
+  const { escapeHtml, formatDate, issueLabel, normalizeIssue, renderArticleText } = window.GeneDrWeekly;
   const form = document.querySelector("#issue-form");
   const editor = document.querySelector("#manager-editor");
   const preview = document.querySelector("#manager-preview");
@@ -20,6 +20,7 @@
   const emailPreviewContent = document.querySelector("#email-preview-content");
   const emailActionStatus = document.querySelector("#email-action-status");
   const previewPdfButton = document.querySelector("#manager-preview-pdf");
+  const referenceMode = document.querySelector("#reference-retrieval-mode");
   let activeKey = null;
   let activeEmailIssue = null;
   let lastPreviewIssue = null;
@@ -167,7 +168,7 @@
     emailButton.hidden = issue.status !== "published";
     emailButton.disabled = issue.status !== "published";
     referencesFieldLabel.textContent = issue.referencesNeedVerification
-      ? "Suggested References (Please Verify)"
+      ? "Suggested References — Verification Required"
       : "References";
     saveStatus.textContent = `Editing ${issueLabel(issue.issueNumber)} · browser-local copy`;
     editor.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -250,9 +251,9 @@
       </header>
       <section><h2>Clinical Scenario</h2><p><em>${escapeHtml(issue.scenario)}</em></p><p><strong>${escapeHtml(issue.question)}</strong></p></section>
       <section><h2>Why This Matters</h2><p>${escapeHtml(issue.articleSections.whyThisMatters)}</p></section>
-      <section><h2>Main Article</h2><p>${escapeHtml(issue.articleSections.mainArticle)}</p></section>
+      <section><h2>Main Article</h2>${renderArticleText(issue.articleSections.mainArticle)}</section>
       <section><h2>Key Points</h2><ul>${issue.keyPoints.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul></section>
-      <section><h2>References</h2><ol>${issue.references.map((reference) => `<li>${escapeHtml(reference)}</li>`).join("")}</ol></section>
+      <section><h2>${issue.referencesNeedVerification ? "Suggested References — Verification Required" : "References"}</h2><ol>${issue.references.map((reference) => `<li>${escapeHtml(reference)}</li>`).join("")}</ol></section>
       <p class="weekly-disclaimer"><em>${escapeHtml(issue.disclaimer)}</em></p>
       <footer class="weekly-print-footer"><span>${escapeHtml(issue.title)}</span><span>GeneDrNetwork · https://genedrnetwork.github.io</span></footer>
     </article>`;
@@ -350,6 +351,8 @@
     aiStatus.textContent = `Generating a draft about ${topic}…`;
     try {
       const result = await window.GeneDrWeeklyAI.generateDraft({ topic, category, issueNumber, date, recentTopics });
+      const referenceResult = await window.GeneDrWeeklyReferences.retrieve(topic, "recent-plus-landmark");
+      result.references = referenceResult.references;
       const draft = normalizeIssue({
         ...result,
         issueNumber,
@@ -379,6 +382,93 @@
       aiStatus.textContent = `${issueLabel(issueNumber)} was generated and saved as Draft. Suggested references require verification.`;
     } catch (error) {
       aiStatus.textContent = error.userMessage || "Draft generation failed. Please try again.";
+    } finally {
+      buttons.forEach((button) => { button.disabled = false; });
+    }
+  }
+
+  function storeRegeneratedDraft(issue, message) {
+    const draft = normalizeIssue({ ...issue, status: "draft" });
+    const duplicateNumber = issues.find((item) => Number(item.issueNumber) === Number(draft.issueNumber) && String(item.issueNumber) !== activeKey);
+    const duplicateSlug = issues.find((item) => item.slug === draft.slug && String(item.issueNumber) !== activeKey);
+    if (duplicateNumber || duplicateSlug) {
+      throw new window.GeneDrWeeklyAI.DraftGenerationError("DUPLICATE_ISSUE", "Regeneration would duplicate an existing issue number or slug. No content was overwritten.");
+    }
+    const index = issues.findIndex((item) => String(item.issueNumber) === activeKey);
+    if (index < 0) throw new window.GeneDrWeeklyAI.DraftGenerationError("MISSING_FIELDS", "Save the issue before regenerating content.");
+    issues[index] = draft;
+    persistBrowserIssues();
+    renderList();
+    fillForm(draft);
+    saveStatus.textContent = message;
+  }
+
+  async function regenerateSection(section) {
+    if (!form.reportValidity()) return;
+    const issue = issueFromForm();
+    const buttons = [...document.querySelectorAll("[data-regenerate-section],[data-regenerate-full]")];
+    buttons.forEach((button) => { button.disabled = true; });
+    saveStatus.textContent = `Regenerating ${section.replace(/([A-Z])/g, " $1").toLowerCase()}…`;
+    try {
+      const result = await window.GeneDrWeeklyAI.generateSection({ section, issue });
+      if (section === "clinicalScenario") {
+        issue.scenario = result.scenario;
+        issue.question = result.question;
+      }
+      if (section === "whyThisMatters") issue.articleSections.whyThisMatters = result.whyThisMatters;
+      if (section === "mainArticle") issue.articleSections.mainArticle = result.mainArticle;
+      if (section === "keyPoints") issue.keyPoints = result.keyPoints;
+      if (section === "references") {
+        issue.references = result.references;
+        issue.referencesNeedVerification = true;
+      }
+      storeRegeneratedDraft(issue, `${issueLabel(issue.issueNumber)} section regenerated and saved as Draft.`);
+    } catch (error) {
+      saveStatus.textContent = error.userMessage || error.message || "Section regeneration failed.";
+    } finally {
+      buttons.forEach((button) => { button.disabled = false; });
+    }
+  }
+
+  async function regenerateFullDraft() {
+    if (!form.reportValidity()) return;
+    const issue = issueFromForm();
+    const buttons = [...document.querySelectorAll("[data-regenerate-section],[data-regenerate-full]")];
+    buttons.forEach((button) => { button.disabled = true; });
+    saveStatus.textContent = "Regenerating the complete article…";
+    try {
+      const recentTopics = issues.filter((item) => String(item.issueNumber) !== activeKey).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8).map((item) => item.title);
+      const result = await window.GeneDrWeeklyAI.generateDraft({
+        topic: issue.title,
+        category: issue.category,
+        issueNumber: issue.issueNumber,
+        date: issue.date,
+        recentTopics
+      });
+      const referenceResult = await window.GeneDrWeeklyReferences.retrieve(issue.title, referenceMode.value || "recent-plus-landmark");
+      result.references = referenceResult.references;
+      storeRegeneratedDraft({ ...result, issueNumber: issue.issueNumber, date: issue.date, status: "draft", referencesNeedVerification: true }, `${issueLabel(issue.issueNumber)} fully regenerated and saved as Draft.`);
+    } catch (error) {
+      saveStatus.textContent = error.userMessage || error.message || "Full-article regeneration failed.";
+    } finally {
+      buttons.forEach((button) => { button.disabled = false; });
+    }
+  }
+
+  async function refreshReferences(action) {
+    if (!form.reportValidity()) return;
+    const issue = issueFromForm();
+    const buttons = [...document.querySelectorAll("[data-reference-action]")];
+    buttons.forEach((button) => { button.disabled = true; });
+    saveStatus.textContent = `${action === "update" ? "Updating" : "Refreshing"} verified references from PubMed and authoritative sources…`;
+    try {
+      const result = await window.GeneDrWeeklyReferences.retrieve(issue.title, referenceMode.value);
+      issue.references = result.references;
+      issue.referencesNeedVerification = true;
+      const warning = result.warnings.length ? ` ${result.warnings.join(" ")}` : "";
+      storeRegeneratedDraft(issue, `${result.references.length} reference${result.references.length === 1 ? "" : "s"} retrieved and saved as Draft.${warning}`);
+    } catch (error) {
+      saveStatus.textContent = error.userMessage || error.message || "Reference retrieval failed. Existing references were not changed.";
     } finally {
       buttons.forEach((button) => { button.disabled = false; });
     }
@@ -440,6 +530,12 @@
     const statusButton = event.target.closest("button[data-status-action]");
     const previewButton = event.target.closest("button[data-preview]");
     const exportButton = event.target.closest("button[data-export]");
+    const regenerateButton = event.target.closest("button[data-regenerate-section]");
+    const regenerateFullButton = event.target.closest("button[data-regenerate-full]");
+    const referenceButton = event.target.closest("button[data-reference-action]");
+    if (regenerateButton) regenerateSection(regenerateButton.dataset.regenerateSection);
+    if (regenerateFullButton) regenerateFullDraft();
+    if (referenceButton) refreshReferences(referenceButton.dataset.referenceAction);
     if (statusButton) {
       const status = statusButton.dataset.statusAction;
       if (status === "published") {

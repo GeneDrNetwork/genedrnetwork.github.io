@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-phase4" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-phase4" />
+    <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-complete-drafts" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-reference-retrieval" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -79,18 +79,19 @@
             <label>Category<select name="category" required></select></label>
             <label>Reading time<input name="readingTime" type="text" placeholder="5 min read" required /></label>
             <label>Status<select name="status" disabled aria-describedby="status-help"></select><span id="status-help">Status changes use the workflow buttons below.</span></label>
-            <label class="manager-field-wide">Clinical scenario<textarea name="scenario" rows="5" required></textarea></label>
+            <label class="manager-field-wide"><span class="manager-field-heading"><span>Clinical scenario</span><button class="manager-regenerate" type="button" data-regenerate-section="clinicalScenario">Regenerate Clinical Scenario</button></span><textarea name="scenario" rows="5" required></textarea></label>
             <label class="manager-field-wide">Clinical question<textarea name="question" rows="3" required></textarea></label>
             <label class="manager-field-wide">Excerpt<textarea name="excerpt" rows="4" required></textarea></label>
-            <label class="manager-field-wide">Why This Matters<textarea name="whyThisMatters" rows="7" required></textarea></label>
-            <label class="manager-field-wide">Main Article<textarea name="mainArticle" rows="12" required></textarea></label>
-            <label class="manager-field-wide">Key Points <span>One point per line</span><textarea name="keyPoints" rows="6" required></textarea></label>
-            <label class="manager-field-wide"><span id="references-field-label" class="manager-main-label">References</span><span>One reference per line. AI suggestions must be verified before publication.</span><textarea name="references" rows="6" required></textarea></label>
+            <label class="manager-field-wide"><span class="manager-field-heading"><span>Why This Matters</span><button class="manager-regenerate" type="button" data-regenerate-section="whyThisMatters">Regenerate Why This Matters</button></span><textarea name="whyThisMatters" rows="7" required></textarea></label>
+            <label class="manager-field-wide"><span class="manager-field-heading"><span>Main Article</span><button class="manager-regenerate" type="button" data-regenerate-section="mainArticle">Regenerate Main Article</button></span><textarea name="mainArticle" rows="12" required></textarea></label>
+            <label class="manager-field-wide"><span class="manager-field-heading"><span>Key Points</span><button class="manager-regenerate" type="button" data-regenerate-section="keyPoints">Regenerate Key Points</button></span><span>One point per line</span><textarea name="keyPoints" rows="6" required></textarea></label>
+            <label class="manager-field-wide"><span class="manager-field-heading"><span id="references-field-label" class="manager-main-label">References</span></span><span class="manager-reference-tools"><select id="reference-retrieval-mode" aria-label="Reference retrieval filter"><option value="recent-only">Recent only</option><option value="recent-plus-landmark" selected>Recent plus landmark references</option><option value="guidelines-only">Guidelines only</option><option value="reviews-only">Reviews only</option><option value="clinical-trials-only">Clinical trials only</option></select><button class="manager-regenerate" type="button" data-reference-action="update">Update References</button><button class="manager-regenerate" type="button" data-reference-action="regenerate">Regenerate References</button></span><span>One verified source per line. Delete a line to remove it; cut and paste lines to reorder. Administrator verification is required before publication.</span><textarea name="references" rows="9" required></textarea></label>
             <label class="manager-field-wide">Disclaimer<textarea name="disclaimer" rows="4" required></textarea></label>
           </div>
 
           <div class="manager-actions" aria-label="Issue workflow actions">
             <button class="manager-button" type="button" data-status-action="draft">Save Draft</button>
+            <button class="manager-button" type="button" data-regenerate-full>Regenerate Full Article</button>
             <button class="manager-button" type="button" data-status-action="ready-for-review">Mark Ready for Review</button>
             <button class="manager-button" type="button" data-status-action="approved">Approve</button>
             <button class="manager-button manager-button-primary" type="button" data-status-action="published">Publish</button>
@@ -151,13 +152,15 @@
 
     <script src="../../data/genedr-weekly-issues.js"></script>
     <script src="../../data/genedr-weekly-topics.js"></script>
-    <script src="../../assets/genedr-weekly.js?v=20260712-weekly-phase4"></script>
+    <script src="../../assets/genedr-weekly.js?v=20260712-weekly-complete-drafts"></script>
     <script src="../../assets/genedr-weekly-ai-prompt.js"></script>
     <script src="../../assets/genedr-weekly-ai-config.js"></script>
     <script src="../../assets/genedr-weekly-ai.js"></script>
+    <script src="../../assets/genedr-weekly-references-config.js"></script>
+    <script src="../../assets/genedr-weekly-references.js"></script>
     <script src="../../assets/genedr-weekly-email-config.js"></script>
     <script src="../../assets/genedr-weekly-email.js"></script>
     <script src="../../assets/genedr-weekly-pdf.js"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-phase4"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-reference-retrieval"></script>
   </body>
 </html>

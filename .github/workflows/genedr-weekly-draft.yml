@@ -71,6 +71,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GENEDR_DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          NCBI_CONTACT_EMAIL: ${{ vars.NCBI_CONTACT_EMAIL || '' }}
         run: node scripts/generate_genedr_weekly_draft.mjs
 
       - name: Upload workflow result log
@@ -96,4 +97,3 @@ jobs:
           git commit -m "Draft GeneDr Weekly issue ${issue_number}"
           git push --set-upstream origin "$branch"
           gh pr create --base main --head "$branch" --title "Draft GeneDr Weekly Issue #${issue_number}" --body "Automated draft only. Medical accuracy, references, current guidance, privacy, and all clinical claims require administrator review. This pull request does not approve or publish the issue."
-

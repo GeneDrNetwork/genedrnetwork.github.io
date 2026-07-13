@@ -6,6 +6,7 @@ const root = process.cwd();
 const issuesPath = path.join(root, "data/genedr-weekly-issues.js");
 const topicsPath = path.join(root, "data/genedr-weekly-topics.js");
 const promptPath = path.join(root, "assets/genedr-weekly-ai-prompt.js");
+const referencesPath = path.join(root, "assets/genedr-weekly-references.js");
 const outputDir = path.join(root, "data/genedr-weekly/issues");
 const logDir = path.join(root, "data/genedr-weekly/workflow-log");
 const dryRun = process.env.GENEDR_DRY_RUN === "true";
@@ -48,6 +49,10 @@ function validateDraft(draft) {
   if (missing.length || !draft.articleSections?.mainArticle || !draft.articleSections?.whyThisMatters || !Array.isArray(draft.keyPoints) || !Array.isArray(draft.references)) {
     throw new Error(`Generated draft is missing required fields: ${missing.join(", ") || "article content"}`);
   }
+  const combined = `${draft.scenario} ${draft.articleSections.whyThisMatters} ${draft.articleSections.mainArticle}`.toLowerCase();
+  if (/article content will be added|placeholder text|content goes here/.test(combined)) throw new Error("Generated draft contains placeholder text.");
+  if (!dryRun && draft.articleSections.mainArticle.trim().split(/\s+/).length < 500) throw new Error("Generated Main Article is too short for a complete five-minute draft.");
+  if (!dryRun && (draft.keyPoints.length < 3 || draft.keyPoints.length > 5)) throw new Error("Generated draft must contain 3–5 key points.");
 }
 
 async function callOpenAI(systemPrompt, userPrompt) {
@@ -102,7 +107,20 @@ try {
     articleSections: { whyThisMatters: "Dry-run validation content.", mainArticle: "Dry-run validation article content." }, keyPoints: ["Dry-run clinical pearl."], references: ["Suggested reference to verify."],
     disclaimer: "The clinical scenario is fictional and created for educational purposes. It does not represent an actual patient."
   } : await callOpenAI(prompt.systemPrompt, prompt.buildUserPrompt({ topic: topic.title, category: topic.category, issueNumber, date, recentTopics }));
-  const draft = { ...generated, issueNumber, date, category: topic.category, slug: slugify(generated.slug || generated.title), status: "draft", referencesNeedVerification: true, generation: { generatedAt, selectedTopic: topic.title, workflow: "github-actions-weekly", result: "success" } };
+  let retrievedReferences = generated.references;
+  let referenceWarnings = [];
+  if (!dryRun) {
+    const referenceContext = {
+      window: { GENEDR_WEEKLY_REFERENCE_CONFIG: { tool: "genedr_weekly_github_action", email: process.env.NCBI_CONTACT_EMAIL || "", timeoutMs: 20000, maxReferences: 8, defaultMode: "recent-plus-landmark" } },
+      fetch, URLSearchParams, AbortController, setTimeout, clearTimeout, Date, Promise
+    };
+    vm.createContext(referenceContext);
+    vm.runInContext(fs.readFileSync(referencesPath, "utf8"), referenceContext, { filename: referencesPath });
+    const referenceResult = await referenceContext.window.GeneDrWeeklyReferences.retrieve(topic.title, "recent-plus-landmark");
+    retrievedReferences = referenceResult.references;
+    referenceWarnings = referenceResult.warnings;
+  }
+  const draft = { ...generated, references: retrievedReferences, issueNumber, date, category: topic.category, slug: slugify(generated.slug || generated.title), status: "draft", referencesNeedVerification: true, generation: { generatedAt, selectedTopic: topic.title, workflow: "github-actions-weekly", result: "success", referenceMode: "recent-plus-landmark", referenceWarnings } };
   validateDraft(draft);
   if (issues.some((issue) => Number(issue.issueNumber) === issueNumber)) throw new Error(`Duplicate issue number ${issueNumber}; no file was changed.`);
   if (issues.some((issue) => issue.slug === draft.slug)) throw new Error(`Duplicate slug ${draft.slug}; no file was changed.`);

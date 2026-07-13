@@ -11,8 +11,11 @@ Repository settings:
 - Variable: `GENEDR_TIMEZONE` (default `America/Los_Angeles`)
 - Variable: `GENEDR_SCHEDULE_WEEKDAY` (default `1`, Monday using ISO weekday numbering)
 - Variable: `GENEDR_SCHEDULE_HOUR` (default `9`, local 24-hour time)
+- Variable: `NCBI_CONTACT_EMAIL` (recommended public administrative contact for NCBI E-utilities requests)
 
 The Action calculates the next issue number, avoids recent topics, balances recently used categories, creates a draft record and workflow log, and opens a review pull request. It never approves, publishes, or commits generated content to `main`.
+
+At generation time, references are refreshed from NCBI PubMed using the default **Recent plus landmark references** ranking mode. Language-model citations are replaced by the verified retrieval result before the draft pull request is created.
 
 To test manually, open **Actions → Generate GeneDr Weekly Draft → Run workflow**. Start with `dry_run: true`; this validates selection and output handling without calling OpenAI or creating a pull request. Run again with `dry_run: false` to test the complete review-PR flow.
 

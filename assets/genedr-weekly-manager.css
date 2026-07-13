@@ -39,6 +39,12 @@
 .manager-form-grid label { display: grid; gap: 7px; color: #193e5d; font-size: .82rem; font-weight: 800; }
 .manager-form-grid label>span { color: #64798a; font-size: .72rem; font-weight: 500; }
 .manager-form-grid label>.manager-main-label { color: #193e5d; font-size: .82rem; font-weight: 800; }
+.manager-form-grid label>.manager-field-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; color: #193e5d; font-size: .82rem; font-weight: 800; }
+.manager-field-heading>.manager-main-label,.manager-field-heading>span { color: #193e5d; font-size: .82rem; font-weight: 800; }
+.manager-regenerate { padding: 4px 8px; border: 1px solid #86bcc4; border-radius: 7px; color: #087781; background: #f7fcfd; font: inherit; font-size: .7rem; font-weight: 800; cursor: pointer; }
+.manager-regenerate:hover,.manager-regenerate:focus-visible { border-color: #138b96; background: #e8f6f7; }
+.manager-form-grid label>.manager-reference-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.manager-reference-tools select { width: auto; min-width: 230px; padding: 7px 10px; font-size: .78rem; }
 .manager-field-wide { grid-column: 1/-1; }
 .manager-form-grid input,.manager-form-grid select,.manager-form-grid textarea { width: 100%; padding: 11px 12px; border: 1px solid #bdd5dd; border-radius: 9px; color: #102e4d; background: #fbfefe; font: inherit; font-size: .9rem; }
 .manager-form-grid textarea { resize: vertical; line-height: 1.55; }
@@ -63,5 +69,5 @@
 .manager-email-preview dl>div:last-child { border: 0; }
 .manager-email-preview dt { color: #547083; font-size: .72rem; font-weight: 800; text-transform: uppercase; }
 .manager-email-preview dd { margin: 0; overflow-wrap: anywhere; }
-@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-ai-options,.manager-form-grid { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } }
+@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-ai-options,.manager-form-grid { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } .manager-form-grid label>.manager-field-heading { align-items: flex-start; flex-direction: column; } }
 @media (max-width:560px) { .manager-email-preview dl>div { grid-template-columns: 1fr; gap: 3px; } }

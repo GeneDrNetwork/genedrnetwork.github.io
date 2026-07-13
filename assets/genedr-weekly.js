@@ -30,6 +30,28 @@
     }).format(new Date(parts[0], parts[1] - 1, parts[2]));
   };
 
+  const renderArticleText = (value = "") => {
+    const output = [];
+    let paragraph = [];
+    const flushParagraph = () => {
+      if (paragraph.length) output.push(`<p>${paragraph.map(escapeHtml).join(" ")}</p>`);
+      paragraph = [];
+    };
+    String(value).split(/\r?\n/).forEach((line) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("### ")) {
+        flushParagraph();
+        output.push(`<h3>${escapeHtml(trimmed.slice(4))}</h3>`);
+      } else if (!trimmed) {
+        flushParagraph();
+      } else {
+        paragraph.push(trimmed);
+      }
+    });
+    flushParagraph();
+    return output.join("");
+  };
+
   const normalizeIssue = (issue) => ({
     ...issue,
     subtitle: issue.subtitle || "",
@@ -204,9 +226,9 @@
       </div>
       <section><h2>Clinical Scenario</h2><p><em>${escapeHtml(issue.scenario)}</em></p><p><strong>${escapeHtml(issue.question)}</strong></p></section>
       <section><h2>Why This Matters</h2><p>${escapeHtml(issue.articleSections.whyThisMatters || "")}</p></section>
-      <section><h2>Main Article</h2><p>${escapeHtml(issue.articleSections.mainArticle || "")}</p></section>
+      <section><h2>Main Article</h2>${renderArticleText(issue.articleSections.mainArticle || "")}</section>
       <section><h2>Key Points</h2><ul>${issue.keyPoints.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul></section>
-      <section><h2>References</h2><ol>${issue.references.map((reference) => `<li>${escapeHtml(reference)}</li>`).join("")}</ol></section>
+      <section><h2>${issue.referencesNeedVerification ? "Suggested References — Verification Required" : "References"}</h2><ol>${issue.references.map((reference) => `<li>${escapeHtml(reference)}</li>`).join("")}</ol></section>
       <p class="weekly-disclaimer"><em>${escapeHtml(issue.disclaimer)}</em></p>
       <footer class="weekly-print-footer"><span>${escapeHtml(issue.title)}</span><span>GeneDrNetwork · https://genedrnetwork.github.io</span></footer>`;
     setupSharing(issue);
@@ -218,6 +240,7 @@
     formatDate,
     normalizeIssue,
     issueLabel,
+    renderArticleText,
     getPublishedIssues: () => issues.map((issue) => ({ ...issue }))
   };
   renderHomepage();
