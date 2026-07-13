@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-complete-drafts" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-article-size" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260713-delete-issue" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -127,6 +127,17 @@
       </form>
     </dialog>
 
+    <dialog id="delete-confirmation" class="manager-dialog">
+      <form method="dialog">
+        <h2>Delete browser-local issue?</h2>
+        <p id="delete-confirmation-message">This issue will be removed from this browser. This action cannot be undone.</p>
+        <div class="manager-actions">
+          <button class="manager-button" value="cancel">Cancel</button>
+          <button id="confirm-delete-issue" class="manager-button manager-button-danger" value="confirm">Confirm Delete</button>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="email-confirmation" class="manager-dialog manager-email-dialog">
       <form method="dialog">
         <p class="manager-eyebrow">GeneDr Weekly</p>
@@ -157,12 +168,12 @@
     <script src="../../assets/genedr-weekly.js?v=20260712-weekly-complete-drafts"></script>
     <script src="../../assets/genedr-weekly-ai-prompt.js?v=20260713-staged-generation"></script>
     <script src="../../assets/genedr-weekly-ai-config.js?v=20260713-long-draft-timeout"></script>
-    <script src="../../assets/genedr-weekly-ai.js?v=20260713-staged-generation"></script>
+    <script src="../../assets/genedr-weekly-ai.js?v=20260713-transactional-generation"></script>
     <script src="../../assets/genedr-weekly-references-config.js"></script>
     <script src="../../assets/genedr-weekly-references.js"></script>
     <script src="../../assets/genedr-weekly-email-config.js"></script>
     <script src="../../assets/genedr-weekly-email.js"></script>
     <script src="../../assets/genedr-weekly-pdf.js"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260713-long-draft-timeout"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260713-delete-issue"></script>
   </body>
 </html>

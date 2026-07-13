@@ -2,9 +2,10 @@
   const config = window.GENEDR_WEEKLY_AI_CONFIG || {};
   const promptTemplate = window.GENEDR_WEEKLY_AI_PROMPT;
   const requiredFields = [
-    "issueNumber", "date", "title", "slug", "category", "readingTime", "scenario",
+    "issueNumber", "date", "title", "subtitle", "slug", "category", "readingTime", "scenario",
     "question", "excerpt", "articleSections", "keyPoints", "references", "disclaimer"
   ];
+  const placeholderPattern = /untitled issue|article content will be added|content goes here|placeholder text|references will be added/i;
 
   class DraftGenerationError extends Error {
     constructor(code, message) {
@@ -29,17 +30,19 @@
   function validateDraft(draft) {
     const missing = requiredFields.filter((field) => {
       const value = draft?.[field];
-      return value === undefined || value === null || value === "";
+      return value === undefined || value === null || (typeof value === "string" && !value.trim());
     });
-    if (missing.length || !draft.articleSections?.mainArticle || !draft.articleSections?.whyThisMatters || !Array.isArray(draft.keyPoints) || !Array.isArray(draft.references)) {
+    if (missing.length || !String(draft.articleSections?.mainArticle || "").trim() || !String(draft.articleSections?.whyThisMatters || "").trim() || !Array.isArray(draft.keyPoints) || !Array.isArray(draft.references)) {
       throw new DraftGenerationError("MISSING_FIELDS", `The generated draft is missing required fields: ${missing.join(", ") || "article content, key points, or references"}.`);
     }
     const wordCount = String(draft.articleSections.mainArticle).trim().split(/\s+/).filter(Boolean).length;
-    const combined = `${draft.scenario} ${draft.articleSections.whyThisMatters} ${draft.articleSections.mainArticle}`.toLowerCase();
-    if (wordCount < 500 || /article content will be added|placeholder text|content goes here/.test(combined)) {
+    const combined = [draft.title, draft.subtitle, draft.scenario, draft.question, draft.excerpt,
+      draft.articleSections.whyThisMatters, draft.articleSections.mainArticle, draft.disclaimer,
+      ...(draft.keyPoints || []), ...(draft.references || [])].join(" ");
+    if (wordCount < 500 || placeholderPattern.test(combined)) {
       throw new DraftGenerationError("INCOMPLETE_DRAFT", "The generated article was incomplete or contained placeholder text. Please regenerate it.");
     }
-    if (draft.keyPoints.length < 3 || draft.keyPoints.length > 5) {
+    if (draft.keyPoints.length < 3 || draft.keyPoints.length > 5 || draft.keyPoints.some((point) => !String(point || "").trim())) {
       throw new DraftGenerationError("INCOMPLETE_DRAFT", "The generated draft must contain 3–5 key points.");
     }
     return draft;
@@ -94,6 +97,12 @@
 
   function scenarioSentenceCount(value) {
     return (String(value).match(/[.!?]+(?=\s|$)/g) || []).length;
+  }
+
+  function connectionMode() {
+    if (config.endpoint) return "secure-endpoint";
+    if ((window.LanguageModel || window.ai?.languageModel)?.create) return "browser-ai";
+    return "unavailable";
   }
 
   async function generateDraft({ topic, category, audience = "Auto", issueNumber, date, recentTopics = [], onProgress }) {
@@ -159,5 +168,5 @@
     return result;
   }
 
-  window.GeneDrWeeklyAI = { DraftGenerationError, generateDraft, generateSection, validateDraft };
+  window.GeneDrWeeklyAI = { DraftGenerationError, connectionMode, generateDraft, generateSection, validateDraft };
 })();

@@ -12,6 +12,8 @@
   const previewContent = document.querySelector("#manager-preview-content");
   const list = document.querySelector("#manager-issue-list");
   const dialog = document.querySelector("#publish-confirmation");
+  const deleteDialog = document.querySelector("#delete-confirmation");
+  const deleteMessage = document.querySelector("#delete-confirmation-message");
   const saveStatus = document.querySelector("#save-status");
   const aiStatus = document.querySelector("#ai-generation-status");
   const referencesFieldLabel = document.querySelector("#references-field-label");
@@ -25,6 +27,8 @@
   let activeKey = null;
   let activeEmailIssue = null;
   let lastPreviewIssue = null;
+  let generationInProgress = false;
+  let pendingDeleteKey = null;
 
   let topics = (window.GENEDR_WEEKLY_TOPICS || []).map((topic) => ({ ...topic }));
   try {
@@ -38,7 +42,11 @@
   const repoIssues = (window.GENEDR_WEEKLY_ISSUES || []).map(normalizeIssue);
   let savedIssues = [];
   try {
-    savedIssues = JSON.parse(localStorage.getItem(storageKey) || "[]").map(normalizeIssue);
+    savedIssues = JSON.parse(localStorage.getItem(storageKey) || "[]").map(normalizeIssue).filter((issue) => {
+      const hasContent = Boolean(issue.title || issue.subtitle || issue.scenario || issue.question || issue.excerpt ||
+        issue.articleSections?.whyThisMatters || issue.articleSections?.mainArticle || issue.keyPoints?.length || issue.references?.length);
+      return issue.status !== "draft" || hasContent;
+    });
   } catch (error) {
     savedIssues = [];
   }
@@ -198,6 +206,7 @@
         <td><div class="manager-row-actions">
           <button type="button" data-row-action="preview" data-key="${issue.issueNumber}">Preview</button>
           <button type="button" data-row-action="edit" data-key="${issue.issueNumber}">Edit</button>
+          ${issue.status === "published" ? "" : `<button class="manager-row-delete" type="button" data-row-action="delete" data-key="${issue.issueNumber}">Delete</button>`}
         </div></td>
       </tr>`).join("");
   }
@@ -351,6 +360,8 @@
   }
 
   async function generateAiDraft(topic, category) {
+    if (generationInProgress) return;
+    generationInProgress = true;
     const issueNumber = nextIssueNumber();
     const date = new Date().toISOString().slice(0, 10);
     const recentTopics = [...issues]
@@ -359,7 +370,7 @@
       .map((issue) => issue.title);
     const buttons = [document.querySelector("#ai-suggest-generate"), document.querySelector("#ai-custom-generate")];
     buttons.forEach((button) => { button.disabled = true; });
-    aiStatus.textContent = `Generating a complete draft about ${topic}… This can take up to three minutes.`;
+    aiStatus.textContent = "Generating complete GeneDr Weekly draft…";
     try {
       const audience = document.querySelector("#ai-audience").value || "Auto";
       const result = await window.GeneDrWeeklyAI.generateDraft({
@@ -382,6 +393,10 @@
         status: "draft",
         referencesNeedVerification: true
       });
+      window.GeneDrWeeklyAI.validateDraft(draft);
+      if (!draft.references.length || draft.references.some((reference) => !String(reference || "").trim())) {
+        throw new window.GeneDrWeeklyAI.DraftGenerationError("MISSING_FIELDS", "The generated draft did not contain suggested references.");
+      }
       if (issues.some((issue) => Number(issue.issueNumber) === issueNumber)) {
         throw new window.GeneDrWeeklyAI.DraftGenerationError("DUPLICATE_ISSUE", `Issue #${issueNumber} already exists. No issue was overwritten.`);
       }
@@ -401,8 +416,9 @@
       fillForm(draft);
       aiStatus.textContent = `${issueLabel(issueNumber)} was generated and saved as Draft. Suggested references require verification.`;
     } catch (error) {
-      aiStatus.textContent = error.userMessage || "Draft generation failed. Please try again.";
+      aiStatus.textContent = `${error.userMessage || error.message || "Draft generation failed."} No issue was created. You can retry with the same topic.`;
     } finally {
+      generationInProgress = false;
       buttons.forEach((button) => { button.disabled = false; });
     }
   }
@@ -506,11 +522,8 @@
 
   document.querySelector("#create-issue").addEventListener("click", () => {
     const issue = emptyIssue();
-    issues.push(issue);
-    persistBrowserIssues();
-    renderList();
     fillForm(issue);
-    saveStatus.textContent = `${issueLabel(issue.issueNumber)} created as a browser-local draft.`;
+    saveStatus.textContent = `${issueLabel(issue.issueNumber)} is unsaved. Complete the required fields and select Save Draft to add it to All Issues.`;
   });
 
   document.querySelector("#ai-suggest-generate").addEventListener("click", () => {
@@ -533,6 +546,11 @@
     generateAiDraft(topic, categoryForTopic(topic));
   });
 
+  const aiConnectionMode = window.GeneDrWeeklyAI.connectionMode();
+  if (aiConnectionMode === "secure-endpoint") aiStatus.textContent = "Secure AI generation endpoint connected.";
+  if (aiConnectionMode === "browser-ai") aiStatus.textContent = "Using this browser’s AI model. A secure server endpoint is not configured.";
+  if (aiConnectionMode === "unavailable") aiStatus.textContent = "AI generation is unavailable. Configure the secure endpoint described in data/genedr-weekly/AI_SETUP.md.";
+
   emailButton.addEventListener("click", () => openEmailPreview(issueFromForm()));
   document.querySelector("#send-test-email").addEventListener("click", () => sendSubscriberEmail("test"));
   document.querySelector("#confirm-subscriber-email").addEventListener("click", () => sendSubscriberEmail("send"));
@@ -552,7 +570,31 @@
     const issue = issues.find((item) => String(item.issueNumber) === button.dataset.key);
     if (!issue) return;
     if (button.dataset.rowAction === "edit") fillForm(issue);
-    else showPreview("article", issue);
+    if (button.dataset.rowAction === "preview") showPreview("article", issue);
+    if (button.dataset.rowAction === "delete" && issue.status !== "published") {
+      pendingDeleteKey = String(issue.issueNumber);
+      deleteMessage.textContent = `${issueLabel(issue.issueNumber)}${issue.title ? ` — ${issue.title}` : ""} will be permanently removed from this browser. This action cannot be undone.`;
+      deleteDialog.showModal();
+    }
+  });
+
+  document.querySelector("#confirm-delete-issue").addEventListener("click", () => {
+    if (!pendingDeleteKey) return;
+    const issue = issues.find((item) => String(item.issueNumber) === pendingDeleteKey);
+    if (!issue || issue.status === "published") {
+      pendingDeleteKey = null;
+      return;
+    }
+    issues = issues.filter((item) => String(item.issueNumber) !== pendingDeleteKey);
+    persistBrowserIssues();
+    renderList();
+    if (activeKey === pendingDeleteKey) {
+      activeKey = null;
+      editor.hidden = true;
+      preview.hidden = true;
+    }
+    aiStatus.textContent = `${issueLabel(issue.issueNumber)} was deleted from this browser.`;
+    pendingDeleteKey = null;
   });
 
   form.addEventListener("submit", (event) => event.preventDefault());

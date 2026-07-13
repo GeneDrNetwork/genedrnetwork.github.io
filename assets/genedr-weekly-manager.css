@@ -36,6 +36,7 @@
 .manager-table td:nth-child(3) { min-width: 250px; color: #092f54; font-weight: 700; }
 .manager-row-actions { display: flex; gap: 8px; }
 .manager-row-actions button { border: 0; color: #087d89; background: transparent; font: inherit; font-weight: 800; cursor: pointer; }
+.manager-row-actions .manager-row-delete { color: #9a3443; }
 .manager-status { display: inline-flex; padding: 5px 9px; border-radius: 999px; background: #e6f4f5; color: #087781; font-size: .7rem; font-weight: 800; text-transform: capitalize; white-space: nowrap; }
 .manager-form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
 .manager-form-grid label { display: grid; gap: 7px; color: #193e5d; font-size: .82rem; font-weight: 800; }
