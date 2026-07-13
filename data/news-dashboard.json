@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-12T14:43:23+00:00",
+  "updated_at": "2026-07-13T18:15:55+00:00",
   "summaries": {
-    "ai": "Key developments: The U.S. Economy Is Addicted to AI Spending. What Happens If It Slows?; Morgan Stanley Warns of \"Chipflation\" as Hyperscalers Invest More in Compute Capacity: 2 No-Brainer Artificial Intelligence (AI) Chip Stocks to Buy Right Now; Wall Street Thinks AI Is Slowing. Wall Street Is Wrong.",
-    "biotech": "Key developments: Quantum Computing Meets AI to Unlock Rare Disease Drugs; The week in pharma: action, reaction and insight \u2013 week to July 10, 2026; Ionis Pharmaceuticals Drops Another 9% as Bad News Piles Up.",
-    "market": "Key developments: How Will Futures React To New U.S.-Iran Attacks?; June, Second Quarter 2026 Review and Outlook; Nasdaq, S&P 500 Futures Edge Lower Ahead Of CPI Data: Why NVDA, AAPL, TSLA, RIVN, MRNA, AMAT, IREN Are On Traders' Radar Today.",
-    "market_movers": "S&P 500 led tracked indexes at +0.42% today; Russell 2000 was weakest at -0.49%. Key developments: How Will Futures React To New U.S.-Iran Attacks?; June, Second Quarter 2026 Review and Outlook; Nasdaq, S&P 500 Futures Edge Lower Ahead Of CPI Data: Why NVDA, AAPL, TSLA, RIVN, MRNA, AMAT, IREN Are On Traders' Radar Today."
+    "ai": "Key developments: Argan vs. Comfort Systems USA: Which AI Infrastructure Stock Is the Better Buy?; Forget Hyperscalers: Here Are the AI Gold Rush Winners to Buy Now; Meta to spend an additional $40B to expand colossal Louisiana data center.",
+    "biotech": "Key developments: This Biotech Lets Rare-Disease Families Invest In Its Gene Therapy; Biotech startup funding gap widens despite rebound in VC investment; Thiogenesis Receives FDA Rare Pediatric Disease Designation for TTI-0102 for the Treatment of Leigh Syndrome.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq slip as US and Iran exchange fire, oil jumps; Wall Street slips as Iran tensions hit sentiment; chipmakers drop; S&P 500, Nasdaq decline as Iran tensions jolt sentiment.",
+    "market_movers": "Dow Jones led tracked indexes at -0.30% today; Nasdaq was weakest at -1.43%. Key developments: Stock market today: Dow, S&P 500, Nasdaq slip as US and Iran exchange fire, oil jumps; Wall Street slips as Iran tensions hit sentiment; chipmakers drop; S&P 500, Nasdaq decline as Iran tensions jolt sentiment."
   },
   "takeaways": [
-    "The U.S. Economy Is Addicted to AI Spending. What Happens If It Slows? - 24/7 Wall St.",
-    "Morgan Stanley Warns of \"Chipflation\" as Hyperscalers Invest More in Compute Capacity: 2 No-Brainer Artificial Intelligence (AI) Chip Stocks to Buy Right Now - The Motley Fool",
-    "Quantum Computing Meets AI to Unlock Rare Disease Drugs - The Tech Buzz",
-    "The week in pharma: action, reaction and insight \u2013 week to July 10, 2026 - The Pharma Letter",
+    "Argan vs. Comfort Systems USA: Which AI Infrastructure Stock Is the Better Buy? - Yahoo Finance",
+    "Forget Hyperscalers: Here Are the AI Gold Rush Winners to Buy Now - 24/7 Wall St.",
+    "This Biotech Lets Rare-Disease Families Invest In Its Gene Therapy - Forbes",
+    "Biotech startup funding gap widens despite rebound in VC investment - BioPharma Dive",
     "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA - The Clinical Trial Vanguard",
-    "FDA grants regenerative medicine advanced therapy designation to ATSN-201 for X-linked retinoschisis - Ophthalmology Times Europe",
-    "How Will Futures React To New U.S.-Iran Attacks? - Investor's Business Daily"
+    "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis - Business Wire",
+    "Stock market today: Dow, S&P 500, Nasdaq slip as US and Iran exchange fire, oil jumps - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,14 +794,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA grants regenerative medicine advanced therapy designation to ATSN-201 for X-linked retinoschisis",
-      "date": "Mon, 06 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNbzZ0Skp6UFg5NFpad1FTYW52TG0wRU1xbExudzQycG9LZDBQa1N6RWtWSEpJRE1takcydDQ3NDNfd0JBMTFJMFQ5UzFjdmI2UURYcEJzbFpNSUdxVlZvdy1nVl93MTJtNW9peGNSX1lhbjVPUDJjbUxZQTRRdmtRUTJsT29hMWVpT1VnSVRFbFU0NU4zaDM4YXhKQnFtM2xqTUpIRWVBZTVJVHNwSS1ESjZVM0w1bmN5b2pWU2o3Mnl1SVA0X1dOaHhXaWhmcElfZnVWbTNBWQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis",
       "date": "Thu, 09 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMi3gJBVV95cUxOc1JfdU9HbFlPeGZxT3I4NHdaLTVOS1R3QURaZEloTkpzS3dVbl9GX3hUSENXVGpUNnpuaUhRd3FZeFZTNVhPekRoVFJhb0U2ejBmenpKdkFDVEdxNWx5LWdsSTZJSkJlb3liVDZ2MFdkQ2xOTGRLaG81T0IySlF6RXktTFNsT2w0RFo0QWVsXzNwZWdRX2lmSU5iS1IyRzYxM3JQc0dkbkZxNlluWWVKOGpNQ1NwVDZSN0hiNVZlc1k4ZG1wVjlKczBKS0h6MFZ6NUJocmxXNFNjdEdvMnF3Tnk1elgwTDNLczN2cVpLQjg5Y3AxQm8teF9RSXV6bE9hTlFkcVY5M0h0NW9fLXg0LTBnSFV4TkVMQUpsNVFLWlFXazd6Z1hnWE1MUzJUd3BrOTJkTlBOTVdBYzIzWjQ3cjgtNWlLdXdweEQzUkRhWF9Kc1ZFbkd1WmtHRGRhZw?oc=5"
@@ -818,14 +810,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "OS Therapies gets another FDA meeting on OST-HER2 biomarker data",
-      "date": "Wed, 08 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQWnBTYW5wUXZmTVdQR1h6eUVFNlJoSE0wNGUwQkExLTRtc0R4cElpRlRLdEVqN1drZkNKclRXdHBEQ2taZTh6bzhIclg0by1CQ0liWWt2YW1QLUllRlRpWnJValctUE11elhNQUpsSFNpZ0dRUEswdDJsY3hKNjNPM1RQSE1Tbm55S3ZHNVl0bXR2ekt4SmxiZTh1T1diZ2kxbXkxUHBWbnZOMXg3MWUzX0E5bzNfTHVRempN?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "What's Driving Telix's Latest FDA Resubmission for Pixclara\u00ae",
       "date": "Sat, 11 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQdGZBVjdHbkZYRjNuempxa29tM01CR1VRSFFpSTRLdEV4Z29ZMHFnanZyOF9DZUkwS3lnNnBXR01aSUNjQS15M1FBUnJKT2MwZUdCU0ZpeDg1NmtKYk5sckl2amxfdFhZMXh1WWJ4MW41TEwzZzlELTZ1UVduX0tzdWFBUHM2TmxicnBsQXc2a0l4M1UxQ3kzaEV3?oc=5"
@@ -834,47 +818,63 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Quoin Pharmaceuticals Receives FDA IND Clearance to Initiate Phase 2 Study of QRX003 in Peeling Skin Syndrome",
-      "date": "Thu, 09 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxNTnZwdHJuOWEySnEzYnNJV3B2ekwtd25tVXpGOVZaeWlCa3J3dWRvU3JGek5jR0ZQWm13RDlrYnVVSGVFTjhuWmhNYmZkSm95UWxGSFdRWWVCbVlwdWZjOE9PYmxaaGtWX3lHbXdmV0dtVTBhNHp0QU9TRDJFUzlRWkVBR0lVczNrNmpVd0lnWUx1UDh2Q09WQlFSSkRBR1FFdTVNbHFaY0JzQmJxMXREYmlLdTB3bVFJQ0k4Ulg3YTZYQzlvVlAtYWVpa2xLTVdCMkc3U2Q5dS01VTNKRWd0TS1YV0w1QjEydEU0WXRubVNTM2s?oc=5"
+      "event": "OS Therapies gets another FDA meeting on OST-HER2 biomarker data",
+      "date": "Wed, 08 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQWnBTYW5wUXZmTVdQR1h6eUVFNlJoSE0wNGUwQkExLTRtc0R4cElpRlRLdEVqN1drZkNKclRXdHBEQ2taZTh6bzhIclg0by1CQ0liWWt2YW1QLUllRlRpWnJValctUE11elhNQUpsSFNpZ0dRUEswdDJsY3hKNjNPM1RQSE1Tbm55S3ZHNVl0bXR2ekt4SmxiZTh1T1diZ2kxbXkxUHBWbnZOMXg3MWUzX0E5bzNfTHVRempN?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "New oral drug shows big promise in small trial as a porphyria treatment",
+      "event": "CUMBERLAND PHARMACEUTICALS ANNOUNCES SPECIAL DIVIDEND OF $1.50 PER SHARE",
+      "date": "Mon, 13 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQQ1dFWnI1dEVMazA0R1hqTEs0UWE0MkhKNTJQUUNmMzB4QXcxRGZWMGlwN19XOUJMZmdTZFhXQWZmNGVuQjhVb3d4QW5OSXlHWk11SmJCV2M5SjBJUm15cko4Y2VpY3Q2OGU1ZHJ6ZVc2OEFXLXdoQVphZ3FpZUtpSDdDZlhKU0Z4YkVGNk1GUU93azUyRVM3M0dvSmlORWNHTmxJRjBZNXZaaXUxUDB2ZHNGbG1DWExJWU1HcFJFVW1RbWZNX0JvcDh3Ums?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Fate Therapeutics (FATE) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $FATE",
       "date": "Thu, 09 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxQaVgyczZTVWZCLTZJeDRmTFFwQWZpdUtlZnl6WFFnTU8yS1VKRkZlZnZpeThRc05ZRW1jTUd2MWl2YTBscUVmMGpSYWFNYS12WUVmSVJsZE1GdmtiLU9Hd2p1VEpRTkFtZTdySkMwN2RPUldQZ2xkTkY3R3duaG1vU0JwT0FxcXBoR2hRRlpJMU8tUU4xMlZPcjlLNlVrdHR6WWc?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE95QWcxWU9qU3NNR0RQRUpIdXRUYlJaNmVQTlFTV05PdGpURldDY3hEdTkyUlJfVnFtX0gtd2w0WkZ6b3ozSUVXU1kxUWQ4bVZVcnliRjlkcWoza25jSHEzUFQ1b2l5UXNR?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA Fast-Track Designation for Arialys' Anti-NMDA Therapy",
+      "date": "Mon, 13 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQSTNJUXhTN1JsbTNYWTItLVBuZDVTRU5vdGRBS2Q2TUlna0QwYzZNTDM2bENKaTJvNEtKcVRnbmNvZzh5TWVrSUJZNURFY1ZVSU5KTWY4dW0wbFF6dW4wdERjRTVhekQtdnFYRExKZHJqdkdXRHAwdnpPVWN3eGtVSG5vSU5iMkVmM2pTdWNJM3hEMnU5Snc5czFNUFhLMzFsZ0NpOWxiOTdMSkVyZEJXNGpycEk1LXRrcm51MkRHVUlsYlZGc21yeWV3djBNS0pJWTlVag?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,575.39",
-      "daily": 0.42,
-      "weekly": 1.23,
-      "monthly": 2.45
+      "value": "7,522.24",
+      "daily": -0.7,
+      "weekly": -0.2,
+      "monthly": -0.42
     },
     {
       "name": "Nasdaq",
-      "value": "26,281.61",
-      "daily": 0.29,
-      "weekly": 1.74,
-      "monthly": 1.83
+      "value": "25,905.73",
+      "daily": -1.43,
+      "weekly": -0.82,
+      "monthly": -2.92
     },
     {
       "name": "Dow Jones",
-      "value": "52,637.01",
-      "daily": 0.29,
-      "weekly": -0.5,
-      "monthly": 3.52
+      "value": "52,479.86",
+      "daily": -0.3,
+      "weekly": -1.09,
+      "monthly": 1.57
     },
     {
       "name": "Russell 2000",
-      "value": "2,977.81",
-      "daily": -0.49,
-      "weekly": -0.61,
-      "monthly": 1.94
+      "value": "2,951.52",
+      "daily": -0.88,
+      "weekly": -1.93,
+      "monthly": -0.46
     }
   ]
 }
