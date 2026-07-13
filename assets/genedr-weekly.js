@@ -15,14 +15,14 @@
     target.innerHTML = `
       <div class="weekly-card">
         <div class="weekly-intro">
-          <p class="weekly-kicker">GeneDr Weekly</p>
+          <p class="weekly-wordmark" aria-label="GeneDr Weekly"><span>GeneDr</span> <em>Weekly</em></p>
           <h2 id="weekly-section-title">Discover Genetics, One Story at a Time.</h2>
           <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
           <p class="weekly-meta">${issueLabel(issue.issueNumber)} <span>•</span> ${issue.dateLabel} <span>•</span> ${issue.readingTime}</p>
           <span class="weekly-category">${issue.category}</span>
         </div>
         <div class="weekly-story">
-          <p class="weekly-overline">Featured This Week</p>
+          <p class="weekly-overline">Featured Article of the Week</p>
           <h3>${issue.title}</h3>
           <div class="weekly-scenario">
             <strong>Clinical Scenario</strong>
@@ -62,14 +62,19 @@
     if (!issue) return;
     document.title = `${issue.title} | GeneDr Weekly`;
     target.innerHTML = `
-      <a class="back-link" href="../index.html">← Back to Home</a>
+      <nav class="weekly-article-links" aria-label="Article links">
+        <a class="back-link" href="../index.html">← Back to Home</a>
+        <a class="back-link" href="archive.html">Browse All Issues →</a>
+      </nav>
       <header class="weekly-article-header">
-        <p class="weekly-kicker">GeneDr Weekly</p>
-        <h1>${issue.title}</h1>
+        <p class="weekly-wordmark" aria-label="GeneDr Weekly"><span>GeneDr</span> <em>Weekly</em></p>
+        <p class="weekly-article-deck">Discover Genetics, One Story at a Time.</p>
+        <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
         <div class="weekly-article-meta">
-          <span>${issueLabel(issue.issueNumber)}</span><span>${issue.dateLabel}</span>
-          <span>${issue.readingTime}</span><span class="weekly-category">${issue.category}</span>
+          <span>${issueLabel(issue.issueNumber)} <b>•</b> ${issue.dateLabel} <b>•</b> ${issue.readingTime}</span>
+          <span class="weekly-category">${issue.category}</span>
         </div>
+        <h1>${issue.title}</h1>
       </header>
       <section><h2>Clinical Scenario</h2><p><em>${issue.scenario}</em></p><p><strong>${issue.question}</strong></p></section>
       <section><h2>Why This Matters</h2><p>${issue.sections.whyThisMatters}</p></section>
