@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>GeneDr Weekly Content Manager</title>
+    <link rel="icon" type="image/png" href="../../assets/genedrnetwork-logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-phase2" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-phase2" />
+  </head>
+  <body class="weekly-manager-page">
+    <header class="manager-header">
+      <div>
+        <p class="manager-eyebrow">GeneDrNetwork Administration</p>
+        <h1>GeneDr Weekly Content Manager</h1>
+      </div>
+      <a href="../../index.html">View public website →</a>
+    </header>
+
+    <main class="manager-shell">
+      <section class="manager-notice" aria-labelledby="static-workflow-title">
+        <h2 id="static-workflow-title">Static GitHub Pages workflow</h2>
+        <p>Changes made here are stored only in this browser. They do not update the GitHub repository or public website.</p>
+        <p>After approval, export the issue as JSON, add it to <code>data/genedr-weekly/issues/</code> for the content record, and add the same issue object to <code>data/genedr-weekly-issues.js</code>. Only an issue committed with <code>status: "published"</code> becomes public.</p>
+      </section>
+
+      <section class="manager-panel" aria-labelledby="issues-heading">
+        <div class="manager-panel-heading">
+          <div><p class="manager-eyebrow">Content library</p><h2 id="issues-heading">All Issues</h2></div>
+          <button id="create-issue" class="manager-button manager-button-primary" type="button">Create New Issue</button>
+        </div>
+        <div class="manager-table-wrap">
+          <table class="manager-table">
+            <thead><tr><th>Issue</th><th>Date</th><th>Title</th><th>Category</th><th>Reading time</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="manager-issue-list"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="manager-editor" class="manager-panel" aria-labelledby="editor-heading" hidden>
+        <div class="manager-panel-heading">
+          <div><p class="manager-eyebrow">Issue editor</p><h2 id="editor-heading">Edit Issue</h2></div>
+          <span id="save-status" class="manager-save-status" role="status" aria-live="polite"></span>
+        </div>
+        <form id="issue-form">
+          <div class="manager-form-grid">
+            <label>Issue number<input name="issueNumber" type="number" min="1" required /></label>
+            <label>Date<input name="date" type="date" required /></label>
+            <label class="manager-field-wide">Title<input name="title" type="text" required /></label>
+            <label class="manager-field-wide">Subtitle<input name="subtitle" type="text" /></label>
+            <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
+            <label>Category<select name="category" required></select></label>
+            <label>Reading time<input name="readingTime" type="text" placeholder="5 min read" required /></label>
+            <label>Status<select name="status" disabled aria-describedby="status-help"></select><span id="status-help">Status changes use the workflow buttons below.</span></label>
+            <label class="manager-field-wide">Clinical scenario<textarea name="scenario" rows="5" required></textarea></label>
+            <label class="manager-field-wide">Clinical question<textarea name="question" rows="3" required></textarea></label>
+            <label class="manager-field-wide">Excerpt<textarea name="excerpt" rows="4" required></textarea></label>
+            <label class="manager-field-wide">Why This Matters<textarea name="whyThisMatters" rows="7" required></textarea></label>
+            <label class="manager-field-wide">Main Article<textarea name="mainArticle" rows="12" required></textarea></label>
+            <label class="manager-field-wide">Key Points <span>One point per line</span><textarea name="keyPoints" rows="6" required></textarea></label>
+            <label class="manager-field-wide">References <span>One reference per line</span><textarea name="references" rows="6" required></textarea></label>
+            <label class="manager-field-wide">Disclaimer<textarea name="disclaimer" rows="4" required></textarea></label>
+          </div>
+
+          <div class="manager-actions" aria-label="Issue workflow actions">
+            <button class="manager-button" type="button" data-status-action="draft">Save Draft</button>
+            <button class="manager-button" type="button" data-status-action="ready-for-review">Mark Ready for Review</button>
+            <button class="manager-button" type="button" data-status-action="approved">Approve</button>
+            <button class="manager-button manager-button-primary" type="button" data-status-action="published">Publish</button>
+            <button class="manager-button manager-button-danger" type="button" data-status-action="archived">Archive</button>
+          </div>
+          <div class="manager-actions manager-preview-actions">
+            <button class="manager-button" type="button" data-preview="card">Preview Homepage Card</button>
+            <button class="manager-button" type="button" data-preview="article">Preview Full Article</button>
+            <button class="manager-button" type="button" data-export="json">Download JSON</button>
+            <button class="manager-button" type="button" data-export="markdown">Download Markdown</button>
+            <button class="manager-button" type="button" data-export="copy">Copy Issue JSON</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="manager-preview" class="manager-panel manager-preview" aria-labelledby="preview-heading" hidden>
+        <div class="manager-panel-heading"><div><p class="manager-eyebrow">Local preview</p><h2 id="preview-heading">Issue Preview</h2></div></div>
+        <div id="manager-preview-content"></div>
+      </section>
+    </main>
+
+    <dialog id="publish-confirmation" class="manager-dialog">
+      <form method="dialog">
+        <h2>Confirm publication</h2>
+        <p>Have you reviewed the medical accuracy, references, current guidelines, drug information, diagnostic-yield data, and patient privacy content?</p>
+        <div class="manager-actions">
+          <button class="manager-button" value="cancel">Cancel</button>
+          <button id="confirm-publish" class="manager-button manager-button-primary" value="confirm">Confirm and Publish</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="../../data/genedr-weekly-issues.js"></script>
+    <script src="../../assets/genedr-weekly.js"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-phase2"></script>
+  </body>
+</html>
