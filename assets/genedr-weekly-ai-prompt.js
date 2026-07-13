@@ -55,6 +55,29 @@ Return this JSON shape:
 }`;
   },
 
+  buildCorePrompt({ topic, category, audience = "Auto", issueNumber, date, recentTopics }) {
+    return `Create the core fields for a GeneDr Weekly draft about: ${topic}
+
+Category: ${category}
+Audience: ${audience === "Auto" ? "Select the most appropriate audience from Clinicians, Residents, Medical Students, Genetic Counselors, Patients and Families, or General Public." : audience}
+Issue number: ${issueNumber}
+Date: ${date}
+Recently used topics to avoid repeating in framing: ${recentTopics.length ? recentTopics.join("; ") : "None"}
+
+Return only this JSON shape:
+{
+  "title": "",
+  "subtitle": "",
+  "slug": "lowercase-hyphenated-slug",
+  "readingTime": "5 min read",
+  "scenario": "3–5 concise fictional sentences without the diagnosis or final outcome",
+  "question": "one concise clinical question",
+  "excerpt": "concise homepage excerpt",
+  "whyThisMatters": "one concise practical paragraph",
+  "disclaimer": "appropriate educational disclaimer"
+}`;
+  },
+
   buildSectionPrompt({ section, issue }) {
     const requirements = {
       clinicalScenario: `Return {"scenario":"3–5 concise fictional sentences without a name, identifiers, detailed medical record, diagnosis, final outcome, or real case","question":"one concise clinical question"}.`,

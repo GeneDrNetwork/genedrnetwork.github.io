@@ -96,7 +96,7 @@
     return (String(value).match(/[.!?]+(?=\s|$)/g) || []).length;
   }
 
-  async function generateDraft({ topic, category, audience = "Auto", issueNumber, date, recentTopics = [] }) {
+  async function generateDraft({ topic, category, audience = "Auto", issueNumber, date, recentTopics = [], onProgress }) {
     if (!topic || !category || !issueNumber || !date) {
       throw new DraftGenerationError("MISSING_FIELDS", "Topic, category, issue number, and date are required.");
     }
@@ -105,7 +105,34 @@
       userPrompt: promptTemplate.buildUserPrompt({ topic, category, audience, issueNumber, date, recentTopics }),
       responseFormat: "genedr-weekly-issue-json"
     };
-    const draft = validateDraft(await requestGeneration(payload));
+    let draft;
+    if (config.endpoint) {
+      draft = validateDraft(await requestGeneration(payload));
+    } else {
+      if (onProgress) onProgress("Creating the issue outline and clinical scenario…");
+      const core = await requestGeneration({
+        systemPrompt: promptTemplate.systemPrompt,
+        userPrompt: promptTemplate.buildCorePrompt({ topic, category, audience, issueNumber, date, recentTopics }),
+        responseFormat: "genedr-weekly-core-json"
+      });
+      const coreFields = ["title", "subtitle", "slug", "readingTime", "scenario", "question", "excerpt", "whyThisMatters", "disclaimer"];
+      const missingCore = coreFields.filter((field) => core?.[field] === undefined || core?.[field] === null || core?.[field] === "");
+      if (missingCore.length) throw new DraftGenerationError("MISSING_FIELDS", `The generated outline is missing required fields: ${missingCore.join(", ")}.`);
+      const partialIssue = {
+        issueNumber, date, category, audience, title: core.title, subtitle: core.subtitle,
+        slug: core.slug, readingTime: core.readingTime, scenario: core.scenario,
+        question: core.question, excerpt: core.excerpt,
+        articleSections: { whyThisMatters: core.whyThisMatters, mainArticle: "" },
+        keyPoints: [], references: [], disclaimer: core.disclaimer, status: "draft"
+      };
+      if (onProgress) onProgress("Writing the complete main article…");
+      const article = await generateSection({ section: "mainArticle", issue: partialIssue });
+      partialIssue.articleSections.mainArticle = article.mainArticle;
+      if (onProgress) onProgress("Creating the key points…");
+      const points = await generateSection({ section: "keyPoints", issue: partialIssue });
+      partialIssue.keyPoints = points.keyPoints;
+      draft = validateDraft(partialIssue);
+    }
     if (scenarioSentenceCount(draft.scenario) < 3 || scenarioSentenceCount(draft.scenario) > 5) {
       throw new DraftGenerationError("INCOMPLETE_DRAFT", "The generated clinical scenario must contain approximately 3–5 concise sentences.");
     }

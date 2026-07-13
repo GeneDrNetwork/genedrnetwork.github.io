@@ -2,5 +2,5 @@
 // Set endpoint to a separately hosted, authenticated server-side proxy if one is available.
 window.GENEDR_WEEKLY_AI_CONFIG = {
   endpoint: "",
-  timeoutMs: 45000
+  timeoutMs: 180000
 };

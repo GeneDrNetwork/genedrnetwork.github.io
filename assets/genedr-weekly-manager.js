@@ -359,12 +359,19 @@
       .map((issue) => issue.title);
     const buttons = [document.querySelector("#ai-suggest-generate"), document.querySelector("#ai-custom-generate")];
     buttons.forEach((button) => { button.disabled = true; });
-    aiStatus.textContent = `Generating a draft about ${topic}…`;
+    aiStatus.textContent = `Generating a complete draft about ${topic}… This can take up to three minutes.`;
     try {
       const audience = document.querySelector("#ai-audience").value || "Auto";
-      const result = await window.GeneDrWeeklyAI.generateDraft({ topic, category, audience, issueNumber, date, recentTopics });
-      const referenceResult = await window.GeneDrWeeklyReferences.retrieve(topic, "recent-plus-landmark");
-      result.references = referenceResult.references;
+      const result = await window.GeneDrWeeklyAI.generateDraft({
+        topic, category, audience, issueNumber, date, recentTopics,
+        onProgress: (message) => { aiStatus.textContent = message; }
+      });
+      try {
+        const referenceResult = await window.GeneDrWeeklyReferences.retrieve(topic, "recent-plus-landmark");
+        result.references = referenceResult.references;
+      } catch (referenceError) {
+        result.references = ["No recent authoritative reference was identified. Administrator review is required."];
+      }
       const draft = normalizeIssue({
         ...result,
         issueNumber,
@@ -461,10 +468,15 @@
         audience: issue.audience || "Auto",
         issueNumber: issue.issueNumber,
         date: issue.date,
-        recentTopics
+        recentTopics,
+        onProgress: (message) => { saveStatus.textContent = message; }
       });
-      const referenceResult = await window.GeneDrWeeklyReferences.retrieve(issue.title, referenceMode.value || "recent-plus-landmark");
-      result.references = referenceResult.references;
+      try {
+        const referenceResult = await window.GeneDrWeeklyReferences.retrieve(issue.title, referenceMode.value || "recent-plus-landmark");
+        result.references = referenceResult.references;
+      } catch (referenceError) {
+        result.references = issue.references?.length ? issue.references : ["No recent authoritative reference was identified. Administrator review is required."];
+      }
       storeRegeneratedDraft({ ...result, issueNumber: issue.issueNumber, date: issue.date, status: "draft", referencesNeedVerification: true }, `${issueLabel(issue.issueNumber)} fully regenerated and saved as Draft.`);
     } catch (error) {
       saveStatus.textContent = error.userMessage || error.message || "Full-article regeneration failed.";
