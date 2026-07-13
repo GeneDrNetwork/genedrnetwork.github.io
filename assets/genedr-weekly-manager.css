@@ -15,6 +15,8 @@
 .manager-panel-heading h2 { margin: 3px 0 0; color: #092f54; font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.5rem,2.5vw,2rem); }
 .manager-panel-heading .manager-eyebrow { color: #16838e; }
 .manager-ai-intro { margin: -8px 0 22px; color: #496577; }
+.manager-audience-control { display: flex; gap: 12px; align-items: center; width: fit-content; margin: -8px 0 22px; color: #193e5d; font-size: .82rem; font-weight: 800; }
+.manager-audience-control select { padding: 8px 10px; border: 1px solid #bdd5dd; border-radius: 8px; color: #102e4d; background: #fff; font: inherit; }
 .manager-ai-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
 .manager-ai-options>section { padding: 22px; border: 1px solid #d4e5ea; border-radius: 14px; background: linear-gradient(145deg,#fff,#f7fbfc); }
 .manager-ai-options h3 { margin: 3px 0 8px; color: #092f54; font-family: Georgia,"Times New Roman",serif; font-size: 1.2rem; }
@@ -69,5 +71,5 @@
 .manager-email-preview dl>div:last-child { border: 0; }
 .manager-email-preview dt { color: #547083; font-size: .72rem; font-weight: 800; text-transform: uppercase; }
 .manager-email-preview dd { margin: 0; overflow-wrap: anywhere; }
-@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-ai-options,.manager-form-grid { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } .manager-form-grid label>.manager-field-heading { align-items: flex-start; flex-direction: column; } }
+@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-ai-options,.manager-form-grid { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } .manager-form-grid label>.manager-field-heading,.manager-audience-control { align-items: flex-start; flex-direction: column; } }
 @media (max-width:560px) { .manager-email-preview dl>div { grid-template-columns: 1fr; gap: 3px; } }

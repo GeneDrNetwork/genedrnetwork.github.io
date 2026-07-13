@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-complete-drafts" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-reference-retrieval" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-phase3-audit" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -34,6 +34,7 @@
           <span id="ai-generation-status" class="manager-save-status" role="status" aria-live="polite"></span>
         </div>
         <p class="manager-ai-intro">AI-generated content is saved only as a draft. Review medical accuracy and verify every suggested reference before approval or publication.</p>
+        <label class="manager-audience-control" for="ai-audience">Intended audience<select id="ai-audience"><option value="Auto" selected>Auto-select for topic</option><option value="Clinicians">Clinicians</option><option value="Residents">Residents</option><option value="Medical Students">Medical Students</option><option value="Genetic Counselors">Genetic Counselors</option><option value="Patients and Families">Patients and Families</option><option value="General Public">General Public</option></select></label>
         <div class="manager-ai-options">
           <section>
             <p class="manager-option-label">Option A</p>
@@ -78,6 +79,7 @@
             <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
             <label>Category<select name="category" required></select></label>
             <label>Reading time<input name="readingTime" type="text" placeholder="5 min read" required /></label>
+            <label>Audience<select name="audience"></select></label>
             <label>Status<select name="status" disabled aria-describedby="status-help"></select><span id="status-help">Status changes use the workflow buttons below.</span></label>
             <label class="manager-field-wide"><span class="manager-field-heading"><span>Clinical scenario</span><button class="manager-regenerate" type="button" data-regenerate-section="clinicalScenario">Regenerate Clinical Scenario</button></span><textarea name="scenario" rows="5" required></textarea></label>
             <label class="manager-field-wide">Clinical question<textarea name="question" rows="3" required></textarea></label>
@@ -150,17 +152,17 @@
       </form>
     </dialog>
 
-    <script src="../../data/genedr-weekly-issues.js"></script>
+    <script src="../../data/genedr-weekly-issues.js?v=20260712-complete-issue-001"></script>
     <script src="../../data/genedr-weekly-topics.js"></script>
     <script src="../../assets/genedr-weekly.js?v=20260712-weekly-complete-drafts"></script>
-    <script src="../../assets/genedr-weekly-ai-prompt.js"></script>
+    <script src="../../assets/genedr-weekly-ai-prompt.js?v=20260712-weekly-phase3-audit"></script>
     <script src="../../assets/genedr-weekly-ai-config.js"></script>
-    <script src="../../assets/genedr-weekly-ai.js"></script>
+    <script src="../../assets/genedr-weekly-ai.js?v=20260712-weekly-phase3-audit"></script>
     <script src="../../assets/genedr-weekly-references-config.js"></script>
     <script src="../../assets/genedr-weekly-references.js"></script>
     <script src="../../assets/genedr-weekly-email-config.js"></script>
     <script src="../../assets/genedr-weekly-email.js"></script>
     <script src="../../assets/genedr-weekly-pdf.js"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-reference-retrieval"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-phase3-audit"></script>
   </body>
 </html>

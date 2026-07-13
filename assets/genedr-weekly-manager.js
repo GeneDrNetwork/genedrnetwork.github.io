@@ -3,6 +3,7 @@
   const topicStorageKey = "genedr-weekly-manager-topics-v1";
   const emailHistoryKey = "genedr-weekly-email-history-v1";
   const statuses = ["draft", "ready-for-review", "approved", "published", "archived"];
+  const audiences = ["Auto", "Clinicians", "Residents", "Medical Students", "Genetic Counselors", "Patients and Families", "General Public"];
   const publicCategories = window.GeneDrWeekly.categories.filter((category) => category !== "All");
   const { escapeHtml, formatDate, issueLabel, normalizeIssue, renderArticleText } = window.GeneDrWeekly;
   const form = document.querySelector("#issue-form");
@@ -51,6 +52,7 @@
   form.elements.status.innerHTML = statuses.map((status) =>
     `<option value="${status}">${status.replaceAll("-", " ")}</option>`
   ).join("");
+  form.elements.audience.innerHTML = audiences.map((audience) => `<option value="${escapeHtml(audience)}">${escapeHtml(audience)}</option>`).join("");
 
   function persistBrowserIssues() {
     localStorage.setItem(storageKey, JSON.stringify(issues));
@@ -83,17 +85,23 @@
   }
 
   function selectLibraryTopic() {
-    const recentTitles = issues
+    const recentIssues = issues
       .filter((issue) => issue.date)
       .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 8)
-      .map((issue) => issue.title.toLowerCase());
+      .slice(0, 8);
+    const recentTitles = recentIssues.map((issue) => issue.title.toLowerCase());
+    const recentCategoryCounts = recentIssues.slice(0, 4).reduce((counts, issue) => {
+      counts[issue.category] = (counts[issue.category] || 0) + 1;
+      return counts;
+    }, {});
     const active = topics.filter((topic) => topic.active);
     const notRecent = active.filter((topic) => !recentTitles.some((title) =>
       title.includes(topic.title.toLowerCase()) || topic.title.toLowerCase().includes(title)
     ));
     const candidates = notRecent.length ? notRecent : active;
     return [...candidates].sort((a, b) => {
+      const categoryDifference = (recentCategoryCounts[a.category] || 0) - (recentCategoryCounts[b.category] || 0);
+      if (categoryDifference) return categoryDifference;
       if (!a.lastUsed && b.lastUsed) return -1;
       if (a.lastUsed && !b.lastUsed) return 1;
       if ((a.usageCount || 0) !== (b.usageCount || 0)) return (a.usageCount || 0) - (b.usageCount || 0);
@@ -110,6 +118,7 @@
       subtitle: "",
       slug: `issue-${String(nextNumber).padStart(3, "0")}`,
       category: "Clinical Case",
+      audience: "Auto",
       readingTime: "5 min read",
       scenario: "",
       question: "",
@@ -136,6 +145,7 @@
       subtitle: data.get("subtitle").trim(),
       slug: data.get("slug").trim(),
       category: data.get("category"),
+      audience: data.get("audience") || "Auto",
       readingTime: data.get("readingTime").trim(),
       scenario: data.get("scenario").trim(),
       question: data.get("question").trim(),
@@ -156,6 +166,7 @@
     activeKey = String(issue.issueNumber);
     const values = {
       ...issue,
+      audience: issue.audience || "Auto",
       whyThisMatters: issue.articleSections.whyThisMatters || "",
       mainArticle: issue.articleSections.mainArticle || "",
       keyPoints: issue.keyPoints.join("\n"),
@@ -350,7 +361,8 @@
     buttons.forEach((button) => { button.disabled = true; });
     aiStatus.textContent = `Generating a draft about ${topic}…`;
     try {
-      const result = await window.GeneDrWeeklyAI.generateDraft({ topic, category, issueNumber, date, recentTopics });
+      const audience = document.querySelector("#ai-audience").value || "Auto";
+      const result = await window.GeneDrWeeklyAI.generateDraft({ topic, category, audience, issueNumber, date, recentTopics });
       const referenceResult = await window.GeneDrWeeklyReferences.retrieve(topic, "recent-plus-landmark");
       result.references = referenceResult.references;
       const draft = normalizeIssue({
@@ -358,6 +370,7 @@
         issueNumber,
         date,
         category,
+        audience,
         slug: slugify(result.slug || result.title || topic),
         status: "draft",
         referencesNeedVerification: true
@@ -388,6 +401,10 @@
   }
 
   function storeRegeneratedDraft(issue, message) {
+    const currentIssue = issues.find((item) => String(item.issueNumber) === activeKey);
+    if (currentIssue?.status === "published") {
+      throw new window.GeneDrWeeklyAI.DraftGenerationError("PUBLISHED_PROTECTED", "Published issues cannot be overwritten by regeneration. Create a new draft issue for revised content.");
+    }
     const draft = normalizeIssue({ ...issue, status: "draft" });
     const duplicateNumber = issues.find((item) => Number(item.issueNumber) === Number(draft.issueNumber) && String(item.issueNumber) !== activeKey);
     const duplicateSlug = issues.find((item) => item.slug === draft.slug && String(item.issueNumber) !== activeKey);
@@ -441,6 +458,7 @@
       const result = await window.GeneDrWeeklyAI.generateDraft({
         topic: issue.title,
         category: issue.category,
+        audience: issue.audience || "Auto",
         issueNumber: issue.issueNumber,
         date: issue.date,
         recentTopics

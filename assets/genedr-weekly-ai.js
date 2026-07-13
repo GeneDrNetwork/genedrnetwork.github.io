@@ -92,17 +92,24 @@
     }
   }
 
-  async function generateDraft({ topic, category, issueNumber, date, recentTopics = [] }) {
+  function scenarioSentenceCount(value) {
+    return (String(value).match(/[.!?]+(?=\s|$)/g) || []).length;
+  }
+
+  async function generateDraft({ topic, category, audience = "Auto", issueNumber, date, recentTopics = [] }) {
     if (!topic || !category || !issueNumber || !date) {
       throw new DraftGenerationError("MISSING_FIELDS", "Topic, category, issue number, and date are required.");
     }
     const payload = {
       systemPrompt: promptTemplate.systemPrompt,
-      userPrompt: promptTemplate.buildUserPrompt({ topic, category, issueNumber, date, recentTopics }),
+      userPrompt: promptTemplate.buildUserPrompt({ topic, category, audience, issueNumber, date, recentTopics }),
       responseFormat: "genedr-weekly-issue-json"
     };
     const draft = validateDraft(await requestGeneration(payload));
-    return { ...draft, issueNumber, date, category, status: "draft", referencesNeedVerification: true };
+    if (scenarioSentenceCount(draft.scenario) < 3 || scenarioSentenceCount(draft.scenario) > 5) {
+      throw new DraftGenerationError("INCOMPLETE_DRAFT", "The generated clinical scenario must contain approximately 3–5 concise sentences.");
+    }
+    return { ...draft, issueNumber, date, category, audience, status: "draft", referencesNeedVerification: true };
   }
 
   async function generateSection({ section, issue }) {
@@ -116,7 +123,7 @@
       responseFormat: `genedr-weekly-${section}-json`
     });
     const valid = {
-      clinicalScenario: () => typeof result.scenario === "string" && typeof result.question === "string",
+      clinicalScenario: () => typeof result.scenario === "string" && scenarioSentenceCount(result.scenario) >= 3 && scenarioSentenceCount(result.scenario) <= 5 && typeof result.question === "string",
       whyThisMatters: () => typeof result.whyThisMatters === "string",
       mainArticle: () => typeof result.mainArticle === "string" && result.mainArticle.trim().split(/\s+/).length >= 500 && !/placeholder text|content goes here/i.test(result.mainArticle),
       keyPoints: () => Array.isArray(result.keyPoints) && result.keyPoints.length >= 3 && result.keyPoints.length <= 5

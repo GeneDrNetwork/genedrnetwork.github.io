@@ -53,6 +53,8 @@ function validateDraft(draft) {
   if (/article content will be added|placeholder text|content goes here/.test(combined)) throw new Error("Generated draft contains placeholder text.");
   if (!dryRun && draft.articleSections.mainArticle.trim().split(/\s+/).length < 500) throw new Error("Generated Main Article is too short for a complete five-minute draft.");
   if (!dryRun && (draft.keyPoints.length < 3 || draft.keyPoints.length > 5)) throw new Error("Generated draft must contain 3–5 key points.");
+  const scenarioSentences = (String(draft.scenario).match(/[.!?]+(?=\s|$)/g) || []).length;
+  if (!dryRun && (scenarioSentences < 3 || scenarioSentences > 5)) throw new Error("Generated Clinical Scenario must contain 3–5 concise sentences.");
 }
 
 async function callOpenAI(systemPrompt, userPrompt) {
@@ -103,10 +105,10 @@ try {
   const prompt = promptWindow.GENEDR_WEEKLY_AI_PROMPT;
   const generated = dryRun ? {
     issueNumber, date, title: `[Dry Run] ${topic.title}`, subtitle: "Workflow validation draft", slug: `dry-run-${slugify(topic.title)}-${issueNumber}`,
-    category: topic.category, readingTime: "5 min read", scenario: "Fictional educational scenario paragraph one.\n\nFictional educational scenario paragraph two.", question: "What should the clinical team consider next?", excerpt: "Dry-run excerpt.",
+    category: topic.category, readingTime: "5 min read", scenario: "A fictional patient has an unexplained finding. Initial evaluation does not identify the cause. The condition continues to evolve without a confirmed diagnosis.", question: "What should the clinical team consider next?", excerpt: "Dry-run excerpt.",
     articleSections: { whyThisMatters: "Dry-run validation content.", mainArticle: "Dry-run validation article content." }, keyPoints: ["Dry-run clinical pearl."], references: ["Suggested reference to verify."],
     disclaimer: "The clinical scenario is fictional and created for educational purposes. It does not represent an actual patient."
-  } : await callOpenAI(prompt.systemPrompt, prompt.buildUserPrompt({ topic: topic.title, category: topic.category, issueNumber, date, recentTopics }));
+  } : await callOpenAI(prompt.systemPrompt, prompt.buildUserPrompt({ topic: topic.title, category: topic.category, audience: "Auto", issueNumber, date, recentTopics }));
   let retrievedReferences = generated.references;
   let referenceWarnings = [];
   if (!dryRun) {
