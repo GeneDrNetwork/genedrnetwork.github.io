@@ -5,7 +5,11 @@
   const statuses = ["draft", "ready-for-review", "approved", "published", "archived"];
   const audiences = ["Auto", "Clinicians", "Residents", "Medical Students", "Genetic Counselors", "Patients and Families", "General Public"];
   const publicCategories = window.GeneDrWeekly.categories.filter((category) => category !== "All");
-  const { escapeHtml, formatDate, issueLabel, normalizeIssue, renderArticleText } = window.GeneDrWeekly;
+  const {
+    escapeHtml, formatDate, issueLabel, normalizeIssue, renderArticleText,
+    EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_CLOSING, editorialSettingsStorageKey,
+    getEditorialSettings, editorDisplayName, editorCredit, editorNotePreview, renderEditorNote
+  } = window.GeneDrWeekly;
   const form = document.querySelector("#issue-form");
   const editor = document.querySelector("#manager-editor");
   const preview = document.querySelector("#manager-preview");
@@ -24,11 +28,40 @@
   const emailActionStatus = document.querySelector("#email-action-status");
   const previewPdfButton = document.querySelector("#manager-preview-pdf");
   const referenceMode = document.querySelector("#reference-retrieval-mode");
+  const settingsForm = document.querySelector("#editorial-settings-form");
+  const settingsStatus = document.querySelector("#editorial-settings-status");
+  const settingsPreview = document.querySelector("#editorial-settings-preview");
+  const notePreview = document.querySelector("#editor-note-homepage-preview");
   let activeKey = null;
   let activeEmailIssue = null;
   let lastPreviewIssue = null;
   let generationInProgress = false;
   let pendingDeleteKey = null;
+
+  function updateEditorialSettingsPreview() {
+    const data = new FormData(settingsForm);
+    settingsPreview.textContent = `${data.get("editorLabel")} ${[data.get("editorName"), data.get("editorCredentials")].filter(Boolean).join(", ")}`;
+  }
+
+  function fillEditorialSettings() {
+    const settings = getEditorialSettings();
+    Object.entries(settings).forEach(([name, value]) => { settingsForm.elements[name].value = value; });
+    updateEditorialSettingsPreview();
+  }
+
+  settingsForm.addEventListener("input", updateEditorialSettingsPreview);
+  settingsForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!settingsForm.reportValidity()) return;
+    const data = new FormData(settingsForm);
+    localStorage.setItem(editorialSettingsStorageKey, JSON.stringify({
+      editorLabel: data.get("editorLabel").trim(),
+      editorName: data.get("editorName").trim(),
+      editorCredentials: data.get("editorCredentials").trim()
+    }));
+    updateEditorialSettingsPreview();
+    settingsStatus.textContent = "Editorial settings saved in this browser.";
+  });
 
   let topics = (window.GENEDR_WEEKLY_TOPICS || []).map((topic) => ({ ...topic }));
   try {
@@ -44,6 +77,7 @@
   try {
     savedIssues = JSON.parse(localStorage.getItem(storageKey) || "[]").map(normalizeIssue).filter((issue) => {
       const hasContent = Boolean(issue.title || issue.subtitle || issue.scenario || issue.question || issue.excerpt ||
+        issue.editorNoteTopicIntroduction ||
         issue.articleSections?.whyThisMatters || issue.articleSections?.mainArticle || issue.keyPoints?.length || issue.references?.length);
       return issue.status !== "draft" || hasContent;
     });
@@ -131,6 +165,7 @@
       scenario: "",
       question: "",
       excerpt: "",
+      editorNoteTopicIntroduction: "",
       articleSections: { whyThisMatters: "", mainArticle: "" },
       keyPoints: [],
       references: [],
@@ -158,6 +193,7 @@
       scenario: data.get("scenario").trim(),
       question: data.get("question").trim(),
       excerpt: data.get("excerpt").trim(),
+      editorNoteTopicIntroduction: data.get("editorNoteTopicIntroduction").trim(),
       articleSections: {
         whyThisMatters: data.get("whyThisMatters").trim(),
         mainArticle: data.get("mainArticle").trim()
@@ -189,6 +225,7 @@
     referencesFieldLabel.textContent = issue.referencesNeedVerification
       ? "Suggested References — Verification Required"
       : "References";
+    notePreview.textContent = editorNotePreview(issue);
     saveStatus.textContent = `Editing ${issueLabel(issue.issueNumber)} · browser-local copy`;
     editor.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -202,6 +239,7 @@
         <td>${escapeHtml(issue.title || "Untitled issue")}</td>
         <td>${escapeHtml(issue.category)}</td>
         <td>${escapeHtml(issue.readingTime)}</td>
+        <td><span class="manager-note-status ${issue.editorNoteTopicIntroduction ? "is-complete" : "is-missing"}">${issue.editorNoteTopicIntroduction ? "Complete" : "Missing"}</span></td>
         <td><span class="manager-status">${escapeHtml(issue.status.replaceAll("-", " "))}</span></td>
         <td><div class="manager-row-actions">
           <button type="button" data-row-action="preview" data-key="${issue.issueNumber}">Preview</button>
@@ -242,16 +280,19 @@
   }
 
   function previewCard(issue) {
+    const settings = getEditorialSettings();
     previewContent.innerHTML = `<div class="weekly-card">
       <div class="weekly-intro">
         <p class="weekly-wordmark"><span>GeneDr</span> <em>Weekly</em></p>
         <h2>Discover Genetics, One Story at a Time.</h2>
         <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
         <p class="weekly-meta">${issueLabel(issue.issueNumber)} <span>•</span> ${escapeHtml(formatDate(issue.date))} <span>•</span> ${escapeHtml(issue.readingTime)}</p>
-        <span class="weekly-category">${escapeHtml(issue.category)}</span>
+        ${editorCredit(settings, "weekly-editor-credit-on-dark")}
+        <aside class="weekly-note-preview"><h3>Editor’s Note</h3><p>${escapeHtml(editorNotePreview(issue))}</p><span class="manager-preview-link">Continue reading →</span></aside>
       </div>
       <div class="weekly-story">
         <p class="weekly-overline">Featured Article of the Week</p>
+        <span class="weekly-category">${escapeHtml(issue.category)}</span>
         <h3>${escapeHtml(issue.title || "Untitled issue")}</h3>
         <div class="weekly-scenario"><strong>Clinical Scenario</strong><p><em>${escapeHtml(issue.scenario)}</em></p><p class="weekly-question">${escapeHtml(issue.question)}</p></div>
         <div class="weekly-actions"><span class="weekly-button weekly-button-primary">Read This Week's Story</span><span class="weekly-button weekly-button-secondary">Browse All Issues</span></div>
@@ -260,15 +301,19 @@
   }
 
   function previewArticle(issue) {
+    const settings = getEditorialSettings();
     previewContent.innerHTML = `<article class="weekly-article">
       <header class="weekly-article-header">
         <p class="weekly-wordmark"><span>GeneDr</span> <em>Weekly</em></p>
         <p class="weekly-article-deck">Discover Genetics, One Story at a Time.</p>
         <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
-        <div class="weekly-article-meta"><span>${issueLabel(issue.issueNumber)} <b>•</b> ${escapeHtml(formatDate(issue.date))} <b>•</b> ${escapeHtml(issue.readingTime)}</span><span class="weekly-category">${escapeHtml(issue.category)}</span></div>
+        <div class="weekly-article-meta"><span>${issueLabel(issue.issueNumber)} <b>•</b> ${escapeHtml(formatDate(issue.date))} <b>•</b> ${escapeHtml(issue.readingTime)}</span></div>
+        ${editorCredit(settings, "weekly-editor-credit-on-dark")}
         <h1>${escapeHtml(issue.title || "Untitled issue")}</h1>
         ${issue.subtitle ? `<p class="weekly-article-subtitle">${escapeHtml(issue.subtitle)}</p>` : ""}
+        <span class="weekly-category weekly-article-category">${escapeHtml(issue.category)}</span>
       </header>
+      ${renderEditorNote(issue)}
       <section><h2>Clinical Scenario</h2><p><em>${escapeHtml(issue.scenario)}</em></p><p><strong>${escapeHtml(issue.question)}</strong></p></section>
       <section><h2>Why This Matters</h2><p>${escapeHtml(issue.articleSections.whyThisMatters)}</p></section>
       <section><h2>Main Article</h2>${renderArticleText(issue.articleSections.mainArticle)}</section>
@@ -288,7 +333,8 @@
   }
 
   function markdownFor(issue) {
-    return `# ${issue.title}\n\n${issue.subtitle}\n\n- Issue #${issue.issueNumber}\n- Date: ${formatDate(issue.date)}\n- Category: ${issue.category}\n- Reading time: ${issue.readingTime}\n- Status: ${issue.status}\n\n## Clinical Scenario\n\n${issue.scenario}\n\n**${issue.question}**\n\n## Excerpt\n\n${issue.excerpt}\n\n## Why This Matters\n\n${issue.articleSections.whyThisMatters}\n\n## Main Article\n\n${issue.articleSections.mainArticle}\n\n## Key Points\n\n${issue.keyPoints.map((point) => `- ${point}`).join("\n")}\n\n## References\n\n${issue.references.map((reference, index) => `${index + 1}. ${reference}`).join("\n")}\n\n_${issue.disclaimer}_\n`;
+    const settings = getEditorialSettings();
+    return `# ${issue.title}\n\n${issue.subtitle}\n\n- Issue #${issue.issueNumber}\n- Date: ${formatDate(issue.date)}\n- Category: ${issue.category}\n- Reading time: ${issue.readingTime}\n- ${settings.editorLabel}: ${editorDisplayName(settings)}\n- Status: ${issue.status}\n\n## Editor’s Note\n\n${EDITOR_NOTE_INTRODUCTION}\n\n${issue.editorNoteTopicIntroduction}\n\n*${EDITOR_NOTE_CLOSING}*\n\n## Clinical Scenario\n\n${issue.scenario}\n\n**${issue.question}**\n\n## Excerpt\n\n${issue.excerpt}\n\n## Why This Matters\n\n${issue.articleSections.whyThisMatters}\n\n## Main Article\n\n${issue.articleSections.mainArticle}\n\n## Key Points\n\n${issue.keyPoints.map((point) => `- ${point}`).join("\n")}\n\n## References\n\n${issue.references.map((reference, index) => `${index + 1}. ${reference}`).join("\n")}\n\n_${issue.disclaimer}_\n`;
   }
 
   function download(filename, contents, type) {
@@ -446,6 +492,7 @@
   async function regenerateSection(section) {
     if (!form.reportValidity()) return;
     const issue = issueFromForm();
+    if (section === "editorNoteTopicIntroduction" && issue.editorNoteTopicIntroduction && !window.confirm("Replace the manually editable topic-specific Editor’s Note? The fixed introduction and closing will not change.")) return;
     const buttons = [...document.querySelectorAll("[data-regenerate-section],[data-regenerate-full]")];
     buttons.forEach((button) => { button.disabled = true; });
     saveStatus.textContent = `Regenerating ${section.replace(/([A-Z])/g, " $1").toLowerCase()}…`;
@@ -458,6 +505,7 @@
       if (section === "whyThisMatters") issue.articleSections.whyThisMatters = result.whyThisMatters;
       if (section === "mainArticle") issue.articleSections.mainArticle = result.mainArticle;
       if (section === "keyPoints") issue.keyPoints = result.keyPoints;
+      if (section === "editorNoteTopicIntroduction") issue.editorNoteTopicIntroduction = result.editorNoteTopicIntroduction;
       if (section === "references") {
         issue.references = result.references;
         issue.referencesNeedVerification = true;
@@ -626,5 +674,9 @@
 
   document.querySelector("#confirm-publish").addEventListener("click", () => saveIssue("published"));
   window.GeneDrWeeklyManagerAI = { categoryForTopic, nextIssueNumber, selectLibraryTopic, slugify };
+  document.querySelector("#editor-note-fixed-introduction").value = EDITOR_NOTE_INTRODUCTION;
+  document.querySelector("#editor-note-fixed-closing").value = EDITOR_NOTE_CLOSING;
+  form.elements.editorNoteTopicIntroduction.addEventListener("input", () => { notePreview.textContent = editorNotePreview(issueFromForm()); });
+  fillEditorialSettings();
   renderList();
 })();

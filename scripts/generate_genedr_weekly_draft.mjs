@@ -44,7 +44,7 @@ function selectTopic(topics, issues) {
 }
 
 function validateDraft(draft) {
-  const required = ["issueNumber", "date", "title", "slug", "category", "readingTime", "scenario", "question", "excerpt", "articleSections", "keyPoints", "references", "disclaimer"];
+  const required = ["issueNumber", "date", "title", "slug", "category", "readingTime", "editorNoteTopicIntroduction", "scenario", "question", "excerpt", "articleSections", "keyPoints", "references", "disclaimer"];
   const missing = required.filter((key) => draft[key] === undefined || draft[key] === null || draft[key] === "");
   if (missing.length || !draft.articleSections?.mainArticle || !draft.articleSections?.whyThisMatters || !Array.isArray(draft.keyPoints) || !Array.isArray(draft.references)) {
     throw new Error(`Generated draft is missing required fields: ${missing.join(", ") || "article content"}`);
@@ -105,7 +105,7 @@ try {
   const prompt = promptWindow.GENEDR_WEEKLY_AI_PROMPT;
   const generated = dryRun ? {
     issueNumber, date, title: `[Dry Run] ${topic.title}`, subtitle: "Workflow validation draft", slug: `dry-run-${slugify(topic.title)}-${issueNumber}`,
-    category: topic.category, readingTime: "5 min read", scenario: "A fictional patient has an unexplained finding. Initial evaluation does not identify the cause. The condition continues to evolve without a confirmed diagnosis.", question: "What should the clinical team consider next?", excerpt: "Dry-run excerpt.",
+    category: topic.category, readingTime: "5 min read", editorNoteTopicIntroduction: "This topic has important implications for genetics practice. It can shape how clinicians approach evaluation and communicate uncertainty. Understanding its uses and limitations supports more thoughtful patient care.", scenario: "A fictional patient has an unexplained finding. Initial evaluation does not identify the cause. The condition continues to evolve without a confirmed diagnosis.", question: "What should the clinical team consider next?", excerpt: "Dry-run excerpt.",
     articleSections: { whyThisMatters: "Dry-run validation content.", mainArticle: "Dry-run validation article content." }, keyPoints: ["Dry-run clinical pearl."], references: ["Suggested reference to verify."],
     disclaimer: "The clinical scenario is fictional and created for educational purposes. It does not represent an actual patient."
   } : await callOpenAI(prompt.systemPrompt, prompt.buildUserPrompt({ topic: topic.title, category: topic.category, audience: "Auto", issueNumber, date, recentTopics }));

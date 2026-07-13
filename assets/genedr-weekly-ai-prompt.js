@@ -7,6 +7,8 @@ Every clinical scenario must be entirely fictional and educational only. Write a
 
 Create an approximately five-minute article with clear, topic-appropriate subheadings written as lines beginning with "### ". Adapt the structure to the category instead of forcing the same headings for every issue. Write naturally for clinicians, trainees, patients, families, or general readers as appropriate to the selected topic. Do not include Learning Objectives. Avoid unnecessary jargon and lecture-like or sensational wording. Include practical clinical or scientific context without presenting unreviewed regulatory status, guideline recommendations, diagnostic yield, or treatment efficacy as confirmed.
 
+Generate only the topic-specific middle portion of the Editor’s Note. It must be a unique 3–5 sentence introduction explaining why the issue topic matters in clear, clinically relevant language. Do not repeat the article title word for word. Do not include the publication’s fixed brand introduction or the fixed closing; the application inserts those separately.
+
 Do not claim that generated references are verified. Return reference leads only under the field "references"; these will be displayed as “Suggested References — Verification Required.” Do not invent a DOI, PMID, quotation, guideline recommendation, diagnostic-yield statistic, drug indication, dose, approval status, or publication detail. When exact bibliographic information is uncertain, name the authoritative organization, guideline, journal, or search target that an editor should verify.
 
 Return only valid JSON matching the requested schema. Never include Markdown fences or commentary outside the JSON. Never set a publication status other than "draft".`,
@@ -41,7 +43,8 @@ Return this JSON shape:
   "slug": "lowercase-hyphenated-slug",
   "category": "${category}",
   "readingTime": "5 min read",
-    "scenario": "3–5 concise fictional sentences; do not reveal the diagnosis or final outcome",
+  "editorNoteTopicIntroduction": "unique 3–5 sentence topic-specific middle section only",
+  "scenario": "3–5 concise fictional sentences; do not reveal the diagnosis or final outcome",
   "question": "",
   "excerpt": "concise homepage excerpt",
   "articleSections": {
@@ -70,6 +73,7 @@ Return only this JSON shape:
   "subtitle": "",
   "slug": "lowercase-hyphenated-slug",
   "readingTime": "5 min read",
+  "editorNoteTopicIntroduction": "unique 3–5 sentence topic-specific middle section only; omit the fixed opening and closing",
   "scenario": "3–5 concise fictional sentences without the diagnosis or final outcome",
   "question": "one concise clinical question",
   "excerpt": "concise homepage excerpt",
@@ -81,6 +85,7 @@ Return only this JSON shape:
   buildSectionPrompt({ section, issue }) {
     const requirements = {
       clinicalScenario: `Return {"scenario":"3–5 concise fictional sentences without a name, identifiers, detailed medical record, diagnosis, final outcome, or real case","question":"one concise clinical question"}.`,
+      editorNoteTopicIntroduction: `Return {"editorNoteTopicIntroduction":"a unique 3–5 sentence topic-specific Editor’s Note middle section explaining why the topic matters; do not include the fixed brand introduction or fixed closing"}.`,
       whyThisMatters: `Return {"whyThisMatters":"one concise, practical paragraph explaining the topic's clinical or scientific importance"}.`,
       mainArticle: `Return {"mainArticle":"a complete approximately 700–900 word article using topic-adaptive subheadings as lines beginning with ### "}. Do not include Learning Objectives.`,
       keyPoints: `Return {"keyPoints":["3–5 concise useful takeaways"]}.`

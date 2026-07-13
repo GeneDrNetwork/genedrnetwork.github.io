@@ -1,4 +1,7 @@
 (function () {
+  const EDITOR_NOTE_INTRODUCTION = "Genetics may look like a high wall from the outside. It can seem difficult to understand. But once you step through the gate, you’ll discover a fascinating world where genetics connects every specialty and transforms the way we care for patients.";
+  const EDITOR_NOTE_CLOSING = "Welcome to this week’s GeneDr Weekly.";
+  const editorialSettingsStorageKey = "genedr-weekly-editorial-settings-v1";
   const categories = [
     "All",
     "Clinical Case",
@@ -56,12 +59,65 @@
     ...issue,
     subtitle: issue.subtitle || "",
     excerpt: issue.excerpt || issue.description || "",
+    editorNoteTopicIntroduction: issue.editorNoteTopicIntroduction || "",
     articleSections: issue.articleSections || issue.sections || {},
     keyPoints: issue.keyPoints || issue.sections?.keyPoints || [],
     references: issue.references || issue.sections?.references || [],
     disclaimer: issue.disclaimer || "The clinical scenario is fictional and created for educational purposes. It does not represent an actual patient.",
     status: issue.status || (issue.published ? "published" : "draft")
   });
+
+  const getEditorialSettings = () => {
+    const defaults = {
+      editorLabel: "Edited and Reviewed by",
+      editorName: "Hua Wang",
+      editorCredentials: "MD, PhD, FACMG, DABOM",
+      ...(window.GENEDR_WEEKLY_EDITORIAL_SETTINGS || {})
+    };
+    try {
+      const saved = JSON.parse(localStorage.getItem(editorialSettingsStorageKey) || "{}");
+      return {
+        editorLabel: String(saved.editorLabel || defaults.editorLabel).trim(),
+        editorName: String(saved.editorName || defaults.editorName).trim(),
+        editorCredentials: String(saved.editorCredentials || defaults.editorCredentials).trim()
+      };
+    } catch (error) {
+      return defaults;
+    }
+  };
+
+  const editorDisplayName = (settings = getEditorialSettings()) =>
+    [settings.editorName, settings.editorCredentials].filter(Boolean).join(", ");
+
+  const editorCredit = (settings = getEditorialSettings(), className = "") => `
+    <div class="weekly-editor-credit ${className}">
+      <span>${escapeHtml(settings.editorLabel)}</span>
+      <strong>${escapeHtml(editorDisplayName(settings))}</strong>
+    </div>`;
+
+  const fullEditorNote = (issue) => [
+    EDITOR_NOTE_INTRODUCTION,
+    issue.editorNoteTopicIntroduction,
+    EDITOR_NOTE_CLOSING
+  ].filter(Boolean);
+
+  const editorNotePreview = (issue, maximum = 310) => {
+    const text = fullEditorNote(issue).join(" ").replace(/\s+/g, " ").trim();
+    const sentences = text.match(/[^.!?]+[.!?]+(?:[”’"'](?=\s|$))?/g) || [text];
+    let preview = sentences.slice(0, 3).join(" ").trim();
+    const isTruncated = preview.length < text.length || preview.length > maximum;
+    if (preview.length > maximum) {
+      const shortened = preview.slice(0, maximum + 1);
+      preview = shortened.slice(0, shortened.lastIndexOf(" ")).replace(/[.,;:!?]+$/, "");
+    }
+    return `${preview}${isTruncated ? "…" : ""}`;
+  };
+
+  const renderEditorNote = (issue) => `
+    <aside id="editors-note" class="weekly-editors-note" aria-labelledby="editors-note-heading">
+      <h2 id="editors-note-heading">Editor’s Note</h2>
+      ${fullEditorNote(issue).map((paragraph, index) => `<p${index === fullEditorNote(issue).length - 1 ? ' class="weekly-editor-note-closing"' : ""}>${index === fullEditorNote(issue).length - 1 ? `Welcome to this week’s <em>GeneDr Weekly</em>.` : escapeHtml(paragraph)}</p>`).join("")}
+    </aside>`;
 
   const allIssues = (window.GENEDR_WEEKLY_ISSUES || []).map(normalizeIssue);
   const issues = allIssues
@@ -76,6 +132,7 @@
     const target = document.querySelector("#weekly-feature");
     if (!target || !issues.length) return;
     const issue = issues[0];
+    const settings = getEditorialSettings();
 
     target.innerHTML = `
       <div class="weekly-card">
@@ -84,10 +141,16 @@
           <h2 id="weekly-section-title">Discover Genetics, One Story at a Time.</h2>
           <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
           <p class="weekly-meta">${issueLabel(issue.issueNumber)} <span>•</span> ${escapeHtml(formatDate(issue.date))} <span>•</span> ${escapeHtml(issue.readingTime)}</p>
-          <span class="weekly-category">${escapeHtml(issue.category)}</span>
+          ${editorCredit(settings, "weekly-editor-credit-on-dark")}
+          <aside class="weekly-note-preview" aria-labelledby="weekly-note-preview-title">
+            <h3 id="weekly-note-preview-title">Editor’s Note</h3>
+            <p>${escapeHtml(editorNotePreview(issue))}</p>
+            <a href="${articleUrl(issue)}#editors-note">Continue reading <span aria-hidden="true">→</span></a>
+          </aside>
         </div>
         <div class="weekly-story">
           <p class="weekly-overline">Featured Article of the Week</p>
+          <span class="weekly-category">${escapeHtml(issue.category)}</span>
           <h3>${escapeHtml(issue.title)}</h3>
           <div class="weekly-scenario">
             <strong>Clinical Scenario</strong>
@@ -201,6 +264,7 @@
     const issue = issues.find((item) => item.slug === slug) || issues[0];
     if (!issue) return;
     document.title = `${issue.title} | GeneDr Weekly`;
+    const settings = getEditorialSettings();
     target.innerHTML = `
       <nav class="weekly-article-links" aria-label="Article links">
         <a class="back-link" href="../index.html">← Back to Home</a>
@@ -212,10 +276,11 @@
         <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
         <div class="weekly-article-meta">
           <span>${issueLabel(issue.issueNumber)} <b>•</b> ${escapeHtml(formatDate(issue.date))} <b>•</b> ${escapeHtml(issue.readingTime)}</span>
-          <span class="weekly-category">${escapeHtml(issue.category)}</span>
         </div>
+        ${editorCredit(settings, "weekly-editor-credit-on-dark")}
         <h1>${escapeHtml(issue.title)}</h1>
         ${issue.subtitle ? `<p class="weekly-article-subtitle">${escapeHtml(issue.subtitle)}</p>` : ""}
+        <span class="weekly-category weekly-article-category">${escapeHtml(issue.category)}</span>
       </header>
       <div id="weekly-share-actions" class="weekly-share-actions" aria-label="Share this article">
         <a class="weekly-button weekly-button-secondary" data-share="email" href="#">Email This Story</a>
@@ -224,6 +289,7 @@
         <button class="weekly-button weekly-button-secondary" data-share="pdf" type="button">Export to PDF</button>
         <span class="weekly-share-status" data-share-status role="status" aria-live="polite"></span>
       </div>
+      ${renderEditorNote(issue)}
       <section><h2>Clinical Scenario</h2><p><em>${escapeHtml(issue.scenario)}</em></p><p><strong>${escapeHtml(issue.question)}</strong></p></section>
       <section><h2>Why This Matters</h2><p>${escapeHtml(issue.articleSections.whyThisMatters || "")}</p></section>
       <section><h2>Main Article</h2>${renderArticleText(issue.articleSections.mainArticle || "")}</section>
@@ -232,6 +298,13 @@
       <p class="weekly-disclaimer"><em>${escapeHtml(issue.disclaimer)}</em></p>
       <footer class="weekly-print-footer"><span>${escapeHtml(issue.title)}</span><span>GeneDrNetwork · https://genedrnetwork.github.io</span></footer>`;
     setupSharing(issue);
+    if (window.location.hash === "#editors-note") {
+      const scrollToEditorNote = () => window.requestAnimationFrame(() =>
+        window.requestAnimationFrame(() => document.querySelector("#editors-note")?.scrollIntoView({ block: "start" }))
+      );
+      if (document.readyState === "complete") scrollToEditorNote();
+      else window.addEventListener("load", scrollToEditorNote, { once: true });
+    }
   }
 
   window.GeneDrWeekly = {
@@ -241,6 +314,15 @@
     normalizeIssue,
     issueLabel,
     renderArticleText,
+    EDITOR_NOTE_INTRODUCTION,
+    EDITOR_NOTE_CLOSING,
+    editorialSettingsStorageKey,
+    getEditorialSettings,
+    editorDisplayName,
+    editorCredit,
+    fullEditorNote,
+    editorNotePreview,
+    renderEditorNote,
     getPublishedIssues: () => issues.map((issue) => ({ ...issue }))
   };
   renderHomepage();
