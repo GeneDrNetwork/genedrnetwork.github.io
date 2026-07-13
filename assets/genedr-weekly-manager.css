@@ -49,7 +49,7 @@
 .manager-reference-tools select { width: auto; min-width: 230px; padding: 7px 10px; font-size: .78rem; }
 .manager-field-wide { grid-column: 1/-1; }
 .manager-form-grid input,.manager-form-grid select,.manager-form-grid textarea { width: 100%; padding: 11px 12px; border: 1px solid #bdd5dd; border-radius: 9px; color: #102e4d; background: #fbfefe; font: inherit; font-size: .9rem; }
-.manager-form-grid textarea { resize: vertical; line-height: 1.55; }
+.manager-form-grid textarea { color: #243b53; font-size: 1.2rem; font-weight: 500; line-height: 1.7; resize: vertical; }
 .manager-form-grid input:focus,.manager-form-grid select:focus,.manager-form-grid textarea:focus { outline: 3px solid rgba(20,147,157,.16); border-color: #14939d; }
 .manager-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 .manager-preview-actions { padding-top: 18px; border-top: 1px solid #dce9ed; }
