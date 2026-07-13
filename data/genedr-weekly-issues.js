@@ -7,6 +7,8 @@ window.GENEDR_WEEKLY_ISSUES = [
     slug: "rapid-whole-genome-sequencing",
     category: "Genetic Testing",
     readingTime: "5 min read",
+    editorNoteTopicIntroduction:
+      "This week, we explore how rapid whole genome sequencing is reshaping the evaluation of critically ill newborns when diagnostic time matters. A timely molecular answer can focus testing, inform treatment decisions, and give families a clearer explanation during an uncertain and stressful hospitalization. The technology is most useful when careful patient selection, strong phenotype information, and close communication between the bedside and laboratory teams work together. We hope this issue offers practical context for deciding when rapid genomic testing may help and how to interpret its results responsibly.",
     scenario:
       "A newborn develops severe seizures shortly after birth. Initial imaging, infection studies, and metabolic testing do not reveal the cause. The infant’s condition continues to worsen.",
     question: "What should the medical team do next?",

@@ -2,7 +2,7 @@
   const config = window.GENEDR_WEEKLY_AI_CONFIG || {};
   const promptTemplate = window.GENEDR_WEEKLY_AI_PROMPT;
   const requiredFields = [
-    "issueNumber", "date", "title", "subtitle", "slug", "category", "readingTime", "scenario",
+    "issueNumber", "date", "title", "subtitle", "slug", "category", "readingTime", "editorNoteTopicIntroduction", "scenario",
     "question", "excerpt", "articleSections", "keyPoints", "references", "disclaimer"
   ];
   const placeholderPattern = /untitled issue|article content will be added|content goes here|placeholder text|references will be added/i;
@@ -36,7 +36,7 @@
       throw new DraftGenerationError("MISSING_FIELDS", `The generated draft is missing required fields: ${missing.join(", ") || "article content, key points, or references"}.`);
     }
     const wordCount = String(draft.articleSections.mainArticle).trim().split(/\s+/).filter(Boolean).length;
-    const combined = [draft.title, draft.subtitle, draft.scenario, draft.question, draft.excerpt,
+    const combined = [draft.title, draft.subtitle, draft.editorNoteTopicIntroduction, draft.scenario, draft.question, draft.excerpt,
       draft.articleSections.whyThisMatters, draft.articleSections.mainArticle, draft.disclaimer,
       ...(draft.keyPoints || []), ...(draft.references || [])].join(" ");
     if (wordCount < 500 || placeholderPattern.test(combined)) {
@@ -124,12 +124,13 @@
         userPrompt: promptTemplate.buildCorePrompt({ topic, category, audience, issueNumber, date, recentTopics }),
         responseFormat: "genedr-weekly-core-json"
       });
-      const coreFields = ["title", "subtitle", "slug", "readingTime", "scenario", "question", "excerpt", "whyThisMatters", "disclaimer"];
+      const coreFields = ["title", "subtitle", "slug", "readingTime", "editorNoteTopicIntroduction", "scenario", "question", "excerpt", "whyThisMatters", "disclaimer"];
       const missingCore = coreFields.filter((field) => core?.[field] === undefined || core?.[field] === null || core?.[field] === "");
       if (missingCore.length) throw new DraftGenerationError("MISSING_FIELDS", `The generated outline is missing required fields: ${missingCore.join(", ")}.`);
       const partialIssue = {
         issueNumber, date, category, audience, title: core.title, subtitle: core.subtitle,
         slug: core.slug, readingTime: core.readingTime, scenario: core.scenario,
+        editorNoteTopicIntroduction: core.editorNoteTopicIntroduction,
         question: core.question, excerpt: core.excerpt,
         articleSections: { whyThisMatters: core.whyThisMatters, mainArticle: "" },
         keyPoints: [], references: [], disclaimer: core.disclaimer, status: "draft"
@@ -149,7 +150,7 @@
   }
 
   async function generateSection({ section, issue }) {
-    const supported = ["clinicalScenario", "whyThisMatters", "mainArticle", "keyPoints"];
+    const supported = ["editorNoteTopicIntroduction", "clinicalScenario", "whyThisMatters", "mainArticle", "keyPoints"];
     if (!supported.includes(section) || !issue?.title || !issue?.category) {
       throw new DraftGenerationError("MISSING_FIELDS", "A supported section, issue title, and category are required.");
     }
@@ -159,6 +160,7 @@
       responseFormat: `genedr-weekly-${section}-json`
     });
     const valid = {
+      editorNoteTopicIntroduction: () => typeof result.editorNoteTopicIntroduction === "string" && scenarioSentenceCount(result.editorNoteTopicIntroduction) >= 3 && scenarioSentenceCount(result.editorNoteTopicIntroduction) <= 5,
       clinicalScenario: () => typeof result.scenario === "string" && scenarioSentenceCount(result.scenario) >= 3 && scenarioSentenceCount(result.scenario) <= 5 && typeof result.question === "string",
       whyThisMatters: () => typeof result.whyThisMatters === "string",
       mainArticle: () => typeof result.mainArticle === "string" && result.mainArticle.trim().split(/\s+/).length >= 500 && !/placeholder text|content goes here/i.test(result.mainArticle),

@@ -388,11 +388,22 @@ a {
 .weekly-meta span { padding: 0 4px; color: #15919b; }
 .weekly-intro .weekly-tagline,.weekly-intro .weekly-meta { position: relative; z-index: 1; color: rgba(255,255,255,.9); }
 .weekly-intro .weekly-meta span { color: #c8fffa; }
-.weekly-intro .weekly-category,.weekly-article-header .weekly-category { border-color: rgba(255,255,255,.42); color: #fff; background: rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.12); }
+.weekly-article-header .weekly-category { border-color: rgba(255,255,255,.42); color: #fff; background: rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.12); }
 .weekly-category { display: inline-flex; width: fit-content; margin-top: 12px; padding: 6px 11px; border: 1px solid #b8e2df; border-radius: 999px; color: #087781; background: #ddf5f2; font-size: clamp(.67rem,.72vw,.76rem); font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .weekly-story { position: relative; z-index: 1; padding: clamp(28px,3vw,44px); background: linear-gradient(135deg,#fff 0%,#fbfefe 100%); }
 .weekly-overline { color: #168a94; }
+.weekly-story>.weekly-category { margin: 0 0 12px; }
 .weekly-story h3 { max-width: 780px; margin: 0; color: var(--navy); font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.45rem,1.85vw,2rem); font-weight: 700; line-height: 1.18; letter-spacing: -.015em; }
+.weekly-editor-credit { position: relative; z-index: 1; display: grid; gap: 2px; margin-top: 15px; font-size: .75rem; line-height: 1.35; }
+.weekly-editor-credit span { color: #5a7182; font-size: .7rem; font-weight: 600; }
+.weekly-editor-credit strong { color: #17345f; font-size: .78rem; font-weight: 800; }
+.weekly-editor-credit-on-dark span { color: rgba(255,255,255,.78); }
+.weekly-editor-credit-on-dark strong { color: #fff; }
+.weekly-note-preview { position: relative; z-index: 1; margin-top: 14px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,.25); }
+.weekly-note-preview h3 { margin: 0; color: #fff; font-family: Georgia,"Times New Roman",serif; font-size: 1rem; }
+.weekly-note-preview p { margin: 6px 0 0; color: rgba(255,255,255,.88); font-size: clamp(.72rem,.76vw,.8rem); line-height: 1.45; }
+.weekly-note-preview a { display: inline-flex; margin-top: 7px; color: #d7fffb; font-size: .74rem; font-weight: 800; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.weekly-note-preview a:hover,.weekly-note-preview a:focus-visible { color: #fff; }
 .weekly-scenario { margin-top: 18px; padding: 15px 18px; border: 1px solid #d6e8ec; border-left: 4px solid #25a9ad; border-radius: 12px; background: #f5fafb; }
 .weekly-scenario strong { color: #0a7180; font-size: clamp(.72rem,.78vw,.82rem); letter-spacing: .09em; text-transform: uppercase; }
 .weekly-scenario p { margin-top: 7px; color: var(--muted); font-size: clamp(.78rem,.86vw,.92rem); line-height: 1.48; }
@@ -433,8 +444,10 @@ a {
 .weekly-article-meta { position: relative; z-index: 1; margin-top: 22px; color: rgba(255,255,255,.92); text-transform: none; }
 .weekly-article-meta b { padding: 0 5px; color: #c9fffb; }
 .weekly-article-meta .weekly-category { margin: 0; }
+.weekly-article-header .weekly-editor-credit { margin-top: 14px; }
+.weekly-article-category { position: relative; z-index: 1; margin-top: 18px; }
 .weekly-article section { position: relative; padding: clamp(27px,4vw,44px); border: 1px solid #d3e4e9; border-radius: 18px; background: linear-gradient(145deg,#fff,#f8fcfd); box-shadow: 0 10px 26px rgba(18,73,101,.065); }
-.weekly-article section+section { margin-top: 20px; }
+.weekly-article section+section,.weekly-article aside+section { margin-top: 20px; }
 .weekly-article section h2 { margin: 0 0 17px; color: #087d89; font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.4rem,2.4vw,2rem); }
 .weekly-article section h2::before { display: inline-block; width: .55em; height: .55em; margin-right: .48em; border: 2px solid #52b7b4; border-radius: 50%; content: ""; vertical-align: .08em; box-shadow: inset 0 0 0 3px #e8f7f5; }
 .weekly-article section h3 { margin: 25px 0 10px; color: #17345f; font-family: Georgia,"Times New Roman",serif; font-size: 1.16em; line-height: 1.3; }
@@ -445,6 +458,11 @@ a {
 .weekly-article section:first-of-type p:last-child,.weekly-article section:first-of-type strong { color: #17345f; font-weight: 800; }
 .weekly-article li { color: #243b53; font-weight: 500; line-height: 1.7; }
 .weekly-article li+li { margin-top: 9px; }
+.weekly-editors-note { scroll-margin-top: 24px; padding: clamp(27px,4vw,44px); border: 1px solid #bcdedd; border-left: 5px solid #159ba5; border-radius: 18px; background: linear-gradient(145deg,#f2fbfa,#fff); box-shadow: 0 10px 26px rgba(18,73,101,.065); }
+.weekly-editors-note h2 { margin: 0 0 17px; color: #087d89; font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.4rem,2.4vw,2rem); }
+.weekly-editors-note p { margin: 0; color: #243b53; font-weight: 500; line-height: 1.7; }
+.weekly-editors-note p+p { margin-top: 15px; }
+.weekly-editors-note .weekly-editor-note-closing { color: #17345f; font-weight: 700; }
 .weekly-disclaimer { margin: 34px 0 0; padding: 20px 24px; border: 1px solid #d8e7eb; border-radius: 12px; color: #243b53; background: #edf6f7; font-size: 1.02rem; font-weight: 500; line-height: 1.7; }
 .weekly-share-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 20px; padding: 15px 18px; border: 1px solid #d3e4e9; border-radius: 14px; background: #fff; box-shadow: 0 8px 20px rgba(18,73,101,.05); }
 .weekly-share-actions button { font-family: inherit; cursor: pointer; }
@@ -473,7 +491,7 @@ a {
   .weekly-printing .weekly-article-deck,.weekly-printing .weekly-article-header h1 { color: #123e61; }
   .weekly-printing .weekly-article-header .weekly-tagline,.weekly-printing .weekly-article-subtitle,.weekly-printing .weekly-article-meta { color: #49697b; }
   .weekly-printing .weekly-article-header .weekly-category { border-color: #80c7c8; color: #087781; background: #e8f7f5; }
-  .weekly-printing .weekly-article section { margin-top: 12pt!important; padding: 15pt 17pt; border: .7pt solid #c9dde3; border-radius: 8pt; background: #fff!important; box-shadow: none; }
+  .weekly-printing .weekly-article section,.weekly-printing .weekly-editors-note { margin-top: 12pt!important; padding: 15pt 17pt; border: .7pt solid #c9dde3; border-radius: 8pt; background: #fff!important; box-shadow: none; }
   .weekly-printing .weekly-article section h2 { color: #087d89; break-after: avoid; }
   .weekly-printing .weekly-article p,.weekly-printing .weekly-article li { orphans: 3; widows: 3; }
   .weekly-printing .weekly-article li,.weekly-printing .weekly-disclaimer { break-inside: avoid; }

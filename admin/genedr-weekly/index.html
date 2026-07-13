@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-complete-drafts" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260713-delete-issue" />
+    <link rel="stylesheet" href="../../styles.css?v=20260713-editorial" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260713-editorial" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -26,6 +26,22 @@
         <h2 id="static-workflow-title">Static GitHub Pages workflow</h2>
         <p>Changes made here are stored only in this browser. They do not update the GitHub repository or public website.</p>
         <p>After approval, export the issue as JSON, add it to <code>data/genedr-weekly/issues/</code> for the content record, and add the same issue object to <code>data/genedr-weekly-issues.js</code>. Only an issue committed with <code>status: "published"</code> becomes public.</p>
+      </section>
+
+      <section class="manager-panel" aria-labelledby="editorial-settings-heading">
+        <div class="manager-panel-heading">
+          <div><p class="manager-eyebrow">Publication defaults</p><h2 id="editorial-settings-heading">Editorial Settings</h2></div>
+          <span id="editorial-settings-status" class="manager-save-status" role="status" aria-live="polite"></span>
+        </div>
+        <form id="editorial-settings-form">
+          <div class="manager-form-grid">
+            <label>Editor label<input name="editorLabel" type="text" required /></label>
+            <label>Editor name<input name="editorName" type="text" required /></label>
+            <label>Editor credentials<input name="editorCredentials" type="text" required /></label>
+            <div class="manager-editorial-preview" aria-live="polite"><span>Combined preview</span><strong id="editorial-settings-preview"></strong></div>
+          </div>
+          <div class="manager-actions"><button class="manager-button manager-button-primary" type="submit">Save Editorial Settings</button></div>
+        </form>
       </section>
 
       <section class="manager-panel" aria-labelledby="ai-generator-heading">
@@ -59,7 +75,7 @@
         </div>
         <div class="manager-table-wrap">
           <table class="manager-table">
-            <thead><tr><th>Issue</th><th>Date</th><th>Title</th><th>Category</th><th>Reading time</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Issue</th><th>Date</th><th>Title</th><th>Category</th><th>Reading time</th><th>Editor’s Note</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="manager-issue-list"></tbody>
           </table>
         </div>
@@ -81,6 +97,13 @@
             <label>Reading time<input name="readingTime" type="text" placeholder="5 min read" required /></label>
             <label>Audience<select name="audience"></select></label>
             <label>Status<select name="status" disabled aria-describedby="status-help"></select><span id="status-help">Status changes use the workflow buttons below.</span></label>
+            <fieldset class="manager-field-wide manager-editor-note-fields">
+              <legend>Editor’s Note</legend>
+              <label>Fixed introduction<textarea id="editor-note-fixed-introduction" rows="5" readonly></textarea><span>Included automatically in every issue.</span></label>
+              <label><span class="manager-field-heading"><span>Topic-Specific Editor’s Note</span><button class="manager-regenerate" type="button" data-regenerate-section="editorNoteTopicIntroduction">Regenerate Topic Introduction</button></span><textarea name="editorNoteTopicIntroduction" rows="6" placeholder="Add a unique 3–5 sentence introduction for this issue’s topic."></textarea><span>The AI generates only this editable middle portion.</span></label>
+              <label>Fixed closing<textarea id="editor-note-fixed-closing" rows="2" readonly></textarea><span>Included automatically in every issue.</span></label>
+              <div class="manager-note-preview"><span>Homepage Editor’s Note Preview</span><p id="editor-note-homepage-preview"></p></div>
+            </fieldset>
             <label class="manager-field-wide"><span class="manager-field-heading"><span>Clinical scenario</span><button class="manager-regenerate" type="button" data-regenerate-section="clinicalScenario">Regenerate Clinical Scenario</button></span><textarea name="scenario" rows="5" required></textarea></label>
             <label class="manager-field-wide">Clinical question<textarea name="question" rows="3" required></textarea></label>
             <label class="manager-field-wide">Excerpt<textarea name="excerpt" rows="4" required></textarea></label>
@@ -163,17 +186,18 @@
       </form>
     </dialog>
 
-    <script src="../../data/genedr-weekly-issues.js?v=20260712-complete-issue-001"></script>
+    <script src="../../data/genedr-weekly-settings.js?v=20260713-editorial"></script>
+    <script src="../../data/genedr-weekly-issues.js?v=20260713-editorial"></script>
     <script src="../../data/genedr-weekly-topics.js"></script>
-    <script src="../../assets/genedr-weekly.js?v=20260712-weekly-complete-drafts"></script>
-    <script src="../../assets/genedr-weekly-ai-prompt.js?v=20260713-staged-generation"></script>
+    <script src="../../assets/genedr-weekly.js?v=20260713-editorial"></script>
+    <script src="../../assets/genedr-weekly-ai-prompt.js?v=20260713-editorial"></script>
     <script src="../../assets/genedr-weekly-ai-config.js?v=20260713-long-draft-timeout"></script>
-    <script src="../../assets/genedr-weekly-ai.js?v=20260713-transactional-generation"></script>
+    <script src="../../assets/genedr-weekly-ai.js?v=20260713-editorial"></script>
     <script src="../../assets/genedr-weekly-references-config.js"></script>
     <script src="../../assets/genedr-weekly-references.js"></script>
     <script src="../../assets/genedr-weekly-email-config.js"></script>
     <script src="../../assets/genedr-weekly-email.js"></script>
     <script src="../../assets/genedr-weekly-pdf.js"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260713-delete-issue"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260713-editorial"></script>
   </body>
 </html>
