@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-phase2" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-phase2" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-phase3" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -26,6 +26,29 @@
         <h2 id="static-workflow-title">Static GitHub Pages workflow</h2>
         <p>Changes made here are stored only in this browser. They do not update the GitHub repository or public website.</p>
         <p>After approval, export the issue as JSON, add it to <code>data/genedr-weekly/issues/</code> for the content record, and add the same issue object to <code>data/genedr-weekly-issues.js</code>. Only an issue committed with <code>status: "published"</code> becomes public.</p>
+      </section>
+
+      <section class="manager-panel" aria-labelledby="ai-generator-heading">
+        <div class="manager-panel-heading">
+          <div><p class="manager-eyebrow">AI-assisted drafting</p><h2 id="ai-generator-heading">AI Draft Generator</h2></div>
+          <span id="ai-generation-status" class="manager-save-status" role="status" aria-live="polite"></span>
+        </div>
+        <p class="manager-ai-intro">AI-generated content is saved only as a draft. Review medical accuracy and verify every suggested reference before approval or publication.</p>
+        <div class="manager-ai-options">
+          <section>
+            <p class="manager-option-label">Option A</p>
+            <h3>Choose from the topic library</h3>
+            <p>Selects an active topic that has not been used recently and assigns the next issue number.</p>
+            <button id="ai-suggest-generate" class="manager-button manager-button-primary" type="button">Suggest Topic &amp; Generate Draft</button>
+          </section>
+          <section>
+            <p class="manager-option-label">Option B</p>
+            <h3>Enter My Topic</h3>
+            <label for="ai-custom-topic">Topic</label>
+            <input id="ai-custom-topic" type="text" placeholder="Rapid Whole Genome Sequencing in Critically Ill Newborns" />
+            <button id="ai-custom-generate" class="manager-button manager-button-primary" type="button">Generate Draft</button>
+          </section>
+        </div>
       </section>
 
       <section class="manager-panel" aria-labelledby="issues-heading">
@@ -62,7 +85,7 @@
             <label class="manager-field-wide">Why This Matters<textarea name="whyThisMatters" rows="7" required></textarea></label>
             <label class="manager-field-wide">Main Article<textarea name="mainArticle" rows="12" required></textarea></label>
             <label class="manager-field-wide">Key Points <span>One point per line</span><textarea name="keyPoints" rows="6" required></textarea></label>
-            <label class="manager-field-wide">References <span>One reference per line</span><textarea name="references" rows="6" required></textarea></label>
+            <label class="manager-field-wide"><span id="references-field-label" class="manager-main-label">References</span><span>One reference per line. AI suggestions must be verified before publication.</span><textarea name="references" rows="6" required></textarea></label>
             <label class="manager-field-wide">Disclaimer<textarea name="disclaimer" rows="4" required></textarea></label>
           </div>
 
@@ -101,7 +124,11 @@
     </dialog>
 
     <script src="../../data/genedr-weekly-issues.js"></script>
+    <script src="../../data/genedr-weekly-topics.js"></script>
     <script src="../../assets/genedr-weekly.js"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-phase2"></script>
+    <script src="../../assets/genedr-weekly-ai-prompt.js"></script>
+    <script src="../../assets/genedr-weekly-ai-config.js"></script>
+    <script src="../../assets/genedr-weekly-ai.js"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-phase3"></script>
   </body>
 </html>

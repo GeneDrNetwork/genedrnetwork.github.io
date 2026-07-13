@@ -14,6 +14,15 @@
 .manager-panel-heading { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-bottom: 24px; }
 .manager-panel-heading h2 { margin: 3px 0 0; color: #092f54; font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.5rem,2.5vw,2rem); }
 .manager-panel-heading .manager-eyebrow { color: #16838e; }
+.manager-ai-intro { margin: -8px 0 22px; color: #496577; }
+.manager-ai-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.manager-ai-options>section { padding: 22px; border: 1px solid #d4e5ea; border-radius: 14px; background: linear-gradient(145deg,#fff,#f7fbfc); }
+.manager-ai-options h3 { margin: 3px 0 8px; color: #092f54; font-family: Georgia,"Times New Roman",serif; font-size: 1.2rem; }
+.manager-ai-options p { margin: 0 0 17px; color: #526b7d; }
+.manager-ai-options label { display: block; margin-bottom: 7px; color: #193e5d; font-size: .82rem; font-weight: 800; }
+.manager-ai-options input { width: 100%; margin-bottom: 12px; padding: 11px 12px; border: 1px solid #bdd5dd; border-radius: 9px; color: #102e4d; background: #fff; font: inherit; }
+.manager-ai-options .manager-button { width: 100%; }
+.manager-option-label { color: #16838e!important; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .manager-button { min-height: 40px; padding: 8px 15px; border: 2px solid #138b96; border-radius: 9px; color: #117b87; background: #fff; font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; }
 .manager-button:hover,.manager-button:focus-visible { box-shadow: 0 7px 16px rgba(6,25,71,.12); transform: translateY(-1px); }
 .manager-button-primary { color: #fff; background: #138b96; }
@@ -29,6 +38,7 @@
 .manager-form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
 .manager-form-grid label { display: grid; gap: 7px; color: #193e5d; font-size: .82rem; font-weight: 800; }
 .manager-form-grid label>span { color: #64798a; font-size: .72rem; font-weight: 500; }
+.manager-form-grid label>.manager-main-label { color: #193e5d; font-size: .82rem; font-weight: 800; }
 .manager-field-wide { grid-column: 1/-1; }
 .manager-form-grid input,.manager-form-grid select,.manager-form-grid textarea { width: 100%; padding: 11px 12px; border: 1px solid #bdd5dd; border-radius: 9px; color: #102e4d; background: #fbfefe; font: inherit; font-size: .9rem; }
 .manager-form-grid textarea { resize: vertical; line-height: 1.55; }
@@ -43,4 +53,4 @@
 .manager-dialog::backdrop { background: rgba(4,27,53,.55); }
 .manager-dialog h2 { margin: 0; color: #092f54; font-family: Georgia,"Times New Roman",serif; }
 .manager-dialog p { margin: 14px 0 0; }
-@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-form-grid { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } }
+@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-ai-options,.manager-form-grid { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } }

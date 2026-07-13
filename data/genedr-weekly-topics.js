@@ -1,0 +1,22 @@
+window.GENEDR_WEEKLY_TOPICS = [
+  { title: "Rapid Whole Genome Sequencing", category: "Genetic Testing", active: true, lastUsed: "2026-07-12", usageCount: 1 },
+  { title: "Rapid Whole Exome Sequencing", category: "Genetic Testing", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Chromosomal Microarray", category: "Genetic Testing", active: true, lastUsed: null, usageCount: 0 },
+  { title: "RNA Sequencing", category: "Genetic Testing", active: true, lastUsed: null, usageCount: 0 },
+  { title: "PKU", category: "Disease Spotlight", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Fabry Disease", category: "Disease Spotlight", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Pompe Disease", category: "Disease Spotlight", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Spinal Muscular Atrophy", category: "Disease Spotlight", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Noonan Syndrome", category: "Clinical Case", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Marfan Syndrome", category: "Clinical Case", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Sapropterin", category: "Drug Spotlight", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Sepiapterin", category: "Drug Spotlight", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Gene Therapy", category: "Guideline Update", active: true, lastUsed: null, usageCount: 0 },
+  { title: "AI Variant Interpretation", category: "AI in Genetics", active: true, lastUsed: null, usageCount: 0 },
+  { title: "AI Phenotype Matching", category: "AI in Genetics", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Gene Detective Story", category: "Gene Detective Story", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Lorenzo's Oil", category: "Movie", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Extraordinary Measures", category: "Movie", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Medical Genetics in Music", category: "Music & Arts", active: true, lastUsed: null, usageCount: 0 },
+  { title: "Medical Genetics in Movies", category: "Movie", active: true, lastUsed: null, usageCount: 0 }
+];

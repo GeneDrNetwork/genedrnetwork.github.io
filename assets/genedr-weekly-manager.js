@@ -1,5 +1,6 @@
 (function () {
   const storageKey = "genedr-weekly-manager-issues-v1";
+  const topicStorageKey = "genedr-weekly-manager-topics-v1";
   const statuses = ["draft", "ready-for-review", "approved", "published", "archived"];
   const publicCategories = window.GeneDrWeekly.categories.filter((category) => category !== "All");
   const { escapeHtml, formatDate, issueLabel, normalizeIssue } = window.GeneDrWeekly;
@@ -10,7 +11,18 @@
   const list = document.querySelector("#manager-issue-list");
   const dialog = document.querySelector("#publish-confirmation");
   const saveStatus = document.querySelector("#save-status");
+  const aiStatus = document.querySelector("#ai-generation-status");
+  const referencesFieldLabel = document.querySelector("#references-field-label");
   let activeKey = null;
+
+  let topics = (window.GENEDR_WEEKLY_TOPICS || []).map((topic) => ({ ...topic }));
+  try {
+    const savedTopics = JSON.parse(localStorage.getItem(topicStorageKey) || "[]");
+    const savedByTitle = new Map(savedTopics.map((topic) => [topic.title, topic]));
+    topics = topics.map((topic) => savedByTitle.get(topic.title) || topic);
+  } catch (error) {
+    // Continue with the repository topic library when browser-local topic history is invalid.
+  }
 
   const repoIssues = (window.GENEDR_WEEKLY_ISSUES || []).map(normalizeIssue);
   let savedIssues = [];
@@ -34,8 +46,53 @@
     localStorage.setItem(storageKey, JSON.stringify(issues));
   }
 
+  function persistTopics() {
+    localStorage.setItem(topicStorageKey, JSON.stringify(topics));
+  }
+
+  function nextIssueNumber() {
+    return Math.max(0, ...issues.map((issue) => Number(issue.issueNumber) || 0)) + 1;
+  }
+
+  function slugify(value) {
+    return String(value).toLowerCase().trim().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  function categoryForTopic(topic) {
+    const libraryMatch = topics.find((item) => item.title.toLowerCase() === topic.toLowerCase());
+    if (libraryMatch) return libraryMatch.category;
+    const value = topic.toLowerCase();
+    if (/movie|film|cinema/.test(value)) return "Movie";
+    if (/music|art|song/.test(value)) return "Music & Arts";
+    if (/\bai\b|artificial intelligence|machine learning/.test(value)) return "AI in Genetics";
+    if (/drug|therapy|treatment|inhibitor|replacement/.test(value)) return "Drug Spotlight";
+    if (/guideline|recommendation|consensus/.test(value)) return "Guideline Update";
+    if (/sequenc|testing|microarray|biomarker/.test(value)) return "Genetic Testing";
+    if (/disease|syndrome|deficiency|disorder/.test(value)) return "Disease Spotlight";
+    return "Clinical Case";
+  }
+
+  function selectLibraryTopic() {
+    const recentTitles = issues
+      .filter((issue) => issue.date)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 8)
+      .map((issue) => issue.title.toLowerCase());
+    const active = topics.filter((topic) => topic.active);
+    const notRecent = active.filter((topic) => !recentTitles.some((title) =>
+      title.includes(topic.title.toLowerCase()) || topic.title.toLowerCase().includes(title)
+    ));
+    const candidates = notRecent.length ? notRecent : active;
+    return [...candidates].sort((a, b) => {
+      if (!a.lastUsed && b.lastUsed) return -1;
+      if (a.lastUsed && !b.lastUsed) return 1;
+      if ((a.usageCount || 0) !== (b.usageCount || 0)) return (a.usageCount || 0) - (b.usageCount || 0);
+      return new Date(a.lastUsed || 0) - new Date(b.lastUsed || 0);
+    })[0];
+  }
+
   function emptyIssue() {
-    const nextNumber = Math.max(0, ...issues.map((issue) => Number(issue.issueNumber) || 0)) + 1;
+    const nextNumber = nextIssueNumber();
     return {
       issueNumber: nextNumber,
       date: new Date().toISOString().slice(0, 10),
@@ -61,6 +118,7 @@
 
   function issueFromForm() {
     const data = new FormData(form);
+    const activeIssue = issues.find((item) => String(item.issueNumber) === activeKey);
     return {
       issueNumber: Number(data.get("issueNumber")),
       date: data.get("date").trim(),
@@ -79,7 +137,8 @@
       keyPoints: splitLines(data.get("keyPoints")),
       references: splitLines(data.get("references")),
       disclaimer: data.get("disclaimer").trim(),
-      status: form.elements.status.value
+      status: form.elements.status.value,
+      referencesNeedVerification: Boolean(activeIssue?.referencesNeedVerification)
     };
   }
 
@@ -96,6 +155,9 @@
       if (form.elements[name]) form.elements[name].value = value;
     });
     editor.hidden = false;
+    referencesFieldLabel.textContent = issue.referencesNeedVerification
+      ? "Suggested References (Please Verify)"
+      : "References";
     saveStatus.textContent = `Editing ${issueLabel(issue.issueNumber)} · browser-local copy`;
     editor.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -127,6 +189,12 @@
     if (duplicate) {
       saveStatus.textContent = "That issue number is already in use.";
       form.elements.issueNumber.focus();
+      return null;
+    }
+    const duplicateSlug = issues.find((item) => item.slug === issue.slug && String(item.issueNumber) !== activeKey);
+    if (duplicateSlug) {
+      saveStatus.textContent = `The slug “${issue.slug}” is already used by ${issueLabel(duplicateSlug.issueNumber)}.`;
+      form.elements.slug.focus();
       return null;
     }
     const index = issues.findIndex((item) => String(item.issueNumber) === activeKey);
@@ -210,6 +278,52 @@
     saveStatus.textContent = "Issue JSON copied. Add it to data/genedr-weekly-issues.js before deployment.";
   }
 
+  async function generateAiDraft(topic, category) {
+    const issueNumber = nextIssueNumber();
+    const date = new Date().toISOString().slice(0, 10);
+    const recentTopics = [...issues]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 8)
+      .map((issue) => issue.title);
+    const buttons = [document.querySelector("#ai-suggest-generate"), document.querySelector("#ai-custom-generate")];
+    buttons.forEach((button) => { button.disabled = true; });
+    aiStatus.textContent = `Generating a draft about ${topic}…`;
+    try {
+      const result = await window.GeneDrWeeklyAI.generateDraft({ topic, category, issueNumber, date, recentTopics });
+      const draft = normalizeIssue({
+        ...result,
+        issueNumber,
+        date,
+        category,
+        slug: slugify(result.slug || result.title || topic),
+        status: "draft",
+        referencesNeedVerification: true
+      });
+      if (issues.some((issue) => Number(issue.issueNumber) === issueNumber)) {
+        throw new window.GeneDrWeeklyAI.DraftGenerationError("DUPLICATE_ISSUE", `Issue #${issueNumber} already exists. No issue was overwritten.`);
+      }
+      const duplicateSlug = issues.find((issue) => issue.slug === draft.slug);
+      if (duplicateSlug) {
+        throw new window.GeneDrWeeklyAI.DraftGenerationError("DUPLICATE_SLUG", `The generated slug “${draft.slug}” is already used by ${issueLabel(duplicateSlug.issueNumber)}. No issue was overwritten.`);
+      }
+      issues.push(draft);
+      const topicEntry = topics.find((item) => item.title.toLowerCase() === topic.toLowerCase());
+      if (topicEntry) {
+        topicEntry.lastUsed = date;
+        topicEntry.usageCount = (topicEntry.usageCount || 0) + 1;
+        persistTopics();
+      }
+      persistBrowserIssues();
+      renderList();
+      fillForm(draft);
+      aiStatus.textContent = `${issueLabel(issueNumber)} was generated and saved as Draft. Suggested references require verification.`;
+    } catch (error) {
+      aiStatus.textContent = error.userMessage || "Draft generation failed. Please try again.";
+    } finally {
+      buttons.forEach((button) => { button.disabled = false; });
+    }
+  }
+
   document.querySelector("#create-issue").addEventListener("click", () => {
     const issue = emptyIssue();
     issues.push(issue);
@@ -217,6 +331,26 @@
     renderList();
     fillForm(issue);
     saveStatus.textContent = `${issueLabel(issue.issueNumber)} created as a browser-local draft.`;
+  });
+
+  document.querySelector("#ai-suggest-generate").addEventListener("click", () => {
+    const topic = selectLibraryTopic();
+    if (!topic) {
+      aiStatus.textContent = "No active topics are available in the topic library.";
+      return;
+    }
+    generateAiDraft(topic.title, topic.category);
+  });
+
+  document.querySelector("#ai-custom-generate").addEventListener("click", () => {
+    const input = document.querySelector("#ai-custom-topic");
+    const topic = input.value.trim();
+    if (!topic) {
+      aiStatus.textContent = "Enter a topic before generating a draft.";
+      input.focus();
+      return;
+    }
+    generateAiDraft(topic, categoryForTopic(topic));
   });
 
   list.addEventListener("click", (event) => {
@@ -250,5 +384,6 @@
   });
 
   document.querySelector("#confirm-publish").addEventListener("click", () => saveIssue("published"));
+  window.GeneDrWeeklyManagerAI = { categoryForTopic, nextIssueNumber, selectLibraryTopic, slugify };
   renderList();
 })();
