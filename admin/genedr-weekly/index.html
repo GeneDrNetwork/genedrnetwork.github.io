@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-phase2" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-phase3" />
+    <link rel="stylesheet" href="../../styles.css?v=20260712-weekly-phase4" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260712-weekly-phase4" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -99,6 +99,7 @@
           <div class="manager-actions manager-preview-actions">
             <button class="manager-button" type="button" data-preview="card">Preview Homepage Card</button>
             <button class="manager-button" type="button" data-preview="article">Preview Full Article</button>
+            <button id="email-subscribers" class="manager-button manager-button-primary" type="button" hidden>Email to Subscribers</button>
             <button class="manager-button" type="button" data-export="json">Download JSON</button>
             <button class="manager-button" type="button" data-export="markdown">Download Markdown</button>
             <button class="manager-button" type="button" data-export="copy">Copy Issue JSON</button>
@@ -107,7 +108,7 @@
       </section>
 
       <section id="manager-preview" class="manager-panel manager-preview" aria-labelledby="preview-heading" hidden>
-        <div class="manager-panel-heading"><div><p class="manager-eyebrow">Local preview</p><h2 id="preview-heading">Issue Preview</h2></div></div>
+        <div class="manager-panel-heading"><div><p class="manager-eyebrow">Local preview</p><h2 id="preview-heading">Issue Preview</h2></div><button id="manager-preview-pdf" class="manager-button" type="button">Export to PDF</button></div>
         <div id="manager-preview-content"></div>
       </section>
     </main>
@@ -123,12 +124,40 @@
       </form>
     </dialog>
 
+    <dialog id="email-confirmation" class="manager-dialog manager-email-dialog">
+      <form method="dialog">
+        <p class="manager-eyebrow">GeneDr Weekly</p>
+        <h2>Email to Subscribers</h2>
+        <div id="email-preview-content" class="manager-email-preview"></div>
+        <p id="email-action-status" class="manager-save-status" role="status" aria-live="polite"></p>
+        <div class="manager-actions">
+          <button class="manager-button" value="cancel">Cancel</button>
+          <button id="send-test-email" class="manager-button" type="button">Send Test Email</button>
+          <button id="confirm-subscriber-email" class="manager-button manager-button-primary" type="button">Confirm and Send to Subscribers</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="email-resend-confirmation" class="manager-dialog">
+      <form method="dialog">
+        <h2>Confirm deliberate resend</h2>
+        <p>This issue has already been sent to subscribers. Sending it again may deliver a duplicate message to the full list.</p>
+        <div class="manager-actions">
+          <button class="manager-button" value="cancel">Cancel</button>
+          <button id="confirm-subscriber-resend" class="manager-button manager-button-danger" type="button">Confirm Resend to Subscribers</button>
+        </div>
+      </form>
+    </dialog>
+
     <script src="../../data/genedr-weekly-issues.js"></script>
     <script src="../../data/genedr-weekly-topics.js"></script>
-    <script src="../../assets/genedr-weekly.js"></script>
+    <script src="../../assets/genedr-weekly.js?v=20260712-weekly-phase4"></script>
     <script src="../../assets/genedr-weekly-ai-prompt.js"></script>
     <script src="../../assets/genedr-weekly-ai-config.js"></script>
     <script src="../../assets/genedr-weekly-ai.js"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-phase3"></script>
+    <script src="../../assets/genedr-weekly-email-config.js"></script>
+    <script src="../../assets/genedr-weekly-email.js"></script>
+    <script src="../../assets/genedr-weekly-pdf.js"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260712-weekly-phase4"></script>
   </body>
 </html>

@@ -444,9 +444,36 @@ a {
 .weekly-share-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 20px; padding: 15px 18px; border: 1px solid #d3e4e9; border-radius: 14px; background: #fff; box-shadow: 0 8px 20px rgba(18,73,101,.05); }
 .weekly-share-actions button { font-family: inherit; cursor: pointer; }
 .weekly-share-status { color: #087781; font-size: .8rem; font-weight: 800; }
+.weekly-print-footer { display: none; }
 
 @media (max-width: 820px) { .weekly-card { grid-template-columns: 1fr; } #genedr-weekly { margin-right: 0; } }
 @media (max-width: 560px) { .weekly-wordmark span { font-size: clamp(2rem,10.5vw,2.65rem); } .weekly-wordmark em { font-size: clamp(1.5rem,7.8vw,2rem); } .weekly-intro .weekly-wordmark span { font-size: clamp(2rem,10.5vw,2.65rem); } .weekly-intro .weekly-wordmark em { font-size: clamp(1.5rem,7.8vw,2rem); } .weekly-page-shell { width: calc(100vw - 28px); max-width: 1040px; padding-top: 28px; } .weekly-article { width: 100%; min-width: 0; max-width: calc(100vw - 28px); } .weekly-article-header { width: 100%; min-width: 0; max-width: calc(100vw - 28px); padding: 30px; } .weekly-article-header h1 { overflow-wrap: anywhere; } .weekly-article-meta>span:first-child { flex: 0 0 100%; } .weekly-actions,.weekly-share-actions { flex-direction: column; align-items: stretch; } .weekly-button { justify-content: center; } .weekly-article-links { width: 100%; max-width: calc(100vw - 28px); font-size: .76rem; } .weekly-page .site-header { min-height: 76px; padding: 0 18px; } .weekly-page .site-nav { gap: 14px; font-size: .8rem; } }
+
+@media print {
+  @page {
+    size: Letter;
+    margin: .68in .62in .78in;
+    @bottom-center { content: "Page " counter(page); color: #587082; font: 9pt Arial,sans-serif; }
+  }
+  html,body { color: #183853!important; background: #fff!important; font: 10.5pt/1.55 Georgia,"Times New Roman",serif; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .weekly-printing .site-header,.weekly-printing .manager-header,.weekly-printing .weekly-article-links,.weekly-printing .weekly-share-actions { display: none!important; }
+  .weekly-print-article .weekly-page-shell { width: auto; margin: 0; padding: 0; }
+  .weekly-print-manager .manager-shell>*,.weekly-print-manager .manager-preview>.manager-panel-heading { display: none!important; }
+  .weekly-print-manager .manager-shell,.weekly-print-manager .manager-preview,.weekly-print-manager #manager-preview-content { display: block!important; width: auto; margin: 0; padding: 0; border: 0; box-shadow: none; }
+  .weekly-printing .weekly-article { max-width: none!important; color: #183853; font-size: 10.5pt; }
+  .weekly-printing .weekly-article-header { margin: 0 0 20pt; padding: 20pt 22pt; border: 1pt solid #74b9c2; border-top: 8pt solid #168b98; border-radius: 10pt; color: #123e61; background: #fff!important; box-shadow: none; }
+  .weekly-printing .weekly-article-header::after { opacity: .08; }
+  .weekly-printing .weekly-article-header .weekly-wordmark { color: #1767a2; text-shadow: none; }
+  .weekly-printing .weekly-article-header .weekly-wordmark em { color: #168f98; }
+  .weekly-printing .weekly-article-deck,.weekly-printing .weekly-article-header h1 { color: #123e61; }
+  .weekly-printing .weekly-article-header .weekly-tagline,.weekly-printing .weekly-article-subtitle,.weekly-printing .weekly-article-meta { color: #49697b; }
+  .weekly-printing .weekly-article-header .weekly-category { border-color: #80c7c8; color: #087781; background: #e8f7f5; }
+  .weekly-printing .weekly-article section { margin-top: 12pt!important; padding: 15pt 17pt; border: .7pt solid #c9dde3; border-radius: 8pt; background: #fff!important; box-shadow: none; }
+  .weekly-printing .weekly-article section h2 { color: #087d89; break-after: avoid; }
+  .weekly-printing .weekly-article p,.weekly-printing .weekly-article li { orphans: 3; widows: 3; }
+  .weekly-printing .weekly-article li,.weekly-printing .weekly-disclaimer { break-inside: avoid; }
+  .weekly-printing .weekly-print-footer { display: flex; justify-content: space-between; gap: 18pt; margin-top: 20pt; padding-top: 8pt; border-top: .7pt solid #8dbfc6; color: #587082; font: 8.5pt Arial,sans-serif; }
+}
 
 .program-grid {
   display: grid;

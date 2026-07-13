@@ -1,6 +1,7 @@
 (function () {
   const storageKey = "genedr-weekly-manager-issues-v1";
   const topicStorageKey = "genedr-weekly-manager-topics-v1";
+  const emailHistoryKey = "genedr-weekly-email-history-v1";
   const statuses = ["draft", "ready-for-review", "approved", "published", "archived"];
   const publicCategories = window.GeneDrWeekly.categories.filter((category) => category !== "All");
   const { escapeHtml, formatDate, issueLabel, normalizeIssue } = window.GeneDrWeekly;
@@ -13,7 +14,15 @@
   const saveStatus = document.querySelector("#save-status");
   const aiStatus = document.querySelector("#ai-generation-status");
   const referencesFieldLabel = document.querySelector("#references-field-label");
+  const emailButton = document.querySelector("#email-subscribers");
+  const emailDialog = document.querySelector("#email-confirmation");
+  const emailResendDialog = document.querySelector("#email-resend-confirmation");
+  const emailPreviewContent = document.querySelector("#email-preview-content");
+  const emailActionStatus = document.querySelector("#email-action-status");
+  const previewPdfButton = document.querySelector("#manager-preview-pdf");
   let activeKey = null;
+  let activeEmailIssue = null;
+  let lastPreviewIssue = null;
 
   let topics = (window.GENEDR_WEEKLY_TOPICS || []).map((topic) => ({ ...topic }));
   try {
@@ -155,6 +164,8 @@
       if (form.elements[name]) form.elements[name].value = value;
     });
     editor.hidden = false;
+    emailButton.hidden = issue.status !== "published";
+    emailButton.disabled = issue.status !== "published";
     referencesFieldLabel.textContent = issue.referencesNeedVerification
       ? "Suggested References (Please Verify)"
       : "References";
@@ -203,6 +214,8 @@
     activeKey = newKey;
     persistBrowserIssues();
     renderList();
+    emailButton.hidden = issue.status !== "published";
+    emailButton.disabled = issue.status !== "published";
     saveStatus.textContent = `${issueLabel(issue.issueNumber)} saved as ${issue.status.replaceAll("-", " ")} in this browser.`;
     return issue;
   }
@@ -241,10 +254,12 @@
       <section><h2>Key Points</h2><ul>${issue.keyPoints.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul></section>
       <section><h2>References</h2><ol>${issue.references.map((reference) => `<li>${escapeHtml(reference)}</li>`).join("")}</ol></section>
       <p class="weekly-disclaimer"><em>${escapeHtml(issue.disclaimer)}</em></p>
+      <footer class="weekly-print-footer"><span>${escapeHtml(issue.title)}</span><span>GeneDrNetwork · https://genedrnetwork.github.io</span></footer>
     </article>`;
   }
 
   function showPreview(type, issue = issueFromForm()) {
+    lastPreviewIssue = issue;
     preview.hidden = false;
     if (type === "card") previewCard(issue);
     else previewArticle(issue);
@@ -276,6 +291,51 @@
       textarea.remove();
     }
     saveStatus.textContent = "Issue JSON copied. Add it to data/genedr-weekly-issues.js before deployment.";
+  }
+
+  function recordEmailResult(issue, result) {
+    let history = {};
+    try { history = JSON.parse(localStorage.getItem(emailHistoryKey) || "{}"); } catch (error) { history = {}; }
+    history[String(issue.issueNumber)] = {
+      issueNumber: issue.issueNumber,
+      sentAt: result.sentAt || new Date().toISOString(),
+      recipientCount: result.recipientCount ?? null,
+      providerId: result.providerId || null,
+      status: result.status || "unknown",
+      error: result.error || null
+    };
+    localStorage.setItem(emailHistoryKey, JSON.stringify(history));
+  }
+
+  function openEmailPreview(issue) {
+    if (issue.status !== "published") {
+      saveStatus.textContent = "Only a published issue can be emailed to subscribers.";
+      return;
+    }
+    activeEmailIssue = issue;
+    const email = window.GeneDrWeeklyEmail.buildPreview(issue);
+    emailPreviewContent.innerHTML = `
+      <div class="manager-email-brand"><strong>GeneDr <em>Weekly</em></strong><span>Discover Genetics, One Story at a Time.</span><span>Five minutes of enjoyable genetics reading every week.</span></div>
+      <dl><div><dt>Email subject</dt><dd>${escapeHtml(email.subject)}</dd></div><div><dt>Issue</dt><dd>#${issue.issueNumber} · ${escapeHtml(email.date)}</dd></div><div><dt>Title</dt><dd>${escapeHtml(email.title)}</dd></div><div><dt>Short excerpt</dt><dd>${escapeHtml(email.excerpt)}</dd></div><div><dt>Article link</dt><dd>${escapeHtml(email.articleUrl)}</dd></div></dl>`;
+    emailActionStatus.textContent = "";
+    emailDialog.showModal();
+  }
+
+  async function sendSubscriberEmail(action, resend = false) {
+    if (!activeEmailIssue) return;
+    const label = action === "test" ? "Sending test email…" : resend ? "Resending to subscribers…" : "Sending to subscribers…";
+    emailActionStatus.textContent = label;
+    try {
+      const result = await window.GeneDrWeeklyEmail.request(action, activeEmailIssue, { resend, resendConfirmed: resend });
+      recordEmailResult(activeEmailIssue, result);
+      emailActionStatus.textContent = action === "test"
+        ? `Test email sent. Provider ID: ${result.providerId || "not returned"}.`
+        : `Subscriber email sent to ${result.recipientCount ?? "the configured"} recipients. Provider ID: ${result.providerId || "not returned"}.`;
+    } catch (error) {
+      recordEmailResult(activeEmailIssue, { status: "failed", error: error.message });
+      emailActionStatus.textContent = error.message;
+      if (error.code === "ALREADY_SENT") emailResendDialog.showModal();
+    }
   }
 
   async function generateAiDraft(topic, category) {
@@ -351,6 +411,19 @@
       return;
     }
     generateAiDraft(topic, categoryForTopic(topic));
+  });
+
+  emailButton.addEventListener("click", () => openEmailPreview(issueFromForm()));
+  document.querySelector("#send-test-email").addEventListener("click", () => sendSubscriberEmail("test"));
+  document.querySelector("#confirm-subscriber-email").addEventListener("click", () => sendSubscriberEmail("send"));
+  document.querySelector("#confirm-subscriber-resend").addEventListener("click", async () => {
+    emailResendDialog.close();
+    await sendSubscriberEmail("send", true);
+  });
+  previewPdfButton.addEventListener("click", () => {
+    if (!lastPreviewIssue) return;
+    previewArticle(lastPreviewIssue);
+    window.GeneDrWeeklyPDF.print(lastPreviewIssue, "manager");
   });
 
   list.addEventListener("click", (event) => {

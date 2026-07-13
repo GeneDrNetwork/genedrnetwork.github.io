@@ -149,6 +149,7 @@
     const email = actions.querySelector("[data-share=email]");
     const share = actions.querySelector("[data-share=native]");
     const copy = actions.querySelector("[data-share=copy]");
+    const pdf = actions.querySelector("[data-share=pdf]");
     const status = actions.querySelector("[data-share-status]");
     email.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -168,6 +169,7 @@
         status.textContent = "Could not copy the link.";
       }
     });
+    pdf.addEventListener("click", () => window.GeneDrWeeklyPDF.print(issue, "article"));
   }
 
   function renderArticle() {
@@ -197,6 +199,7 @@
         <a class="weekly-button weekly-button-secondary" data-share="email" href="#">Email This Story</a>
         <button class="weekly-button weekly-button-primary" data-share="native" type="button">Share This Story</button>
         <button class="weekly-button weekly-button-secondary" data-share="copy" type="button">Copy Link</button>
+        <button class="weekly-button weekly-button-secondary" data-share="pdf" type="button">Export to PDF</button>
         <span class="weekly-share-status" data-share-status role="status" aria-live="polite"></span>
       </div>
       <section><h2>Clinical Scenario</h2><p><em>${escapeHtml(issue.scenario)}</em></p><p><strong>${escapeHtml(issue.question)}</strong></p></section>
@@ -204,7 +207,8 @@
       <section><h2>Main Article</h2><p>${escapeHtml(issue.articleSections.mainArticle || "")}</p></section>
       <section><h2>Key Points</h2><ul>${issue.keyPoints.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul></section>
       <section><h2>References</h2><ol>${issue.references.map((reference) => `<li>${escapeHtml(reference)}</li>`).join("")}</ol></section>
-      <p class="weekly-disclaimer"><em>${escapeHtml(issue.disclaimer)}</em></p>`;
+      <p class="weekly-disclaimer"><em>${escapeHtml(issue.disclaimer)}</em></p>
+      <footer class="weekly-print-footer"><span>${escapeHtml(issue.title)}</span><span>GeneDrNetwork · https://genedrnetwork.github.io</span></footer>`;
     setupSharing(issue);
   }
 

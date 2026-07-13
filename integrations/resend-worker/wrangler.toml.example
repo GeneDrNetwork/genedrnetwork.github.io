@@ -1,0 +1,17 @@
+name = "genedr-weekly-email"
+main = "src/index.js"
+compatibility_date = "2026-07-12"
+
+[vars]
+ADMIN_ORIGIN = "https://genedrnetwork.github.io"
+REQUIRE_ACCESS = "true"
+
+[[kv_namespaces]]
+binding = "GENEDR_EMAIL_SENDS"
+id = "replace-with-kv-namespace-id"
+
+# Add these with `wrangler secret put`, never in this file:
+# RESEND_API_KEY
+# RESEND_FROM
+# RESEND_SEGMENT_ID
+# RESEND_TEST_EMAIL

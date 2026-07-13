@@ -1,0 +1,99 @@
+name: Generate GeneDr Weekly Draft
+
+on:
+  schedule:
+    # Runs hourly across the Monday morning UTC window; the timezone guard below
+    # selects the configured local hour and handles daylight-saving changes.
+    - cron: "0 15-18 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Validate selection and draft writing without calling AI or creating a PR"
+        required: true
+        default: false
+        type: boolean
+      bypass_schedule_guard:
+        description: "Run now regardless of configured local weekday/hour"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: genedr-weekly-draft
+  cancel-in-progress: false
+
+env:
+  GENEDR_TIMEZONE: ${{ vars.GENEDR_TIMEZONE || 'America/Los_Angeles' }}
+  GENEDR_SCHEDULE_WEEKDAY: ${{ vars.GENEDR_SCHEDULE_WEEKDAY || '1' }}
+  GENEDR_SCHEDULE_HOUR: ${{ vars.GENEDR_SCHEDULE_HOUR || '9' }}
+  OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.6' }}
+
+jobs:
+  generate-draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check configured local schedule
+        id: schedule
+        shell: bash
+        run: |
+          local_weekday=$(TZ="$GENEDR_TIMEZONE" date +%u)
+          local_hour=$(TZ="$GENEDR_TIMEZONE" date +%-H)
+          should_run=false
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.bypass_schedule_guard }}" == "true" ]]; then
+            should_run=true
+          elif [[ "$local_weekday" == "$GENEDR_SCHEDULE_WEEKDAY" && "$local_hour" == "$GENEDR_SCHEDULE_HOUR" ]]; then
+            should_run=true
+          fi
+          echo "should_run=$should_run" >> "$GITHUB_OUTPUT"
+          echo "Local workflow time: weekday=$local_weekday hour=$local_hour timezone=$GENEDR_TIMEZONE"
+
+      - name: Require AI secret
+        if: steps.schedule.outputs.should_run == 'true' && inputs.dry_run != true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [[ -z "$OPENAI_API_KEY" ]]; then
+            echo "OPENAI_API_KEY is not configured." >&2
+            exit 1
+          fi
+
+      - name: Generate draft
+        if: steps.schedule.outputs.should_run == 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GENEDR_DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        run: node scripts/generate_genedr_weekly_draft.mjs
+
+      - name: Upload workflow result log
+        if: always() && steps.schedule.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: genedr-weekly-workflow-result-${{ github.run_id }}
+          path: data/genedr-weekly/workflow-log/
+          if-no-files-found: warn
+
+      - name: Create review pull request
+        if: steps.schedule.outputs.should_run == 'true' && inputs.dry_run != true && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          issue_number=$(node -p "JSON.parse(require('fs').readFileSync(process.env.GENEDR_GENERATED_FILE,'utf8')).issueNumber")
+          branch="genedr-weekly/auto-issue-${issue_number}-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add data/genedr-weekly-issues.js data/genedr-weekly-topics.js data/genedr-weekly/issues data/genedr-weekly/workflow-log
+          git commit -m "Draft GeneDr Weekly issue ${issue_number}"
+          git push --set-upstream origin "$branch"
+          gh pr create --base main --head "$branch" --title "Draft GeneDr Weekly Issue #${issue_number}" --body "Automated draft only. Medical accuracy, references, current guidance, privacy, and all clinical claims require administrator review. This pull request does not approve or publish the issue."
+
