@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-14T16:04:14+00:00",
+  "updated_at": "2026-07-15T16:10:29+00:00",
   "summaries": {
-    "ai": "Key developments: IBM warning sparks software selloff as AI spending squeezes budgets; Data Center Chip Market Size to Hit $56.80 Billion by 2035 | SNS Insider; AI\u2019s Biggest Winners Are Creating Its Biggest Losers. Here\u2019s What It Means for Investors.",
-    "biotech": "Key developments: Over half of clinical trial sites see recruitment hindered by inefficiencies: survey; Draig bags another $65M to speed testing of brain drugs; Acid Sphingomyelinase Deficiency Market Growth to Accelerate by 2035 Amid Rising Diagnostic Adoption and Therapy Pipeline Expansion - News and Statistics.",
-    "market": "Key developments: Stock market today: S&P 500, Nasdaq rise after cooler-than-expected CPI report; Stock Market Today: Dow, S&P 500, Nasdaq 100 Futures Rise on Better-Than-Expected CPI Data\u2014Tower Semicond; US Stock Market Today: S&P 500, Dow Jones In Green As Inflation Cools; Nasdaq Up As Chip Stocks Rebound.",
-    "market_movers": "Nasdaq led tracked indexes at +0.64% today; Dow Jones was weakest at -0.20%. Key developments: Stock market today: S&P 500, Nasdaq rise after cooler-than-expected CPI report; Stock Market Today: Dow, S&P 500, Nasdaq 100 Futures Rise on Better-Than-Expected CPI Data\u2014Tower Semicond; US Stock Market Today: S&P 500, Dow Jones In Green As Inflation Cools; Nasdaq Up As Chip Stocks Rebound."
+    "ai": "Key developments: AMD Went From AI Afterthought to Nvidia Equal in Just 3 Years. Can the Momentum Continue?; There\u2019s an AI Power Plant In Your Bedroom; Wall Street Thinks AI Is Slowing. Wall Street Is Wrong.",
+    "biotech": "Key developments: Smarter data, faster decisions: How biotech funding pressures are reshaping clinical development; J&J axes eye disease gene therapy after key phase 2b readout; Genomic Medicine Market to Reach US$118.1 Billion by 2033 at a CAGR of 16% | Persistence Market Research.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq extend gains as ASML buoys AI trade, earnings roll in; Stock Market Today: Stock Market News And Analysis; Stock Market Today: Dow, S&P 500, Nasdaq 100 Futures Gain as Trump Vows 'Very Hard' Hits on Iran\u2014 Pentair.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.42% today; S&P 500 was weakest at +0.02%. Key developments: Stock market today: Dow, S&P 500, Nasdaq extend gains as ASML buoys AI trade, earnings roll in; Stock Market Today: Stock Market News And Analysis; Stock Market Today: Dow, S&P 500, Nasdaq 100 Futures Gain as Trump Vows 'Very Hard' Hits on Iran\u2014 Pentair."
   },
   "takeaways": [
-    "IBM warning sparks software selloff as AI spending squeezes budgets - calcalistech.com",
-    "Data Center Chip Market Size to Hit $56.80 Billion by 2035 | SNS Insider - Yahoo Finance",
-    "Over half of clinical trial sites see recruitment hindered by inefficiencies: survey - Fierce Biotech",
-    "Draig bags another $65M to speed testing of brain drugs - BioPharma Dive",
-    "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA - The Clinical Trial Vanguard",
-    "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis - Business Wire",
-    "Stock market today: S&P 500, Nasdaq rise after cooler-than-expected CPI report - Yahoo Finance"
+    "AMD Went From AI Afterthought to Nvidia Equal in Just 3 Years. Can the Momentum Continue? - 24/7 Wall St.",
+    "There\u2019s an AI Power Plant In Your Bedroom - Built In",
+    "Smarter data, faster decisions: How biotech funding pressures are reshaping clinical development - Clinical Trials Arena",
+    "J&J axes eye disease gene therapy after key phase 2b readout - Fierce Biotech",
+    "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis - BioSpace",
+    "Teva submits FDA application for paediatric Tourette syndrome therapy - PMLiVE",
+    "Stock market today: Dow, S&P 500, Nasdaq extend gains as ASML buoys AI trade, earnings roll in - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Confirms Single Phase 3 Trial Sufficient for ATH434 NDA in MSA",
-      "date": "Wed, 08 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPY2pMQ3hGR0I2TjU0SkdHamREMm1KRHBhcnVNSVc3UVBuRlVPaDR4NFhTcVJMUkV1b2tzY2JzajhlV0tXWlNaNTJXUXFlV1lLLW0tdzlkYU1tU0ZGaHh6dXJsRnJUM3VxTW9oQVNmeEo3NmU3MkdoVEhXNVpiWEstanBVYktpd0JybGFsUEhnSFdvaldPMVF1MFB5NFZyQVg3aVEzYTBvZ1ZfODc5bUgw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Arialys Therapeutics Announces U.S. FDA Fast Track Designation for ART5803, the First Precision Therapeutic Candidate in Development for the Treatment of Anti-NMDA Receptor Encephalitis",
       "date": "Thu, 09 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3gJBVV95cUxOc1JfdU9HbFlPeGZxT3I4NHdaLTVOS1R3QURaZEloTkpzS3dVbl9GX3hUSENXVGpUNnpuaUhRd3FZeFZTNVhPekRoVFJhb0U2ejBmenpKdkFDVEdxNWx5LWdsSTZJSkJlb3liVDZ2MFdkQ2xOTGRLaG81T0IySlF6RXktTFNsT2w0RFo0QWVsXzNwZWdRX2lmSU5iS1IyRzYxM3JQc0dkbkZxNlluWWVKOGpNQ1NwVDZSN0hiNVZlc1k4ZG1wVjlKczBKS0h6MFZ6NUJocmxXNFNjdEdvMnF3Tnk1elgwTDNLczN2cVpLQjg5Y3AxQm8teF9RSXV6bE9hTlFkcVY5M0h0NW9fLXg0LTBnSFV4TkVMQUpsNVFLWlFXazd6Z1hnWE1MUzJUd3BrOTJkTlBOTVdBYzIzWjQ3cjgtNWlLdXdweEQzUkRhWF9Kc1ZFbkd1WmtHRGRhZw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMixgJBVV95cUxQQXZHZTNKNkhFckotSHdfbnZPb0hZSUFLQmdldzkxSEItRzIzbWJRc3ZvQjVrZ1kyeFRqNWxzQTlOeHJNdnhXbzZ3YktTXzdjcHpTLXM1cjFyYmlfM0xPakd5NzQ5M29ONmhHc3MxblFXb19CU3BhS1FDcU1jNjY1SXVsaDhvUzAxS2tzZTVQUi1rci1YNlNxN2ZiMFlOWW56UG5WQmdrZHhieFpESnh2eDhJU3pqcXVlYnhEMmhJbDNGX3liTDJiWWV0T1RyRDJiazVUZ2V4RnhFWGNBT1MteWNub0ZidzBNRi15WmxrdWJWZ0lUT2VYbG9iOXRHZFUxYjE0T2Z3d2VEd1d4RmdTMkp6Yjd3RnpBT3lpMWk5b2tNVFNDWmlMTXpMc0tkd19NMUExNFRDd2MwNGYySzVFeUxIMVg3QQ?oc=5"
     },
     {
       "company": "See source",
@@ -805,14 +797,6 @@
       "event": "Teva submits FDA application for paediatric Tourette syndrome therapy",
       "date": "Thu, 09 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQeTdBTEVoS0d0SWFxSlRXN2VJZWlWakxuQmlHMWZST2ZOVjFRWm5icnVqek1kM1FYRjg3aFRwbzZSWndNMy1qOVdSYzIxTmp3NVlYRi1YV0M0MVZqVHlncWFJd1M0cVpGMmlXYkJnQWZvaVZHakZ6aTA3SUFiYjYxVS0yaTJSWU9RaWZMSEtTZ0FqdnBCZ2lSWnIxU0hGMXB3a0dz?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "OS Therapies gets another FDA meeting on OST-HER2 biomarker data",
-      "date": "Wed, 08 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQWnBTYW5wUXZmTVdQR1h6eUVFNlJoSE0wNGUwQkExLTRtc0R4cElpRlRLdEVqN1drZkNKclRXdHBEQ2taZTh6bzhIclg0by1CQ0liWWt2YW1QLUllRlRpWnJValctUE11elhNQUpsSFNpZ0dRUEswdDJsY3hKNjNPM1RQSE1Tbm55S3ZHNVl0bXR2ekt4SmxiZTh1T1diZ2kxbXkxUHBWbnZOMXg3MWUzX0E5bzNfTHVRempN?oc=5"
     },
     {
       "company": "See source",
@@ -845,36 +829,52 @@
       "event": "FDA Fast-Track Designation for Arialys' Anti-NMDA Therapy",
       "date": "Mon, 13 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQSTNJUXhTN1JsbTNYWTItLVBuZDVTRU5vdGRBS2Q2TUlna0QwYzZNTDM2bENKaTJvNEtKcVRnbmNvZzh5TWVrSUJZNURFY1ZVSU5KTWY4dW0wbFF6dW4wdERjRTVhekQtdnFYRExKZHJqdkdXRHAwdnpPVWN3eGtVSG5vSU5iMkVmM2pTdWNJM3hEMnU5Snc5czFNUFhLMzFsZ0NpOWxiOTdMSkVyZEJXNGpycEk1LXRrcm51MkRHVUlsYlZGc21yeWV3djBNS0pJWTlVag?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Cumberland Pharmaceuticals (Nasdaq: CPIX) returns cash after $100M Apotex deal",
+      "date": "Mon, 13 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQVkc4Z1VYaEJ3ajhwcHpHX3hvZUZKc1h0XzlJS0hzdUlxTm16M0tPblRpZ2JhSWVlNktibzNWOWZKVkNvQWdxeW9BN3g2czRlcXh0RHRZbFhpdHd0VVFGUVZWR1V6YWhCVGZnNHJfSDRMUkRmUldpOTZLNnNvbXNxTkxLWWt1aS11bUVqTERyR09zdW1wNHFfYnRKM3ZLNFlGdFVwTnVCMW4yc3l1SmIzekVqQng4UUVkWHdB?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Edgewise Therapeutics Completes $2.65 Billion Deal Of Sevasemten To Servier",
+      "date": "Tue, 14 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNV3hEcDdqLWNaVlkyNk16Nm0xbjJTTkV3cDRUWFcySm5RWHlDTDhMWWdKd3FoTFM3aUtySFZhRmRJcUkzdlNvSUtLbDduTU8xVHJQTDZGQ0s5cGQ5TzlnanNaa1pHVGpHVXZtdzZHYndMZFJkUmlOZ0FOTjFpUG00ZWhJVkFjMTU5RnlDQzU5bkg2Y0NqYVFyZ2lLbl9yYkHSAZ8BQVVfeXFMTVd4RHA3ai1jWlZZMjZNejZtMW4yU05Fd3A0VFhXMkpuUVh5Q0w4TFlnSndxaExTN2lLckhWYUZkSXFJM3ZTb0lLS2w3bk1PMVRyUEw2RkNLOXBkOU85Z2pzWmtaR1RqR1V2bXc2R2J3TGRSZFJpTmdBTk4xaVBtNGVoSVZBYzE1OUZ5Q0M1OW5INmNDamFRcmdpS25fcmJB?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,528.56",
-      "daily": 0.18,
-      "weekly": 0.33,
-      "monthly": -0.34
+      "value": "7,545.19",
+      "daily": 0.02,
+      "weekly": 0.83,
+      "monthly": -0.12
     },
     {
       "name": "Nasdaq",
-      "value": "26,038.73",
-      "daily": 0.64,
-      "weekly": 0.85,
-      "monthly": -2.42
+      "value": "26,127.86",
+      "daily": 0.08,
+      "weekly": 0.99,
+      "monthly": -2.08
     },
     {
       "name": "Dow Jones",
-      "value": "52,394.77",
-      "daily": -0.2,
-      "weekly": -1.0,
-      "monthly": 1.4
+      "value": "52,614.78",
+      "daily": 0.2,
+      "weekly": 0.51,
+      "monthly": 1.83
     },
     {
       "name": "Russell 2000",
-      "value": "2,967.50",
-      "daily": 0.49,
-      "weekly": -0.5,
-      "monthly": 0.08
+      "value": "2,977.19",
+      "daily": 0.42,
+      "weekly": 0.7,
+      "monthly": 0.41
     }
   ]
 }
