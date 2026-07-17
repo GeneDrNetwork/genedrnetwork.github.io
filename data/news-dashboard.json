@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-16T16:03:51+00:00",
+  "updated_at": "2026-07-17T12:37:59+00:00",
   "summaries": {
-    "ai": "Key developments: How South Korea became the memory backbone of the global AI infrastructure boom; GPUaaS: Contracts, capital and compute in the AI infrastructure boom; This Is the Next Stage of the AI Revolution \u2014 And Absolutely No One Is Talking About It.",
-    "biotech": "Key developments: Kalshi comes for biopharma, with prediction markets for clinical trials and FDA approvals; US biotech secures $150M to develop potential treatments for Parkinson\u2019s; Why Axiom hopes it\u2019s \u2018solved 2 major potholes\u2019 that have hurt other stem cell biotechs.",
-    "market": "Key developments: Stock market today: Dow rises, S&P 500 and Nasdaq fall as chip stocks slide amid AI jitters; US Stock Market Today: S&P 500, Nasdaq Slip Into Red As Chip Stocks Crash; SK Hynix Plunges 6%; Stock Market Today: Dow Futures Rise, S&P 500 Falls As Trump Says Iran Wants To Negotiate\u2014 AtaiBeckley, J.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.27% today; Nasdaq was weakest at -0.77%. Key developments: Stock market today: Dow rises, S&P 500 and Nasdaq fall as chip stocks slide amid AI jitters; US Stock Market Today: S&P 500, Nasdaq Slip Into Red As Chip Stocks Crash; SK Hynix Plunges 6%; Stock Market Today: Dow Futures Rise, S&P 500 Falls As Trump Says Iran Wants To Negotiate\u2014 AtaiBeckley, J."
+    "ai": "Key developments: Why New York\u2019s Data Center Ban Could Rewrite the Future of the AI Revolution; The unlikely coalition behind the campaign against data centers; Why New York\u2019s Data Center Ban Could Rewrite the Future of the AI Revolution.",
+    "biotech": "Key developments: Can ultrasound unlock the power of gene therapy? A startup makes big claims; Dimerix snaps up Mission\u2019s stalled, phase 2-ready kidney disease candidate in $292M deal; Dimerix Expands Kidney Disease Pipeline with Phase 2-Ready Acute Kidney Injury Drug Acquisition.",
+    "market": "Key developments: Stock market today: Nasdaq futures hammered by chips sell-off, Dow and S&P 500 futures fall after Netflix whiff; Wall Street ends lower as chip weakness offsets solid earnings, economic data; Stock Market Today: Dow Futures, S&P 500 Futures Slump Even as Trump Says US Is Doing 'Great'\u2014Netflix, Co.",
+    "market_movers": "Russell 2000 led tracked indexes at -0.06% today; Nasdaq was weakest at -1.47%. Key developments: Stock market today: Nasdaq futures hammered by chips sell-off, Dow and S&P 500 futures fall after Netflix whiff; Wall Street ends lower as chip weakness offsets solid earnings, economic data; Stock Market Today: Dow Futures, S&P 500 Futures Slump Even as Trump Says US Is Doing 'Great'\u2014Netflix, Co."
   },
   "takeaways": [
-    "How South Korea became the memory backbone of the global AI infrastructure boom - Fierce Network",
-    "GPUaaS: Contracts, capital and compute in the AI infrastructure boom - A&O Shearman",
-    "Kalshi comes for biopharma, with prediction markets for clinical trials and FDA approvals - STAT",
-    "US biotech secures $150M to develop potential treatments for Parkinson\u2019s - Parkinson's News Today",
+    "Why New York\u2019s Data Center Ban Could Rewrite the Future of the AI Revolution - 24/7 Wall St.",
+    "The unlikely coalition behind the campaign against data centers - Washington Examiner",
+    "Can ultrasound unlock the power of gene therapy? A startup makes big claims - STAT",
+    "Dimerix snaps up Mission\u2019s stalled, phase 2-ready kidney disease candidate in $292M deal - Fierce Biotech",
     "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI - Kavout | AI",
     "CUMBERLAND PHARMACEUTICALS ANNOUNCES SPECIAL DIVIDEND OF $1.50 PER SHARE - TradingView",
-    "Stock market today: Dow rises, S&P 500 and Nasdaq fall as chip stocks slide amid AI jitters - Yahoo! Finance Canada"
+    "Stock market today: Nasdaq futures hammered by chips sell-off, Dow and S&P 500 futures fall after Netflix whiff - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,17 +802,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Fast-Track Designation for Arialys' Anti-NMDA Therapy",
-      "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOU2tkSXhVbXh2cEdaSmx6c2R5NV9DOWlGaFRHLVQwb1Nud080dk5aNHprNlNOcnNEdk1KN3phemF0MUQ5aU5QOUREOW5qRUdITEtfMklxa19Mbll0VWJjbHRiUEVzVUJkZGx1V19uYms1YWtGcnNERWZvZlZQR01BUU1XeE9IN2NlRUFUdUJTcE5ja0tydW5uWnJCZWFMSEIwcURkZWgteDJqNXBQV20tUFd2cU5QQWdBd3ZOeDRLa3ktWHdnNXpz?oc=5"
+      "event": "Palvella Therapeutics (PVLA) Submits Initial Module of NDA For QTORIN",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQT216V25TWWNBOFI5Q1ZJR2phRUI5RkZ2SG0ydy1GZUtzQXduR0ItbkszemdGOGZVbHk0TmRiMkYxdUp3VDY1T2s1dnhsaURyXzdrRmFVb3pwNjBsaFphWUpubUJLcFRhc1pwY2VjMXl0ZzRqckZaMXdGcWl5bWhrU1FaUUtxVjF0Y2JKQy0zM0JOWXlpRmJ2dzFYNjNVWWNCV1ZoUGdB?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Hemab Therapeutics (COAG) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Tue, 14 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE92dDhuUkJRWWJjX09DQVJhS2RjUXR6cERQOVh6SmV2UElVby04al9xXzNvR1NILTJnejRlQjNsTDF0MGw2NTQ2U2FRclNFYS1UY3FfbjFyZzRvb0RQYWZ1UTkxS2NtMndH?oc=5"
+      "event": "Niagen Bioscience (NAGE) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Mon, 13 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOHpDMzB0NmlQcDVmZzQtY0xsWXNFNmVSNFJGaVZldGR4VW9EaXBLZzgyb1Y0ZjFQdFBsVXVLQ051ZDUyWUFXOTZKcjhpOFRJbkFMQ0JvbkwwOVhHMnltQl9jLTNoeFBa?oc=5"
     },
     {
       "company": "See source",
@@ -834,47 +834,47 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "What's Driving Telix's Latest FDA Resubmission for Pixclara\u00ae",
-      "date": "Sat, 11 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQdGZBVjdHbkZYRjNuempxa29tM01CR1VRSFFpSTRLdEV4Z29ZMHFnanZyOF9DZUkwS3lnNnBXR01aSUNjQS15M1FBUnJKT2MwZUdCU0ZpeDg1NmtKYk5sckl2amxfdFhZMXh1WWJ4MW41TEwzZzlELTZ1UVduX0tzdWFBUHM2TmxicnBsQXc2a0l4M1UxQ3kzaEV3?oc=5"
+      "event": "ELTP vs. CPIX: Which Pharma Stock Is the Better Buy Right Now?",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNRThPb20yNV8wUFRScEx0bkFOcjgxWEFkMjBmeXNoYkFZamVnN0dWSE03QzdrWGtYX0FMSmp4RXVrMVBiX0tVRG00U3VhUTVlWnZwY1diV0hlWnFwdWtPRkxyTk0zMHZFUUR2bXFpZ052cUpKX3JqVk1EWjNrZHpRSF9GQmhQVWtkQUVBa2Q2a1ZZVWtNNkNmZzFzSWxSZlljdHQtdmVuNHYwTC1yZlRXb1Q4VW1GN2ljZzRhQVNQS1NsOWYzUFFweXZqdEo1Tkw3cFVlRUVjamVLdmMy?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Niagen Bioscience (NAGE) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "event": "$1.50-a-share windfall: Cumberland Pharma tags July 23 to qualify",
       "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOHpDMzB0NmlQcDVmZzQtY0xsWXNFNmVSNFJGaVZldGR4VW9EaXBLZzgyb1Y0ZjFQdFBsVXVLQ051ZDUyWUFXOTZKcjhpOFRJbkFMQ0JvbkwwOVhHMnltQl9jLTNoeFBa?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQak0xdTdOM3RrZFBQSEFzcURXTGMtOFNpamxUclVjb0Q1YUZGUmo4Y2t3SWNHTlR3Zm5sZGFzTGZ6ZXc5aGxUYzVOel9qOEItYi1LVE1vaXJYOFA0eVR3TkF1Q0VVZWpNeTlrcWM5RXI2blRBMV9jWWtzZ0F2S2s0SmRPYlJKcFUwX3NnSjBkVDJ3ZmhlVGhlV0dOSHU5VWhzdlZJ?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,558.16",
-      "daily": -0.19,
-      "weekly": 0.19,
-      "monthly": 0.62
+      "value": "7,533.77",
+      "daily": -0.51,
+      "weekly": -0.13,
+      "monthly": 1.53
     },
     {
       "name": "Nasdaq",
-      "value": "26,067.60",
-      "daily": -0.77,
-      "weekly": -0.53,
-      "monthly": -1.17
+      "value": "25,881.95",
+      "daily": -1.47,
+      "weekly": -1.24,
+      "monthly": -0.54
     },
     {
       "name": "Dow Jones",
-      "value": "52,753.87",
-      "daily": 0.18,
-      "weekly": 0.51,
-      "monthly": 1.45
+      "value": "52,552.97",
+      "daily": -0.2,
+      "weekly": 0.12,
+      "monthly": 2.06
     },
     {
       "name": "Russell 2000",
-      "value": "2,984.31",
-      "daily": 0.27,
-      "weekly": -0.28,
-      "monthly": 1.53
+      "value": "2,974.57",
+      "daily": -0.06,
+      "weekly": -0.6,
+      "monthly": 1.94
     }
   ]
 }
