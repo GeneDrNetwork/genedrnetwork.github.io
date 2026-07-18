@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-17T12:37:59+00:00",
+  "updated_at": "2026-07-18T12:07:33+00:00",
   "summaries": {
-    "ai": "Key developments: Why New York\u2019s Data Center Ban Could Rewrite the Future of the AI Revolution; The unlikely coalition behind the campaign against data centers; Why New York\u2019s Data Center Ban Could Rewrite the Future of the AI Revolution.",
-    "biotech": "Key developments: Can ultrasound unlock the power of gene therapy? A startup makes big claims; Dimerix snaps up Mission\u2019s stalled, phase 2-ready kidney disease candidate in $292M deal; Dimerix Expands Kidney Disease Pipeline with Phase 2-Ready Acute Kidney Injury Drug Acquisition.",
-    "market": "Key developments: Stock market today: Nasdaq futures hammered by chips sell-off, Dow and S&P 500 futures fall after Netflix whiff; Wall Street ends lower as chip weakness offsets solid earnings, economic data; Stock Market Today: Dow Futures, S&P 500 Futures Slump Even as Trump Says US Is Doing 'Great'\u2014Netflix, Co.",
-    "market_movers": "Russell 2000 led tracked indexes at -0.06% today; Nasdaq was weakest at -1.47%. Key developments: Stock market today: Nasdaq futures hammered by chips sell-off, Dow and S&P 500 futures fall after Netflix whiff; Wall Street ends lower as chip weakness offsets solid earnings, economic data; Stock Market Today: Dow Futures, S&P 500 Futures Slump Even as Trump Says US Is Doing 'Great'\u2014Netflix, Co."
+    "ai": "Key developments: Apple Avoided the AI CapEx Spending Trap \u2014 Now the Bill May Be Coming Due; These 5 Optical Chip Stocks Are Cashing in on AI Data Center Bandwidth; Kimi K3 Could Reshape AI Stocks Including Synopsys And Cerebras.",
+    "biotech": "Key developments: Opinion | How to stop China from leapfrogging the U.S. in biotech; Recursion says its Norstella-backed real-time simulation can expand trial eligibility by up to 40%; Ionis (IONS) Begins First ION337 Trial In Dravet Syndrome Patients.",
+    "market": "Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower as chip stocks bounce off lows; Dow, S&P 500, Nasdaq Futures Climb As Trump Touts \u2018Great Progress\u2019 In Iran: AMD, SMCI, IBRX, MU Stocks In Focus Today; Wall St ends lower for the day and week as chip selloff broadens.",
+    "market_movers": "Russell 2000 led tracked indexes at -0.42% today; Nasdaq was weakest at -1.40%. Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower as chip stocks bounce off lows; Dow, S&P 500, Nasdaq Futures Climb As Trump Touts \u2018Great Progress\u2019 In Iran: AMD, SMCI, IBRX, MU Stocks In Focus Today; Wall St ends lower for the day and week as chip selloff broadens."
   },
   "takeaways": [
-    "Why New York\u2019s Data Center Ban Could Rewrite the Future of the AI Revolution - 24/7 Wall St.",
-    "The unlikely coalition behind the campaign against data centers - Washington Examiner",
-    "Can ultrasound unlock the power of gene therapy? A startup makes big claims - STAT",
-    "Dimerix snaps up Mission\u2019s stalled, phase 2-ready kidney disease candidate in $292M deal - Fierce Biotech",
+    "Apple Avoided the AI CapEx Spending Trap \u2014 Now the Bill May Be Coming Due - 24/7 Wall St.",
+    "These 5 Optical Chip Stocks Are Cashing in on AI Data Center Bandwidth - AOL.com",
+    "Opinion | How to stop China from leapfrogging the U.S. in biotech - The Washington Post",
+    "Recursion says its Norstella-backed real-time simulation can expand trial eligibility by up to 40% - R&D World",
     "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI - Kavout | AI",
-    "CUMBERLAND PHARMACEUTICALS ANNOUNCES SPECIAL DIVIDEND OF $1.50 PER SHARE - TradingView",
-    "Stock market today: Nasdaq futures hammered by chips sell-off, Dow and S&P 500 futures fall after Netflix whiff - Yahoo Finance"
+    "Ernexa Therapeutics (ERNA) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
+    "Stock market today: Nasdaq leads Dow, S&P 500 lower as chip stocks bounce off lows - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,6 +794,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Ernexa Therapeutics (ERNA) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBkZ3RVdTlfRXEzbE5ZQ244cEVmR0huaGluWVFaR21pdzl2OFNZQWxUMF92VERMbXJxNlIxaGJVd0ltQXh5VTlJbjJqc2hCUkVnY1B3LXc2cHBqakt1dnBuYk1qYVR4QmRC?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "CUMBERLAND PHARMACEUTICALS ANNOUNCES SPECIAL DIVIDEND OF $1.50 PER SHARE",
       "date": "Mon, 13 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQQ1dFWnI1dEVMazA0R1hqTEs0UWE0MkhKNTJQUUNmMzB4QXcxRGZWMGlwN19XOUJMZmdTZFhXQWZmNGVuQjhVb3d4QW5OSXlHWk11SmJCV2M5SjBJUm15cko4Y2VpY3Q2OGU1ZHJ6ZVc2OEFXLXdoQVphZ3FpZUtpSDdDZlhKU0Z4YkVGNk1GUU93azUyRVM3M0dvSmlORWNHTmxJRjBZNXZaaXUxUDB2ZHNGbG1DWExJWU1HcFJFVW1RbWZNX0JvcDh3Ums?oc=5"
@@ -810,14 +818,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Niagen Bioscience (NAGE) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOHpDMzB0NmlQcDVmZzQtY0xsWXNFNmVSNFJGaVZldGR4VW9EaXBLZzgyb1Y0ZjFQdFBsVXVLQ051ZDUyWUFXOTZKcjhpOFRJbkFMQ0JvbkwwOVhHMnltQl9jLTNoeFBa?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Cumberland Pharmaceuticals (Nasdaq: CPIX) returns cash after $100M Apotex deal",
       "date": "Mon, 13 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQVkc4Z1VYaEJ3ajhwcHpHX3hvZUZKc1h0XzlJS0hzdUlxTm16M0tPblRpZ2JhSWVlNktibzNWOWZKVkNvQWdxeW9BN3g2czRlcXh0RHRZbFhpdHd0VVFGUVZWR1V6YWhCVGZnNHJfSDRMUkRmUldpOTZLNnNvbXNxTkxLWWt1aS11bUVqTERyR09zdW1wNHFfYnRKM3ZLNFlGdFVwTnVCMW4yc3l1SmIzekVqQng4UUVkWHdB?oc=5"
@@ -828,7 +828,7 @@
       "indication": "See source",
       "event": "Edgewise Therapeutics Completes $2.65 Billion Deal Of Sevasemten To Servier",
       "date": "Tue, 14 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNV3hEcDdqLWNaVlkyNk16Nm0xbjJTTkV3cDRUWFcySm5RWHlDTDhMWWdKd3FoTFM3aUtySFZhRmRJcUkzdlNvSUtLbDduTU8xVHJQTDZGQ0s5cGQ5TzlnanNaa1pHVGpHVXZtdzZHYndMZFJkUmlOZ0FOTjFpUG00ZWhJVkFjMTU5RnlDQzU5bkg2Y0NqYVFyZ2lLbl9yYkHSAZ8BQVVfeXFMTVd4RHA3ai1jWlZZMjZNejZtMW4yU05Fd3A0VFhXMkpuUVh5Q0w4TFlnSndxaExTN2lLckhWYUZkSXFJM3ZTb0lLS2w3bk1PMVRyUEw2RkNLOXBkOU85Z2pzWmtaR1RqR1V2bXc2R2J3TGRSZFJpTmdBTk4xaVBtNGVoSVZBYzE1OUZ5Q0M1OW5INmNDamFRcmdpS25fcmJB?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOb0hMY18tQ2dFRTFIWlRiVDBpdWZJTmtiSFl1M2lIWDhadnBVNURQaFlZbHhPNjBUMVVCb3BEaHlSZTF2UllFZXJiUXFxNDJmaU9aMkpmN0g0bHhXejJ3V1hTZjhVeF9hMkE1OG1sVHpheVdqSzhKblc5Y2hsNDBBekFrSUg2WTdnelFuUnJwV0s5QmY0WG5yRjVB0gGfAUFVX3lxTE1XeERwN2otY1pWWTI2TXo2bTFuMlNORXdwNFRYVzJKblFYeUNMOExZZ0p3cWhMUzdpS3JIVmFGZElxSTN2U29JS0tsN25NTzFUclBMNkZDSzlwZDlPOWdqc1prWkdUakdVdm13Nkdid0xkUmRSaU5nQU5OMWlQbTRlaElWQWMxNTlGeUNDNTluSDZjQ2phUXJnaUtuX3JiQQ?oc=5"
     },
     {
       "company": "See source",
@@ -836,45 +836,45 @@
       "indication": "See source",
       "event": "ELTP vs. CPIX: Which Pharma Stock Is the Better Buy Right Now?",
       "date": "Wed, 15 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNRThPb20yNV8wUFRScEx0bkFOcjgxWEFkMjBmeXNoYkFZamVnN0dWSE03QzdrWGtYX0FMSmp4RXVrMVBiX0tVRG00U3VhUTVlWnZwY1diV0hlWnFwdWtPRkxyTk0zMHZFUUR2bXFpZ052cUpKX3JqVk1EWjNrZHpRSF9GQmhQVWtkQUVBa2Q2a1ZZVWtNNkNmZzFzSWxSZlljdHQtdmVuNHYwTC1yZlRXb1Q4VW1GN2ljZzRhQVNQS1NsOWYzUFFweXZqdEo1Tkw3cFVlRUVjamVLdmMy?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxObzVLZjhJSkRZM2NNekppdTFGUlY5VzdQV296dDhFNVRJdHdKTFUyV2ZyZU5pR01QMWFVNVBBc1B3eFlqNVppSmEySnFCMEdyNTd4Ym02SENVb3ZVZGxfeDR6dURjdmRSOFQ4WG5iUUVveFZCQTg2d28zaFkwLTFvNGZkdm1PdFhFbXZpeXZ3cU1KaVBXcFBiWVE0NldtXzYxakNmMWRYZUYtdkhVOHJpQjI2V0RteUsyY0pHSlBXeGloVTZCR1Jxd29RV0NiLTE3R01RcVh1MXJxeUtI?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "$1.50-a-share windfall: Cumberland Pharma tags July 23 to qualify",
+      "event": "Niagen Bioscience (NAGE) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
       "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQak0xdTdOM3RrZFBQSEFzcURXTGMtOFNpamxUclVjb0Q1YUZGUmo4Y2t3SWNHTlR3Zm5sZGFzTGZ6ZXc5aGxUYzVOel9qOEItYi1LVE1vaXJYOFA0eVR3TkF1Q0VVZWpNeTlrcWM5RXI2blRBMV9jWWtzZ0F2S2s0SmRPYlJKcFUwX3NnSjBkVDJ3ZmhlVGhlV0dOSHU5VWhzdlZJ?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOHpDMzB0NmlQcDVmZzQtY0xsWXNFNmVSNFJGaVZldGR4VW9EaXBLZzgyb1Y0ZjFQdFBsVXVLQ051ZDUyWUFXOTZKcjhpOFRJbkFMQ0JvbkwwOVhHMnltQl9jLTNoeFBa?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,533.77",
-      "daily": -0.51,
-      "weekly": -0.13,
-      "monthly": 1.53
+      "value": "7,457.69",
+      "daily": -1.01,
+      "weekly": -1.55,
+      "monthly": -0.57
     },
     {
       "name": "Nasdaq",
-      "value": "25,881.95",
-      "daily": -1.47,
-      "weekly": -1.24,
-      "monthly": -0.54
+      "value": "25,520.24",
+      "daily": -1.4,
+      "weekly": -2.9,
+      "monthly": -3.76
     },
     {
       "name": "Dow Jones",
-      "value": "52,552.97",
-      "daily": -0.2,
-      "weekly": 0.12,
-      "monthly": 2.06
+      "value": "52,146.42",
+      "daily": -0.77,
+      "weekly": -0.93,
+      "monthly": 1.13
     },
     {
       "name": "Russell 2000",
-      "value": "2,974.57",
-      "daily": -0.06,
-      "weekly": -0.6,
-      "monthly": 1.94
+      "value": "2,962.22",
+      "daily": -0.42,
+      "weekly": -0.52,
+      "monthly": -0.59
     }
   ]
 }
