@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-18T12:07:33+00:00",
+  "updated_at": "2026-07-19T12:07:54+00:00",
   "summaries": {
-    "ai": "Key developments: Apple Avoided the AI CapEx Spending Trap \u2014 Now the Bill May Be Coming Due; These 5 Optical Chip Stocks Are Cashing in on AI Data Center Bandwidth; Kimi K3 Could Reshape AI Stocks Including Synopsys And Cerebras.",
-    "biotech": "Key developments: Opinion | How to stop China from leapfrogging the U.S. in biotech; Recursion says its Norstella-backed real-time simulation can expand trial eligibility by up to 40%; Ionis (IONS) Begins First ION337 Trial In Dravet Syndrome Patients.",
-    "market": "Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower as chip stocks bounce off lows; Dow, S&P 500, Nasdaq Futures Climb As Trump Touts \u2018Great Progress\u2019 In Iran: AMD, SMCI, IBRX, MU Stocks In Focus Today; Wall St ends lower for the day and week as chip selloff broadens.",
-    "market_movers": "Russell 2000 led tracked indexes at -0.42% today; Nasdaq was weakest at -1.40%. Key developments: Stock market today: Nasdaq leads Dow, S&P 500 lower as chip stocks bounce off lows; Dow, S&P 500, Nasdaq Futures Climb As Trump Touts \u2018Great Progress\u2019 In Iran: AMD, SMCI, IBRX, MU Stocks In Focus Today; Wall St ends lower for the day and week as chip selloff broadens."
+    "ai": "Key developments: AI Infrastructure Stocks To Watch After The Semiconductor Selloff; Data center projects drawing increasing pushback worldwide; These 5 Optical Chip Stocks Are Cashing in on AI Data Center Bandwidth.",
+    "biotech": "Key developments: Cathie Wood Just Bet Big on This Biotech Stock; AstraZeneca stock steady as oncology and rare disease pipeline supports growth - ad-hoc-news.de; Cathie Wood Just Bet Big on This Biotech Stock.",
+    "market": "Key developments: Dow Jones Futures Loom As U.S.-Iran Attacks Escalate; Google, Tesla, AMD Ahead; Dow, S&P 500, Nasdaq Futures Slip As Middle East Tensions Escalate Again: PLTR, ARBB, SKK, XNDU Stocks In Focus; S&P 500, Nasdaq 100 Forecast for Next Week: Is This It?.",
+    "market_movers": "Russell 2000 led tracked indexes at -0.42% today; Nasdaq was weakest at -1.40%. Key developments: Dow Jones Futures Loom As U.S.-Iran Attacks Escalate; Google, Tesla, AMD Ahead; Dow, S&P 500, Nasdaq Futures Slip As Middle East Tensions Escalate Again: PLTR, ARBB, SKK, XNDU Stocks In Focus; S&P 500, Nasdaq 100 Forecast for Next Week: Is This It?."
   },
   "takeaways": [
-    "Apple Avoided the AI CapEx Spending Trap \u2014 Now the Bill May Be Coming Due - 24/7 Wall St.",
-    "These 5 Optical Chip Stocks Are Cashing in on AI Data Center Bandwidth - AOL.com",
-    "Opinion | How to stop China from leapfrogging the U.S. in biotech - The Washington Post",
-    "Recursion says its Norstella-backed real-time simulation can expand trial eligibility by up to 40% - R&D World",
+    "AI Infrastructure Stocks To Watch After The Semiconductor Selloff - simplywall.st",
+    "Data center projects drawing increasing pushback worldwide - Taipei Times",
+    "Cathie Wood Just Bet Big on This Biotech Stock - The Motley Fool",
+    "AstraZeneca stock steady as oncology and rare disease pipeline supports growth - ad-hoc-news.de",
     "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI - Kavout | AI",
     "Ernexa Therapeutics (ERNA) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
-    "Stock market today: Nasdaq leads Dow, S&P 500 lower as chip stocks bounce off lows - Yahoo Finance"
+    "Dow Jones Futures Loom As U.S.-Iran Attacks Escalate; Google, Tesla, AMD Ahead - Investor's Business Daily"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -834,17 +834,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "ELTP vs. CPIX: Which Pharma Stock Is the Better Buy Right Now?",
-      "date": "Wed, 15 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxObzVLZjhJSkRZM2NNekppdTFGUlY5VzdQV296dDhFNVRJdHdKTFUyV2ZyZU5pR01QMWFVNVBBc1B3eFlqNVppSmEySnFCMEdyNTd4Ym02SENVb3ZVZGxfeDR6dURjdmRSOFQ4WG5iUUVveFZCQTg2d28zaFkwLTFvNGZkdm1PdFhFbXZpeXZ3cU1KaVBXcFBiWVE0NldtXzYxakNmMWRYZUYtdkhVOHJpQjI2V0RteUsyY0pHSlBXeGloVTZCR1Jxd29RV0NiLTE3R01RcVh1MXJxeUtI?oc=5"
+      "event": "Biogen (BIIB) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $BIIB",
+      "date": "Tue, 14 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE96WG5JU0N5VEhUSjdVZmdfamloV2ZMdU9Va1FXaXdJU3FjMDYyZUxIWHhtNEF0SjVEMzlhNFdyTW04RDZvV2FXUWpBVkJWdThrcHlPbDB4UUNDZ1MtNEVtWVBDU2FuQjU4?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Niagen Bioscience (NAGE) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOHpDMzB0NmlQcDVmZzQtY0xsWXNFNmVSNFJGaVZldGR4VW9EaXBLZzgyb1Y0ZjFQdFBsVXVLQ051ZDUyWUFXOTZKcjhpOFRJbkFMQ0JvbkwwOVhHMnltQl9jLTNoeFBa?oc=5"
+      "event": "ELTP vs. CPIX: Which Pharma Stock Is the Better Buy Right Now?",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOQ2tOemZGakhzWHJqZEdmaXR1cVllS1RXb3o4MHJBU1BxWGdTX2VNNHhmcjBON2JlVmdhZnZNNDRQOUZkT2oyY0s5ZjVGbEZCU29jQXRyN0daWTlSQkJWVHR5eG9uR3BLMTBnOWJjc09SU0pKam5iaVdwZkV1Umx5SkFYc0NJaGVEMVFyMUxNZ3BCZmw4dFppRnBkZjFLZU8yNUZSNTloa2JSQ1lXSEJyeVRhcjZKUQ?oc=5"
     }
   ],
   "markets": [
