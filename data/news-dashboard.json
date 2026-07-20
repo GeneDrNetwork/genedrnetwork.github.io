@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-19T12:07:54+00:00",
+  "updated_at": "2026-07-20T13:19:00+00:00",
   "summaries": {
-    "ai": "Key developments: AI Infrastructure Stocks To Watch After The Semiconductor Selloff; Data center projects drawing increasing pushback worldwide; These 5 Optical Chip Stocks Are Cashing in on AI Data Center Bandwidth.",
-    "biotech": "Key developments: Cathie Wood Just Bet Big on This Biotech Stock; AstraZeneca stock steady as oncology and rare disease pipeline supports growth - ad-hoc-news.de; Cathie Wood Just Bet Big on This Biotech Stock.",
-    "market": "Key developments: Dow Jones Futures Loom As U.S.-Iran Attacks Escalate; Google, Tesla, AMD Ahead; Dow, S&P 500, Nasdaq Futures Slip As Middle East Tensions Escalate Again: PLTR, ARBB, SKK, XNDU Stocks In Focus; S&P 500, Nasdaq 100 Forecast for Next Week: Is This It?.",
-    "market_movers": "Russell 2000 led tracked indexes at -0.42% today; Nasdaq was weakest at -1.40%. Key developments: Dow Jones Futures Loom As U.S.-Iran Attacks Escalate; Google, Tesla, AMD Ahead; Dow, S&P 500, Nasdaq Futures Slip As Middle East Tensions Escalate Again: PLTR, ARBB, SKK, XNDU Stocks In Focus; S&P 500, Nasdaq 100 Forecast for Next Week: Is This It?."
+    "ai": "Key developments: Apple Avoided the AI CapEx Trap \u2014 It Could Create the Biggest iPhone Upgrade Cycle Ever; Hut 8 fully commercializes Texas campus with $9.8-billion AI data centre lease; The U.S.-China AI Chip War: Why Southeast Asia Cannot Remain Neutral.",
+    "biotech": "Key developments: Biotech bet: Rare disease innovator with industrial scale production; Biogen Korea names Kim Cheol-ung CEO to drive rare disease growth - CHOSUNBIZ; AI-Driven Discovery Platforms.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures edge up as oil turns lower in wait for Big Tech earnings; Stock Market Today: S&P 500, Dow Jones Futures Gain as Trump Says Iran is 'Very, Very Badly Damaged'\u2014 Eva; Dow Jones, Nasdaq, S&P 500 weekly preview: All eyes on Q2 megacap earnings.",
+    "market_movers": "Russell 2000 led tracked indexes at -0.42% today; Nasdaq was weakest at -1.40%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures edge up as oil turns lower in wait for Big Tech earnings; Stock Market Today: S&P 500, Dow Jones Futures Gain as Trump Says Iran is 'Very, Very Badly Damaged'\u2014 Eva; Dow Jones, Nasdaq, S&P 500 weekly preview: All eyes on Q2 megacap earnings."
   },
   "takeaways": [
-    "AI Infrastructure Stocks To Watch After The Semiconductor Selloff - simplywall.st",
-    "Data center projects drawing increasing pushback worldwide - Taipei Times",
-    "Cathie Wood Just Bet Big on This Biotech Stock - The Motley Fool",
-    "AstraZeneca stock steady as oncology and rare disease pipeline supports growth - ad-hoc-news.de",
+    "Apple Avoided the AI CapEx Trap \u2014 It Could Create the Biggest iPhone Upgrade Cycle Ever - AOL.com",
+    "Hut 8 fully commercializes Texas campus with $9.8-billion AI data centre lease - The Globe and Mail",
+    "Biotech bet: Rare disease innovator with industrial scale production - The Armchair Trader",
+    "Biogen Korea names Kim Cheol-ung CEO to drive rare disease growth - CHOSUNBIZ - Chosunbiz",
     "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI - Kavout | AI",
     "Ernexa Therapeutics (ERNA) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
-    "Dow Jones Futures Loom As U.S.-Iran Attacks Escalate; Google, Tesla, AMD Ahead - Investor's Business Daily"
+    "Stock market today: Dow, S&P 500, Nasdaq futures edge up as oil turns lower in wait for Big Tech earnings - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -818,6 +818,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Dyne Therapeutics\u2019 z-rostudirsen Accepted for FDA Review with Priority Review Granted for Duchenne Muscular Dystrophy",
+      "date": "Mon, 20 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxPdzF5VHU5aEJnYnV5WGpneGlTLUJIVkpHd3FGTzlBVlFNQ3kybFhFQzNPTUdhQ0s1VjJoMnFvaTRlNmpXMWdEc0poWVlncnRTZGVUZFRvamhQMEZ2V05ZVVRoMmRLNXM1bnVMU2o3ZE85Ui10NGw4Mk9TOGUwYy1oejJDWktzd19YU05fQ2xEelA1SzYySXdzUGQ4NVZvRWtyRnM0cWtOaHVkTkRIbjR4eHIyY0RNVmFzcnhiUTBEVk5kMjQ2VlhBeXEwTHVyZmRnLWxDNFM1b3ExUkhqbGhGUktUS0pJLUJwN013aHFmZ1Q0eTQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Cumberland Pharmaceuticals (Nasdaq: CPIX) returns cash after $100M Apotex deal",
       "date": "Mon, 13 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQVkc4Z1VYaEJ3ajhwcHpHX3hvZUZKc1h0XzlJS0hzdUlxTm16M0tPblRpZ2JhSWVlNktibzNWOWZKVkNvQWdxeW9BN3g2czRlcXh0RHRZbFhpdHd0VVFGUVZWR1V6YWhCVGZnNHJfSDRMUkRmUldpOTZLNnNvbXNxTkxLWWt1aS11bUVqTERyR09zdW1wNHFfYnRKM3ZLNFlGdFVwTnVCMW4yc3l1SmIzekVqQng4UUVkWHdB?oc=5"
@@ -834,17 +842,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Biogen (BIIB) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $BIIB",
-      "date": "Tue, 14 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE96WG5JU0N5VEhUSjdVZmdfamloV2ZMdU9Va1FXaXdJU3FjMDYyZUxIWHhtNEF0SjVEMzlhNFdyTW04RDZvV2FXUWpBVkJWdThrcHlPbDB4UUNDZ1MtNEVtWVBDU2FuQjU4?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "ELTP vs. CPIX: Which Pharma Stock Is the Better Buy Right Now?",
-      "date": "Wed, 15 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOQ2tOemZGakhzWHJqZEdmaXR1cVllS1RXb3o4MHJBU1BxWGdTX2VNNHhmcjBON2JlVmdhZnZNNDRQOUZkT2oyY0s5ZjVGbEZCU29jQXRyN0daWTlSQkJWVHR5eG9uR3BLMTBnOWJjc09SU0pKam5iaVdwZkV1Umx5SkFYc0NJaGVEMVFyMUxNZ3BCZmw4dFppRnBkZjFLZU8yNUZSNTloa2JSQ1lXSEJyeVRhcjZKUQ?oc=5"
+      "event": "Niagen Bioscience (NAGE) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Mon, 13 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOHpDMzB0NmlQcDVmZzQtY0xsWXNFNmVSNFJGaVZldGR4VW9EaXBLZzgyb1Y0ZjFQdFBsVXVLQ051ZDUyWUFXOTZKcjhpOFRJbkFMQ0JvbkwwOVhHMnltQl9jLTNoeFBa?oc=5"
     }
   ],
   "markets": [
