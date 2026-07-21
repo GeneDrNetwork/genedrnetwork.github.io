@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-20T13:19:00+00:00",
+  "updated_at": "2026-07-21T12:45:32+00:00",
   "summaries": {
-    "ai": "Key developments: Apple Avoided the AI CapEx Trap \u2014 It Could Create the Biggest iPhone Upgrade Cycle Ever; Hut 8 fully commercializes Texas campus with $9.8-billion AI data centre lease; The U.S.-China AI Chip War: Why Southeast Asia Cannot Remain Neutral.",
-    "biotech": "Key developments: Biotech bet: Rare disease innovator with industrial scale production; Biogen Korea names Kim Cheol-ung CEO to drive rare disease growth - CHOSUNBIZ; AI-Driven Discovery Platforms.",
-    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures edge up as oil turns lower in wait for Big Tech earnings; Stock Market Today: S&P 500, Dow Jones Futures Gain as Trump Says Iran is 'Very, Very Badly Damaged'\u2014 Eva; Dow Jones, Nasdaq, S&P 500 weekly preview: All eyes on Q2 megacap earnings.",
-    "market_movers": "Russell 2000 led tracked indexes at -0.42% today; Nasdaq was weakest at -1.40%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures edge up as oil turns lower in wait for Big Tech earnings; Stock Market Today: S&P 500, Dow Jones Futures Gain as Trump Says Iran is 'Very, Very Badly Damaged'\u2014 Eva; Dow Jones, Nasdaq, S&P 500 weekly preview: All eyes on Q2 megacap earnings."
+    "ai": "Key developments: Advancing next-gen AI with materials science innovation; Intel cutting jobs in fast-growing data center unit; Intel layoffs to hit Data Center group \u2014 division focused on server CPUs, AI chips, and data center architecture to be hit by an unknown number of cuts.",
+    "biotech": "Key developments: Makers of rare disease drugs seek exemption from Trump\u2019s price-cut pilots; De-Risking a Rare Disease Launch Starts with Precision; Alterity Therapeutics to Participate in the Virtual BTIG Biotechnology Conference 2026.",
+    "market": "Key developments: Stock market today: Nasdaq leads Dow, S&P 500 futures higher as chip stocks revive; Market Movers blog: US stocks rise as Iran pushes for negotiations; Stock Market Today: Dow Jones, Nasdaq 100 Futures Rise as Tech Stocks Lead the Rally\u2014Nebius, Archer, IREN.",
+    "market_movers": "Nasdaq led tracked indexes at -0.05% today; Russell 2000 was weakest at -0.67%. Key developments: Stock market today: Nasdaq leads Dow, S&P 500 futures higher as chip stocks revive; Market Movers blog: US stocks rise as Iran pushes for negotiations; Stock Market Today: Dow Jones, Nasdaq 100 Futures Rise as Tech Stocks Lead the Rally\u2014Nebius, Archer, IREN."
   },
   "takeaways": [
-    "Apple Avoided the AI CapEx Trap \u2014 It Could Create the Biggest iPhone Upgrade Cycle Ever - AOL.com",
-    "Hut 8 fully commercializes Texas campus with $9.8-billion AI data centre lease - The Globe and Mail",
-    "Biotech bet: Rare disease innovator with industrial scale production - The Armchair Trader",
-    "Biogen Korea names Kim Cheol-ung CEO to drive rare disease growth - CHOSUNBIZ - Chosunbiz",
-    "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI - Kavout | AI",
-    "Ernexa Therapeutics (ERNA) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
-    "Stock market today: Dow, S&P 500, Nasdaq futures edge up as oil turns lower in wait for Big Tech earnings - Yahoo Finance"
+    "Advancing next-gen AI with materials science innovation - MIT Technology Review",
+    "Intel cutting jobs in fast-growing data center unit - calcalistech.com",
+    "Makers of rare disease drugs seek exemption from Trump\u2019s price-cut pilots - STAT",
+    "De-Risking a Rare Disease Launch Starts with Precision - Fierce Biotech",
+    "Cellectar Biosciences (CLRB) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $CLRB - MarketBeat",
+    "Dyne Therapeutics\u2019 z-rostudirsen Accepted for FDA Review with Priority Review Granted for Duchenne Muscular Dystrophy - Quiver Quantitative",
+    "Stock market today: Nasdaq leads Dow, S&P 500 futures higher as chip stocks revive - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,33 +786,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "What Does the FDA's Priority Review Mean for Savara's MOLBREEVI",
-      "date": "Thu, 16 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNNkpXNXl0ZHR5NlJJNFFvZkdCaFJtdUdDZkVVUDI4SWM2RlVvaTkyMWljd1hDMUNfWGZTM3hLWXdpV0dRTVBld0pUSklFR3Q4LUM0cG9fUDYtWEdHVUlfaDRMMlEwX1A0MHg1d2d2RHVWZERvRU9vT1NycmJqQUNnYm1OVTdETm1OYmlVT1VHdEVLNjNXeGljRE1kQjRZUDA?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Ernexa Therapeutics (ERNA) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "event": "Cellectar Biosciences (CLRB) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $CLRB",
       "date": "Wed, 15 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBkZ3RVdTlfRXEzbE5ZQ244cEVmR0huaGluWVFaR21pdzl2OFNZQWxUMF92VERMbXJxNlIxaGJVd0ltQXh5VTlJbjJqc2hCUkVnY1B3LXc2cHBqakt1dnBuYk1qYVR4QmRC?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "CUMBERLAND PHARMACEUTICALS ANNOUNCES SPECIAL DIVIDEND OF $1.50 PER SHARE",
-      "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQQ1dFWnI1dEVMazA0R1hqTEs0UWE0MkhKNTJQUUNmMzB4QXcxRGZWMGlwN19XOUJMZmdTZFhXQWZmNGVuQjhVb3d4QW5OSXlHWk11SmJCV2M5SjBJUm15cko4Y2VpY3Q2OGU1ZHJ6ZVc2OEFXLXdoQVphZ3FpZUtpSDdDZlhKU0Z4YkVGNk1GUU93azUyRVM3M0dvSmlORWNHTmxJRjBZNXZaaXUxUDB2ZHNGbG1DWExJWU1HcFJFVW1RbWZNX0JvcDh3Ums?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Palvella Therapeutics (PVLA) Submits Initial Module of NDA For QTORIN",
-      "date": "Wed, 15 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQT216V25TWWNBOFI5Q1ZJR2phRUI5RkZ2SG0ydy1GZUtzQXduR0ItbkszemdGOGZVbHk0TmRiMkYxdUp3VDY1T2s1dnhsaURyXzdrRmFVb3pwNjBsaFphWUpubUJLcFRhc1pwY2VjMXl0ZzRqckZaMXdGcWl5bWhrU1FaUUtxVjF0Y2JKQy0zM0JOWXlpRmJ2dzFYNjNVWWNCV1ZoUGdB?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE84T2VzY3dNNk1pNjJ1anJTT2dkS1NCVFBYLTVFRW5hUllmcWZoS283cExIYTN4S2dGWmotRFE3eFgwc1BPWmNSbkExU194b3hkZ1dfbHY1emFMNmh4ZEE1OUlzUUM1Z3ZJ?oc=5"
     },
     {
       "company": "See source",
@@ -826,55 +802,79 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Cumberland Pharmaceuticals (Nasdaq: CPIX) returns cash after $100M Apotex deal",
-      "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQVkc4Z1VYaEJ3ajhwcHpHX3hvZUZKc1h0XzlJS0hzdUlxTm16M0tPblRpZ2JhSWVlNktibzNWOWZKVkNvQWdxeW9BN3g2czRlcXh0RHRZbFhpdHd0VVFGUVZWR1V6YWhCVGZnNHJfSDRMUkRmUldpOTZLNnNvbXNxTkxLWWt1aS11bUVqTERyR09zdW1wNHFfYnRKM3ZLNFlGdFVwTnVCMW4yc3l1SmIzekVqQng4UUVkWHdB?oc=5"
+      "event": "ELTP vs. CPIX: Which Pharma Stock Is the Better Buy Right Now?",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOQ2tOemZGakhzWHJqZEdmaXR1cVllS1RXb3o4MHJBU1BxWGdTX2VNNHhmcjBON2JlVmdhZnZNNDRQOUZkT2oyY0s5ZjVGbEZCU29jQXRyN0daWTlSQkJWVHR5eG9uR3BLMTBnOWJjc09SU0pKam5iaVdwZkV1Umx5SkFYc0NJaGVEMVFyMUxNZ3BCZmw4dFppRnBkZjFLZU8yNUZSNTloa2JSQ1lXSEJyeVRhcjZKUQ?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Edgewise Therapeutics Completes $2.65 Billion Deal Of Sevasemten To Servier",
+      "event": "Ernexa Therapeutics (ERNA) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBkZ3RVdTlfRXEzbE5ZQ244cEVmR0huaGluWVFaR21pdzl2OFNZQWxUMF92VERMbXJxNlIxaGJVd0ltQXh5VTlJbjJqc2hCUkVnY1B3LXc2cHBqakt1dnBuYk1qYVR4QmRC?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Medicus Pharma (MDCX) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Thu, 16 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9xWW9VcnJSQjY5MjRSQ3BqWWlTMzI3QWoyWUJCZkRpYlhPSVlmc3hfWW1wN0FqNUYtdkJCWExkdFFiNHFCN3JmZ3l3cmtBZVlUUlhpYUtXa2dzeWx3VUtNNzZ4ZXdNQjlP?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Mobia Medical (MOBI) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9qMzlMcmIxOU9YOV9xQlEtYlBnaHhXWWFRVGo0ZW1fNTAxYmV0VjQ1amM1QUlDTll6MlNHM296dWdIdVBkdEc4RzgyUnB2a3A4bVFHNUM4RVVYU2NuaGI2a2VnWlBaLWhp?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Hemab Therapeutics (COAG) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
       "date": "Tue, 14 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOb0hMY18tQ2dFRTFIWlRiVDBpdWZJTmtiSFl1M2lIWDhadnBVNURQaFlZbHhPNjBUMVVCb3BEaHlSZTF2UllFZXJiUXFxNDJmaU9aMkpmN0g0bHhXejJ3V1hTZjhVeF9hMkE1OG1sVHpheVdqSzhKblc5Y2hsNDBBekFrSUg2WTdnelFuUnJwV0s5QmY0WG5yRjVB0gGfAUFVX3lxTE1XeERwN2otY1pWWTI2TXo2bTFuMlNORXdwNFRYVzJKblFYeUNMOExZZ0p3cWhMUzdpS3JIVmFGZElxSTN2U29JS0tsN25NTzFUclBMNkZDSzlwZDlPOWdqc1prWkdUakdVdm13Nkdid0xkUmRSaU5nQU5OMWlQbTRlaElWQWMxNTlGeUNDNTluSDZjQ2phUXJnaUtuX3JiQQ?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE92dDhuUkJRWWJjX09DQVJhS2RjUXR6cERQOVh6SmV2UElVby04al9xXzNvR1NILTJnejRlQjNsTDF0MGw2NTQ2U2FRclNFYS1UY3FfbjFyZzRvb0RQYWZ1UTkxS2NtMndH?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Niagen Bioscience (NAGE) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Mon, 13 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOHpDMzB0NmlQcDVmZzQtY0xsWXNFNmVSNFJGaVZldGR4VW9EaXBLZzgyb1Y0ZjFQdFBsVXVLQ051ZDUyWUFXOTZKcjhpOFRJbkFMQ0JvbkwwOVhHMnltQl9jLTNoeFBa?oc=5"
+      "event": "Rani Therapeutics (RANI) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $RANI",
+      "date": "Wed, 15 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBkMUlWRy04S0ZqdldSdE1RVU1ObnVmaFl2bllqRXQ2NFVRWXZ0alF3Mm5ULW9Cc29DcmhLdFdvQzhkbHNoNHl5aFJTNzVBalRJcWpCb01SbkttNDV1VTlyVXhZWVNRQUdl?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,457.69",
-      "daily": -1.01,
-      "weekly": -1.55,
-      "monthly": -0.57
+      "value": "7,443.28",
+      "daily": -0.19,
+      "weekly": -0.96,
+      "monthly": -0.39
     },
     {
       "name": "Nasdaq",
-      "value": "25,520.24",
-      "daily": -1.4,
-      "weekly": -2.9,
-      "monthly": -3.76
+      "value": "25,508.07",
+      "daily": -0.05,
+      "weekly": -1.41,
+      "monthly": -2.52
     },
     {
       "name": "Dow Jones",
-      "value": "52,146.42",
-      "daily": -0.77,
-      "weekly": -0.93,
-      "monthly": 1.13
+      "value": "51,839.26",
+      "daily": -0.59,
+      "weekly": -1.26,
+      "monthly": 0.24
     },
     {
       "name": "Russell 2000",
-      "value": "2,962.22",
-      "daily": -0.42,
-      "weekly": -0.52,
-      "monthly": -0.59
+      "value": "2,942.43",
+      "daily": -0.67,
+      "weekly": -0.36,
+      "monthly": -2.06
     }
   ]
 }
