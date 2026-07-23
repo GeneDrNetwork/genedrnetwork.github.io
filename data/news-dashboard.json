@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-22T12:48:16+00:00",
+  "updated_at": "2026-07-23T12:50:44+00:00",
   "summaries": {
-    "ai": "Key developments: 3 AI Infrastructure Stocks Backed By Data Center Spending; The AI alliance rewriting Washington\u2019s Gulf strategy; Nvidia Wants to Own Every Chip Inside AI Data Centers.",
-    "biotech": "Key developments: AI-Designed Drugs Are Reaching Human Trials. Now Comes the Hard Part.; Biotech experts want FDA drug reviews based on science, not politics; Broad Institute, partners unveil new initiative to develop gene therapies for rare diseases.",
-    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures slide with Alphabet, Tesla earnings on deck; US Stock Market Today: S&P 500 Futures Rise On Rate Jitters And Tech Earnings; Stock Market Today: S&P 500, Nasdaq 100 Futures Fall As Chip Stocks Cool Down and Tesla, Alphabet Gear Up.",
-    "market_movers": "Russell 2000 led tracked indexes at +1.53% today; Dow Jones was weakest at +0.74%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures slide with Alphabet, Tesla earnings on deck; US Stock Market Today: S&P 500 Futures Rise On Rate Jitters And Tech Earnings; Stock Market Today: S&P 500, Nasdaq 100 Futures Fall As Chip Stocks Cool Down and Tesla, Alphabet Gear Up."
+    "ai": "Key developments: Israel\u2019s AI Czar Seeks Chip Fab, New Data Centers to Keep Edge; AI Infrastructure Boom Creates New Global Logistics Challenge, Industry Leaders Say; AMD expected to launch next generation of AI infrastructure to challenge Nvidia.",
+    "biotech": "Key developments: US \u2018eroding\u2019 lead in rare diseases a matter of national security: Report; Biotech experts want FDA drug reviews based on science, not politics; United Therapeutics Appoints Victor Dzau to Board of Directors.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures slip as markets weigh AI capex, widening Mideast attacks; US Stock Market Today: S&P 500 Futures Slip As Rate And Jobs Worries Grow; Wall Street indexes dip with technology earnings, rising oil in focus.",
+    "market_movers": "Dow Jones led tracked indexes at -0.01% today; Russell 2000 was weakest at -0.92%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures slip as markets weigh AI capex, widening Mideast attacks; US Stock Market Today: S&P 500 Futures Slip As Rate And Jobs Worries Grow; Wall Street indexes dip with technology earnings, rising oil in focus."
   },
   "takeaways": [
-    "3 AI Infrastructure Stocks Backed By Data Center Spending - simplywall.st",
-    "The AI alliance rewriting Washington\u2019s Gulf strategy - Al Majalla",
-    "AI-Designed Drugs Are Reaching Human Trials. Now Comes the Hard Part. - The Clinical Trial Vanguard",
-    "Biotech experts want FDA drug reviews based on science, not politics - Reuters",
-    "FDA Grants Orphan Drug Designation to Affinia Therapeutics\u2019 AFTX-201 for the Treatment of BAG3-Associated Dilated Cardiomyopathy (DCM) - Yahoo Finance",
-    "Medicus Pharma (MDCX) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
-    "Stock market today: Dow, S&P 500, Nasdaq futures slide with Alphabet, Tesla earnings on deck - Yahoo Finance"
+    "Israel\u2019s AI Czar Seeks Chip Fab, New Data Centers to Keep Edge - Bloomberg.com",
+    "AI Infrastructure Boom Creates New Global Logistics Challenge, Industry Leaders Say - EIN News",
+    "US \u2018eroding\u2019 lead in rare diseases a matter of national security: Report - BioSpace",
+    "Biotech experts want FDA drug reviews based on science, not politics - WTVB",
+    "FDA Grants Orphan Drug Designation to Affinia Therapeutics\u2019 AFTX-201 for the Treatment of BAG3-Associated Dilated Cardiomyopathy (DCM) - Business Wire",
+    "ALXN1840 Could Be First U.S. Wilson Therapy With Novel Mechanism in Decades - Stock Titan",
+    "Stock market today: Dow, S&P 500, Nasdaq futures slip as markets weigh AI capex, widening Mideast attacks - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -788,23 +788,15 @@
       "indication": "See source",
       "event": "FDA Grants Orphan Drug Designation to Affinia Therapeutics\u2019 AFTX-201 for the Treatment of BAG3-Associated Dilated Cardiomyopathy (DCM)",
       "date": "Wed, 22 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOalRnaVoxcldNN3VTSUZsVnpuRHBYV2lfSU1UV1RsdmVFTXZzWmxDeTVSX01LTnloSm5QOTltQjRDeER2WUYzWGpOY0VzTWVmWFdMMDNKOE9YNjJnMDM2a3NmU1FuamVqamNVVFJUUzUwcjRFTE51cTVGenBWakhzNThXQXZYS2RpSkdPRTZiZjlOYmh4dXp1eWFYdw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMilwJBVV95cUxNd1IyZ2xEYjQzX3Rvakc3bDhnbWRlb0ZVOExUOWgtQzNmYndMUC1BME12TmhOMGpSa040QU1JVW51d09ZRHQ0cE02SzZjN0VGblRpMnNQdXFxRTg2aVZUT0VTcHZrbkp4VEh0X0ZXNS15RW9RN0RiUEFvdUNoaVJYeXhMS1U1YXRaelBVcGdpdXhVZ1RPa25HdHQ3Y2NNNDF4eE9HM3lNal94WWY1RkVCaXlwWmpubmthRWNHT0Foc25QR2gyeGtIdzFfT3ZoLTA1eExyVjNpS09taDRQNUxrUVRLRzR2WTNTZGlPLW5kVG96bWF1RWp6VjhiVGNKOUFOR25IQUZ2RVBPM210VW9fX1RlZ29DSmM?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Medicus Pharma (MDCX) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Thu, 16 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9xWW9VcnJSQjY5MjRSQ3BqWWlTMzI3QWoyWUJCZkRpYlhPSVlmc3hfWW1wN0FqNUYtdkJCWExkdFFiNHFCN3JmZ3l3cmtBZVlUUlhpYUtXa2dzeWx3VUtNNzZ4ZXdNQjlP?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Biotech Advances VOXZOGO Toward Landmark US FDA Approval",
-      "date": "Mon, 20 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOZ3loSGNabkFhTFhsR0xSeGt0MmJLOHhNZzlqRmpKSVdyZ2dURXdMdjc2VmJLeHZDRE9MMkUtQU5jd01lTWlQTUhZWTRib0JmRG5iQkJ0Y1V5ZnZtUmpMemx0QVl3ZE05d3VoOXczbnkyaWhndUIzU1ZTeVJFSzc3SlZpOERJRTNicEh4Rm45WjVWQWNQa1FJeU9hTXp1dzViSjkwWVM5TURLU01mcENQbXcxRDA?oc=5"
+      "event": "ALXN1840 Could Be First U.S. Wilson Therapy With Novel Mechanism in Decades",
+      "date": "Wed, 22 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPYndXQjZBamNFRGR1RXZKTnNNSHZrdk9BM2llSkNJdEpLaklHSm1fYk03VGV1MlE5ang2c1dxLTBsN0JlVF9Hanpsbjd5R2Z2WmxOWE1pS051UUFONzQ2dGFVdDdQTTk1RjV6VzVlR3JDMlJ1bU5vTTFEcHZXbDNVejlaaDIzb25IOGxYZC1kZ09nME5OSEtteHg1a1N3ZVByYkJ6MnVvZ3pLS2F6ZlAzbmdnUEhJcWNhRkE?oc=5"
     },
     {
       "company": "See source",
@@ -818,9 +810,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "ELTP vs. CPIX: Which Pharma Stock Is the Better Buy Right Now?",
-      "date": "Wed, 15 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOQ2tOemZGakhzWHJqZEdmaXR1cVllS1RXb3o4MHJBU1BxWGdTX2VNNHhmcjBON2JlVmdhZnZNNDRQOUZkT2oyY0s5ZjVGbEZCU29jQXRyN0daWTlSQkJWVHR5eG9uR3BLMTBnOWJjc09SU0pKam5iaVdwZkV1Umx5SkFYc0NJaGVEMVFyMUxNZ3BCZmw4dFppRnBkZjFLZU8yNUZSNTloa2JSQ1lXSEJyeVRhcjZKUQ?oc=5"
+      "event": "Here's Why You Should Add Savara Stock to Your Portfolio Now",
+      "date": "Wed, 22 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOMzZOSExKU2JUbE1uMTk3VWxoZnJDNTBRSzZUejljM2NFeWt5Q2hBWlZucWRJc1NtUVVNc1VSNnBkWkphSF9PRDZQMWtacDRxTE9lNjQyOXlCMFdsZGRmMENEZElROW9nY0JPTTdzazhfTVdfS2RqbU5ka1JKZnRFYnpjdFlDRGFXNUhjdlRqNlVlX1dvRnMwTFZOa05vdFBodFNLMFZrNGpFaWRZckhNQUoxbU9ta28?oc=5"
     },
     {
       "company": "See source",
@@ -834,47 +826,47 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Palvella Therapeutics (PVLA) Submits Initial Module of NDA For QTORIN",
-      "date": "Wed, 15 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQT216V25TWWNBOFI5Q1ZJR2phRUI5RkZ2SG0ydy1GZUtzQXduR0ItbkszemdGOGZVbHk0TmRiMkYxdUp3VDY1T2s1dnhsaURyXzdrRmFVb3pwNjBsaFphWUpubUJLcFRhc1pwY2VjMXl0ZzRqckZaMXdGcWl5bWhrU1FaUUtxVjF0Y2JKQy0zM0JOWXlpRmJ2dzFYNjNVWWNCV1ZoUGdB?oc=5"
+      "event": "Monopar Initiates Rolling NDA Submission for ALXN1840 in Wilson Disease",
+      "date": "Wed, 22 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQbDBOQmxLWTkwQ0Q1Skc3Qzdodm8xSnlVMkhjazZMMndVM2MtXzM3OTE0Z3BibkpraklMdU1NcHQtNjhPeklXbUs5RUFlYjROdTNrT21MZ2RHd0tmN2ZBallfLTNMN2RxSERxMGc5YjRwRmFPTHBGdDZVVVpYS2xZUWFRdUtROGhTRmhrODNCd3RGZXlyOGlLSlRYRmN4bTRUQWpCczhrMXJFVzhWa1o0LVhXNDBncmJmR0xCUk5HSjJkTFZTZGk3OHJjUHZ4VWRpQVdLRzJ1emdKMHdsY2fSAeMBQVVfeXFMT3RmZlk2Nl9oYUdCRExHcTlwRFlsaFFFbk9Ha2h5UFliR2tkanpPdHlmNDQ0cXcyQTZURTVNeGtTTDV3Y0dPdGlhYVp0Yi1CVWJ3Y21TaE45V0lnN3dCSm5RZjlScDM5Y0tvOERudHhIZHdkTU5JRm51QTJkd2IzZ2FhbUpvREI4djNnVFA1RnpIMC1QU3ktNUFyQ0sxNy0tdG16WEU0akxWMWszV05fSTNIREp1U0NrZUxfdk1nMS1ia1Y1QkJJXzBJMVFxQjNOUTNfRVJlZnlYaHpPOVloM3hXaVk?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Monopar Initiates Rolling NDA Submission for ALXN1840 in Wilson Disease",
-      "date": "Wed, 22 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQbDBOQmxLWTkwQ0Q1Skc3Qzdodm8xSnlVMkhjazZMMndVM2MtXzM3OTE0Z3BibkpraklMdU1NcHQtNjhPeklXbUs5RUFlYjROdTNrT21MZ2RHd0tmN2ZBallfLTNMN2RxSERxMGc5YjRwRmFPTHBGdDZVVVpYS2xZUWFRdUtROGhTRmhrODNCd3RGZXlyOGlLSlRYRmN4bTRUQWpCczhrMXJFVzhWa1o0LVhXNDBncmJmR0xCUk5HSjJkTFZTZGk3OHJjUHZ4VWRpQVdLRzJ1emdKMHdsY2fSAeMBQVVfeXFMT3RmZlk2Nl9oYUdCRExHcTlwRFlsaFFFbk9Ha2h5UFliR2tkanpPdHlmNDQ0cXcyQTZURTVNeGtTTDV3Y0dPdGlhYVp0Yi1CVWJ3Y21TaE45V0lnN3dCSm5RZjlScDM5Y0tvOERudHhIZHdkTU5JRm51QTJkd2IzZ2FhbUpvREI4djNnVFA1RnpIMC1QU3ktNUFyQ0sxNy0tdG16WEU0akxWMWszV05fSTNIREp1U0NrZUxfdk1nMS1ia1Y1QkJJXzBJMVFxQjNOUTNfRVJlZnlYaHpPOVloM3hXaVk?oc=5"
+      "event": "Trellis Raises $9M to Advance Calpurbatug Phase 2 Trial",
+      "date": "Mon, 20 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiO0FVX3lxTE45dnc4TUtUcjA2Q1ZOUDhHWGdHQzU4b3pjY08wRUxBeUJFLWFkd3VSdl9VcER1TlFDdWNR?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,509.20",
-      "daily": 0.89,
-      "weekly": -0.46,
-      "monthly": 0.49
+      "value": "7,498.96",
+      "daily": -0.14,
+      "weekly": -0.97,
+      "monthly": 1.81
     },
     {
       "name": "Nasdaq",
-      "value": "25,837.21",
-      "daily": 1.29,
-      "weekly": -1.03,
-      "monthly": -1.26
+      "value": "25,690.90",
+      "daily": -0.57,
+      "weekly": -2.2,
+      "monthly": 0.41
     },
     {
       "name": "Dow Jones",
-      "value": "52,224.64",
-      "daily": 0.74,
-      "weekly": -0.54,
-      "monthly": 0.99
+      "value": "52,218.58",
+      "daily": -0.01,
+      "weekly": -0.84,
+      "monthly": 1.07
     },
     {
       "name": "Russell 2000",
-      "value": "2,987.40",
-      "daily": 1.53,
-      "weekly": 0.76,
-      "monthly": -0.57
+      "value": "2,959.94",
+      "daily": -0.92,
+      "weekly": -0.55,
+      "monthly": -0.52
     }
   ]
 }
