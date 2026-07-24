@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-23T12:50:44+00:00",
+  "updated_at": "2026-07-24T12:47:38+00:00",
   "summaries": {
-    "ai": "Key developments: Israel\u2019s AI Czar Seeks Chip Fab, New Data Centers to Keep Edge; AI Infrastructure Boom Creates New Global Logistics Challenge, Industry Leaders Say; AMD expected to launch next generation of AI infrastructure to challenge Nvidia.",
-    "biotech": "Key developments: US \u2018eroding\u2019 lead in rare diseases a matter of national security: Report; Biotech experts want FDA drug reviews based on science, not politics; United Therapeutics Appoints Victor Dzau to Board of Directors.",
-    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures slip as markets weigh AI capex, widening Mideast attacks; US Stock Market Today: S&P 500 Futures Slip As Rate And Jobs Worries Grow; Wall Street indexes dip with technology earnings, rising oil in focus.",
-    "market_movers": "Dow Jones led tracked indexes at -0.01% today; Russell 2000 was weakest at -0.92%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures slip as markets weigh AI capex, widening Mideast attacks; US Stock Market Today: S&P 500 Futures Slip As Rate And Jobs Worries Grow; Wall Street indexes dip with technology earnings, rising oil in focus."
+    "ai": "Key developments: Marvell Stock Leads 3 AI Infrastructure Picks Tied To US Chip Spending; SpaceX\u2013Reflection Deal Moves the AI Compute Debate Deeper into Infrastructure; AI data centre boom is pushing Big Tech deeper into debt.",
+    "biotech": "Key developments: Iceland-based Synaptiq launches with Nobias\u2019 rare disease drug; CRISPR Biotech Scribe Therapeutics Writes a New Chapter With $129M IPO; Deborah D. Ascheim, M.D. Elected to Longeveron Board of Directors.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures steady from tech rout as new tariffs take effect; US Stock Market Today: S&P 500 Futures Slip On Higher Rate And Inflation Concerns; Nasdaq, S&P 500, Dow Futures Shake Off Iran Jitters As Investors Turn To AI Hyperscaler Earnings: INTC, TSLA, TTD, HIMS In Focus.",
+    "market_movers": "Russell 2000 led tracked indexes at -0.67% today; Nasdaq was weakest at -2.15%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures steady from tech rout as new tariffs take effect; US Stock Market Today: S&P 500 Futures Slip On Higher Rate And Inflation Concerns; Nasdaq, S&P 500, Dow Futures Shake Off Iran Jitters As Investors Turn To AI Hyperscaler Earnings: INTC, TSLA, TTD, HIMS In Focus."
   },
   "takeaways": [
-    "Israel\u2019s AI Czar Seeks Chip Fab, New Data Centers to Keep Edge - Bloomberg.com",
-    "AI Infrastructure Boom Creates New Global Logistics Challenge, Industry Leaders Say - EIN News",
-    "US \u2018eroding\u2019 lead in rare diseases a matter of national security: Report - BioSpace",
-    "Biotech experts want FDA drug reviews based on science, not politics - WTVB",
+    "Marvell Stock Leads 3 AI Infrastructure Picks Tied To US Chip Spending - simplywall.st",
+    "SpaceX\u2013Reflection Deal Moves the AI Compute Debate Deeper into Infrastructure - JD Supra",
+    "Iceland-based Synaptiq launches with Nobias\u2019 rare disease drug - European Biotechnology Magazine",
+    "CRISPR Biotech Scribe Therapeutics Writes a New Chapter With $129M IPO - MedCity News",
     "FDA Grants Orphan Drug Designation to Affinia Therapeutics\u2019 AFTX-201 for the Treatment of BAG3-Associated Dilated Cardiomyopathy (DCM) - Business Wire",
     "ALXN1840 Could Be First U.S. Wilson Therapy With Novel Mechanism in Decades - Stock Titan",
-    "Stock market today: Dow, S&P 500, Nasdaq futures slip as markets weigh AI capex, widening Mideast attacks - Yahoo Finance"
+    "Stock market today: Dow, S&P 500, Nasdaq futures steady from tech rout as new tariffs take effect - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,14 +802,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Dyne Therapeutics\u2019 z-rostudirsen Accepted for FDA Review with Priority Review Granted for Duchenne Muscular Dystrophy",
-      "date": "Mon, 20 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxPdzF5VHU5aEJnYnV5WGpneGlTLUJIVkpHd3FGTzlBVlFNQ3kybFhFQzNPTUdhQ0s1VjJoMnFvaTRlNmpXMWdEc0poWVlncnRTZGVUZFRvamhQMEZ2V05ZVVRoMmRLNXM1bnVMU2o3ZE85Ui10NGw4Mk9TOGUwYy1oejJDWktzd19YU05fQ2xEelA1SzYySXdzUGQ4NVZvRWtyRnM0cWtOaHVkTkRIbjR4eHIyY0RNVmFzcnhiUTBEVk5kMjQ2VlhBeXEwTHVyZmRnLWxDNFM1b3ExUkhqbGhGUktUS0pJLUJwN013aHFmZ1Q0eTQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Here's Why You Should Add Savara Stock to Your Portfolio Now",
       "date": "Wed, 22 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOMzZOSExKU2JUbE1uMTk3VWxoZnJDNTBRSzZUejljM2NFeWt5Q2hBWlZucWRJc1NtUVVNc1VSNnBkWkphSF9PRDZQMWtacDRxTE9lNjQyOXlCMFdsZGRmMENEZElROW9nY0JPTTdzazhfTVdfS2RqbU5ka1JKZnRFYnpjdFlDRGFXNUhjdlRqNlVlX1dvRnMwTFZOa05vdFBodFNLMFZrNGpFaWRZckhNQUoxbU9ta28?oc=5"
@@ -818,9 +810,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Sets Jan. 21, 2027 Target Action Date for Dyne's Duchenne Treatment",
+      "event": "Peptide Therapeutics Market Size & Global Trends [2035]",
+      "date": "Wed, 22 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNYjFQZS1KNnVOblJ3OVZmREExNWstaFRMTVBQRTlQTzNzZU9QSkhkdGptZURsSWF4czB2dUJQX0RmeTVhSEFJa3Npci1SWnRlMnQwcC1uOE5rbGJkTm9JUy1pMldTM0JQMVU3VVhQR01JdC1OWWgtX2dmYURlZ3k2SFl5bEU?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Longeveron Inc. Elects Deborah D. Ascheim, M.D., to Board of Directors",
+      "date": "Thu, 23 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNT0Qtd1d3VnRRYkowSTgtTXRsMU53eWFmM2t4T0FEQmJCN2lyS2x1R2wzZkhoMHkzQ2dkdkdUWERWc1NaemVfX3hFaG1wWFdHVWF2VmxBR2s3aHZMejVvVkFNdEhxNVpsYmFGUjFSbW40ZlVwTWFOalpjbk9QRUZWVkFaLTRkdFlpRXJWanlZQVJJblowRE15a2JMc3BJNnNLaVJ2ZFJn?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Dyne Therapeutics Announces U.S. FDA Acceptance of Biologics License Application (BLA) for Z-Rostudirsen in Exon 51 Duchenne Muscular Dystrophy (DMD)",
       "date": "Mon, 20 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQZnl1eUZkRVBqWjVfbzVOY29ZMG05am51UEt0UVdKemJZYU5xXzdNR1A1aXZBN3JNVVQzeS04TTNPbkNWM0FONGVMcGtQVUVUQ00zTUFXczRRY1NpdldfWTNYYVdfeGh5N0tlMjEzSXlUeVhCTnFNU0o5bVJHd1ZJM0FwNjZPbHBBV1dHTkdodUpzVjA5ejZOb0ZHS3Uyd3dkWXBhaFF0QjFGWDFfV01pTWlMVGt5UHl2aFFlWXNB?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMivgJBVV95cUxORnUwbU9qV29RbG9VdjdPUkMtcl83cVlnZDdtcWhBZmRUMmtnS0VsNk5ucDlpZVR1YkpUajZZOHctSkZEVDBLaE1aR0F4R0NZcXJLLTktdXlEeThyb0hjRk5PS09IRG1OM1ItTExUVF9RWVl3N2J2S0ozNVRuQzlXRjc1SmdVa3B4ZXVHUko5ZGpwTjBsYUhzUzBsbFMtbnhnU251dTFWU01PVDhOUXN4bE1CWXlreTYxUFdZTW5EcFpEaENsdVZBejh4U2ZkLTQ5bXQzT0plWEYzSFFvYnhTblVyVjJYZDVVaGJVVzlhMnRtNHVCME5FdkNHcmVmbmhkRXFFOF8tMlJFNDVZcS1PcE82T21EZFd3dks4OFB1WlJyR3Vxa2JZRi12d2RjNk45dE5vakpvdmxzS2FWMFHSAcMCQVVfeXFMTzJ5M216TTFoQV9FQ1dPSmhlRGJ5aTczc21lLVcwLUtvMUxnUjBzN3VFeC1CT2N1akNvREFqTUhrZEVPM0hxVHRSdUR0UW1kRGhfc3RuOXdUekdlNF9QQUtkMUpWWGZpY0VlaFV5Tk9DNThOdlcta09Wdm5MMVk5bldsY3hleERpUjJ5Nm1TVWN4VDkwdXhrMlJydDdkVG1JVll3SkdyS21WOEhOeXpaVXNYTjdKZ2swWGhNZllaYXNjNy16cGFSYTFEdEtxLXlEX3BGeVFIZHdFM3FhR1pxa0E0dmphQkNHUUJRUEZUeEwwZDFDNXFaZEpUcG13YWFTRGNLYUl5SzhTVHhOME91S0UwQTFNT0lRbzFEZWJIMG5WT2lZdVJLMlBUNGllSmczZXVkU0cxNF9tLWI5ZVZPY1RMTjQ?oc=5"
     },
     {
       "company": "See source",
@@ -829,44 +837,36 @@
       "event": "Monopar Initiates Rolling NDA Submission for ALXN1840 in Wilson Disease",
       "date": "Wed, 22 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQbDBOQmxLWTkwQ0Q1Skc3Qzdodm8xSnlVMkhjazZMMndVM2MtXzM3OTE0Z3BibkpraklMdU1NcHQtNjhPeklXbUs5RUFlYjROdTNrT21MZ2RHd0tmN2ZBallfLTNMN2RxSERxMGc5YjRwRmFPTHBGdDZVVVpYS2xZUWFRdUtROGhTRmhrODNCd3RGZXlyOGlLSlRYRmN4bTRUQWpCczhrMXJFVzhWa1o0LVhXNDBncmJmR0xCUk5HSjJkTFZTZGk3OHJjUHZ4VWRpQVdLRzJ1emdKMHdsY2fSAeMBQVVfeXFMT3RmZlk2Nl9oYUdCRExHcTlwRFlsaFFFbk9Ha2h5UFliR2tkanpPdHlmNDQ0cXcyQTZURTVNeGtTTDV3Y0dPdGlhYVp0Yi1CVWJ3Y21TaE45V0lnN3dCSm5RZjlScDM5Y0tvOERudHhIZHdkTU5JRm51QTJkd2IzZ2FhbUpvREI4djNnVFA1RnpIMC1QU3ktNUFyQ0sxNy0tdG16WEU0akxWMWszV05fSTNIREp1U0NrZUxfdk1nMS1ia1Y1QkJJXzBJMVFxQjNOUTNfRVJlZnlYaHpPOVloM3hXaVk?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Trellis Raises $9M to Advance Calpurbatug Phase 2 Trial",
-      "date": "Mon, 20 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiO0FVX3lxTE45dnc4TUtUcjA2Q1ZOUDhHWGdHQzU4b3pjY08wRUxBeUJFLWFkd3VSdl9VcER1TlFDdWNR?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,498.96",
-      "daily": -0.14,
-      "weekly": -0.97,
-      "monthly": 1.81
+      "value": "7,408.30",
+      "daily": -1.21,
+      "weekly": -1.67,
+      "monthly": 0.68
     },
     {
       "name": "Nasdaq",
-      "value": "25,690.90",
-      "daily": -0.57,
-      "weekly": -2.2,
-      "monthly": 0.41
+      "value": "25,137.69",
+      "daily": -2.15,
+      "weekly": -2.88,
+      "monthly": -1.33
     },
     {
       "name": "Dow Jones",
-      "value": "52,218.58",
-      "daily": -0.01,
-      "weekly": -0.84,
-      "monthly": 1.07
+      "value": "51,711.65",
+      "daily": -0.97,
+      "weekly": -1.6,
+      "monthly": -0.26
     },
     {
       "name": "Russell 2000",
-      "value": "2,959.94",
-      "daily": -0.92,
-      "weekly": -0.55,
-      "monthly": -0.52
+      "value": "2,940.16",
+      "daily": -0.67,
+      "weekly": -1.16,
+      "monthly": -1.56
     }
   ]
 }
