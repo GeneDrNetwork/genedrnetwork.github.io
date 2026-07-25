@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-24T12:47:38+00:00",
+  "updated_at": "2026-07-25T12:11:09+00:00",
   "summaries": {
-    "ai": "Key developments: Marvell Stock Leads 3 AI Infrastructure Picks Tied To US Chip Spending; SpaceX\u2013Reflection Deal Moves the AI Compute Debate Deeper into Infrastructure; AI data centre boom is pushing Big Tech deeper into debt.",
-    "biotech": "Key developments: Iceland-based Synaptiq launches with Nobias\u2019 rare disease drug; CRISPR Biotech Scribe Therapeutics Writes a New Chapter With $129M IPO; Deborah D. Ascheim, M.D. Elected to Longeveron Board of Directors.",
-    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures steady from tech rout as new tariffs take effect; US Stock Market Today: S&P 500 Futures Slip On Higher Rate And Inflation Concerns; Nasdaq, S&P 500, Dow Futures Shake Off Iran Jitters As Investors Turn To AI Hyperscaler Earnings: INTC, TSLA, TTD, HIMS In Focus.",
-    "market_movers": "Russell 2000 led tracked indexes at -0.67% today; Nasdaq was weakest at -2.15%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures steady from tech rout as new tariffs take effect; US Stock Market Today: S&P 500 Futures Slip On Higher Rate And Inflation Concerns; Nasdaq, S&P 500, Dow Futures Shake Off Iran Jitters As Investors Turn To AI Hyperscaler Earnings: INTC, TSLA, TTD, HIMS In Focus."
+    "ai": "Key developments: Is the AI Infrastructure Boom More Than Just GPUs; Forget AI Chips and the Mag 7: Buy AI Infrastructure Stocks (VRT, EME) Now; Forget AI Chips and the Mag 7: Buy AI Infrastructure Stocks (VRT, EME) Now.",
+    "biotech": "Key developments: US-Listed Rare Disease Biotech Hit With Full Clinical Hold; Data Unblinding Ahead; This Capricor Insider Sold 24,000 Shares Before the Drop. With a New Catalyst on the Way, Is It Time to Buy?; HHS launches Operation TrialBlazer to advance US clinical research leadership.",
+    "market": "Key developments: Stock market today: Nasdaq slips, Dow and S&P 500 recover to close a volatile week on Wall Street; Dow, S&P 500, Nasdaq Futures Slip After Record Rally As US-Iran War Confusion Eclipses AI Gains: TSLA, BB, META, HPE, NVDA Stocks In Focus; Nasdaq lags on angst over AI spending ahead of earnings reports.",
+    "market_movers": "Russell 2000 led tracked indexes at -0.67% today; Nasdaq was weakest at -2.15%. Key developments: Stock market today: Nasdaq slips, Dow and S&P 500 recover to close a volatile week on Wall Street; Dow, S&P 500, Nasdaq Futures Slip After Record Rally As US-Iran War Confusion Eclipses AI Gains: TSLA, BB, META, HPE, NVDA Stocks In Focus; Nasdaq lags on angst over AI spending ahead of earnings reports."
   },
   "takeaways": [
-    "Marvell Stock Leads 3 AI Infrastructure Picks Tied To US Chip Spending - simplywall.st",
-    "SpaceX\u2013Reflection Deal Moves the AI Compute Debate Deeper into Infrastructure - JD Supra",
-    "Iceland-based Synaptiq launches with Nobias\u2019 rare disease drug - European Biotechnology Magazine",
-    "CRISPR Biotech Scribe Therapeutics Writes a New Chapter With $129M IPO - MedCity News",
+    "Is the AI Infrastructure Boom More Than Just GPUs - Kavout | AI",
+    "Forget AI Chips and the Mag 7: Buy AI Infrastructure Stocks (VRT, EME) Now - Yahoo Finance",
+    "US-Listed Rare Disease Biotech Hit With Full Clinical Hold; Data Unblinding Ahead - Streetwise Reports",
+    "This Capricor Insider Sold 24,000 Shares Before the Drop. With a New Catalyst on the Way, Is It Time to Buy? - The Motley Fool",
+    "Lilly's triple agonist just became its most powerful obesity drug yet - Drug Discovery News",
     "FDA Grants Orphan Drug Designation to Affinia Therapeutics\u2019 AFTX-201 for the Treatment of BAG3-Associated Dilated Cardiomyopathy (DCM) - Business Wire",
-    "ALXN1840 Could Be First U.S. Wilson Therapy With Novel Mechanism in Decades - Stock Titan",
-    "Stock market today: Dow, S&P 500, Nasdaq futures steady from tech rout as new tariffs take effect - Yahoo Finance"
+    "Stock market today: Nasdaq slips, Dow and S&P 500 recover to close a volatile week on Wall Street - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,6 +786,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Lilly's triple agonist just became its most powerful obesity drug yet",
+      "date": "Fri, 24 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNUmtuaDM4bmJKLU9ZM2wtNjVZQTlpQjVNZnFyXzN6emxXTEpYMEdrbkF6MjBUQjUxREF1dVd1TGwwSzVDM0VuMElmWlF1UHlMXzdIRDNyYWkxZ0Z4MDNiQjZwb2FGRnI5UnhpZzJmZWNuWmNHLU5qcGNrWXlFMmdRTEVSNDViOW9PRm01TTc2d1BLQlQtcWRuSEFfaGx3RS1ISzZZREQ5RExHallFWHc?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "FDA Grants Orphan Drug Designation to Affinia Therapeutics\u2019 AFTX-201 for the Treatment of BAG3-Associated Dilated Cardiomyopathy (DCM)",
       "date": "Wed, 22 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMilwJBVV95cUxNd1IyZ2xEYjQzX3Rvakc3bDhnbWRlb0ZVOExUOWgtQzNmYndMUC1BME12TmhOMGpSa040QU1JVW51d09ZRHQ0cE02SzZjN0VGblRpMnNQdXFxRTg2aVZUT0VTcHZrbkp4VEh0X0ZXNS15RW9RN0RiUEFvdUNoaVJYeXhMS1U1YXRaelBVcGdpdXhVZ1RPa25HdHQ3Y2NNNDF4eE9HM3lNal94WWY1RkVCaXlwWmpubmthRWNHT0Foc25QR2gyeGtIdzFfT3ZoLTA1eExyVjNpS09taDRQNUxrUVRLRzR2WTNTZGlPLW5kVG96bWF1RWp6VjhiVGNKOUFOR25IQUZ2RVBPM210VW9fX1RlZ29DSmM?oc=5"
@@ -797,6 +805,22 @@
       "event": "ALXN1840 Could Be First U.S. Wilson Therapy With Novel Mechanism in Decades",
       "date": "Wed, 22 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPYndXQjZBamNFRGR1RXZKTnNNSHZrdk9BM2llSkNJdEpLaklHSm1fYk03VGV1MlE5ang2c1dxLTBsN0JlVF9Hanpsbjd5R2Z2WmxOWE1pS051UUFONzQ2dGFVdDdQTTk1RjV6VzVlR3JDMlJ1bU5vTTFEcHZXbDNVejlaaDIzb25IOGxYZC1kZ09nME5OSEtteHg1a1N3ZVByYkJ6MnVvZ3pLS2F6ZlAzbmdnUEhJcWNhRkE?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Agios Pharmaceuticals (AGIO) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Tue, 21 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9NV05DVklsMVRoWFBfV2w1aS1XeFBZU0dsVnZTQlVFMHZMZDByaFJ3a1E1WFlLV0ViTzZFSGxZd2pfNmMzd2E3dHphTVVzeUk0dGRJRW5uejBiOEhoQ3laem9PeTdDV2V1?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Dyne Therapeutics\u2019 z-rostudirsen Accepted for FDA Review with Priority Review Granted for Duchenne Muscular Dystrophy",
+      "date": "Mon, 20 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxPdzF5VHU5aEJnYnV5WGpneGlTLUJIVkpHd3FGTzlBVlFNQ3kybFhFQzNPTUdhQ0s1VjJoMnFvaTRlNmpXMWdEc0poWVlncnRTZGVUZFRvamhQMEZ2V05ZVVRoMmRLNXM1bnVMU2o3ZE85Ui10NGw4Mk9TOGUwYy1oejJDWktzd19YU05fQ2xEelA1SzYySXdzUGQ4NVZvRWtyRnM0cWtOaHVkTkRIbjR4eHIyY0RNVmFzcnhiUTBEVk5kMjQ2VlhBeXEwTHVyZmRnLWxDNFM1b3ExUkhqbGhGUktUS0pJLUJwN013aHFmZ1Q0eTQ?oc=5"
     },
     {
       "company": "See source",
@@ -821,22 +845,6 @@
       "event": "Longeveron Inc. Elects Deborah D. Ascheim, M.D., to Board of Directors",
       "date": "Thu, 23 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNT0Qtd1d3VnRRYkowSTgtTXRsMU53eWFmM2t4T0FEQmJCN2lyS2x1R2wzZkhoMHkzQ2dkdkdUWERWc1NaemVfX3hFaG1wWFdHVWF2VmxBR2s3aHZMejVvVkFNdEhxNVpsYmFGUjFSbW40ZlVwTWFOalpjbk9QRUZWVkFaLTRkdFlpRXJWanlZQVJJblowRE15a2JMc3BJNnNLaVJ2ZFJn?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Dyne Therapeutics Announces U.S. FDA Acceptance of Biologics License Application (BLA) for Z-Rostudirsen in Exon 51 Duchenne Muscular Dystrophy (DMD)",
-      "date": "Mon, 20 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgJBVV95cUxORnUwbU9qV29RbG9VdjdPUkMtcl83cVlnZDdtcWhBZmRUMmtnS0VsNk5ucDlpZVR1YkpUajZZOHctSkZEVDBLaE1aR0F4R0NZcXJLLTktdXlEeThyb0hjRk5PS09IRG1OM1ItTExUVF9RWVl3N2J2S0ozNVRuQzlXRjc1SmdVa3B4ZXVHUko5ZGpwTjBsYUhzUzBsbFMtbnhnU251dTFWU01PVDhOUXN4bE1CWXlreTYxUFdZTW5EcFpEaENsdVZBejh4U2ZkLTQ5bXQzT0plWEYzSFFvYnhTblVyVjJYZDVVaGJVVzlhMnRtNHVCME5FdkNHcmVmbmhkRXFFOF8tMlJFNDVZcS1PcE82T21EZFd3dks4OFB1WlJyR3Vxa2JZRi12d2RjNk45dE5vakpvdmxzS2FWMFHSAcMCQVVfeXFMTzJ5M216TTFoQV9FQ1dPSmhlRGJ5aTczc21lLVcwLUtvMUxnUjBzN3VFeC1CT2N1akNvREFqTUhrZEVPM0hxVHRSdUR0UW1kRGhfc3RuOXdUekdlNF9QQUtkMUpWWGZpY0VlaFV5Tk9DNThOdlcta09Wdm5MMVk5bldsY3hleERpUjJ5Nm1TVWN4VDkwdXhrMlJydDdkVG1JVll3SkdyS21WOEhOeXpaVXNYTjdKZ2swWGhNZllaYXNjNy16cGFSYTFEdEtxLXlEX3BGeVFIZHdFM3FhR1pxa0E0dmphQkNHUUJRUEZUeEwwZDFDNXFaZEpUcG13YWFTRGNLYUl5SzhTVHhOME91S0UwQTFNT0lRbzFEZWJIMG5WT2lZdVJLMlBUNGllSmczZXVkU0cxNF9tLWI5ZVZPY1RMTjQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Monopar Initiates Rolling NDA Submission for ALXN1840 in Wilson Disease",
-      "date": "Wed, 22 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQbDBOQmxLWTkwQ0Q1Skc3Qzdodm8xSnlVMkhjazZMMndVM2MtXzM3OTE0Z3BibkpraklMdU1NcHQtNjhPeklXbUs5RUFlYjROdTNrT21MZ2RHd0tmN2ZBallfLTNMN2RxSERxMGc5YjRwRmFPTHBGdDZVVVpYS2xZUWFRdUtROGhTRmhrODNCd3RGZXlyOGlLSlRYRmN4bTRUQWpCczhrMXJFVzhWa1o0LVhXNDBncmJmR0xCUk5HSjJkTFZTZGk3OHJjUHZ4VWRpQVdLRzJ1emdKMHdsY2fSAeMBQVVfeXFMT3RmZlk2Nl9oYUdCRExHcTlwRFlsaFFFbk9Ha2h5UFliR2tkanpPdHlmNDQ0cXcyQTZURTVNeGtTTDV3Y0dPdGlhYVp0Yi1CVWJ3Y21TaE45V0lnN3dCSm5RZjlScDM5Y0tvOERudHhIZHdkTU5JRm51QTJkd2IzZ2FhbUpvREI4djNnVFA1RnpIMC1QU3ktNUFyQ0sxNy0tdG16WEU0akxWMWszV05fSTNIREp1U0NrZUxfdk1nMS1ia1Y1QkJJXzBJMVFxQjNOUTNfRVJlZnlYaHpPOVloM3hXaVk?oc=5"
     }
   ],
   "markets": [
@@ -845,28 +853,28 @@
       "value": "7,408.30",
       "daily": -1.21,
       "weekly": -1.67,
-      "monthly": 0.68
+      "monthly": 0.69
     },
     {
       "name": "Nasdaq",
       "value": "25,137.69",
       "daily": -2.15,
       "weekly": -2.88,
-      "monthly": -1.33
+      "monthly": -0.87
     },
     {
       "name": "Dow Jones",
       "value": "51,711.65",
       "daily": -0.97,
       "weekly": -1.6,
-      "monthly": -0.26
+      "monthly": -0.4
     },
     {
       "name": "Russell 2000",
       "value": "2,940.16",
       "daily": -0.67,
       "weekly": -1.16,
-      "monthly": -1.56
+      "monthly": -2.25
     }
   ]
 }
