@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-26T12:18:16+00:00",
+  "updated_at": "2026-07-27T13:45:03+00:00",
   "summaries": {
-    "ai": "Key developments: How Big Could the AI Data Center Opportunity Be for Navitas?; NAVER and NVIDIA Triple Korea's AI Factory to 200 Megawatts in $10 Billion Deal With Brookfield; Samsung, SK cement Korea's AI supply-chain role.",
-    "biotech": "Key developments: GC Biopharma targets $300m U.S. Alglio sales, expands Korea-led biotech push - CHOSUNBIZ; India Leads South Asia in Medical Research and Innovation; Is Arcturus Therapeutics' ARCT-032 a Game Changer for Cystic Fibrosis.",
-    "market": "Key developments: Dow, S&P 500, Nasdaq Futures Slip After Record Rally As US-Iran War Confusion Eclipses AI Gains: TSLA, BB, META, HPE, NVDA Stocks In Focus; Top 3 US Stock Market Stories From This Week; The Stock Market Is on the Verge of Doing Something That No One's Witnessed Dating Back to Nearly the U.S. Civil War -- and It Has Alarming Implications.",
-    "market_movers": "Russell 2000 led tracked indexes at -0.67% today; Nasdaq was weakest at -2.15%. Key developments: Dow, S&P 500, Nasdaq Futures Slip After Record Rally As US-Iran War Confusion Eclipses AI Gains: TSLA, BB, META, HPE, NVDA Stocks In Focus; Top 3 US Stock Market Stories From This Week; The Stock Market Is on the Verge of Doing Something That No One's Witnessed Dating Back to Nearly the U.S. Civil War -- and It Has Alarming Implications."
+    "ai": "Key developments: The EU's AI Boom Could Undermine its Own Chip Strategy; Exclusive | Nvidia in Talks With OpenAI to Guarantee $250 Billion Financing for Data Center; Nvidia negotiates record AI financing deal for OpenAI data center.",
+    "biotech": "Key developments: RA Capital backs upstart rival to Ultragenyx and Ionis in rare brain disease; Oak Hill Bio and Research Alliance Corporation III Announce; BioMarin Joins Search for Medicine for a Syndrome Discovered in 2024.",
+    "market": "Key developments: Stock market today: Dow, S&P 500, Nasdaq futures rise as oil tumbles, investors brace for busy week; Stock Market Today: S&P 500, Dow Jones, Nasdaq 100 Futures Rise as US-Iran Halt Retaliatory Strikes\u2014Micro; Dow, S&P 500, Nasdaq Futures Slip After Record Rally As US-Iran War Confusion Eclipses AI Gains: TSLA, BB, META, HPE, NVDA Stocks In Focus.",
+    "market_movers": "Dow Jones led tracked indexes at +1.09% today; Russell 2000 was weakest at -0.35%. Key developments: Stock market today: Dow, S&P 500, Nasdaq futures rise as oil tumbles, investors brace for busy week; Stock Market Today: S&P 500, Dow Jones, Nasdaq 100 Futures Rise as US-Iran Halt Retaliatory Strikes\u2014Micro; Dow, S&P 500, Nasdaq Futures Slip After Record Rally As US-Iran War Confusion Eclipses AI Gains: TSLA, BB, META, HPE, NVDA Stocks In Focus."
   },
   "takeaways": [
-    "How Big Could the AI Data Center Opportunity Be for Navitas? - qz.com",
-    "NAVER and NVIDIA Triple Korea's AI Factory to 200 Megawatts in $10 Billion Deal With Brookfield - Tech Times",
-    "GC Biopharma targets $300m U.S. Alglio sales, expands Korea-led biotech push - CHOSUNBIZ - Chosunbiz",
-    "India Leads South Asia in Medical Research and Innovation - dailyasianage.com",
+    "The EU's AI Boom Could Undermine its Own Chip Strategy - Tech Policy Press",
+    "Exclusive | Nvidia in Talks With OpenAI to Guarantee $250 Billion Financing for Data Center - WSJ",
+    "RA Capital backs upstart rival to Ultragenyx and Ionis in rare brain disease - STAT",
+    "Oak Hill Bio and Research Alliance Corporation III Announce - GlobeNewswire",
     "Lilly's triple agonist just became its most powerful obesity drug yet - Drug Discovery News",
     "FDA Grants Orphan Drug Designation to Affinia Therapeutics\u2019 AFTX-201 for the Treatment of BAG3-Associated Dilated Cardiomyopathy (DCM) - Business Wire",
-    "Dow, S&P 500, Nasdaq Futures Slip After Record Rally As US-Iran War Confusion Eclipses AI Gains: TSLA, BB, META, HPE, NVDA Stocks In Focus - Stocktwits"
+    "Stock market today: Dow, S&P 500, Nasdaq futures rise as oil tumbles, investors brace for busy week - Yahoo Finance"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -818,14 +818,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Dyne Therapeutics\u2019 z-rostudirsen Accepted for FDA Review with Priority Review Granted for Duchenne Muscular Dystrophy",
-      "date": "Mon, 20 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxPdzF5VHU5aEJnYnV5WGpneGlTLUJIVkpHd3FGTzlBVlFNQ3kybFhFQzNPTUdhQ0s1VjJoMnFvaTRlNmpXMWdEc0poWVlncnRTZGVUZFRvamhQMEZ2V05ZVVRoMmRLNXM1bnVMU2o3ZE85Ui10NGw4Mk9TOGUwYy1oejJDWktzd19YU05fQ2xEelA1SzYySXdzUGQ4NVZvRWtyRnM0cWtOaHVkTkRIbjR4eHIyY0RNVmFzcnhiUTBEVk5kMjQ2VlhBeXEwTHVyZmRnLWxDNFM1b3ExUkhqbGhGUktUS0pJLUJwN013aHFmZ1Q0eTQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Here's Why You Should Add Savara Stock to Your Portfolio Now",
       "date": "Wed, 22 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOMzZOSExKU2JUbE1uMTk3VWxoZnJDNTBRSzZUejljM2NFeWt5Q2hBWlZucWRJc1NtUVVNc1VSNnBkWkphSF9PRDZQMWtacDRxTE9lNjQyOXlCMFdsZGRmMENEZElROW9nY0JPTTdzazhfTVdfS2RqbU5ka1JKZnRFYnpjdFlDRGFXNUhjdlRqNlVlX1dvRnMwTFZOa05vdFBodFNLMFZrNGpFaWRZckhNQUoxbU9ta28?oc=5"
@@ -842,39 +834,47 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Belite Bio (BLTE) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $BLTE",
-      "date": "Mon, 20 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBpVTVQeTBxSVBBVmlqR2VsMzRocjdyRm1zdDZZZGFDSmNpOXlPaDRqODZCbHN6NHgtb3B5R05jR2NCWlJTN2JSNE83SkFxYXlsa0o1TF9BUkRUdl9TWDl4c1ZncUgzc0lI?oc=5"
+      "event": "Longeveron Inc. Elects Deborah D. Ascheim, M.D., to Board of Directors",
+      "date": "Thu, 23 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNT0Qtd1d3VnRRYkowSTgtTXRsMU53eWFmM2t4T0FEQmJCN2lyS2x1R2wzZkhoMHkzQ2dkdkdUWERWc1NaemVfX3hFaG1wWFdHVWF2VmxBR2s3aHZMejVvVkFNdEhxNVpsYmFGUjFSbW40ZlVwTWFOalpjbk9QRUZWVkFaLTRkdFlpRXJWanlZQVJJblowRE15a2JMc3BJNnNLaVJ2ZFJn?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Monopar Initiates Rolling NDA Submission for ALXN1840 in Wilson Disease",
+      "date": "Wed, 22 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQbDBOQmxLWTkwQ0Q1Skc3Qzdodm8xSnlVMkhjazZMMndVM2MtXzM3OTE0Z3BibkpraklMdU1NcHQtNjhPeklXbUs5RUFlYjROdTNrT21MZ2RHd0tmN2ZBallfLTNMN2RxSERxMGc5YjRwRmFPTHBGdDZVVVpYS2xZUWFRdUtROGhTRmhrODNCd3RGZXlyOGlLSlRYRmN4bTRUQWpCczhrMXJFVzhWa1o0LVhXNDBncmJmR0xCUk5HSjJkTFZTZGk3OHJjUHZ4VWRpQVdLRzJ1emdKMHdsY2fSAeMBQVVfeXFMT3RmZlk2Nl9oYUdCRExHcTlwRFlsaFFFbk9Ha2h5UFliR2tkanpPdHlmNDQ0cXcyQTZURTVNeGtTTDV3Y0dPdGlhYVp0Yi1CVWJ3Y21TaE45V0lnN3dCSm5RZjlScDM5Y0tvOERudHhIZHdkTU5JRm51QTJkd2IzZ2FhbUpvREI4djNnVFA1RnpIMC1QU3ktNUFyQ0sxNy0tdG16WEU0akxWMWszV05fSTNIREp1U0NrZUxfdk1nMS1ia1Y1QkJJXzBJMVFxQjNOUTNfRVJlZnlYaHpPOVloM3hXaVk?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,408.30",
-      "daily": -1.21,
-      "weekly": -1.67,
-      "monthly": 0.69
+      "value": "7,460.41",
+      "daily": 0.65,
+      "weekly": 0.23,
+      "monthly": 0.27
     },
     {
       "name": "Nasdaq",
-      "value": "25,137.69",
-      "daily": -2.15,
-      "weekly": -2.88,
-      "monthly": -0.87
+      "value": "25,146.24",
+      "daily": 0.68,
+      "weekly": -1.42,
+      "monthly": -2.61
     },
     {
       "name": "Dow Jones",
-      "value": "51,711.65",
-      "daily": -0.97,
-      "weekly": -1.6,
-      "monthly": -0.4
+      "value": "52,513.86",
+      "daily": 1.09,
+      "weekly": 1.3,
+      "monthly": 0.63
     },
     {
       "name": "Russell 2000",
-      "value": "2,940.16",
-      "daily": -0.67,
-      "weekly": -1.16,
-      "monthly": -2.25
+      "value": "2,930.00",
+      "daily": -0.35,
+      "weekly": -1.09,
+      "monthly": -2.67
     }
   ]
 }
