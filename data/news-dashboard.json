@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-30T12:55:39+00:00",
+  "updated_at": "2026-07-31T13:09:18+00:00",
   "summaries": {
-    "ai": "Key developments: Meta Is Spending Whatever It Takes to Win AI \u2014 And That\u2019s What Worries Investors; Samsung reports record profit as South Korean chip giants benefit from global AI boom - ABC News; Micron Stock Analysis 2026: AI Memory Chip Boom Drives Bullish Outlook.",
-    "biotech": "Key developments: Base Editing Market Size, Share, Growth | CAGR of 14.1%; Does BioMarin (BMRN) Expanding Into ReNU Syndrome Refine Its Rare Disease Pipeline Strategy?; Palvella Scientist Set to Discuss Reusing Approved Drugs at FDA.",
-    "market": "Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Gain as Federal Reserve Holds Interest Rates\u2014Meta, Micros; Wall Street closes down sharply after Fed holds rates unchanged; Nasdaq, S&P 500 Futures Hold Steady Before Fed Decision, Big Tech Faces AI Monetization Test: Why MSFT, AMZN, HOOD, STX, NIO Are In Focus.",
-    "market_movers": "S&P 500 led tracked indexes at -1.52% today; Dow Jones was weakest at -2.19%. Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Gain as Federal Reserve Holds Interest Rates\u2014Meta, Micros; Wall Street closes down sharply after Fed holds rates unchanged; Nasdaq, S&P 500 Futures Hold Steady Before Fed Decision, Big Tech Faces AI Monetization Test: Why MSFT, AMZN, HOOD, STX, NIO Are In Focus."
+    "ai": "No new AI headlines were found in today's public feeds. Monitoring continues.",
+    "biotech": "No new biotech headlines were found in today's public feeds. Monitoring continues.",
+    "market": "No new market headlines were found in today's public feeds. Monitoring continues.",
+    "market_movers": "Nasdaq led tracked indexes at +2.78% today; Dow Jones was weakest at +1.19%. No new market headlines were found in today's public feeds. Monitoring continues."
   },
   "takeaways": [
     "Meta Is Spending Whatever It Takes to Win AI \u2014 And That\u2019s What Worries Investors - 24/7 Wall St.",
@@ -834,31 +834,31 @@
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,316.15",
-      "daily": -1.52,
-      "weekly": -2.44,
-      "monthly": -2.44
+      "value": "7,437.63",
+      "daily": 1.66,
+      "weekly": 0.4,
+      "monthly": -0.82
     },
     {
       "name": "Nasdaq",
-      "value": "24,442.94",
-      "daily": -1.74,
-      "weekly": -4.86,
-      "monthly": -6.76
+      "value": "25,122.18",
+      "daily": 2.78,
+      "weekly": -0.06,
+      "monthly": -4.16
     },
     {
       "name": "Dow Jones",
-      "value": "51,594.14",
-      "daily": -2.19,
-      "weekly": -1.2,
-      "monthly": -1.39
+      "value": "52,208.06",
+      "daily": 1.19,
+      "weekly": 0.96,
+      "monthly": -0.21
     },
     {
       "name": "Russell 2000",
-      "value": "2,906.31",
-      "daily": -1.61,
-      "weekly": -1.81,
-      "monthly": -3.9
+      "value": "2,946.10",
+      "daily": 1.37,
+      "weekly": 0.2,
+      "monthly": -2.59
     }
   ]
 }
