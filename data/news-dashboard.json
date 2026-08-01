@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-07-31T13:09:18+00:00",
+  "updated_at": "2026-08-01T12:14:34+00:00",
   "summaries": {
-    "ai": "No new AI headlines were found in today's public feeds. Monitoring continues.",
-    "biotech": "No new biotech headlines were found in today's public feeds. Monitoring continues.",
-    "market": "No new market headlines were found in today's public feeds. Monitoring continues.",
-    "market_movers": "Nasdaq led tracked indexes at +2.78% today; Dow Jones was weakest at +1.19%. No new market headlines were found in today's public feeds. Monitoring continues."
+    "ai": "Key developments: From Data Centers to Copper: AI Infrastructure Race Goes Deeper; NVIDIA Stock Analysis August 2026: AI Chip Leader Market Outlook; How Amazon became one of the world\u2019s top chip companies in a decade.",
+    "biotech": "Key developments: Drug Repurposing\u2019s Next Challenge: Turning Discoveries Into Treatments; FDA panel backs unapproved peptides despite safety concerns; Bridging the Rare Disease Access Gap in Asia-Pacific.",
+    "market": "Key developments: The equal-weighted S&P 500 just smoked the Nasdaq-100 in July \u2014 outperforming amid the violent chip-stock unwind; Stock Market Today: Stock Market News And Analysis; Dow Adds 277, Nasdaq Climbs 252, S&P 500 Rises 52.",
+    "market_movers": "Nasdaq led tracked indexes at +1.00% today; Russell 2000 was weakest at -0.50%. Key developments: The equal-weighted S&P 500 just smoked the Nasdaq-100 in July \u2014 outperforming amid the violent chip-stock unwind; Stock Market Today: Stock Market News And Analysis; Dow Adds 277, Nasdaq Climbs 252, S&P 500 Rises 52."
   },
   "takeaways": [
-    "Meta Is Spending Whatever It Takes to Win AI \u2014 And That\u2019s What Worries Investors - 24/7 Wall St.",
-    "Samsung reports record profit as South Korean chip giants benefit from global AI boom - ABC News - Breaking News, Latest News and Videos",
-    "Base Editing Market Size, Share, Growth | CAGR of 14.1% - Market.us",
-    "Does BioMarin (BMRN) Expanding Into ReNU Syndrome Refine Its Rare Disease Pipeline Strategy? - simplywall.st",
-    "Spruce Biosciences Appoints Adrian Quartel, M.D., FFPM, as Chief Medical Officer - BioSpace",
-    "Longeveron Inc. Elects Deborah D. Ascheim, M.D., to Board of Directors - Quiver Quantitative",
-    "Stock Market Today: S&P 500, Nasdaq 100 Futures Gain as Federal Reserve Holds Interest Rates\u2014Meta, Micros - Benzinga"
+    "From Data Centers to Copper: AI Infrastructure Race Goes Deeper - JD Supra",
+    "NVIDIA Stock Analysis August 2026: AI Chip Leader Market Outlook - Intellectia AI",
+    "Drug Repurposing\u2019s Next Challenge: Turning Discoveries Into Treatments - Inside Precision Medicine",
+    "FDA panel backs unapproved peptides despite safety concerns - Drug Discovery News",
+    "Anavex Life Sciences Reports Preliminary Second Quarter 2026 Financial Results and Provides Business Update - Anavex Life Sciences",
+    "PolyPid (PYPD) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
+    "The equal-weighted S&P 500 just smoked the Nasdaq-100 in July \u2014 outperforming amid the violent chip-stock unwind - marketwatch.com"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Spruce Biosciences Appoints Adrian Quartel, M.D., FFPM, as Chief Medical Officer",
-      "date": "Mon, 27 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPOTlURHFzcktqTHJZNFVCUDhjLVdVRmpQaHZ3dmszd3V2ZV9iamhkbUNoemIzemdwTklaRmhVLWdvYTNrem5VSHFlSEctWnd0VE9kLTFDRFoyQTNUX0lmbm45aXYydEdaUlRZbzdLaUw2dFVyM1BQWHY3MWI4cFFkcm1XRmYyTzZIZ1lVNEtuQWo0RDJ3bHV1X3k4S2ZiQ2dTeTVMdVhrNHpIc0hoUkxsTU8zTlVucjA?oc=5"
+      "event": "Anavex Life Sciences Reports Preliminary Second Quarter 2026 Financial Results and Provides Business Update",
+      "date": "Thu, 30 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOaC03c1g3UkE5empWUzNEZXhkS3R1ODRhT2Rqemt6MlZNXzl3dXlNcXFzdF9NbWdHRkp1ZmFhbzFXRHVFRUJrOEdQQ0k0QlVkUkNpOVM0bzg5WmxtaEhQWXZWd1UzMFlNa3VxdzQxbC1adEItZ3F1NDJIZ2lTRmdubFU3ZXZpNEFWb2lIRXRiNUZuVlhiY0VQaWtxNjdVR3Z0SHdIbWJ0YzNFSmpKRzBCNFlNb3hJYVhVZnZJYVV4bHlfeDRkU05SM1F6a1M?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Longeveron Inc. Elects Deborah D. Ascheim, M.D., to Board of Directors",
-      "date": "Thu, 23 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNT0Qtd1d3VnRRYkowSTgtTXRsMU53eWFmM2t4T0FEQmJCN2lyS2x1R2wzZkhoMHkzQ2dkdkdUWERWc1NaemVfX3hFaG1wWFdHVWF2VmxBR2s3aHZMejVvVkFNdEhxNVpsYmFGUjFSbW40ZlVwTWFOalpjbk9QRUZWVkFaLTRkdFlpRXJWanlZQVJJblowRE15a2JMc3BJNnNLaVJ2ZFJn?oc=5"
+      "event": "PolyPid (PYPD) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Wed, 29 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5QVnFyYVB1MlVXWUVXTE0wUEQ0VjJpU2RDR0dsZ203TEhDNVlGeUhWREw0UFN3ZmJvS0NPVVc0NE9LQlFvSHNyaDMzb0pOQ0haVXAzX0xMOU10YldoWkJIc2dmbFhBT1Y0?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Spruce Biosciences Appoints Adrian Quartel, M.D., FFPM, as Chief Medical Officer",
+      "date": "Mon, 27 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNN2hGd3R4SXRRdXFVVmJPQXBUV1EyMjhCbVo5Sy0zUGJIYmVObTd4MzFvWE9RRnJ6LTRIcGtXcVkybzFuRWEwd3lVOGhyR21ja25DbGdhNjNTRHFZQW9nTG41dExva2pkTVhZUnBvVjdKNi1xdFJkM2RzTWtCMnhmU200TWdra3c4QjhuZXJqbFdQUEJqOHlHN1NjVGlHWHZadndkT2xfalVfS2hTMFdWRmxfVFpLYkRPczg1dXdlbUhmQU9qS01pRXFFNm1GMTg?oc=5"
     },
     {
       "company": "See source",
@@ -810,9 +818,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Anavex expects $127M cash to fund operations into 2028",
-      "date": "Thu, 30 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNYkxZR28tWTc0UjhqUG1jVWxDN2pabW4wVG5pR3F1Z2dxOW5vTE1LSjlOT1VlMFFycTI2ZTU0aGJVSUFtS3BGYTljeGhCdnJPc3lFU3JILTh6VDBxY0FZQk82ZjVCVWNmcC1XNFBsUnRkNWlRel9fd29lSlBFZ0VETlF1dUZQYWplTVZtaEhQV05rQVNjV3IxeEZZckdiUHdqMXlOZ1lxT1F0QWdKb0xyak4zV1E2UQ?oc=5"
+      "event": "World's First Gene Therapy for 2-Year-Old Children | Root-Cause Intervention for Early Childhood Hematological Diseases",
+      "date": "Fri, 31 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE10TjVmOFRKdVBPNDRmU0NPMFhSeFJLWWJxck5UdHh1WUg0ZzVxdHBON3RpX0FkLUZXRk5PMUNma01wbzBoNDJpTXJWSVEtdzcxb2Fn?oc=5"
     },
     {
       "company": "See source",
@@ -826,39 +834,39 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Kazia Therapeutics (NASDAQ: KZIA) files patent backed by TNBC data",
+      "event": "Discover the Top 4 Canadian Pharma Stocks of 2025",
       "date": "Tue, 28 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOLUF4dVhpM3dxM3hnRGFUcTlCdEhjU193dlQwQmFRSnJlMmpZaXVWU0NpT1Q4UmsxdnFuR1EwRjdfYzJXaEIxVG43eTZ6bHlKRnZteFF3aGtSeDhEZGF3R29hZkRxam5HeFBUWjVGWmxIZHBOOEF3WXZEa1lMeVY3M0JmUm1kMUtzQ2xIZ3NZa1BqS3RrV1YyaWJFbGpITTJZMHM3UnFDd2dFMkwwdXp4STRSUXNId0FadEE?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBKWHNVdHhMZ0dMT0tpT2dyMnp3R0ZPRnZaZm5QVEI4R2FfY211TDBzOGdUTk1aaHp0Q2pVYXBGZnlyTGZ2c1ZhbVZPQmdLVU5IOG9FQWY1ZC1hTjR4MWhKRm11UVdlZC1OR21iTTluOA?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,437.63",
-      "daily": 1.66,
-      "weekly": 0.4,
-      "monthly": -0.82
+      "value": "7,489.72",
+      "daily": 0.7,
+      "weekly": 1.05,
+      "monthly": 0.09
     },
     {
       "name": "Nasdaq",
-      "value": "25,122.18",
-      "daily": 2.78,
-      "weekly": -0.06,
-      "monthly": -4.16
+      "value": "25,373.85",
+      "daily": 1.0,
+      "weekly": 1.59,
+      "monthly": -2.56
     },
     {
       "name": "Dow Jones",
-      "value": "52,208.06",
-      "daily": 1.19,
-      "weekly": 0.96,
-      "monthly": -0.21
+      "value": "52,485.03",
+      "daily": 0.53,
+      "weekly": 1.04,
+      "monthly": 0.34
     },
     {
       "name": "Russell 2000",
-      "value": "2,946.10",
-      "daily": 1.37,
-      "weekly": 0.2,
-      "monthly": -2.59
+      "value": "2,931.34",
+      "daily": -0.5,
+      "weekly": 0.05,
+      "monthly": -2.7
     }
   ]
 }
