@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-01T12:14:34+00:00",
+  "updated_at": "2026-08-02T12:16:41+00:00",
   "summaries": {
-    "ai": "Key developments: From Data Centers to Copper: AI Infrastructure Race Goes Deeper; NVIDIA Stock Analysis August 2026: AI Chip Leader Market Outlook; How Amazon became one of the world\u2019s top chip companies in a decade.",
-    "biotech": "Key developments: Drug Repurposing\u2019s Next Challenge: Turning Discoveries Into Treatments; FDA panel backs unapproved peptides despite safety concerns; Bridging the Rare Disease Access Gap in Asia-Pacific.",
-    "market": "Key developments: The equal-weighted S&P 500 just smoked the Nasdaq-100 in July \u2014 outperforming amid the violent chip-stock unwind; Stock Market Today: Stock Market News And Analysis; Dow Adds 277, Nasdaq Climbs 252, S&P 500 Rises 52.",
-    "market_movers": "Nasdaq led tracked indexes at +1.00% today; Russell 2000 was weakest at -0.50%. Key developments: The equal-weighted S&P 500 just smoked the Nasdaq-100 in July \u2014 outperforming amid the violent chip-stock unwind; Stock Market Today: Stock Market News And Analysis; Dow Adds 277, Nasdaq Climbs 252, S&P 500 Rises 52."
+    "ai": "Key developments: 25-year-old AI investor\u2019s $16 billion bet hits a brutal reality check; Microsoft Stock And 2 AI Infrastructure Plays Backed by Cloud and Chip Demand; Why Artificial Intelligence Data Centers Are Powering the Future of Digital Infrastructure Through High Performance Computing, Sustainable Innovation, and Intelligent Cloud Ecosystems.",
+    "biotech": "Key developments: 5 Biotech Stocks That Delivered Big Gains - Key Catalysts Ahead For QURE, CDNA, ADPT, ELVN & AMLX; Chugai files for additional indication of Enspryng in Japan; American biotech startup CREATE Medicines inks license agreement with Australia's Monash University.",
+    "market": "Key developments: Dow, S&P 500, Nasdaq Futures Slip As Trump Threatens \u2018Much Higher Level\u2019 Of Bombing In Iran Deal Failure: SNAP, ARM, ROOT, PSKY Stocks In Focus Today; S&P 500, Dow, Nasdaq Futures Slip After Rally As Trump-Xi Talks Take Center Stage: NVDA, MU, ONDS, RDW Stocks In Focus; Market Rebounds, Now Watch For This.",
+    "market_movers": "Nasdaq led tracked indexes at +1.00% today; Russell 2000 was weakest at -0.50%. Key developments: Dow, S&P 500, Nasdaq Futures Slip As Trump Threatens \u2018Much Higher Level\u2019 Of Bombing In Iran Deal Failure: SNAP, ARM, ROOT, PSKY Stocks In Focus Today; S&P 500, Dow, Nasdaq Futures Slip After Rally As Trump-Xi Talks Take Center Stage: NVDA, MU, ONDS, RDW Stocks In Focus; Market Rebounds, Now Watch For This."
   },
   "takeaways": [
-    "From Data Centers to Copper: AI Infrastructure Race Goes Deeper - JD Supra",
-    "NVIDIA Stock Analysis August 2026: AI Chip Leader Market Outlook - Intellectia AI",
-    "Drug Repurposing\u2019s Next Challenge: Turning Discoveries Into Treatments - Inside Precision Medicine",
-    "FDA panel backs unapproved peptides despite safety concerns - Drug Discovery News",
+    "25-year-old AI investor\u2019s $16 billion bet hits a brutal reality check - calcalistech.com",
+    "Microsoft Stock And 2 AI Infrastructure Plays Backed by Cloud and Chip Demand - simplywall.st",
+    "5 Biotech Stocks That Delivered Big Gains - Key Catalysts Ahead For QURE, CDNA, ADPT, ELVN & AMLX - RTTNews",
+    "Chugai files for additional indication of Enspryng in Japan - The Pharma Letter",
     "Anavex Life Sciences Reports Preliminary Second Quarter 2026 Financial Results and Provides Business Update - Anavex Life Sciences",
-    "PolyPid (PYPD) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
-    "The equal-weighted S&P 500 just smoked the Nasdaq-100 in July \u2014 outperforming amid the violent chip-stock unwind - marketwatch.com"
+    "FDA grants Sumitomo Pharma enzomenib orphan drug designation for acute lymphoblastic leukemia - AllSci",
+    "Dow, S&P 500, Nasdaq Futures Slip As Trump Threatens \u2018Much Higher Level\u2019 Of Bombing In Iran Deal Failure: SNAP, ARM, ROOT, PSKY Stocks In Focus Today - Stocktwits"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,9 +794,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "PolyPid (PYPD) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Wed, 29 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5QVnFyYVB1MlVXWUVXTE0wUEQ0VjJpU2RDR0dsZ203TEhDNVlGeUhWREw0UFN3ZmJvS0NPVVc0NE9LQlFvSHNyaDMzb0pOQ0haVXAzX0xMOU10YldoWkJIc2dmbFhBT1Y0?oc=5"
+      "event": "FDA grants Sumitomo Pharma enzomenib orphan drug designation for acute lymphoblastic leukemia",
+      "date": "Thu, 30 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPVno5YVZWVzBiSWRnRHRmcm5VX0Y3bDRBRXF4UFpJUVVfcmhXNDlZZjN0eTdYeERLOFBydjlVQlUybW5XVWEtNk4zQ01XLXJEaDk2cGRLTmY2S1Z5TjY1cUFnc2VmSG9NXzJVV183SWJuVVhRZnR1a3REV18ycGNfcG5SX0lJQ00?oc=5"
     },
     {
       "company": "See source",
@@ -812,23 +812,7 @@
       "indication": "See source",
       "event": "Dasher Neuroscience Completes Patient Enrollment in Phase 2 Global Clinical Trial of Lead AI Drug Candidate YA-101 for Multiple System Atrophy (MSA)",
       "date": "Tue, 28 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMipAJBVV95cUxPUXpVa1B5U21OazFBdHFRcnhBejFqVTRJS043cVVsZjYxSHVUaDVDaEotVE1oRWZkV0JZQ3p2Y2NLdjA0bnB5ZXFxQ0NHbjhxalcxS0NVaUFvN3pwUThDYWliQ3phVlRINWduN09OdE1qNUlaN056cGxQY0dSN2lzWl94NHZUMXdqWlBQQ3FxQ251SFY1WTlwRUh2SThobXRicmY0bVk4SDB6T3RfR0dpMmdab3JxWEtwNzcwUTVJaDBLbmllYWpZWU9wTWxYNHFWdFRXNGQ1a3cwanpxbTJOdEtIRk5Pa2V4dGZxSkF3cmlRU0ZKeU1oZWFKdmU4YjdDNzMzY19jMllOeHNWU1hPcjZMTzdXS2NVZmdKUk41OFppMW5s?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "World's First Gene Therapy for 2-Year-Old Children | Root-Cause Intervention for Early Childhood Hematological Diseases",
-      "date": "Fri, 31 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE10TjVmOFRKdVBPNDRmU0NPMFhSeFJLWWJxck5UdHh1WUg0ZzVxdHBON3RpX0FkLUZXRk5PMUNma01wbzBoNDJpTXJWSVEtdzcxb2Fn?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Spruce Biosciences Appoints Dr. Adrian Quartel as Chief Medical Officer Ahead of Planned BLA Filing",
-      "date": "Mon, 27 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPTlZFTVJZOFEtY2JkazB4bi1NYXlUM0VJbTE5c2VkVkZya0c4VFlGMFZ2SjRKVmJXMmRubWZxRHpQR0hEMFVPY3hlallPcE93MUVSVTRqWGVuazNKOTRFQ2pCbWZQbm1aOGxDRTVrRVpoblRiOFNhU2VJbTRqWUJWZEFIbmlmZzBCVWVHWDRhamcweWZpcXo5TUUteVptWW1PaG9yQS1BNUplZDBDZkhITkpqX1dxdzZwWllaeGZVZzh3X2FMSFJmalZGcGJOVzh2b0g4?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMirAJBVV95cUxQdVdoNjByeUVuaTg1UDBFalU0bVozOEVlV3AzU3k5blZtZmhiSExPOFV6TVNKSXQ5dzBnODJxa0VjcTZyamxhTkNpSzAzR2NaVmlmb293aXE3UzhaWjRHV3dPOUhVb2UtQ0JtTTFJc1llb1FjRkgzbzIxZlhPcnZwS3FBRmtDUUdrTWMxTUcyRHAwY0FGS2FIaW5ZNFBVLWFNQjlxaWVaOWFkZmh2YUZxSm5LT0phaWlEdWRuWjd2MDJxdnhlaHU1b3YyZWFOTWxxNDZKNzFYWnlEeXZzTG1SRUxVUzdRMV9DVkJfNV9sbndTVVlKUU9iakZSSmZMcGRQd0pUQlpJVGUtOVM5MFd6TmdBZTI4ZWROX2Y1cTJ1YVN3bjFYeEpSREk4SkQ?oc=5"
     },
     {
       "company": "See source",
@@ -837,6 +821,22 @@
       "event": "Discover the Top 4 Canadian Pharma Stocks of 2025",
       "date": "Tue, 28 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBKWHNVdHhMZ0dMT0tpT2dyMnp3R0ZPRnZaZm5QVEI4R2FfY211TDBzOGdUTk1aaHp0Q2pVYXBGZnlyTGZ2c1ZhbVZPQmdLVU5IOG9FQWY1ZC1hTjR4MWhKRm11UVdlZC1OR21iTTluOA?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Quoin Pharmaceuticals (NASDAQ:QNRX) gets FDA clearance for Phase 2 study in ultra-rare peeling skin syndrome",
+      "date": "Fri, 31 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNOVVnWlZxTG1FRVVGdW9YT2wyMzFfenh5N1ljdE11b0NFVm5sMXFNM2dPajVzLXVybXQzcUdlbXk2Q2tVdUFYVkhYSllPcEo4bzhmYnE2YWdWRmE2QUpaeHBVdHQweUY2ZGZkYWl0ZWtoQlc0bDFnUlVtZGd3cUxOYmZDanFlWjBFa0N2QTM0Mi1YdU5vVDVsOXVjZzVfM0dfeFAzUWZfS1RMYzA3eU9kZ2xFUE43di03TjhZaF8yLUJGQTZkSkl5Nm05ZzFGSDlhYXdCSmVSRk5QNlJM?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "CHMP Backs Leriglitazone for Early-Stage Cerebral Adrenoleukodystrophy in Children",
+      "date": "Mon, 27 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOVU1Yb3lfVDdHOXVZVC1oQTZDWDRIT0FJMllRSjl5MC1xZHZZRzc0MW9lSHJTbmdLUVZwd0tCRTNkTkxuRC1JZ3B4YVZlX0lraUIzSjZPclVhZmdWTmhYZURpLWtOUFpLa0RzRVAwV2ZOUDR0Qi1RUUFfQjd0VVpubDlXeHVRN2RwRjFuNGkzZS04ZjNYS1pXcXdqYWYySlFabXB3VDVfNDA5M1JmeFFGRkFzYVluNEZUZ2c?oc=5"
     }
   ],
   "markets": [
