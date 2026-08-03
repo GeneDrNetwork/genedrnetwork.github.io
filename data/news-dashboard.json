@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-02T12:16:41+00:00",
+  "updated_at": "2026-08-03T13:55:25+00:00",
   "summaries": {
-    "ai": "Key developments: 25-year-old AI investor\u2019s $16 billion bet hits a brutal reality check; Microsoft Stock And 2 AI Infrastructure Plays Backed by Cloud and Chip Demand; Why Artificial Intelligence Data Centers Are Powering the Future of Digital Infrastructure Through High Performance Computing, Sustainable Innovation, and Intelligent Cloud Ecosystems.",
-    "biotech": "Key developments: 5 Biotech Stocks That Delivered Big Gains - Key Catalysts Ahead For QURE, CDNA, ADPT, ELVN & AMLX; Chugai files for additional indication of Enspryng in Japan; American biotech startup CREATE Medicines inks license agreement with Australia's Monash University.",
-    "market": "Key developments: Dow, S&P 500, Nasdaq Futures Slip As Trump Threatens \u2018Much Higher Level\u2019 Of Bombing In Iran Deal Failure: SNAP, ARM, ROOT, PSKY Stocks In Focus Today; S&P 500, Dow, Nasdaq Futures Slip After Rally As Trump-Xi Talks Take Center Stage: NVDA, MU, ONDS, RDW Stocks In Focus; Market Rebounds, Now Watch For This.",
-    "market_movers": "Nasdaq led tracked indexes at +1.00% today; Russell 2000 was weakest at -0.50%. Key developments: Dow, S&P 500, Nasdaq Futures Slip As Trump Threatens \u2018Much Higher Level\u2019 Of Bombing In Iran Deal Failure: SNAP, ARM, ROOT, PSKY Stocks In Focus Today; S&P 500, Dow, Nasdaq Futures Slip After Rally As Trump-Xi Talks Take Center Stage: NVDA, MU, ONDS, RDW Stocks In Focus; Market Rebounds, Now Watch For This."
+    "ai": "Key developments: Meta Stock And 2 AI Infrastructure Picks Worth Watching; Korea\u2019s AI Compute Center Breaks Ground After Two Failed Bids Forced Policy Retreat; AI Infrastructure Investment Broadens Beyond Hyperscalers: Goldman Sachs.",
+    "biotech": "Key developments: The Rare Trials Summit Wants To Produce More Than Conversation; Can-Fite Launches First Clinical Program for Piclidenoson in the Rare Genetic Disease Lowe Syndrome; Rocket Pharmaceuticals Announces Positive Clinical Safety Update from Initial Three Patients Treated with RP-A501 Under Modified Phase 2 Protocol for Danon Disease.",
+    "market": "Key developments: Stock Market Today: S&P 500, Dow, Nasdaq 100 Futures Gain as Trump Halts 'Massive Attack' on Iran\u2014Atkore; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus; US Stock Market Today: Dow Rallies Over 600 Points On Trump's Truce Pitch; Nasdaq Jumps Nearly 1%.",
+    "market_movers": "Dow Jones led tracked indexes at +1.26% today; Russell 2000 was weakest at +0.60%. Key developments: Stock Market Today: S&P 500, Dow, Nasdaq 100 Futures Gain as Trump Halts 'Massive Attack' on Iran\u2014Atkore; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus; US Stock Market Today: Dow Rallies Over 600 Points On Trump's Truce Pitch; Nasdaq Jumps Nearly 1%."
   },
   "takeaways": [
-    "25-year-old AI investor\u2019s $16 billion bet hits a brutal reality check - calcalistech.com",
-    "Microsoft Stock And 2 AI Infrastructure Plays Backed by Cloud and Chip Demand - simplywall.st",
-    "5 Biotech Stocks That Delivered Big Gains - Key Catalysts Ahead For QURE, CDNA, ADPT, ELVN & AMLX - RTTNews",
-    "Chugai files for additional indication of Enspryng in Japan - The Pharma Letter",
+    "Meta Stock And 2 AI Infrastructure Picks Worth Watching - simplywall.st",
+    "Korea\u2019s AI Compute Center Breaks Ground After Two Failed Bids Forced Policy Retreat - techtimes.com",
+    "The Rare Trials Summit Wants To Produce More Than Conversation - Clinical Leader",
+    "Can-Fite Launches First Clinical Program for Piclidenoson in the Rare Genetic Disease Lowe Syndrome - GlobeNewswire",
     "Anavex Life Sciences Reports Preliminary Second Quarter 2026 Financial Results and Provides Business Update - Anavex Life Sciences",
-    "FDA grants Sumitomo Pharma enzomenib orphan drug designation for acute lymphoblastic leukemia - AllSci",
-    "Dow, S&P 500, Nasdaq Futures Slip As Trump Threatens \u2018Much Higher Level\u2019 Of Bombing In Iran Deal Failure: SNAP, ARM, ROOT, PSKY Stocks In Focus Today - Stocktwits"
+    "Spruce Biosciences Appoints Adrian Quartel, M.D., FFPM, as Chief Medical Officer - investingnews.com",
+    "Stock Market Today: S&P 500, Dow, Nasdaq 100 Futures Gain as Trump Halts 'Massive Attack' on Iran\u2014Atkore - Benzinga"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,17 +794,33 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA grants Sumitomo Pharma enzomenib orphan drug designation for acute lymphoblastic leukemia",
-      "date": "Thu, 30 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPVno5YVZWVzBiSWRnRHRmcm5VX0Y3bDRBRXF4UFpJUVVfcmhXNDlZZjN0eTdYeERLOFBydjlVQlUybW5XVWEtNk4zQ01XLXJEaDk2cGRLTmY2S1Z5TjY1cUFnc2VmSG9NXzJVV183SWJuVVhRZnR1a3REV18ycGNfcG5SX0lJQ00?oc=5"
+      "event": "Spruce Biosciences Appoints Adrian Quartel, M.D., FFPM, as Chief Medical Officer",
+      "date": "Mon, 27 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQSnRLVUNmTzRBNlRnX2xjcEpNU1Zmajl6M29kSUZmTjdvTGI0UmxibkpBV29Uam9TYUlSQTAyQmVnSldEbmY4elpWbkxLQ1RoRExodi1zUkE1TzJyNHZDZ3liZ1RFNUtwd0tlMzJwZnYtN0xrdmxBOVlJSHpjNGM2T3VxNURWb2ZsbDlwdkR1Snh3bjg3c29fQWtHTWQ4NkNyYjBOLVVB?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Spruce Biosciences Appoints Adrian Quartel, M.D., FFPM, as Chief Medical Officer",
+      "event": "Spruce Biosciences Appoints Jessica Cohen Pfeffer, M.D., as Vice President, Clinical Development",
+      "date": "Mon, 03 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxOWlRGV183c1hDQnRNejEycF85Tk5aVDF1OFdtWWlKZGFhLXBpTUt4d1R1TDdESW9tZlowelMwd1ZadXliMm5TZGJ0LU5xUXBDV0lrd3FPYzJZUDNBWnNieFByNXI1RVBJb0VwN2JLQVlaeklzZmEybmt3UjJycGFyQm82bmwwVXMwSGFfejVQd3ZWQ2tENC0xU3FSLWNUckZzSTBBSEdicWlYTmRnazVqYmhRNkRHNmNlekRYV2Z2VzFKM1l4V0ZLejBTRVlzT0k1M3NtUGNoQ0FVdXZsT0ZDZjV4d2E?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Spruce's New VP Brings Enzyme-Replacement Expertise to Rare Diseases",
+      "date": "Mon, 03 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPdHlDNlluLVN0S1VhdUgtZFlNem1QYlZGWEswODFOZjgzYUp5SGgtZVJBejh2TE1hOE1jTmJwenZhUkhJamQxYmtGLTZVdzNtUU9WZllReWllbEx5dWhNRVZZb005VEljTGVoaVVRc0V4RmdPSzBGUG8wM1J5ZG0tNmg1b2xmUzh0R1VtV2xBN2Jyb3pHY1I0YVp2cTZaNGVyUXA4cko1ZHE5clhDeWtJcXBFY1lGMk0?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Spruce Biosciences Appoints Dr. Adrian Quartel as Chief Medical Officer Ahead of Planned BLA Filing",
       "date": "Mon, 27 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNN2hGd3R4SXRRdXFVVmJPQXBUV1EyMjhCbVo5Sy0zUGJIYmVObTd4MzFvWE9RRnJ6LTRIcGtXcVkybzFuRWEwd3lVOGhyR21ja25DbGdhNjNTRHFZQW9nTG41dExva2pkTVhZUnBvVjdKNi1xdFJkM2RzTWtCMnhmU200TWdra3c4QjhuZXJqbFdQUEJqOHlHN1NjVGlHWHZadndkT2xfalVfS2hTMFdWRmxfVFpLYkRPczg1dXdlbUhmQU9qS01pRXFFNm1GMTg?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPTlZFTVJZOFEtY2JkazB4bi1NYXlUM0VJbTE5c2VkVkZya0c4VFlGMFZ2SjRKVmJXMmRubWZxRHpQR0hEMFVPY3hlallPcE93MUVSVTRqWGVuazNKOTRFQ2pCbWZQbm1aOGxDRTVrRVpoblRiOFNhU2VJbTRqWUJWZEFIbmlmZzBCVWVHWDRhamcweWZpcXo5TUUteVptWW1PaG9yQS1BNUplZDBDZkhITkpqX1dxdzZwWllaeGZVZzh3X2FMSFJmalZGcGJOVzh2b0g4?oc=5"
     },
     {
       "company": "See source",
@@ -818,14 +834,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Discover the Top 4 Canadian Pharma Stocks of 2025",
-      "date": "Tue, 28 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBKWHNVdHhMZ0dMT0tpT2dyMnp3R0ZPRnZaZm5QVEI4R2FfY211TDBzOGdUTk1aaHp0Q2pVYXBGZnlyTGZ2c1ZhbVZPQmdLVU5IOG9FQWY1ZC1hTjR4MWhKRm11UVdlZC1OR21iTTluOA?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Quoin Pharmaceuticals (NASDAQ:QNRX) gets FDA clearance for Phase 2 study in ultra-rare peeling skin syndrome",
       "date": "Fri, 31 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNOVVnWlZxTG1FRVVGdW9YT2wyMzFfenh5N1ljdE11b0NFVm5sMXFNM2dPajVzLXVybXQzcUdlbXk2Q2tVdUFYVkhYSllPcEo4bzhmYnE2YWdWRmE2QUpaeHBVdHQweUY2ZGZkYWl0ZWtoQlc0bDFnUlVtZGd3cUxOYmZDanFlWjBFa0N2QTM0Mi1YdU5vVDVsOXVjZzVfM0dfeFAzUWZfS1RMYzA3eU9kZ2xFUE43di03TjhZaF8yLUJGQTZkSkl5Nm05ZzFGSDlhYXdCSmVSRk5QNlJM?oc=5"
@@ -834,39 +842,39 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "CHMP Backs Leriglitazone for Early-Stage Cerebral Adrenoleukodystrophy in Children",
-      "date": "Mon, 27 Jul 2026",
-      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOVU1Yb3lfVDdHOXVZVC1oQTZDWDRIT0FJMllRSjl5MC1xZHZZRzc0MW9lSHJTbmdLUVZwd0tCRTNkTkxuRC1JZ3B4YVZlX0lraUIzSjZPclVhZmdWTmhYZURpLWtOUFpLa0RzRVAwV2ZOUDR0Qi1RUUFfQjd0VVpubDlXeHVRN2RwRjFuNGkzZS04ZjNYS1pXcXdqYWYySlFabXB3VDVfNDA5M1JmeFFGRkFzYVluNEZUZ2c?oc=5"
+      "event": "Discover the Top 4 Canadian Pharma Stocks of 2025",
+      "date": "Tue, 28 Jul 2026",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBKWHNVdHhMZ0dMT0tpT2dyMnp3R0ZPRnZaZm5QVEI4R2FfY211TDBzOGdUTk1aaHp0Q2pVYXBGZnlyTGZ2c1ZhbVZPQmdLVU5IOG9FQWY1ZC1hTjR4MWhKRm11UVdlZC1OR21iTTluOA?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,489.72",
-      "daily": 0.7,
-      "weekly": 1.05,
-      "monthly": 0.09
+      "value": "7,552.53",
+      "daily": 0.84,
+      "weekly": 1.88,
+      "monthly": 0.2
     },
     {
       "name": "Nasdaq",
-      "value": "25,373.85",
-      "daily": 1.0,
-      "weekly": 1.59,
-      "monthly": -2.56
+      "value": "25,654.96",
+      "daily": 1.11,
+      "weekly": 2.9,
+      "monthly": -1.78
     },
     {
       "name": "Dow Jones",
-      "value": "52,485.03",
-      "daily": 0.53,
-      "weekly": 1.04,
-      "monthly": 0.34
+      "value": "53,144.92",
+      "daily": 1.26,
+      "weekly": 1.79,
+      "monthly": 0.17
     },
     {
       "name": "Russell 2000",
-      "value": "2,931.34",
-      "daily": -0.5,
-      "weekly": 0.05,
-      "monthly": -2.7
+      "value": "2,948.98",
+      "daily": 0.6,
+      "weekly": 0.03,
+      "monthly": -2.01
     }
   ]
 }
