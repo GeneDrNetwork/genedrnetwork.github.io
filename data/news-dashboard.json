@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-05T13:03:36+00:00",
+  "updated_at": "2026-08-06T13:03:46+00:00",
   "summaries": {
-    "ai": "Key developments: Why Amazon\u2019s $3 Trillion Valuation Signals a New Era of AI-Powered Cloud Computing and AWS Expansion; FuriosaAI to supply 8,800 AI chips for Stockholm data center; Chip Maker Infineon Forecasts Strong Revenue Growth on Booming AI Demand.",
-    "biotech": "Key developments: Exemption of rare disease therapies in drug-pricing pilots would wipe out huge savings, analysis finds; Roche-backed Mironid gets $46M boost to put rare kidney disease drug on path to clinic; Secretome Therapeutics Builds Out Rare Disease Leadership Team.",
-    "market": "Key developments: Dow, S&P 500 close at record on AI-linked earnings, Mideast deal hopes; US stock market hits record highs as AI profits pile and oil prices ease; S&P 500, Nasdaq, Dow End Higher On SpaceX Strong Debut And US-Iran Peace Signals \u2014 SPCX, SHEL, ROKU, XOM, HOOD In Focus.",
-    "market_movers": "Nasdaq led tracked indexes at +2.59% today; Dow Jones was weakest at +1.71%. Key developments: Dow, S&P 500 close at record on AI-linked earnings, Mideast deal hopes; US stock market hits record highs as AI profits pile and oil prices ease; S&P 500, Nasdaq, Dow End Higher On SpaceX Strong Debut And US-Iran Peace Signals \u2014 SPCX, SHEL, ROKU, XOM, HOOD In Focus."
+    "ai": "Key developments: Why AI is forcing a rethink of data center cooling; AI Infrastructure Stocks Retail Investors Are Watching After SpaceX\u2019s $18.4b Spending Shock; The US wants to ban a key Chinese data center device. Here's what it does.",
+    "biotech": "Key developments: Viridian Therapeutics Highlights Recent Business Progress and Reports Second Quarter 2026 Financial Results; FDA nod for Moderna\u2019s flu vaccine mFlusiva; Moderna launches early trial of Ebola mRNA vaccine.",
+    "market": "Key developments: Stock Market Today: Dow Futures Gain, Nasdaq 100 Slips as Hormuz Deal Talks Progress\u2014SpaceX, SanDisk, App; S&P 500 and Nasdaq end lower as chip rally fizzles out and U.S.-Iran tensions rise; Stock Market Today: Nasdaq Falls After Morning Rally, Dow and S&P500 resist, Gold price Soars to $ 4,260.",
+    "market_movers": "Dow Jones led tracked indexes at +0.49% today; Nasdaq was weakest at -0.83%. Key developments: Stock Market Today: Dow Futures Gain, Nasdaq 100 Slips as Hormuz Deal Talks Progress\u2014SpaceX, SanDisk, App; S&P 500 and Nasdaq end lower as chip rally fizzles out and U.S.-Iran tensions rise; Stock Market Today: Nasdaq Falls After Morning Rally, Dow and S&P500 resist, Gold price Soars to $ 4,260."
   },
   "takeaways": [
-    "Why Amazon\u2019s $3 Trillion Valuation Signals a New Era of AI-Powered Cloud Computing and AWS Expansion - Spherical Insights",
-    "FuriosaAI to supply 8,800 AI chips for Stockholm data center - The Korea Herald",
-    "Exemption of rare disease therapies in drug-pricing pilots would wipe out huge savings, analysis finds - STAT",
-    "Roche-backed Mironid gets $46M boost to put rare kidney disease drug on path to clinic - firstwordpharma.com",
+    "Why AI is forcing a rethink of data center cooling - cio.com",
+    "AI Infrastructure Stocks Retail Investors Are Watching After SpaceX\u2019s $18.4b Spending Shock - simplywall.st",
+    "Viridian Therapeutics Highlights Recent Business Progress and Reports Second Quarter 2026 Financial Results - Business Wire",
+    "FDA nod for Moderna\u2019s flu vaccine mFlusiva - The Pharma Letter",
+    "FDA Names Zocilurtatug Pelitecan Orphan Drug in Neuroendocrine Carcinomas - Targeted Oncology",
     "Anavex Life Sciences Reports Preliminary Second Quarter 2026 Financial Results and Provides Business Update - Anavex Life Sciences",
-    "Palvella Q2 2026 slides: launch prep accelerates ahead of NDA - Investing.com",
-    "Dow, S&P 500 close at record on AI-linked earnings, Mideast deal hopes - Reuters"
+    "Stock Market Today: Dow Futures Gain, Nasdaq 100 Slips as Hormuz Deal Talks Progress\u2014SpaceX, SanDisk, App - Benzinga"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,6 +786,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "FDA Names Zocilurtatug Pelitecan Orphan Drug in Neuroendocrine Carcinomas",
+      "date": "Wed, 05 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQYXlPOUt6NVd5WmZEeFdzV3RROUItaWMxaXpLM3BmUkRQbUFkWnJLV2hTUnZfNTJ5ZHZSM2pJS3BieDFLeDVNczN2eDRSZ19sWFhrQnVhUFNqMk5vQWhtdE4xdlh2dXh6VndoNmtvcHFGS2hVWlR5c1hTVVkxYlE5X0MwY3k4cThVcGI2ZjJuOWxqS2ZNNTlGeGdjYlhhR3VhNmw0Wm9rdEZiQQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Anavex Life Sciences Reports Preliminary Second Quarter 2026 Financial Results and Provides Business Update",
       "date": "Thu, 30 Jul 2026",
       "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOaC03c1g3UkE5empWUzNEZXhkS3R1ODRhT2Rqemt6MlZNXzl3dXlNcXFzdF9NbWdHRkp1ZmFhbzFXRHVFRUJrOEdQQ0k0QlVkUkNpOVM0bzg5WmxtaEhQWXZWd1UzMFlNa3VxdzQxbC1adEItZ3F1NDJIZ2lTRmdubFU3ZXZpNEFWb2lIRXRiNUZuVlhiY0VQaWtxNjdVR3Z0SHdIbWJ0YzNFSmpKRzBCNFlNb3hJYVhVZnZJYVV4bHlfeDRkU05SM1F6a1M?oc=5"
@@ -802,17 +810,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Spruce Biosciences Appoints Jessica Cohen Pfeffer, M.D., as Vice President, Clinical Development",
+      "event": "Cumberland Pharmaceuticals Q2 Earnings Call Highlights",
       "date": "Tue, 04 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOaTlqYU44RThYU1F1T0QteThqTVQwQXBhd0JCbDlrcDhKbHNNR2NBSElldnU3SDBLN2NTN1FKdXE4ZHVRV2swdVNQazZjdzA3STNvTWZvQm5uY1NTeURUai1xREtwdGFWLXVIaFJDclNYamQwN08tdWctRkZYaVR5djZHVTQ0TW1WV201X1lYdklwSl9oTExvVFJpbzdFRG9zeG44eXVRdlB5Y0gtbURHQXpDZ2ZJQzNadlV3?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQSkVrM3pwUV85TV8wU1BoelNJbHFpTWlHRDFiM0pDUHRLb01yVWxLWlh5WXBiV2pFUE9EeFlQMldmRmMtVUxLSU5EN1VxTGMwR2RGLXhZTjkzYTVLLUItQURYUXdINEVlaS1odEd3VnNwOXNpSnFJYVQ0WjFVZGd6SThJR2dzaURHMlV3d1JLRXcwWHUtTDJ0QWZEcElEOWJtMlRTY2JYbjlVLXNKaDl4ZTFfMm53UQ?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Cumberland Pharmaceuticals Q2 Earnings Call Highlights",
-      "date": "Tue, 04 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQSkVrM3pwUV85TV8wU1BoelNJbHFpTWlHRDFiM0pDUHRLb01yVWxLWlh5WXBiV2pFUE9EeFlQMldmRmMtVUxLSU5EN1VxTGMwR2RGLXhZTjkzYTVLLUItQURYUXdINEVlaS1odEd3VnNwOXNpSnFJYVQ0WjFVZGd6SThJR2dzaURHMlV3d1JLRXcwWHUtTDJ0QWZEcElEOWJtMlRTY2JYbjlVLXNKaDl4ZTFfMm53UQ?oc=5"
+      "event": "Spruce Biosciences Appoints Jessica Cohen Pfeffer, M.D., as Vice President, Clinical Development",
+      "date": "Mon, 03 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiuwNBVV95cUxPcW9peVNObkJHSGFKQzVQa1p5QkVwckYzQ2V2UUpyZ3FqQU5MWlZqZThlTm5DYU5hN3F5ZXZ4NGMwd1JlZllmSTluSlhZUWRqa19saWwwYVQybTBtNnlnclpVazNYZm1Qd2xGcGpxWVBMaU1Pa2IxX1FQT2FRSkRMQkxpQXpGdFlJeUNPTmRvRi1UNWxSaHB6T3dVUGRvdVI2ZzlqYVVRVVZxVlBnRnh4ZnVlVWxPOHN5Y09FNmFTRVpTbl9yeW9UZ05GOHB0eXp2blRqVlJRbVhhMkpYRVZxdjNJa3lhbGFjS05SOVNONmhqU0hBc0RKc2hESG9Yd3NRdlE2aHVDaGQwYldadm82LV9JTHFET0hGQnBSU2cxMjd3UE9KYUlCdGlVQ0Eza1NTSU9yeHpkOTd1LWFJNkZYTm9NeWJTUy1ncmpORW9qUDBIdlJJRHVTMXR5YXVoX0tRQkxDMXk4aVl3WThJUFBWMDdQREoyWWVuU1lyX3JlLUl2bzd1end1UktyX0NmY2lDeFh5RU8wX3IzcEp2Y0NfTV9XRkllRVRuNWZlLWM1RVpEclo1bG0zOUlyVQ?oc=5"
     },
     {
       "company": "See source",
@@ -837,44 +845,36 @@
       "event": "Palvella Therapeutics Reports Second Quarter 2026 Financial Results and Provides Corporate Update",
       "date": "Tue, 04 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMihgJBVV95cUxQTkV6VHZNRWJvQWNweklOQk9qY1F5N1VqSVB3WmIzeFBvWTFpOUJSVVRhVnI4cHR4Nm9TSEVWOGZNTkRvYmVLNzktUGI4M1VNOTV1ZEJBdGlXYkh4YnB3WXZ1VUJXbU1OMDVJRGh6dVhEUXh6d0ZjbjNZMXBWNkczQ09yR3lTTVhKUzNBQVRaWEx5Y0JXNVdYSF9Td0JSSXJRUDdQdHVOQ2JPNHhia3NTbHlzQUNZTHdLcm5LWnIzbFpOclktejg0R014M0tlRHRhYnIxR2FhR0RhRFRaYWQ0NDMzVmt3bHFFVmtUalhWc0tIWGNqUUd1cnlxR01hbFNUc3VwTzNB0gGGAkFVX3lxTFBORXpUdk1FYm9BY3B6SU5CT2pjUXk3VWpJUHdaYjN4UG9ZMWk5QlJVVGFWcjhwdHg2b1NIRVY4Zk1ORG9iZUs3OS1QYjgzVU05NXVkQkF0aVdiSHhicHdZdnVVQldtTU4wNUlEaHp1WERReHp3RmNuM1kxcFY2RzNDT3JHeVNNWEpTM0FBVFpYTHljQlc1V1hIX1N3QlJJclFQN1B0dU5DYk80eGJrc1NseXNBQ1lMd0tybktacjNsWk5yWS16ODRHTXgzS2VEdGFicjFHYWFHRGFEVFphZDQ0MzNWa3dscUVWa1RqWFZzS0hYY2pRR3VyeXFHTWFsU1RzdXBPM0E?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Palvella Q2 2026 slides: $251M cash backs rare disease launch prep",
-      "date": "Tue, 04 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNZURYMVdBa1RteUlZbG42MXRkVlRqOWxUSHRCZnRkWEg3MWFhdjZoWVl6ZzBpZmw0TlJ1UlkweUk2aGw5NElzUHExMVJZLTNvZUV4ckdNeWFuTEZJTnI3bVVla3J3VHlMY1VTdHBtNnBfQ2Z1YjNQcW9tNDFXTnVJNmU0T3B1OE05ZHJUbVR5Yk82a2JzblFUQlREaVpLbzlPY3l4N0F0LWx2MFE2OHl4YjhlSDhhX0xSTjY5SjhR?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,736.52",
-      "daily": 1.79,
-      "weekly": 4.14,
-      "monthly": 2.64
+      "value": "7,723.55",
+      "daily": -0.17,
+      "weekly": 5.57,
+      "monthly": 2.93
     },
     {
       "name": "Nasdaq",
-      "value": "26,584.99",
-      "daily": 2.59,
-      "weekly": 6.87,
-      "monthly": 1.78
+      "value": "26,363.44",
+      "daily": -0.83,
+      "weekly": 7.86,
+      "monthly": 2.11
     },
     {
       "name": "Dow Jones",
-      "value": "54,085.88",
-      "daily": 1.71,
-      "weekly": 2.54,
-      "monthly": 1.94
+      "value": "54,349.12",
+      "daily": 0.49,
+      "weekly": 5.34,
+      "monthly": 2.69
     },
     {
       "name": "Russell 2000",
-      "value": "3,036.98",
-      "daily": 1.85,
-      "weekly": 2.82,
-      "monthly": 0.91
+      "value": "3,019.19",
+      "daily": -0.59,
+      "weekly": 3.88,
+      "monthly": 1.23
     }
   ]
 }
