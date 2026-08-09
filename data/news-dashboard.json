@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-08T11:46:53+00:00",
+  "updated_at": "2026-08-09T11:48:04+00:00",
   "summaries": {
-    "ai": "Key developments: How Worried Should We Be About AI Debt?; SK Telecom, Rebellions expand Korean AI chip infrastructure; DATA CENTER INSIGHT \u2013 The New Infrastructure Race in North America and Why Communities Don\u2019t Want Them.",
-    "biotech": "Key developments: Congressional Panel Says the United States Is Losing Its Lead on Rare Disease Cures; AI Drug Discovery Has $8.9 Billion in Hype and Zero FDA Approvals: When Does the Bill Come Due?; Steve Pakola on Leading Clinical Development Programs for Rare Diseases and Gene Therapies.",
-    "market": "Key developments: Dow, S&P 500 and Nasdaq post major weekly gains - Honolulu Star-Advertiser; Dow Falls Over 500 Points, Nasdaq Sinks As Tech Stocks Tumble \u2014 Wells Fargo Warns 'Sugar Rush' Behind Recent Surge Likely Over; Wall Street Today: DJIA, S&P 500, Nasdaq Comp Rise as SPCX, PLTR, AAOI, TEAM, TSLA and NVDA Rally.",
-    "market_movers": "Nasdaq led tracked indexes at +1.30% today; Dow Jones was weakest at +0.28%. Key developments: Dow, S&P 500 and Nasdaq post major weekly gains - Honolulu Star-Advertiser; Dow Falls Over 500 Points, Nasdaq Sinks As Tech Stocks Tumble \u2014 Wells Fargo Warns 'Sugar Rush' Behind Recent Surge Likely Over; Wall Street Today: DJIA, S&P 500, Nasdaq Comp Rise as SPCX, PLTR, AAOI, TEAM, TSLA and NVDA Rally."
+    "ai": "Key developments: The impending, inescapable deluge of AI; Big Tech\u2019s AI Data Center Power Demands Trigger $15B PJM Auction and a Nuclear SMR Boom; Firebird AI Opens $500 Million AI Computing Facility in Armenia, Plans 70,000 NVIDIA Chips.",
+    "biotech": "Key developments: Biotechnology Stocks To Watch As Investors Look Past Pfizer\u2019s Covid Revenue Drop; DNA Encoded Library Market; Middle East and Africa Biotech Boom Reshapes Medical Tourism.",
+    "market": "Key developments: Futures: Big Earnings Ahead; What To Do Now As Bulls Rule; Today\u2019s Market Recap: Chip-Led Rally Drives Nasdaq and S&P 500 to Records\uff0cMicron Surges 19%; The Week Ahead: CPI and Earnings Test the Stock Market Rally Near Record Highs.",
+    "market_movers": "Nasdaq led tracked indexes at +1.30% today; Dow Jones was weakest at +0.28%. Key developments: Futures: Big Earnings Ahead; What To Do Now As Bulls Rule; Today\u2019s Market Recap: Chip-Led Rally Drives Nasdaq and S&P 500 to Records\uff0cMicron Surges 19%; The Week Ahead: CPI and Earnings Test the Stock Market Rally Near Record Highs."
   },
   "takeaways": [
-    "How Worried Should We Be About AI Debt? - The University of Chicago Booth School of Business",
-    "SK Telecom, Rebellions expand Korean AI chip infrastructure - upi.com",
-    "Congressional Panel Says the United States Is Losing Its Lead on Rare Disease Cures - Medical Daily",
-    "AI Drug Discovery Has $8.9 Billion in Hype and Zero FDA Approvals: When Does the Bill Come Due? - The Clinical Trial Vanguard",
+    "The impending, inescapable deluge of AI - The Mercury News",
+    "Big Tech\u2019s AI Data Center Power Demands Trigger $15B PJM Auction and a Nuclear SMR Boom - TradingKey",
+    "Biotechnology Stocks To Watch As Investors Look Past Pfizer\u2019s Covid Revenue Drop - simplywall.st",
+    "DNA Encoded Library Market - Future Market Insights",
     "FDA Names Zocilurtatug Pelitecan Orphan Drug in Neuroendocrine Carcinomas - Targeted Oncology",
-    "FDA grants orphan drug status to potential treatment for ALL - rarecancernews.com",
-    "Dow, S&P 500 and Nasdaq post major weekly gains - Honolulu Star-Advertiser"
+    "Zai Lab (ZLAB) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
+    "Futures: Big Earnings Ahead; What To Do Now As Bulls Rule - Investor's Business Daily"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,17 +794,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA grants orphan drug status to potential treatment for ALL",
-      "date": "Fri, 07 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPZ2t5Y0NZTmNUaWtfSTRWLWVNVFVJSDRJQVl4V1JSRWQ3dXVGTWFJbnBGNHZwMHc3QmhRemx4WWpMRW04dkZtS2dXQlEtNHdaUVliaUx5ZnExRVljdHRRSVFFYjd4OHFCZFZ3RGs2VUdncnJyZ1BkNVkxS3I4cjRXZ2hPTlBia2RpSWc?oc=5"
+      "event": "Zai Lab (ZLAB) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Mon, 03 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9sbFI4b256b2xEbGFqcndfNlFoMnFvbWVka1VNSFlpdWM5UHdiODJIWjdEY3FRMG9kMlZZdDRvUkxGRktkRkR4YWotLWhjWmJwazViZy01SUJ0bW4tcjBoTTQ0dThBOTB6?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Zai Lab (ZLAB) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Mon, 03 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9sbFI4b256b2xEbGFqcndfNlFoMnFvbWVka1VNSFlpdWM5UHdiODJIWjdEY3FRMG9kMlZZdDRvUkxGRktkRkR4YWotLWhjWmJwazViZy01SUJ0bW4tcjBoTTQ0dThBOTB6?oc=5"
+      "event": "FDA grants orphan drug status to potential treatment for ALL",
+      "date": "Fri, 07 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPZ2t5Y0NZTmNUaWtfSTRWLWVNVFVJSDRJQVl4V1JSRWQ3dXVGTWFJbnBGNHZwMHc3QmhRemx4WWpMRW04dkZtS2dXQlEtNHdaUVliaUx5ZnExRVljdHRRSVFFYjd4OHFCZFZ3RGs2VUdncnJyZ1BkNVkxS3I4cjRXZ2hPTlBia2RpSWc?oc=5"
     },
     {
       "company": "See source",
@@ -826,9 +826,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Palvella Therapeutics Reports Second Quarter 2026 Financial Results and Provides Corporate Update",
-      "date": "Tue, 04 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxNR3BoOEVuMW1NUmxFcE5DNGxUTE5WUE45RWlQY3hwMloxZTAxYThiajNDS0FjUlZ2LTFHd2I5SkdqUllPbDg3VEM1akwyUl9yY0F4QzF5dXdRWlV6NG5zOEZMYXVXNHlwOFR4YWJiV09mMFZqdEQxbEh4ZzdiTGt3SUhicTJtcmN5eUFqYmFjTDBEeERONmFVcl9BdUNLazhsTkJZa1ozdFhhNmJ4aUswRXIyd1g3NG94T1Nfc1F5dlFOZi0zQ0pXdFMtX0s2WFlZb0pwOENMVXdwb3FYdXoxb3gyOF9zVUJzMENRc2JtN052dFJQZlVORmhQNWlpUQ?oc=5"
+      "event": "Arrowhead Pharmaceuticals Acquires FDA Priority Review Voucher",
+      "date": "Wed, 05 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNczJJM1JYdDV5Z0JnTmNaZGN1Y0xUOTZCbUNWd0FBY0t3WU8wckNWM0RUN1NxejdhMktNc1hGVl95bWJEVGtnaUFGQ093cEFWNEdfbVRGMFRXU25KWTEtdnh3aVpqWTFnMlNGYXp3cXQ3RDJ1Zk4tV3BFaENtUW1PbXBQZWlHNkw0UkIxU2oxSktWYk5Rd1JubmlTdXNtMHZYYjlhVg?oc=5"
     },
     {
       "company": "See source",
