@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-09T11:48:04+00:00",
+  "updated_at": "2026-08-10T12:02:04+00:00",
   "summaries": {
-    "ai": "Key developments: The impending, inescapable deluge of AI; Big Tech\u2019s AI Data Center Power Demands Trigger $15B PJM Auction and a Nuclear SMR Boom; Firebird AI Opens $500 Million AI Computing Facility in Armenia, Plans 70,000 NVIDIA Chips.",
-    "biotech": "Key developments: Biotechnology Stocks To Watch As Investors Look Past Pfizer\u2019s Covid Revenue Drop; DNA Encoded Library Market; Middle East and Africa Biotech Boom Reshapes Medical Tourism.",
-    "market": "Key developments: Futures: Big Earnings Ahead; What To Do Now As Bulls Rule; Today\u2019s Market Recap: Chip-Led Rally Drives Nasdaq and S&P 500 to Records\uff0cMicron Surges 19%; The Week Ahead: CPI and Earnings Test the Stock Market Rally Near Record Highs.",
-    "market_movers": "Nasdaq led tracked indexes at +1.30% today; Dow Jones was weakest at +0.28%. Key developments: Futures: Big Earnings Ahead; What To Do Now As Bulls Rule; Today\u2019s Market Recap: Chip-Led Rally Drives Nasdaq and S&P 500 to Records\uff0cMicron Surges 19%; The Week Ahead: CPI and Earnings Test the Stock Market Rally Near Record Highs."
+    "ai": "Key developments: [AI Infrastructure Insight] What is changing inside AI data centers?; Who Really Benefits as Sovereign AI Infrastructure Spending Explodes?; The Physics Challenges Holding Back Orbital Data Centers.",
+    "biotech": "Key developments: Silence Therapeutics aims at Takeda with new data in rare blood cancer; Biotech has more women leaders. Old double standards persist, executive says; Sobi pens $580M deal for Innate\u2019s skin cancer drug ahead of phase 3 push.",
+    "market": "Key developments: S&P 500, Nasdaq futures inch up as markets monitor Hormuz situation; Stock Market Today: Dow Futures Slip, S&P 500 Gains as Trump Says US Is 'Only Semi-Negotiating' With Iran; Dow Futures Fall With Big Earnings Ahead; What To Do Now.",
+    "market_movers": "Nasdaq led tracked indexes at +1.30% today; Dow Jones was weakest at +0.28%. Key developments: S&P 500, Nasdaq futures inch up as markets monitor Hormuz situation; Stock Market Today: Dow Futures Slip, S&P 500 Gains as Trump Says US Is 'Only Semi-Negotiating' With Iran; Dow Futures Fall With Big Earnings Ahead; What To Do Now."
   },
   "takeaways": [
-    "The impending, inescapable deluge of AI - The Mercury News",
-    "Big Tech\u2019s AI Data Center Power Demands Trigger $15B PJM Auction and a Nuclear SMR Boom - TradingKey",
-    "Biotechnology Stocks To Watch As Investors Look Past Pfizer\u2019s Covid Revenue Drop - simplywall.st",
-    "DNA Encoded Library Market - Future Market Insights",
-    "FDA Names Zocilurtatug Pelitecan Orphan Drug in Neuroendocrine Carcinomas - Targeted Oncology",
-    "Zai Lab (ZLAB) FDA Approvals, PDUFA Dates & Drug Alerts 2026 - MarketBeat",
-    "Futures: Big Earnings Ahead; What To Do Now As Bulls Rule - Investor's Business Daily"
+    "[AI Infrastructure Insight] What is changing inside AI data centers? - news.skhynix.com",
+    "Who Really Benefits as Sovereign AI Infrastructure Spending Explodes? - 24/7 Wall St.",
+    "Silence Therapeutics aims at Takeda with new data in rare blood cancer - STAT",
+    "Biotech has more women leaders. Old double standards persist, executive says - Reuters",
+    "Jazz Pharmaceuticals to Acquire Actio Biosciences, Expanding Rare Epilepsy Portfolio - PR Newswire",
+    "Scholar Rock Announces FDA Review of Apitegromab Biologics License Application (BLA) for Spinal Muscular Atrophy (SMA) to Progress with Second Fill-Finish Facility; Approval Decision Anticipated by September 30, 2026 Action Date - BioSpace",
+    "S&P 500, Nasdaq futures inch up as markets monitor Hormuz situation - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,17 +786,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Names Zocilurtatug Pelitecan Orphan Drug in Neuroendocrine Carcinomas",
-      "date": "Wed, 05 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQYXlPOUt6NVd5WmZEeFdzV3RROUItaWMxaXpLM3BmUkRQbUFkWnJLV2hTUnZfNTJ5ZHZSM2pJS3BieDFLeDVNczN2eDRSZ19sWFhrQnVhUFNqMk5vQWhtdE4xdlh2dXh6VndoNmtvcHFGS2hVWlR5c1hTVVkxYlE5X0MwY3k4cThVcGI2ZjJuOWxqS2ZNNTlGeGdjYlhhR3VhNmw0Wm9rdEZiQQ?oc=5"
+      "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences, Expanding Rare Epilepsy Portfolio",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOWWFpOXM5dzMySkJRcUx4T0hMLVpGemlXWXEyZ09VRWdadHZIZlp5aGpfcmdNU0VmS0cxUTdoTFJCN3ZLSWNTUHpkRmNPaUxna0s2cXZ4MUxmMzlWc0FsYjd5TFhuNU1sX3dqb2x5VXZ0NEM3VV9TRXBrVG1SWmN5LTZNdFUwWU96REg2Ny1BRnVwQUxGUnJDZVRLd0ZnQ2F1ek05d19KQlo4VkNTT1g0U3gtdFZBa05tQ2RfcU9MRF9sLURXY2VVMlk5cVlhQ1pIbUhRWW1B?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Zai Lab (ZLAB) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Mon, 03 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9sbFI4b256b2xEbGFqcndfNlFoMnFvbWVka1VNSFlpdWM5UHdiODJIWjdEY3FRMG9kMlZZdDRvUkxGRktkRkR4YWotLWhjWmJwazViZy01SUJ0bW4tcjBoTTQ0dThBOTB6?oc=5"
+      "event": "Scholar Rock Announces FDA Review of Apitegromab Biologics License Application (BLA) for Spinal Muscular Atrophy (SMA) to Progress with Second Fill-Finish Facility; Approval Decision Anticipated by September 30, 2026 Action Date",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi-gJBVV95cUxPWUFRajRVTkpncHBYdGVwY09HVFBJYTNqa3M3NFhEbTFzbFZtNTZUVnROZ1BsUm1Cd092Njd3a1ZBbjN1WFZiSUkzZFVicTh2NnRNZ09UZko2b2RScGJWMk1WMklwVWRyZ0pseVlPZlU0Z29CUmpsR0d0dmNjZmoxelZtemFUNDVtMEhmdzI3amtXcmVvV251eTctN0hmMGxJeGVtVVRHMWNxMklXMlI5V1BGMzdpQ0pkUVhIRmhuVFZvbk1td1R5Tndxd2FtZjdmbHkzc1lMLVFHM2lXRFFzUVdFMWt3emZNc3o5dnFPSTNrN1NpTzBUSmpmV0pLNjhzV0xibF84eGRhZjZwVGwzQnZKcG5HdGpISHY2emFMLWpXczU5SXYySWJHZmlibldNZm9DbUIza3ZhT2Nvb2VMbzhucVhBUDNJV1EtaTRUWUhpSGswNkxOY1lKSTR5RkhXSWZiNEZjR21Ha0gtbWZzVVluNURENHN6Q3c?oc=5"
     },
     {
       "company": "See source",
@@ -810,25 +810,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Lexeo's heart gene therapy gets FDA status after interim data",
-      "date": "Wed, 05 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNWW5RdUd1LVU2bEhiM2x6dXRqRGg4YmJwVmNCMm5QaXF4NVJzUHJJc0ZSMmR0ZHhlRXJGS2RFSm9wc1ZnR3ZlbERGVGhMbklGaE5sMk9hUWxxdVZnTjM2TzhOUG5ZUTdxVVpDX0VLM3BfUnA1NU42aFRUQjkyNGZKcjRaNUF1MWJpVjBuUDZqM0dfUWRPZ3BFMFA0VHp1cnBfOGpiOFI5MjdONlJZcktOcGEyTjJhWTRj?oc=5"
+      "event": "FDA PDUFA Watch: Neurology Decisions to Track Through Late September",
+      "date": "Thu, 06 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPUmhGNEtpZXp0b2d1bEJrOW1DMDB0MVBjRUFwQnlNY3RucEJzSVpiTFRlamF4MVBnb25NenFXTEpwRFo3V2ZZdmJ0VTM3NWVndnlDN1ExS1VCSjlCR19nZEJlc0piODBVeUo4RDBhZDVPam40aEtLb1BzS1dpTkp1SnNjb1BJZlozVDQ5Zl9TSnV4dTF3NkF3VWFtOWFrbVFF?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Belite Bio presents updated phase 3 data on oral tinlarebant for Stargardt",
-      "date": "Mon, 03 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQMWhFY2oxMHNQY291cUVuRUkzalhIbllxLXFNRm84bFpIVnFYN3N2MkhqUkZPTnpHWnhrdUMtRGk5eHNKcWNaOGluSnJpaFp4YUdsWUU3djlDUjJ3a1VsWHVzWDVmdW00UWFobml6Wmc3QThSUUpMSV9oZ29ZbWhFSG85MkNIV0tMb2puUDZmN1Nnek9JSndKWGxPckdmN2tHbnRES2J1Ym05Qm9sYm5PaXZkZjRTbWotYjcza202UllTSHQ5ZkE?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Arrowhead Pharmaceuticals Acquires FDA Priority Review Voucher",
+      "event": "Full Transcript: Palvella Therapeutics Q2 2026 Earnings Call",
       "date": "Wed, 05 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNczJJM1JYdDV5Z0JnTmNaZGN1Y0xUOTZCbUNWd0FBY0t3WU8wckNWM0RUN1NxejdhMktNc1hGVl95bWJEVGtnaUFGQ093cEFWNEdfbVRGMFRXU25KWTEtdnh3aVpqWTFnMlNGYXp3cXQ3RDJ1Zk4tV3BFaENtUW1PbXBQZWlHNkw0UkIxU2oxSktWYk5Rd1JubmlTdXNtMHZYYjlhVg?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQcGtWb1lkUktSS3pNTFVOS3YycVhqNnVvNlBYdUFELXM5Nkt0cnhEc0wzc04tdU8yeTY1X3FRT2d4bk5vdGswUFhvRE83dDg3NXd4N2RCUmVZYnpBcktJeW5uZHRLQmhFdEx5Z3V0YkF6YmE3UkhsZ0FpUzdYbDJlUkIySnJNLUdnaHdTQ2JUU0N2Rk9UaWJEazBxWU11OXR6Mm0zb1dBRG9obzR2R084Nw?oc=5"
     },
     {
       "company": "See source",
@@ -842,9 +834,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Spruce Biosciences Appoints Jessica Cohen Pfeffer, M.D., as Vice President, Clinical Development",
-      "date": "Mon, 03 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxOWlRGV183c1hDQnRNejEycF85Tk5aVDF1OFdtWWlKZGFhLXBpTUt4d1R1TDdESW9tZlowelMwd1ZadXliMm5TZGJ0LU5xUXBDV0lrd3FPYzJZUDNBWnNieFByNXI1RVBJb0VwN2JLQVlaeklzZmEybmt3UjJycGFyQm82bmwwVXMwSGFfejVQd3ZWQ2tENC0xU3FSLWNUckZzSTBBSEdicWlYTmRnazVqYmhRNkRHNmNlekRYV2Z2VzFKM1l4V0ZLejBTRVlzT0k1M3NtUGNoQ0FVdXZsT0ZDZjV4d2E?oc=5"
+      "event": "Cumberland Pharmaceuticals Q2 Earnings Call Highlights",
+      "date": "Tue, 04 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxORUZ4WnRlOGFFRFpaeXVTS3ptRllwQUR0SHdPNVpyYmRweUNyMW40WmVwd0t0TkR4b1pQbUd5VmROM2czbUZ6RVZHSDd3R3o2cHFUMkh2aVpleUpyUGMtWlRKUmVjS2RULU9ncERETDQwX1RsdHF3WjRjSTA5ZnVPNHJRaG1qc0ltVUYyQUFsREpaeDc2ak1YMF9NRXlOVzlqV3p3c1J3NnVOd0h3?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Lexeo's heart gene therapy gets FDA status after interim data",
+      "date": "Wed, 05 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNWW5RdUd1LVU2bEhiM2x6dXRqRGg4YmJwVmNCMm5QaXF4NVJzUHJJc0ZSMmR0ZHhlRXJGS2RFSm9wc1ZnR3ZlbERGVGhMbklGaE5sMk9hUWxxdVZnTjM2TzhOUG5ZUTdxVVpDX0VLM3BfUnA1NU42aFRUQjkyNGZKcjRaNUF1MWJpVjBuUDZqM0dfUWRPZ3BFMFA0VHp1cnBfOGpiOFI5MjdONlJZcktOcGEyTjJhWTRj?oc=5"
     }
   ],
   "markets": [
