@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-10T12:02:04+00:00",
+  "updated_at": "2026-08-11T12:00:03+00:00",
   "summaries": {
-    "ai": "Key developments: [AI Infrastructure Insight] What is changing inside AI data centers?; Who Really Benefits as Sovereign AI Infrastructure Spending Explodes?; The Physics Challenges Holding Back Orbital Data Centers.",
-    "biotech": "Key developments: Silence Therapeutics aims at Takeda with new data in rare blood cancer; Biotech has more women leaders. Old double standards persist, executive says; Sobi pens $580M deal for Innate\u2019s skin cancer drug ahead of phase 3 push.",
-    "market": "Key developments: S&P 500, Nasdaq futures inch up as markets monitor Hormuz situation; Stock Market Today: Dow Futures Slip, S&P 500 Gains as Trump Says US Is 'Only Semi-Negotiating' With Iran; Dow Futures Fall With Big Earnings Ahead; What To Do Now.",
-    "market_movers": "Nasdaq led tracked indexes at +1.30% today; Dow Jones was weakest at +0.28%. Key developments: S&P 500, Nasdaq futures inch up as markets monitor Hormuz situation; Stock Market Today: Dow Futures Slip, S&P 500 Gains as Trump Says US Is 'Only Semi-Negotiating' With Iran; Dow Futures Fall With Big Earnings Ahead; What To Do Now."
+    "ai": "Key developments: Why Americans Really Hate Data Centers; Nvidia\u2019s $500 billion AI infrastructure push leaves crypto compute further behind; Nvidia taps Wall Street for a half-trillion dollars to fuel global AI infrastructure buildout.",
+    "biotech": "Key developments: Vaderis hauls in $152M to test an AKT-targeting drug; EQT Life Sciences participates in Vaderis Therapeutics' USD 152 million Series B financing; Rare disease investment rises after US voucher renewal, UK lags.",
+    "market": "Key developments: Wall Street ends down as expectations of Hormuz deal fade; Market Movers blog: US markets close in green as employment data flatlines; US Stock Market Today: S&P 500 Futures Edge Higher On Cooler Jobs And Oil Jitters.",
+    "market_movers": "S&P 500 led tracked indexes at -0.06% today; Russell 2000 was weakest at -0.56%. Key developments: Wall Street ends down as expectations of Hormuz deal fade; Market Movers blog: US markets close in green as employment data flatlines; US Stock Market Today: S&P 500 Futures Edge Higher On Cooler Jobs And Oil Jitters."
   },
   "takeaways": [
-    "[AI Infrastructure Insight] What is changing inside AI data centers? - news.skhynix.com",
-    "Who Really Benefits as Sovereign AI Infrastructure Spending Explodes? - 24/7 Wall St.",
-    "Silence Therapeutics aims at Takeda with new data in rare blood cancer - STAT",
-    "Biotech has more women leaders. Old double standards persist, executive says - Reuters",
+    "Why Americans Really Hate Data Centers - derekthompson.org",
+    "Nvidia\u2019s $500 billion AI infrastructure push leaves crypto compute further behind - CoinDesk",
+    "Vaderis hauls in $152M to test an AKT-targeting drug - BioPharma Dive",
+    "EQT Life Sciences participates in Vaderis Therapeutics' USD 152 million Series B financing - Cision News",
     "Jazz Pharmaceuticals to Acquire Actio Biosciences, Expanding Rare Epilepsy Portfolio - PR Newswire",
     "Scholar Rock Announces FDA Review of Apitegromab Biologics License Application (BLA) for Spinal Muscular Atrophy (SMA) to Progress with Second Fill-Finish Facility; Approval Decision Anticipated by September 30, 2026 Action Date - BioSpace",
-    "S&P 500, Nasdaq futures inch up as markets monitor Hormuz situation - Reuters"
+    "Wall Street ends down as expectations of Hormuz deal fade - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -810,9 +810,33 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA PDUFA Watch: Neurology Decisions to Track Through Late September",
-      "date": "Thu, 06 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPUmhGNEtpZXp0b2d1bEJrOW1DMDB0MVBjRUFwQnlNY3RucEJzSVpiTFRlamF4MVBnb25NenFXTEpwRFo3V2ZZdmJ0VTM3NWVndnlDN1ExS1VCSjlCR19nZEJlc0piODBVeUo4RDBhZDVPam40aEtLb1BzS1dpTkp1SnNjb1BJZlozVDQ5Zl9TSnV4dTF3NkF3VWFtOWFrbVFF?oc=5"
+      "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences for $1.32 Billion",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5CWGE0c1FxVkk4c3hnYTh0enBJbHhCV2ZsMzRORjNrY04wRkJQc1BSTXR1X21mMjd2dFFmcUp0Tm9EQWNBbzgxNlE3SXpSY243S3p2aTFvM1o0cF9JdExIRUljd2cwYXg3ZHBDaEp4RW5POHgyZ1M0bTk2dw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "NAVLIN Regulatory Roundup: Approvals & Special Designations",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPUnQ3S3Z6U2JHc2dFQWFVQUhhcGphT21mX1NvN1hXSFNYYXVCeHVIMnhDdjExU3RjNlJHeGlRd191eFlVd3hfS29lejNWTGVvdUI1MFlIWnJBeGdaSS1UQVIxbUVGbjFVQ1lENl9BOGR2NlZFTm5zVEc5a1FmSjQ5R1ZSSjJyUjdvTzBlQWxNVW5tSF9SZnJZc0E0b2N6Qnc?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Jazz Pharmaceuticals expands rare epilepsy pipeline with Actio Biosciences deal",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNYnV5Rmt6bHA4Zms5bFFaS01jZThmdWhDY0tfWGNteXYzb2Y4MFFSUHg5UFN3bXBZS2NhaDQySDhtTG9FLVZZMC1GOTBYY1ZEcWFnME14QkFUSTZ2cHF4WEVuRWx3dzl5S2xNQVBtQ21Qd3JlbnM2WklvWUEycGV0MjVuaDk1TDU1dHdNQUtWM2N6RkF4OU4zNHFYYzJPaDJ6QmpDTXRaTnlYbi13dnVUcDEteTlGb2hjYWtDcl9KUjVOWEpfYzhNRlpabGVLTDltR3NXVGtES29MTWV1bUE?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Jazz expands epilepsy portfolio with buy of Actio Biosciences",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPUGxNOE42RFB4b1ByY0oxcEdSWDhHUzducUNXZDlWdV85MGlFNFNkR0xzZ21fTFF0REVBU0hnMWd1Q2JtVHdsV2RyMnBzeVhBS3g2N3QzMUIyX3Y1SjJDMUVxeDhZdlZITXNqYTRub0s4YWtYY21pWE0wdmZ3czZCcmpFOVhVRk9jaDBNMDQ2bGxRWWtOXzNKZ1lxMlBUN1Q4eS0wWHdaMXE3Zw?oc=5"
     },
     {
       "company": "See source",
@@ -821,60 +845,36 @@
       "event": "Full Transcript: Palvella Therapeutics Q2 2026 Earnings Call",
       "date": "Wed, 05 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQcGtWb1lkUktSS3pNTFVOS3YycVhqNnVvNlBYdUFELXM5Nkt0cnhEc0wzc04tdU8yeTY1X3FRT2d4bk5vdGswUFhvRE83dDg3NXd4N2RCUmVZYnpBcktJeW5uZHRLQmhFdEx5Z3V0YkF6YmE3UkhsZ0FpUzdYbDJlUkIySnJNLUdnaHdTQ2JUU0N2Rk9UaWJEazBxWU11OXR6Mm0zb1dBRG9obzR2R084Nw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Palvella Q2 2026 slides: $251M cash backs rare disease launch prep",
-      "date": "Tue, 04 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNZURYMVdBa1RteUlZbG42MXRkVlRqOWxUSHRCZnRkWEg3MWFhdjZoWVl6ZzBpZmw0TlJ1UlkweUk2aGw5NElzUHExMVJZLTNvZUV4ckdNeWFuTEZJTnI3bVVla3J3VHlMY1VTdHBtNnBfQ2Z1YjNQcW9tNDFXTnVJNmU0T3B1OE05ZHJUbVR5Yk82a2JzblFUQlREaVpLbzlPY3l4N0F0LWx2MFE2OHl4YjhlSDhhX0xSTjY5SjhR?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Cumberland Pharmaceuticals Q2 Earnings Call Highlights",
-      "date": "Tue, 04 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxORUZ4WnRlOGFFRFpaeXVTS3ptRllwQUR0SHdPNVpyYmRweUNyMW40WmVwd0t0TkR4b1pQbUd5VmROM2czbUZ6RVZHSDd3R3o2cHFUMkh2aVpleUpyUGMtWlRKUmVjS2RULU9ncERETDQwX1RsdHF3WjRjSTA5ZnVPNHJRaG1qc0ltVUYyQUFsREpaeDc2ak1YMF9NRXlOVzlqV3p3c1J3NnVOd0h3?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Lexeo's heart gene therapy gets FDA status after interim data",
-      "date": "Wed, 05 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNWW5RdUd1LVU2bEhiM2x6dXRqRGg4YmJwVmNCMm5QaXF4NVJzUHJJc0ZSMmR0ZHhlRXJGS2RFSm9wc1ZnR3ZlbERGVGhMbklGaE5sMk9hUWxxdVZnTjM2TzhOUG5ZUTdxVVpDX0VLM3BfUnA1NU42aFRUQjkyNGZKcjRaNUF1MWJpVjBuUDZqM0dfUWRPZ3BFMFA0VHp1cnBfOGpiOFI5MjdONlJZcktOcGEyTjJhWTRj?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,757.64",
-      "daily": 0.62,
-      "weekly": 3.58,
-      "monthly": 2.84
+      "value": "7,753.11",
+      "daily": -0.06,
+      "weekly": 2.01,
+      "monthly": 3.16
     },
     {
       "name": "Nasdaq",
-      "value": "26,690.62",
-      "daily": 1.3,
-      "weekly": 5.19,
-      "monthly": 1.85
+      "value": "26,605.36",
+      "daily": -0.32,
+      "weekly": 2.67,
+      "monthly": 2.83
     },
     {
       "name": "Dow Jones",
-      "value": "54,036.93",
-      "daily": 0.28,
-      "weekly": 2.96,
-      "monthly": 2.95
+      "value": "53,975.98",
+      "daily": -0.11,
+      "weekly": 1.5,
+      "monthly": 2.81
     },
     {
       "name": "Russell 2000",
-      "value": "3,034.49",
-      "daily": 1.1,
-      "weekly": 3.52,
-      "monthly": 1.4
+      "value": "3,017.40",
+      "daily": -0.56,
+      "weekly": 1.19,
+      "monthly": 2.17
     }
   ]
 }
