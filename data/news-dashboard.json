@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-11T12:00:03+00:00",
+  "updated_at": "2026-08-12T12:01:46+00:00",
   "summaries": {
-    "ai": "Key developments: Why Americans Really Hate Data Centers; Nvidia\u2019s $500 billion AI infrastructure push leaves crypto compute further behind; Nvidia taps Wall Street for a half-trillion dollars to fuel global AI infrastructure buildout.",
-    "biotech": "Key developments: Vaderis hauls in $152M to test an AKT-targeting drug; EQT Life Sciences participates in Vaderis Therapeutics' USD 152 million Series B financing; Rare disease investment rises after US voucher renewal, UK lags.",
-    "market": "Key developments: Wall Street ends down as expectations of Hormuz deal fade; Market Movers blog: US markets close in green as employment data flatlines; US Stock Market Today: S&P 500 Futures Edge Higher On Cooler Jobs And Oil Jitters.",
-    "market_movers": "S&P 500 led tracked indexes at -0.06% today; Russell 2000 was weakest at -0.56%. Key developments: Wall Street ends down as expectations of Hormuz deal fade; Market Movers blog: US markets close in green as employment data flatlines; US Stock Market Today: S&P 500 Futures Edge Higher On Cooler Jobs And Oil Jitters."
+    "ai": "Key developments: AI\u2019s costly buildout complicates the Fed\u2019s inflation fight; How Do You Invest In The AI Value Chain?; Better AI Infrastructure Stock: Vertiv vs. Eaton.",
+    "biotech": "Key developments: Neurocrine Biosciences rare disease drug possibly tied to safety issues, experts say; New Survey Finds U.S. Biotechs Advancing Treatments for Rare and Serious Diseases Want to Run Clinical Trials in U.S. but Regulatory Hurdles are Sending Them Abroad; Epicrispr, Vaderis secure pivotal study funding for rare disease assets.",
+    "market": "Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Rise Ahead of July CPI Print\u2014CoreWeave, Nebius, Super Mic; Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street ends down as US-Iran peace optimism fades.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.32% today; Nasdaq was weakest at -0.60%. Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Rise Ahead of July CPI Print\u2014CoreWeave, Nebius, Super Mic; Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street ends down as US-Iran peace optimism fades."
   },
   "takeaways": [
-    "Why Americans Really Hate Data Centers - derekthompson.org",
-    "Nvidia\u2019s $500 billion AI infrastructure push leaves crypto compute further behind - CoinDesk",
-    "Vaderis hauls in $152M to test an AKT-targeting drug - BioPharma Dive",
-    "EQT Life Sciences participates in Vaderis Therapeutics' USD 152 million Series B financing - Cision News",
+    "AI\u2019s costly buildout complicates the Fed\u2019s inflation fight - CNBC",
+    "How Do You Invest In The AI Value Chain? - Seeking Alpha",
+    "Neurocrine Biosciences rare disease drug possibly tied to safety issues, experts say - STAT",
+    "New Survey Finds U.S. Biotechs Advancing Treatments for Rare and Serious Diseases Want to Run Clinical Trials in U.S. but Regulatory Hurdles are Sending Them Abroad - Business Wire",
+    "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
     "Jazz Pharmaceuticals to Acquire Actio Biosciences, Expanding Rare Epilepsy Portfolio - PR Newswire",
-    "Scholar Rock Announces FDA Review of Apitegromab Biologics License Application (BLA) for Spinal Muscular Atrophy (SMA) to Progress with Second Fill-Finish Facility; Approval Decision Anticipated by September 30, 2026 Action Date - BioSpace",
-    "Wall Street ends down as expectations of Hormuz deal fade - Reuters"
+    "Stock Market Today: S&P 500, Nasdaq 100 Futures Rise Ahead of July CPI Print\u2014CoreWeave, Nebius, Super Mic - Benzinga"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,6 +786,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina",
+      "date": "Tue, 11 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPSzVueUFyQ1F6NzV2cXBHV0xzR0MwUXE3WHhOYkZRbWxLMHlUTm9PM0EyWXdmSE1uTkplT3pKNkg0akF2bjlkNlBfUkszVjZIVVEwM0tha2xETExXdlBsUjJGTFFxYllSYVZsOTdHWlNYaWpJdldLUlF6YWZSVnRKT1gyR1ZoRVBlLUhpTlVqRklUbThpRmhjVFJ1allBTVVSRlpCQ2UySGRJVWlTRS1ZZnlNdk4?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences, Expanding Rare Epilepsy Portfolio",
       "date": "Mon, 10 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOWWFpOXM5dzMySkJRcUx4T0hMLVpGemlXWXEyZ09VRWdadHZIZlp5aGpfcmdNU0VmS0cxUTdoTFJCN3ZLSWNTUHpkRmNPaUxna0s2cXZ4MUxmMzlWc0FsYjd5TFhuNU1sX3dqb2x5VXZ0NEM3VV9TRXBrVG1SWmN5LTZNdFUwWU96REg2Ny1BRnVwQUxGUnJDZVRLd0ZnQ2F1ek05d19KQlo4VkNTT1g0U3gtdFZBa05tQ2RfcU9MRF9sLURXY2VVMlk5cVlhQ1pIbUhRWW1B?oc=5"
@@ -794,17 +802,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Scholar Rock Announces FDA Review of Apitegromab Biologics License Application (BLA) for Spinal Muscular Atrophy (SMA) to Progress with Second Fill-Finish Facility; Approval Decision Anticipated by September 30, 2026 Action Date",
+      "event": "Jazz commits up to $1.3B to buy Actio, bolster epilepsy pipeline",
       "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi-gJBVV95cUxPWUFRajRVTkpncHBYdGVwY09HVFBJYTNqa3M3NFhEbTFzbFZtNTZUVnROZ1BsUm1Cd092Njd3a1ZBbjN1WFZiSUkzZFVicTh2NnRNZ09UZko2b2RScGJWMk1WMklwVWRyZ0pseVlPZlU0Z29CUmpsR0d0dmNjZmoxelZtemFUNDVtMEhmdzI3amtXcmVvV251eTctN0hmMGxJeGVtVVRHMWNxMklXMlI5V1BGMzdpQ0pkUVhIRmhuVFZvbk1td1R5Tndxd2FtZjdmbHkzc1lMLVFHM2lXRFFzUVdFMWt3emZNc3o5dnFPSTNrN1NpTzBUSmpmV0pLNjhzV0xibF84eGRhZjZwVGwzQnZKcG5HdGpISHY2emFMLWpXczU5SXYySWJHZmlibldNZm9DbUIza3ZhT2Nvb2VMbzhucVhBUDNJV1EtaTRUWUhpSGswNkxOY1lKSTR5RkhXSWZiNEZjR21Ha0gtbWZzVVluNURENHN6Q3c?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "FDA grants orphan drug status to potential treatment for ALL",
-      "date": "Fri, 07 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPZ2t5Y0NZTmNUaWtfSTRWLWVNVFVJSDRJQVl4V1JSRWQ3dXVGTWFJbnBGNHZwMHc3QmhRemx4WWpMRW04dkZtS2dXQlEtNHdaUVliaUx5ZnExRVljdHRRSVFFYjd4OHFCZFZ3RGs2VUdncnJyZ1BkNVkxS3I4cjRXZ2hPTlBia2RpSWc?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNm1TaHFubE5WS3VQZlRjUWxDU2k3RXVkejFubGRIRmNYdGxwS1ZrMU5HZUxES2NwWjhvd2RTbXFqczNqTm54Mk82WGpvUkZ0MVQ2MUNibVdaZ19sR3Bxb1FpbWY1NmlhQUc4eklQbUZ4TmN0YUZmS3R5cVZld2pSZDFFOFVXNkxVbWpCdkR5V2syTllfZGxQVA?oc=5"
     },
     {
       "company": "See source",
@@ -813,6 +813,14 @@
       "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences for $1.32 Billion",
       "date": "Mon, 10 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5CWGE0c1FxVkk4c3hnYTh0enBJbHhCV2ZsMzRORjNrY04wRkJQc1BSTXR1X21mMjd2dFFmcUp0Tm9EQWNBbzgxNlE3SXpSY243S3p2aTFvM1o0cF9JdExIRUljd2cwYXg3ZHBDaEp4RW5POHgyZ1M0bTk2dw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA grants orphan drug status to potential treatment for ALL",
+      "date": "Fri, 07 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPZ2t5Y0NZTmNUaWtfSTRWLWVNVFVJSDRJQVl4V1JSRWQ3dXVGTWFJbnBGNHZwMHc3QmhRemx4WWpMRW04dkZtS2dXQlEtNHdaUVliaUx5ZnExRVljdHRRSVFFYjd4OHFCZFZ3RGs2VUdncnJyZ1BkNVkxS3I4cjRXZ2hPTlBia2RpSWc?oc=5"
     },
     {
       "company": "See source",
@@ -834,47 +842,39 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz expands epilepsy portfolio with buy of Actio Biosciences",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPUGxNOE42RFB4b1ByY0oxcEdSWDhHUzducUNXZDlWdV85MGlFNFNkR0xzZ21fTFF0REVBU0hnMWd1Q2JtVHdsV2RyMnBzeVhBS3g2N3QzMUIyX3Y1SjJDMUVxeDhZdlZITXNqYTRub0s4YWtYY21pWE0wdmZ3czZCcmpFOVhVRk9jaDBNMDQ2bGxRWWtOXzNKZ1lxMlBUN1Q4eS0wWHdaMXE3Zw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Full Transcript: Palvella Therapeutics Q2 2026 Earnings Call",
-      "date": "Wed, 05 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQcGtWb1lkUktSS3pNTFVOS3YycVhqNnVvNlBYdUFELXM5Nkt0cnhEc0wzc04tdU8yeTY1X3FRT2d4bk5vdGswUFhvRE83dDg3NXd4N2RCUmVZYnpBcktJeW5uZHRLQmhFdEx5Z3V0YkF6YmE3UkhsZ0FpUzdYbDJlUkIySnJNLUdnaHdTQ2JUU0N2Rk9UaWJEazBxWU11OXR6Mm0zb1dBRG9obzR2R084Nw?oc=5"
+      "event": "Belite Bio (NASDAQ: BLTE) wins FDA priority review for tinlarebant in Stargardt disease",
+      "date": "Tue, 11 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNM1QzQ0NhMWYzaUpJbkF2YjlydnF1MHJJWHdrSjhIWF9SQUprZF9YR1RGUFpDZnlBZkV1MXZEWV9RUlJRRUppazVwQThsOWlRR0dPUXN6VWU1azFUWEtuZzNidEtJOThiM2lXM0lGbzZoM0lrNWRFWktRamlQRjI2SWctSDdReXZ0ajV1cmlyOG9pdF9iSERmN1k1TkRCcThiS2NDZklkcFBxUU1vVG1r?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,753.11",
-      "daily": -0.06,
-      "weekly": 2.01,
-      "monthly": 3.16
-    },
-    {
-      "name": "Nasdaq",
-      "value": "26,605.36",
+      "value": "7,728.20",
       "daily": -0.32,
-      "weekly": 2.67,
+      "weekly": -0.11,
       "monthly": 2.83
     },
     {
+      "name": "Nasdaq",
+      "value": "26,445.45",
+      "daily": -0.6,
+      "weekly": -0.52,
+      "monthly": 2.21
+    },
+    {
       "name": "Dow Jones",
-      "value": "53,975.98",
-      "daily": -0.11,
-      "weekly": 1.5,
-      "monthly": 2.81
+      "value": "53,791.85",
+      "daily": -0.34,
+      "weekly": -0.54,
+      "monthly": 2.46
     },
     {
       "name": "Russell 2000",
-      "value": "3,017.40",
-      "daily": -0.56,
-      "weekly": 1.19,
-      "monthly": 2.17
+      "value": "3,027.12",
+      "daily": 0.32,
+      "weekly": -0.32,
+      "monthly": 2.5
     }
   ]
 }
