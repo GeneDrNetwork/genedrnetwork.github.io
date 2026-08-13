@@ -135,7 +135,7 @@
       <div class="weekly-intro">
         <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
         <h2>Gene Detective Story</h2>
-        <p class="weekly-tagline">One Story at a Time</p>
+        <p class="weekly-tagline">Discover Genetics, One story at a time.</p>
         <p class="weekly-meta">${escapeHtml(story.monthYear || formatMonthYear(story.date))} <span>•</span> ${escapeHtml(storyLabel(story.storyNumber))}</p>
       </div>
       <div class="weekly-story">
@@ -153,7 +153,7 @@
       <header class="weekly-article-header">
         <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
         <p class="weekly-article-deck">Gene Detective Story</p>
-        <p class="weekly-tagline">One Story at a Time</p>
+        <p class="weekly-tagline">Discover Genetics, One story at a time.</p>
         <div class="weekly-article-meta"><span>${escapeHtml(story.monthYear || formatMonthYear(story.date))} <b>•</b> ${escapeHtml(storyLabel(story.storyNumber))} <b>•</b> ${escapeHtml(formatDate(story.date))}</span></div>
         <h1>${escapeHtml(story.title)}</h1>
         ${story.subtitle ? `<p class="weekly-article-subtitle">${escapeHtml(story.subtitle)}</p>` : ""}

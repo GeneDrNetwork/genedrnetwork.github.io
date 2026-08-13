@@ -182,7 +182,7 @@
       <div class="weekly-intro">
         <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
         <h2 id="weekly-section-title">Gene Detective Story</h2>
-        <p class="weekly-tagline">One Story at a Time</p>
+        <p class="weekly-tagline">Discover Genetics, One story at a time.</p>
         ${issue ? `<p class="weekly-meta">${escapeHtml(issue.monthYear || formatMonthYear(issue.date))} <span>•</span> ${escapeHtml(storyLabel(issue.storyNumber))}</p>` : ""}
       </div>
       <div class="weekly-story">${rightPanel}</div>
@@ -268,7 +268,7 @@
     <header class="weekly-article-header">
       <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
       <p class="weekly-article-deck">Gene Detective Story</p>
-      <p class="weekly-tagline">One Story at a Time</p>
+      <p class="weekly-tagline">Discover Genetics, One story at a time.</p>
       <div class="weekly-article-meta"><span>${escapeHtml(issue.monthYear || formatMonthYear(issue.date))} <b>•</b> ${escapeHtml(storyLabel(issue.storyNumber))} <b>•</b> ${escapeHtml(formatDate(issue.date))}</span></div>
       <h1>${escapeHtml(issue.title || parsed.title)}</h1>
       ${(issue.subtitle || parsed.subtitle) ? `<p class="weekly-article-subtitle">${escapeHtml(issue.subtitle || parsed.subtitle)}</p>` : ""}
