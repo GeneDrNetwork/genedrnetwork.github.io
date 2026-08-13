@@ -203,28 +203,64 @@
 
   function publicationMetadataSuggestions(value, variant = 0) {
     const parsed = parseStory(value);
-    const paragraphs = parsed.sections.flatMap((section) => section.blocks)
-      .map((block) => block.replace(/\s+/g, " ").trim())
-      .filter((block) => block && !looksLikeAuthorLine(block) && !/^(author|source case|adapted from|references?)\s*:?$/i.test(block));
-    const sentences = [parsed.subtitle, ...paragraphs.flatMap((paragraph) =>
-      paragraph.match(/[^.!?]+[.!?]+(?:[”’"'](?=\s|$))?/g) || [paragraph]
-    )].map((sentence) => sentence.trim()).filter((sentence, index, all) =>
+    const preRevealSource = parsed.source.split(/\n\s*(?:CASE SOLVED|THE DIAGNOSIS|DIAGNOSIS)\s*\n/i)[0];
+    const allSentences = storyBlocks(preRevealSource).flatMap((block) =>
+      looksLikeHeading(block) || looksLikeAuthorLine(block)
+        ? []
+        : (block.replace(/\s+/g, " ").match(/[^.!?]+[.!?]+(?:[”’"'](?=\s|$))?/g) || [block])
+    ).map((sentence) => sentence.trim()).filter((sentence, index, all) =>
       sentence.length >= 25 && sentence.length <= 220 && all.indexOf(sentence) === index
     );
-    const offset = sentences.length ? Math.abs(Number(variant) || 0) % sentences.length : 0;
-    const subtitle = sentences[offset] || parsed.subtitle || parsed.teaser;
+    const subtitleCandidates = [parsed.subtitle, ...allSentences].filter(Boolean);
+    const subtitle = subtitleCandidates[Math.abs(Number(variant) || 0) % Math.max(1, subtitleCandidates.length)] || parsed.teaser;
+    const openingSentences = new Set(allSentences.slice(0, 4));
+    const spoilerPattern = /\b(case solved|final diagnosis|pathogenic|homozygous|autosomal|variant|gene\s+[A-Z0-9]|enzyme activity|the mystery finally had a name)\b/i;
+    const curiosityPattern = /\b(mystery|clue|hidden|unsolved|disappeared|returned|came back|did not fit|didn’t fit|something was wrong|getting worse|losing abilities|connected|look again|reopened|question|alibi)\b/i;
+    const candidates = allSentences.map((sentence, index) => ({
+      sentence,
+      index,
+      score: (curiosityPattern.test(sentence) ? 4 : 0) + (/[?]$/.test(sentence) ? 2 : 0) + (index >= 4 ? 1 : 0)
+        - (openingSentences.has(sentence) ? 5 : 0) - (spoilerPattern.test(sentence) ? 8 : 0)
+    })).filter((candidate) => candidate.score > 0 && !substantiallyDuplicates(candidate.sentence, subtitle));
+    const ranked = candidates.sort((a, b) => b.score - a.score || a.index - b.index);
+    const start = ranked.length ? Math.abs(Number(variant) || 0) % ranked.length : 0;
+    const selected = ranked.slice(start).concat(ranked.slice(0, start)).slice(0, 3).sort((a, b) => a.index - b.index);
     const teaserParts = [];
-    for (let index = 1; index <= Math.min(sentences.length, 4); index += 1) {
-      const sentence = sentences[(offset + index) % sentences.length];
-      if (!sentence || sentence === subtitle) continue;
+    selected.forEach(({ sentence }) => {
       const next = [...teaserParts, sentence].join(" ");
-      if (next.length > 280 && teaserParts.length) break;
-      teaserParts.push(sentence);
-      if (next.length >= 150) break;
+      if (next.length <= 300 || !teaserParts.length) teaserParts.push(sentence);
+    });
+    if (!teaserParts.length) {
+      const fallback = allSentences.find((sentence, index) => index >= 4 && !spoilerPattern.test(sentence) && !substantiallyDuplicates(sentence, subtitle));
+      if (fallback) teaserParts.push(fallback);
     }
-    const teaser = truncate(teaserParts.join(" ") || parsed.teaser);
-    const homepageExcerpt = truncate(teaserParts.slice(0, 2).join(" ") || teaser, 190);
-    return { subtitle, teaser, homepageExcerpt };
+    const teaser = truncate(teaserParts.join(" ") || parsed.teaser, 300);
+    return { subtitle, teaser };
+  }
+
+  function comparableWords(value) {
+    return new Set(String(value || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/)
+      .filter((word) => word.length > 3 && !/^(this|that|with|from|have|were|they|their|there|when|what|which|would|could|should)$/.test(word)));
+  }
+
+  function substantiallyDuplicates(first, second) {
+    const left = comparableWords(first);
+    const right = comparableWords(second);
+    if (!left.size || !right.size) return false;
+    const overlap = [...left].filter((word) => right.has(word)).length;
+    return overlap / Math.min(left.size, right.size) >= 0.58;
+  }
+
+  function homepagePresentation(issue) {
+    const parsed = parseStory(issue.storyContent);
+    const opening = parsed.sections.flatMap((section) => section.blocks).find((block) => !looksLikeHeading(block)) || "";
+    let teaser = issue.teaser || publicationMetadataSuggestions(issue.storyContent).teaser || parsed.teaser;
+    if (substantiallyDuplicates(teaser, opening) || substantiallyDuplicates(teaser, issue.subtitle)) {
+      const alternative = publicationMetadataSuggestions(issue.storyContent, 1).teaser;
+      if (alternative && !substantiallyDuplicates(alternative, opening) && !substantiallyDuplicates(alternative, issue.subtitle)) teaser = alternative;
+    }
+    const subtitle = substantiallyDuplicates(issue.subtitle, teaser) ? "" : issue.subtitle;
+    return { subtitle, teaser };
   }
 
   function renderStorySections(issue) {
@@ -288,11 +324,11 @@
       title: "The first Gene Detective Story is coming soon.",
       subtitle: "Completed clinical mysteries, published one Story at a time.",
       teaser: "The original GeneDr Weekly publication remains available while the first monthly Story is prepared.",
-      homepageExcerpt: "A completed Gene Detective Story will be featured here without placing the full Story on the homepage.",
       status: "draft"
     });
     const settings = getEditorialSettings();
     const storyUrl = currentIssue ? articleUrl(issue) : "genedr-weekly/archive.html";
+    const presentation = homepagePresentation(issue);
 
     target.innerHTML = `<div class="weekly-card">
       <div class="weekly-intro">
@@ -311,11 +347,10 @@
         <p class="weekly-overline">Featured Gene Detective Story</p>
         <span class="weekly-category">Gene Detective Story</span>
         <h3>${escapeHtml(issue.title)}</h3>
-        ${issue.subtitle ? `<p class="weekly-feature-subtitle">${escapeHtml(issue.subtitle)}</p>` : ""}
+        ${presentation.subtitle ? `<p class="weekly-feature-subtitle">${escapeHtml(presentation.subtitle)}</p>` : ""}
         <div class="weekly-scenario">
           <strong>Story Preview</strong>
-          <p><em>${escapeHtml(issue.homepageExcerpt || issue.teaser)}</em></p>
-          ${issue.teaser && issue.teaser !== issue.homepageExcerpt ? `<p class="weekly-question">${escapeHtml(issue.teaser)}</p>` : ""}
+          <p><em>${escapeHtml(presentation.teaser)}</em></p>
         </div>
         <div class="weekly-actions">
           <a class="weekly-button weekly-button-primary" href="${storyUrl}">${currentIssue ? "Continue Reading" : "View Previous Publication"} <span aria-hidden="true">→</span></a>
@@ -468,7 +503,8 @@
 
   window.GeneDrMonthly = {
     managerStorageKey, escapeHtml, formatDate, formatMonthYear, issueLabel, storyLabel,
-    isMonthlyStory, normalizeIssue, parseStory, publicationMetadataSuggestions, estimateReadingTime,
+    isMonthlyStory, normalizeIssue, parseStory, publicationMetadataSuggestions, substantiallyDuplicates,
+    homepagePresentation, estimateReadingTime,
     renderStorySections, renderLegacyArticleText, getEditorialSettings, editorDisplayName, editorCredit,
     fullEditorNote, editorNotePreview, renderEditorNote, EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_MESSAGE, EDITOR_NOTE_CLOSING,
     articleUrl, getAllIssues: () => allIssues.map((issue) => ({ ...issue }))

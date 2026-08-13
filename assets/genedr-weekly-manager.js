@@ -1,7 +1,7 @@
 (function () {
   const {
     managerStorageKey, escapeHtml, formatDate, formatMonthYear, issueLabel, storyLabel,
-    isMonthlyStory, normalizeIssue, parseStory, publicationMetadataSuggestions, estimateReadingTime,
+    isMonthlyStory, normalizeIssue, parseStory, publicationMetadataSuggestions, homepagePresentation, estimateReadingTime,
     renderStorySections, getEditorialSettings, editorCredit, editorNotePreview, renderEditorNote
   } = window.GeneDrMonthly;
 
@@ -22,6 +22,8 @@
   let pendingDeleteSlug = null;
   let lastPreviewStory = null;
   let metadataVariant = 0;
+  let editingPublished = false;
+  let publishedIdentity = null;
 
   if (window.pdfjsLib) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -66,7 +68,6 @@
       title: data.get("title").trim(),
       subtitle: data.get("subtitle").trim(),
       teaser: data.get("teaser").trim(),
-      homepageExcerpt: data.get("homepageExcerpt").trim(),
       readingTime: data.get("readingTime").trim(),
       slug: data.get("slug").trim(),
       authorLine: data.get("authorLine").trim(),
@@ -75,14 +76,39 @@
     });
   }
 
+  function setPublishedEditingState(story) {
+    editingPublished = story.status === "published";
+    publishedIdentity = editingPublished ? {
+      issueNumber: story.issueNumber,
+      storyNumber: story.storyNumber,
+      date: story.date,
+      monthYear: story.monthYear,
+      slug: story.slug
+    } : null;
+    ["issueNumber", "storyNumber", "date", "monthYear", "slug"].forEach((name) => {
+      form.elements[name].readOnly = editingPublished;
+    });
+    document.querySelector("#save-draft").hidden = editingPublished;
+    document.querySelector("#preview-homepage").textContent = editingPublished ? "Preview Changes" : "Preview Homepage Feature";
+    document.querySelector("#publish-story").textContent = editingPublished ? "Update Publication" : "Publish & Download";
+    publishDialog.querySelector("h2").textContent = editingPublished ? "Update this published Story?" : "Publish this Story?";
+    publishDialog.querySelector("p").textContent = editingPublished
+      ? "This replaces the existing published issue while preserving its Story number, month, and URL. A repository-ready publishing file will download for deployment."
+      : "The Story will become the current featured monthly publication in this browser, and a repository-ready publishing file will download. Send that file to Codex to update the public GitHub Pages website.";
+    document.querySelector("#confirm-publish").textContent = editingPublished ? "Update Publication" : "Publish & Download";
+  }
+
   function fillForm(story, message) {
     activeSlug = story.slug;
     const values = { ...story, monthYear: story.monthYear || formatMonthYear(story.date) };
     Object.entries(values).forEach(([name, value]) => {
       if (form.elements[name]) form.elements[name].value = value;
     });
+    setPublishedEditingState(story);
     editor.hidden = false;
-    saveStatus.textContent = message || `Editing ${storyLabel(story.storyNumber)} · browser-local copy`;
+    saveStatus.textContent = message || (editingPublished
+      ? `Editing published ${storyLabel(story.storyNumber)} · updates replace this issue without creating a new one.`
+      : `Editing ${storyLabel(story.storyNumber)} · browser-local draft`);
     editor.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -110,7 +136,7 @@
         <td><span class="manager-status">${escapeHtml(issue.status)}</span></td>
         <td><div class="manager-row-actions">
           <button type="button" data-row-action="preview" data-slug="${escapeHtml(issue.slug)}">Preview</button>
-          <button type="button" data-row-action="edit" data-slug="${escapeHtml(issue.slug)}">Edit</button>
+          <button type="button" data-row-action="edit" data-slug="${escapeHtml(issue.slug)}">${issue.status === "published" ? "Edit Published Issue" : "Edit"}</button>
           ${issue.status === "published" ? "" : `<button class="manager-row-delete" type="button" data-row-action="delete" data-slug="${escapeHtml(issue.slug)}">Delete</button>`}
         </div></td>
       </tr>`;
@@ -120,6 +146,7 @@
   function saveStory(status) {
     if (!form.reportValidity()) return null;
     const story = storyFromForm();
+    if (editingPublished && publishedIdentity) Object.assign(story, publishedIdentity);
     story.status = status || story.status;
     form.elements.status.value = story.status;
     const duplicate = combinedIssues().find((item) => item.slug === story.slug && item.slug !== activeSlug);
@@ -138,6 +165,7 @@
     if (index >= 0) browserStories[index] = story;
     else browserStories.push(story);
     activeSlug = story.slug;
+    setPublishedEditingState(story);
     persistStories();
     renderList();
     saveStatus.textContent = `${storyLabel(story.storyNumber)} saved as ${story.status} in this browser.`;
@@ -146,6 +174,7 @@
 
   function homepagePreview(story) {
     const settings = getEditorialSettings();
+    const presentation = homepagePresentation(story);
     previewContent.innerHTML = `<div class="weekly-card">
       <div class="weekly-intro">
         <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
@@ -159,8 +188,8 @@
         <p class="weekly-overline">Featured Gene Detective Story</p>
         <span class="weekly-category">Gene Detective Story</span>
         <h3>${escapeHtml(story.title)}</h3>
-        ${story.subtitle ? `<p class="weekly-feature-subtitle">${escapeHtml(story.subtitle)}</p>` : ""}
-        <div class="weekly-scenario"><strong>Story Preview</strong><p><em>${escapeHtml(story.homepageExcerpt)}</em></p>${story.teaser !== story.homepageExcerpt ? `<p class="weekly-question">${escapeHtml(story.teaser)}</p>` : ""}</div>
+        ${presentation.subtitle ? `<p class="weekly-feature-subtitle">${escapeHtml(presentation.subtitle)}</p>` : ""}
+        <div class="weekly-scenario"><strong>Story Preview</strong><p><em>${escapeHtml(presentation.teaser)}</em></p></div>
         <div class="weekly-actions"><span class="weekly-button weekly-button-primary">Continue Reading →</span><span class="weekly-button weekly-button-secondary">Story Archive</span></div>
       </div>
     </div>`;
@@ -251,7 +280,6 @@
       title: parsed.title,
       subtitle: suggestions.subtitle || parsed.subtitle,
       teaser: suggestions.teaser || parsed.teaser,
-      homepageExcerpt: suggestions.homepageExcerpt || parsed.teaser,
       readingTime: estimateReadingTime(parsed.source),
       slug: slugify(parsed.title) || `gene-detective-story-${String(storyNumber).padStart(3, "0")}`,
       authorLine: parsed.authorLine,
@@ -380,8 +408,8 @@
         const suggestions = publicationMetadataSuggestions(source, metadataVariant);
         const field = generateButton.dataset.generateMetadata;
         form.elements[field].value = suggestions[field];
-        generateButton.textContent = field === "homepageExcerpt" ? "Regenerate Short Excerpt" : field === "teaser" ? "Regenerate Homepage Teaser" : "Regenerate Subtitle";
-        saveStatus.textContent = `${field === "homepageExcerpt" ? "Short homepage excerpt" : field === "teaser" ? "Homepage teaser" : "Subtitle"} regenerated. Review or edit it before publishing.`;
+        generateButton.textContent = field === "teaser" ? "Regenerate Teaser" : "Regenerate Subtitle";
+        saveStatus.textContent = `${field === "teaser" ? "Homepage teaser" : "Subtitle"} regenerated. Review or edit it before publishing or updating.`;
       }
     }
     if (previewButton && form.reportValidity()) showPreview(previewButton.dataset.preview);
@@ -396,10 +424,13 @@
   });
 
   document.querySelector("#confirm-publish").addEventListener("click", () => {
+    const wasPublishedEdit = editingPublished;
     const story = saveStory("published");
     if (!story) return;
     downloadPublishingFile();
-    saveStatus.textContent = `${storyLabel(story.storyNumber)} is published in this browser. Send the downloaded genedr-weekly-issues.js file to Codex for public deployment.`;
+    saveStatus.textContent = wasPublishedEdit
+      ? `${storyLabel(story.storyNumber)} was updated in this browser without changing its number, month, or URL. Send the downloaded genedr-weekly-issues.js file to Codex for public deployment.`
+      : `${storyLabel(story.storyNumber)} is published in this browser. Send the downloaded genedr-weekly-issues.js file to Codex for public deployment.`;
   });
 
   document.querySelector("#manager-preview-pdf").addEventListener("click", () => {

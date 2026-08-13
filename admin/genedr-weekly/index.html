@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../styles.css?v=20260813-monthly-5" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260813-monthly-5" />
+    <link rel="stylesheet" href="../../styles.css?v=20260813-monthly-6" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260813-monthly-6" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -74,8 +74,7 @@
             <label class="manager-field-wide">Story title<input name="title" type="text" required /></label>
             <label>Reading time<input name="readingTime" type="text" placeholder="8 min read" required /></label>
             <label class="manager-field-wide"><span class="manager-field-heading"><span>Subtitle or opening line</span><button class="manager-regenerate" type="button" data-generate-metadata="subtitle">Generate Subtitle</button></span><input name="subtitle" type="text" /><span>Generated only from the completed Story and fully editable.</span></label>
-            <label class="manager-field-wide"><span class="manager-field-heading"><span>Homepage teaser</span><button class="manager-regenerate" type="button" data-generate-metadata="teaser">Generate Homepage Teaser</button></span><textarea name="teaser" rows="4" required></textarea><span>Editable publication metadata; the full Story is never changed.</span></label>
-            <label class="manager-field-wide"><span class="manager-field-heading"><span>Short homepage excerpt</span><button class="manager-regenerate" type="button" data-generate-metadata="homepageExcerpt">Generate Short Excerpt</button></span><textarea name="homepageExcerpt" rows="4" required></textarea><span>Used in the original-style feature box above the teaser.</span></label>
+            <label class="manager-field-wide"><span class="manager-field-heading"><span>Homepage teaser</span><button class="manager-regenerate" type="button" data-generate-metadata="teaser">Generate Teaser</button></span><textarea name="teaser" rows="4" required></textarea><span>A 1–3 sentence, spoiler-free hook. Fully editable; the Story itself is never changed.</span></label>
             <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
             <label>Status<select name="status" disabled><option value="draft">draft</option><option value="published">published</option></select></label>
             <label class="manager-field-wide">Detected author/editor line<input name="authorLine" type="text" /><span>Detected for reference; the original line remains in the full Story.</span></label>
@@ -83,10 +82,10 @@
           </div>
 
           <div class="manager-actions" aria-label="Story workflow actions">
-            <button class="manager-button" type="button" data-status-action="draft">Save Draft</button>
-            <button class="manager-button" type="button" data-preview="card">Preview Homepage Feature</button>
+            <button id="save-draft" class="manager-button" type="button" data-status-action="draft">Save Draft</button>
+            <button id="preview-homepage" class="manager-button" type="button" data-preview="card">Preview Homepage Feature</button>
             <button class="manager-button" type="button" data-preview="article">Preview Full Story</button>
-            <button class="manager-button manager-button-primary" type="button" data-publish>Publish &amp; Download</button>
+            <button id="publish-story" class="manager-button manager-button-primary" type="button" data-publish>Publish &amp; Download</button>
           </div>
           <div class="manager-actions manager-preview-actions">
             <button class="manager-button" type="button" data-export="story-json">Download Story JSON</button>
@@ -129,10 +128,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/mammoth@1.10.0/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="../../data/genedr-weekly-settings.js?v=20260813-monthly-5"></script>
-    <script src="../../data/genedr-weekly-issues.js?v=20260813-monthly-5"></script>
-    <script src="../../assets/genedr-weekly.js?v=20260813-monthly-5"></script>
-    <script src="../../assets/genedr-weekly-pdf.js?v=20260813-monthly-5"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260813-monthly-5"></script>
+    <script src="../../data/genedr-weekly-settings.js?v=20260813-monthly-6"></script>
+    <script src="../../data/genedr-weekly-issues.js?v=20260813-monthly-6"></script>
+    <script src="../../assets/genedr-weekly.js?v=20260813-monthly-6"></script>
+    <script src="../../assets/genedr-weekly-pdf.js?v=20260813-monthly-6"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260813-monthly-6"></script>
   </body>
 </html>
