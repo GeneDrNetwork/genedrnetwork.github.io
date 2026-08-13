@@ -1,8 +1,9 @@
 (function () {
   function filename(issue) {
-    const number = String(issue.issueNumber).padStart(3, "0");
+    const monthly = issue.publicationType === "gene-detective-story";
+    const number = String(monthly ? issue.storyNumber : issue.issueNumber).padStart(3, "0");
     const title = String(issue.title).replace(/['’]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "");
-    return `GeneDr-Weekly-Issue-${number}-${title}`;
+    return `${monthly ? "GeneDr-Monthly-Gene-Detective-Story" : "GeneDr-Weekly-Legacy-Issue"}-${number}-${title}`;
   }
 
   function print(issue, context = "article") {

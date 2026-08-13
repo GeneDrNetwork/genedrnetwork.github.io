@@ -1,340 +1,175 @@
 (function () {
-  const storageKey = "genedr-weekly-manager-issues-v1";
-  const topicStorageKey = "genedr-weekly-manager-topics-v1";
-  const emailHistoryKey = "genedr-weekly-email-history-v1";
-  const statuses = ["draft", "ready-for-review", "approved", "published", "archived"];
-  const audiences = ["Auto", "Clinicians", "Residents", "Medical Students", "Genetic Counselors", "Patients and Families", "General Public"];
-  const publicCategories = window.GeneDrWeekly.categories.filter((category) => category !== "All");
   const {
-    escapeHtml, formatDate, issueLabel, normalizeIssue, renderArticleText,
-    EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_CLOSING, editorialSettingsStorageKey,
-    getEditorialSettings, editorDisplayName, editorCredit, editorNotePreview, renderEditorNote
-  } = window.GeneDrWeekly;
+    managerStorageKey, escapeHtml, formatDate, formatMonthYear, issueLabel, storyLabel,
+    isMonthlyStory, normalizeIssue, parseStory, renderStorySections
+  } = window.GeneDrMonthly;
+
   const form = document.querySelector("#issue-form");
   const editor = document.querySelector("#manager-editor");
   const preview = document.querySelector("#manager-preview");
   const previewContent = document.querySelector("#manager-preview-content");
   const list = document.querySelector("#manager-issue-list");
-  const dialog = document.querySelector("#publish-confirmation");
+  const importField = document.querySelector("#story-import");
+  const importStatus = document.querySelector("#story-import-status");
+  const saveStatus = document.querySelector("#save-status");
+  const publishDialog = document.querySelector("#publish-confirmation");
   const deleteDialog = document.querySelector("#delete-confirmation");
   const deleteMessage = document.querySelector("#delete-confirmation-message");
-  const saveStatus = document.querySelector("#save-status");
-  const aiStatus = document.querySelector("#ai-generation-status");
-  const referencesFieldLabel = document.querySelector("#references-field-label");
-  const emailButton = document.querySelector("#email-subscribers");
-  const emailDialog = document.querySelector("#email-confirmation");
-  const emailResendDialog = document.querySelector("#email-resend-confirmation");
-  const emailPreviewContent = document.querySelector("#email-preview-content");
-  const emailActionStatus = document.querySelector("#email-action-status");
-  const previewPdfButton = document.querySelector("#manager-preview-pdf");
-  const referenceMode = document.querySelector("#reference-retrieval-mode");
-  const settingsForm = document.querySelector("#editorial-settings-form");
-  const settingsStatus = document.querySelector("#editorial-settings-status");
-  const settingsPreview = document.querySelector("#editorial-settings-preview");
-  const notePreview = document.querySelector("#editor-note-homepage-preview");
-  let activeKey = null;
-  let activeEmailIssue = null;
-  let lastPreviewIssue = null;
-  let generationInProgress = false;
-  let pendingDeleteKey = null;
-
-  function updateEditorialSettingsPreview() {
-    const data = new FormData(settingsForm);
-    settingsPreview.textContent = `${data.get("editorLabel")} ${[data.get("editorName"), data.get("editorCredentials")].filter(Boolean).join(", ")}`;
-  }
-
-  function fillEditorialSettings() {
-    const settings = getEditorialSettings();
-    Object.entries(settings).forEach(([name, value]) => { settingsForm.elements[name].value = value; });
-    updateEditorialSettingsPreview();
-  }
-
-  settingsForm.addEventListener("input", updateEditorialSettingsPreview);
-  settingsForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!settingsForm.reportValidity()) return;
-    const data = new FormData(settingsForm);
-    localStorage.setItem(editorialSettingsStorageKey, JSON.stringify({
-      editorLabel: data.get("editorLabel").trim(),
-      editorName: data.get("editorName").trim(),
-      editorCredentials: data.get("editorCredentials").trim()
-    }));
-    updateEditorialSettingsPreview();
-    settingsStatus.textContent = "Editorial settings saved in this browser.";
-  });
-
-  let topics = (window.GENEDR_WEEKLY_TOPICS || []).map((topic) => ({ ...topic }));
-  try {
-    const savedTopics = JSON.parse(localStorage.getItem(topicStorageKey) || "[]");
-    const savedByTitle = new Map(savedTopics.map((topic) => [topic.title, topic]));
-    topics = topics.map((topic) => savedByTitle.get(topic.title) || topic);
-  } catch (error) {
-    // Continue with the repository topic library when browser-local topic history is invalid.
-  }
+  let activeSlug = null;
+  let pendingDeleteSlug = null;
+  let lastPreviewStory = null;
 
   const repoIssues = (window.GENEDR_WEEKLY_ISSUES || []).map(normalizeIssue);
-  let savedIssues = [];
+  let browserStories = [];
   try {
-    savedIssues = JSON.parse(localStorage.getItem(storageKey) || "[]").map(normalizeIssue).filter((issue) => {
-      const hasContent = Boolean(issue.title || issue.subtitle || issue.scenario || issue.question || issue.excerpt ||
-        issue.editorNoteTopicIntroduction ||
-        issue.articleSections?.whyThisMatters || issue.articleSections?.mainArticle || issue.keyPoints?.length || issue.references?.length);
-      return issue.status !== "draft" || hasContent;
-    });
+    browserStories = JSON.parse(localStorage.getItem(managerStorageKey) || "[]")
+      .map(normalizeIssue)
+      .filter(isMonthlyStory);
   } catch (error) {
-    savedIssues = [];
-  }
-  const byKey = new Map(repoIssues.map((issue) => [String(issue.issueNumber), issue]));
-  savedIssues.forEach((issue) => byKey.set(String(issue.issueNumber), issue));
-  let issues = Array.from(byKey.values());
-
-  form.elements.category.innerHTML = publicCategories.map((category) =>
-    `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`
-  ).join("");
-  form.elements.status.innerHTML = statuses.map((status) =>
-    `<option value="${status}">${status.replaceAll("-", " ")}</option>`
-  ).join("");
-  form.elements.audience.innerHTML = audiences.map((audience) => `<option value="${escapeHtml(audience)}">${escapeHtml(audience)}</option>`).join("");
-
-  function persistBrowserIssues() {
-    localStorage.setItem(storageKey, JSON.stringify(issues));
+    browserStories = [];
   }
 
-  function persistTopics() {
-    localStorage.setItem(topicStorageKey, JSON.stringify(topics));
+  function combinedIssues() {
+    const bySlug = new Map(repoIssues.map((issue) => [issue.slug, issue]));
+    browserStories.forEach((story) => bySlug.set(story.slug, story));
+    return Array.from(bySlug.values()).sort((a, b) => new Date(b.date) - new Date(a.date));
   }
 
-  function nextIssueNumber() {
-    return Math.max(0, ...issues.map((issue) => Number(issue.issueNumber) || 0)) + 1;
+  function persistStories() {
+    localStorage.setItem(managerStorageKey, JSON.stringify(browserStories));
+  }
+
+  function nextMonthlyNumber(field) {
+    return Math.max(0, ...combinedIssues().filter(isMonthlyStory).map((story) => Number(story[field]) || 0)) + 1;
   }
 
   function slugify(value) {
     return String(value).toLowerCase().trim().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   }
 
-  function categoryForTopic(topic) {
-    const libraryMatch = topics.find((item) => item.title.toLowerCase() === topic.toLowerCase());
-    if (libraryMatch) return libraryMatch.category;
-    const value = topic.toLowerCase();
-    if (/movie|film|cinema/.test(value)) return "Movie";
-    if (/music|art|song/.test(value)) return "Music & Arts";
-    if (/\bai\b|artificial intelligence|machine learning/.test(value)) return "AI in Genetics";
-    if (/drug|therapy|treatment|inhibitor|replacement/.test(value)) return "Drug Spotlight";
-    if (/guideline|recommendation|consensus/.test(value)) return "Guideline Update";
-    if (/sequenc|testing|microarray|biomarker/.test(value)) return "Genetic Testing";
-    if (/disease|syndrome|deficiency|disorder/.test(value)) return "Disease Spotlight";
-    return "Clinical Case";
-  }
-
-  function selectLibraryTopic() {
-    const recentIssues = issues
-      .filter((issue) => issue.date)
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 8);
-    const recentTitles = recentIssues.map((issue) => issue.title.toLowerCase());
-    const recentCategoryCounts = recentIssues.slice(0, 4).reduce((counts, issue) => {
-      counts[issue.category] = (counts[issue.category] || 0) + 1;
-      return counts;
-    }, {});
-    const active = topics.filter((topic) => topic.active);
-    const notRecent = active.filter((topic) => !recentTitles.some((title) =>
-      title.includes(topic.title.toLowerCase()) || topic.title.toLowerCase().includes(title)
-    ));
-    const candidates = notRecent.length ? notRecent : active;
-    return [...candidates].sort((a, b) => {
-      const categoryDifference = (recentCategoryCounts[a.category] || 0) - (recentCategoryCounts[b.category] || 0);
-      if (categoryDifference) return categoryDifference;
-      if (!a.lastUsed && b.lastUsed) return -1;
-      if (a.lastUsed && !b.lastUsed) return 1;
-      if ((a.usageCount || 0) !== (b.usageCount || 0)) return (a.usageCount || 0) - (b.usageCount || 0);
-      return new Date(a.lastUsed || 0) - new Date(b.lastUsed || 0);
-    })[0];
-  }
-
-  function emptyIssue() {
-    const nextNumber = nextIssueNumber();
-    return {
-      issueNumber: nextNumber,
-      date: new Date().toISOString().slice(0, 10),
-      title: "",
-      subtitle: "",
-      slug: `issue-${String(nextNumber).padStart(3, "0")}`,
-      category: "Clinical Case",
-      audience: "Auto",
-      readingTime: "5 min read",
-      scenario: "",
-      question: "",
-      excerpt: "",
-      editorNoteTopicIntroduction: "",
-      articleSections: { whyThisMatters: "", mainArticle: "" },
-      keyPoints: [],
-      references: [],
-      disclaimer: "The clinical scenario is fictional and created for educational purposes. It does not represent an actual patient.",
-      status: "draft"
-    };
-  }
-
-  function splitLines(value) {
-    return String(value).split("\n").map((line) => line.trim()).filter(Boolean);
-  }
-
-  function issueFromForm() {
+  function storyFromForm() {
     const data = new FormData(form);
-    const activeIssue = issues.find((item) => String(item.issueNumber) === activeKey);
-    return {
+    return normalizeIssue({
+      publicationType: "gene-detective-story",
       issueNumber: Number(data.get("issueNumber")),
+      storyNumber: Number(data.get("storyNumber")),
       date: data.get("date").trim(),
+      monthYear: data.get("monthYear").trim(),
       title: data.get("title").trim(),
       subtitle: data.get("subtitle").trim(),
+      teaser: data.get("teaser").trim(),
       slug: data.get("slug").trim(),
-      category: data.get("category"),
-      audience: data.get("audience") || "Auto",
-      readingTime: data.get("readingTime").trim(),
-      scenario: data.get("scenario").trim(),
-      question: data.get("question").trim(),
-      excerpt: data.get("excerpt").trim(),
-      editorNoteTopicIntroduction: data.get("editorNoteTopicIntroduction").trim(),
-      articleSections: {
-        whyThisMatters: data.get("whyThisMatters").trim(),
-        mainArticle: data.get("mainArticle").trim()
-      },
-      keyPoints: splitLines(data.get("keyPoints")),
-      references: splitLines(data.get("references")),
-      disclaimer: data.get("disclaimer").trim(),
-      status: form.elements.status.value,
-      referencesNeedVerification: Boolean(activeIssue?.referencesNeedVerification)
-    };
+      authorLine: data.get("authorLine").trim(),
+      storyContent: data.get("storyContent").trim(),
+      status: form.elements.status.value || "draft"
+    });
   }
 
-  function fillForm(issue) {
-    activeKey = String(issue.issueNumber);
-    const values = {
-      ...issue,
-      audience: issue.audience || "Auto",
-      whyThisMatters: issue.articleSections.whyThisMatters || "",
-      mainArticle: issue.articleSections.mainArticle || "",
-      keyPoints: issue.keyPoints.join("\n"),
-      references: issue.references.join("\n")
-    };
+  function fillForm(story, message) {
+    activeSlug = story.slug;
+    const values = { ...story, monthYear: story.monthYear || formatMonthYear(story.date) };
     Object.entries(values).forEach(([name, value]) => {
       if (form.elements[name]) form.elements[name].value = value;
     });
     editor.hidden = false;
-    emailButton.hidden = issue.status !== "published";
-    emailButton.disabled = issue.status !== "published";
-    referencesFieldLabel.textContent = issue.referencesNeedVerification
-      ? "Suggested References — Verification Required"
-      : "References";
-    notePreview.textContent = editorNotePreview(issue);
-    saveStatus.textContent = `Editing ${issueLabel(issue.issueNumber)} · browser-local copy`;
+    saveStatus.textContent = message || `Editing ${storyLabel(story.storyNumber)} · browser-local copy`;
     editor.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function renderList() {
-    const sorted = [...issues].sort((a, b) => Number(b.issueNumber) - Number(a.issueNumber));
-    list.innerHTML = sorted.map((issue) => `
-      <tr>
-        <td>${escapeHtml(issueLabel(issue.issueNumber))}</td>
-        <td>${escapeHtml(formatDate(issue.date))}</td>
-        <td>${escapeHtml(issue.title || "Untitled issue")}</td>
-        <td>${escapeHtml(issue.category)}</td>
-        <td>${escapeHtml(issue.readingTime)}</td>
-        <td><span class="manager-note-status ${issue.editorNoteTopicIntroduction ? "is-complete" : "is-missing"}">${issue.editorNoteTopicIntroduction ? "Complete" : "Missing"}</span></td>
-        <td><span class="manager-status">${escapeHtml(issue.status.replaceAll("-", " "))}</span></td>
+    list.innerHTML = combinedIssues().map((issue) => {
+      if (!isMonthlyStory(issue)) {
+        return `<tr>
+          <td>${escapeHtml(issueLabel(issue.issueNumber))}</td>
+          <td>${escapeHtml(formatMonthYear(issue.date))}</td>
+          <td>${escapeHtml(issue.title)}</td>
+          <td><span class="manager-status">Legacy Weekly</span></td>
+          <td><span class="manager-status">${escapeHtml(issue.status)}</span></td>
+          <td><div class="manager-row-actions"><a href="../../genedr-weekly/article.html?issue=${encodeURIComponent(issue.slug)}" target="_blank" rel="noopener">View preserved article</a></div></td>
+        </tr>`;
+      }
+      return `<tr>
+        <td>${escapeHtml(storyLabel(issue.storyNumber))}</td>
+        <td>${escapeHtml(issue.monthYear || formatMonthYear(issue.date))}</td>
+        <td>${escapeHtml(issue.title || "Untitled Story")}</td>
+        <td><span class="manager-status">Monthly Story</span></td>
+        <td><span class="manager-status">${escapeHtml(issue.status)}</span></td>
         <td><div class="manager-row-actions">
-          <button type="button" data-row-action="preview" data-key="${issue.issueNumber}">Preview</button>
-          <button type="button" data-row-action="edit" data-key="${issue.issueNumber}">Edit</button>
-          ${issue.status === "published" ? "" : `<button class="manager-row-delete" type="button" data-row-action="delete" data-key="${issue.issueNumber}">Delete</button>`}
+          <button type="button" data-row-action="preview" data-slug="${escapeHtml(issue.slug)}">Preview</button>
+          <button type="button" data-row-action="edit" data-slug="${escapeHtml(issue.slug)}">Edit</button>
+          ${issue.status === "published" ? "" : `<button class="manager-row-delete" type="button" data-row-action="delete" data-slug="${escapeHtml(issue.slug)}">Delete</button>`}
         </div></td>
-      </tr>`).join("");
+      </tr>`;
+    }).join("");
   }
 
-  function saveIssue(status) {
+  function saveStory(status) {
     if (!form.reportValidity()) return null;
-    const issue = issueFromForm();
-    issue.status = status || issue.status;
-    form.elements.status.value = issue.status;
-    const newKey = String(issue.issueNumber);
-    const duplicate = issues.find((item) => String(item.issueNumber) === newKey && String(item.issueNumber) !== activeKey);
+    const story = storyFromForm();
+    story.status = status || story.status;
+    form.elements.status.value = story.status;
+    const duplicate = combinedIssues().find((item) => item.slug === story.slug && item.slug !== activeSlug);
     if (duplicate) {
-      saveStatus.textContent = "That issue number is already in use.";
-      form.elements.issueNumber.focus();
-      return null;
-    }
-    const duplicateSlug = issues.find((item) => item.slug === issue.slug && String(item.issueNumber) !== activeKey);
-    if (duplicateSlug) {
-      saveStatus.textContent = `The slug “${issue.slug}” is already used by ${issueLabel(duplicateSlug.issueNumber)}.`;
+      saveStatus.textContent = `The slug “${story.slug}” is already in use.`;
       form.elements.slug.focus();
       return null;
     }
-    const index = issues.findIndex((item) => String(item.issueNumber) === activeKey);
-    if (index >= 0) issues[index] = issue;
-    else issues.push(issue);
-    activeKey = newKey;
-    persistBrowserIssues();
+    const duplicateNumber = combinedIssues().find((item) => isMonthlyStory(item) && Number(item.storyNumber) === story.storyNumber && item.slug !== activeSlug);
+    if (duplicateNumber) {
+      saveStatus.textContent = `${storyLabel(story.storyNumber)} already exists.`;
+      form.elements.storyNumber.focus();
+      return null;
+    }
+    const index = browserStories.findIndex((item) => item.slug === activeSlug);
+    if (index >= 0) browserStories[index] = story;
+    else browserStories.push(story);
+    activeSlug = story.slug;
+    persistStories();
     renderList();
-    emailButton.hidden = issue.status !== "published";
-    emailButton.disabled = issue.status !== "published";
-    saveStatus.textContent = `${issueLabel(issue.issueNumber)} saved as ${issue.status.replaceAll("-", " ")} in this browser.`;
-    return issue;
+    saveStatus.textContent = `${storyLabel(story.storyNumber)} saved as ${story.status} in this browser.`;
+    return story;
   }
 
-  function previewCard(issue) {
-    const settings = getEditorialSettings();
+  function homepagePreview(story) {
     previewContent.innerHTML = `<div class="weekly-card">
       <div class="weekly-intro">
-        <p class="weekly-wordmark"><span>GeneDr</span> <em>Weekly</em></p>
-        <h2>Discover Genetics, One Story at a Time.</h2>
-        <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
-        <p class="weekly-meta">${issueLabel(issue.issueNumber)} <span>•</span> ${escapeHtml(formatDate(issue.date))} <span>•</span> ${escapeHtml(issue.readingTime)}</p>
-        ${editorCredit(settings, "weekly-editor-credit-on-dark")}
-        <aside class="weekly-note-preview"><h3>Editor’s Note</h3><p>${escapeHtml(editorNotePreview(issue))}</p><span class="manager-preview-link">Continue reading →</span></aside>
+        <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
+        <h2>Gene Detective Story</h2>
+        <p class="weekly-tagline">One Story at a Time</p>
+        <p class="weekly-meta">${escapeHtml(story.monthYear || formatMonthYear(story.date))} <span>•</span> ${escapeHtml(storyLabel(story.storyNumber))}</p>
       </div>
       <div class="weekly-story">
-        <p class="weekly-overline">Featured Article of the Week</p>
-        <span class="weekly-category">${escapeHtml(issue.category)}</span>
-        <h3>${escapeHtml(issue.title || "Untitled issue")}</h3>
-        <div class="weekly-scenario"><strong>Clinical Scenario</strong><p><em>${escapeHtml(issue.scenario)}</em></p><p class="weekly-question">${escapeHtml(issue.question)}</p></div>
-        <div class="weekly-actions"><span class="weekly-button weekly-button-primary">Read This Week's Story</span><span class="weekly-button weekly-button-secondary">Browse All Issues</span></div>
+        <p class="weekly-overline">GeneDr Monthly</p>
+        <span class="weekly-category">${escapeHtml(storyLabel(story.storyNumber))}</span>
+        <h3>${escapeHtml(story.title)}</h3>
+        <div class="weekly-scenario monthly-feature-teaser"><strong>Featured Story</strong><p>${escapeHtml(story.teaser)}</p></div>
+        <div class="weekly-actions"><span class="weekly-button weekly-button-primary">Read the Story →</span><span class="weekly-button weekly-button-secondary">Previous Stories</span></div>
       </div>
     </div>`;
   }
 
-  function previewArticle(issue) {
-    const settings = getEditorialSettings();
+  function articlePreview(story) {
     previewContent.innerHTML = `<article class="weekly-article">
       <header class="weekly-article-header">
-        <p class="weekly-wordmark"><span>GeneDr</span> <em>Weekly</em></p>
-        <p class="weekly-article-deck">Discover Genetics, One Story at a Time.</p>
-        <p class="weekly-tagline">Five minutes of enjoyable genetics reading every week.</p>
-        <div class="weekly-article-meta"><span>${issueLabel(issue.issueNumber)} <b>•</b> ${escapeHtml(formatDate(issue.date))} <b>•</b> ${escapeHtml(issue.readingTime)}</span></div>
-        ${editorCredit(settings, "weekly-editor-credit-on-dark")}
-        <h1>${escapeHtml(issue.title || "Untitled issue")}</h1>
-        ${issue.subtitle ? `<p class="weekly-article-subtitle">${escapeHtml(issue.subtitle)}</p>` : ""}
-        <span class="weekly-category weekly-article-category">${escapeHtml(issue.category)}</span>
+        <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
+        <p class="weekly-article-deck">Gene Detective Story</p>
+        <p class="weekly-tagline">One Story at a Time</p>
+        <div class="weekly-article-meta"><span>${escapeHtml(story.monthYear || formatMonthYear(story.date))} <b>•</b> ${escapeHtml(storyLabel(story.storyNumber))} <b>•</b> ${escapeHtml(formatDate(story.date))}</span></div>
+        <h1>${escapeHtml(story.title)}</h1>
+        ${story.subtitle ? `<p class="weekly-article-subtitle">${escapeHtml(story.subtitle)}</p>` : ""}
+        <span class="weekly-category weekly-article-category">Gene Detective Story</span>
       </header>
-      ${renderEditorNote(issue)}
-      <section><h2>Clinical Scenario</h2><p><em>${escapeHtml(issue.scenario)}</em></p><p><strong>${escapeHtml(issue.question)}</strong></p></section>
-      <section><h2>Why This Matters</h2><p>${escapeHtml(issue.articleSections.whyThisMatters)}</p></section>
-      <section><h2>Main Article</h2>${renderArticleText(issue.articleSections.mainArticle)}</section>
-      <section><h2>Key Points</h2><ul>${issue.keyPoints.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul></section>
-      <section><h2>${issue.referencesNeedVerification ? "Suggested References — Verification Required" : "References"}</h2><ol>${issue.references.map((reference) => `<li>${escapeHtml(reference)}</li>`).join("")}</ol></section>
-      <p class="weekly-disclaimer"><em>${escapeHtml(issue.disclaimer)}</em></p>
-      <footer class="weekly-print-footer"><span>${escapeHtml(issue.title)}</span><span>GeneDrNetwork · https://genedrnetwork.github.io</span></footer>
+      <div class="monthly-story-body">${renderStorySections(story)}</div>
+      <footer class="weekly-print-footer"><span>${escapeHtml(story.title)}</span><span>GeneDr Monthly · GeneDrNetwork</span></footer>
     </article>`;
   }
 
-  function showPreview(type, issue = issueFromForm()) {
-    lastPreviewIssue = issue;
+  function showPreview(type, story = storyFromForm()) {
+    lastPreviewStory = story;
     preview.hidden = false;
-    if (type === "card") previewCard(issue);
-    else previewArticle(issue);
+    if (type === "card") homepagePreview(story);
+    else articlePreview(story);
     preview.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function markdownFor(issue) {
-    const settings = getEditorialSettings();
-    return `# ${issue.title}\n\n${issue.subtitle}\n\n- Issue #${issue.issueNumber}\n- Date: ${formatDate(issue.date)}\n- Category: ${issue.category}\n- Reading time: ${issue.readingTime}\n- ${settings.editorLabel}: ${editorDisplayName(settings)}\n- Status: ${issue.status}\n\n## Editor’s Note\n\n${EDITOR_NOTE_INTRODUCTION}\n\n${issue.editorNoteTopicIntroduction}\n\n*${EDITOR_NOTE_CLOSING}*\n\n## Clinical Scenario\n\n${issue.scenario}\n\n**${issue.question}**\n\n## Excerpt\n\n${issue.excerpt}\n\n## Why This Matters\n\n${issue.articleSections.whyThisMatters}\n\n## Main Article\n\n${issue.articleSections.mainArticle}\n\n## Key Points\n\n${issue.keyPoints.map((point) => `- ${point}`).join("\n")}\n\n## References\n\n${issue.references.map((reference, index) => `${index + 1}. ${reference}`).join("\n")}\n\n_${issue.disclaimer}_\n`;
   }
 
   function download(filename, contents, type) {
@@ -343,340 +178,132 @@
     link.href = url;
     link.download = filename;
     link.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
-  async function copyIssueJson(issue) {
-    const json = JSON.stringify(issue, null, 2);
-    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(json);
+  function publishingIssues() {
+    const bySlug = new Map(repoIssues.map((issue) => [issue.slug, issue]));
+    browserStories.filter((story) => story.status === "published").forEach((story) => bySlug.set(story.slug, story));
+    return Array.from(bySlug.values()).sort((a, b) => new Date(a.date) - new Date(b.date));
+  }
+
+  function downloadPublishingFile() {
+    const contents = `window.GENEDR_WEEKLY_ISSUES = ${JSON.stringify(publishingIssues(), null, 2)};\n`;
+    download("genedr-weekly-issues.js", contents, "text/javascript");
+  }
+
+  async function copyStoryJson(story) {
+    const value = JSON.stringify(story, null, 2);
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
     else {
       const textarea = document.createElement("textarea");
-      textarea.value = json;
+      textarea.value = value;
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand("copy");
       textarea.remove();
     }
-    saveStatus.textContent = "Issue JSON copied. Add it to data/genedr-weekly-issues.js before deployment.";
+    saveStatus.textContent = "Story JSON copied.";
   }
 
-  function recordEmailResult(issue, result) {
-    let history = {};
-    try { history = JSON.parse(localStorage.getItem(emailHistoryKey) || "{}"); } catch (error) { history = {}; }
-    history[String(issue.issueNumber)] = {
-      issueNumber: issue.issueNumber,
-      sentAt: result.sentAt || new Date().toISOString(),
-      recipientCount: result.recipientCount ?? null,
-      providerId: result.providerId || null,
-      status: result.status || "unknown",
-      error: result.error || null
-    };
-    localStorage.setItem(emailHistoryKey, JSON.stringify(history));
-  }
-
-  function openEmailPreview(issue) {
-    if (issue.status !== "published") {
-      saveStatus.textContent = "Only a published issue can be emailed to subscribers.";
+  document.querySelector("#parse-story").addEventListener("click", () => {
+    const source = importField.value.trim();
+    if (!source) {
+      importStatus.textContent = "Paste the completed Story before parsing.";
+      importField.focus();
       return;
     }
-    activeEmailIssue = issue;
-    const email = window.GeneDrWeeklyEmail.buildPreview(issue);
-    emailPreviewContent.innerHTML = `
-      <div class="manager-email-brand"><strong>GeneDr <em>Weekly</em></strong><span>Discover Genetics, One Story at a Time.</span><span>Five minutes of enjoyable genetics reading every week.</span></div>
-      <dl><div><dt>Email subject</dt><dd>${escapeHtml(email.subject)}</dd></div><div><dt>Issue</dt><dd>#${issue.issueNumber} · ${escapeHtml(email.date)}</dd></div><div><dt>Title</dt><dd>${escapeHtml(email.title)}</dd></div><div><dt>Short excerpt</dt><dd>${escapeHtml(email.excerpt)}</dd></div><div><dt>Article link</dt><dd>${escapeHtml(email.articleUrl)}</dd></div></dl>`;
-    emailActionStatus.textContent = "";
-    emailDialog.showModal();
-  }
-
-  async function sendSubscriberEmail(action, resend = false) {
-    if (!activeEmailIssue) return;
-    const label = action === "test" ? "Sending test email…" : resend ? "Resending to subscribers…" : "Sending to subscribers…";
-    emailActionStatus.textContent = label;
-    try {
-      const result = await window.GeneDrWeeklyEmail.request(action, activeEmailIssue, { resend, resendConfirmed: resend });
-      recordEmailResult(activeEmailIssue, result);
-      emailActionStatus.textContent = action === "test"
-        ? `Test email sent. Provider ID: ${result.providerId || "not returned"}.`
-        : `Subscriber email sent to ${result.recipientCount ?? "the configured"} recipients. Provider ID: ${result.providerId || "not returned"}.`;
-    } catch (error) {
-      recordEmailResult(activeEmailIssue, { status: "failed", error: error.message });
-      emailActionStatus.textContent = error.message;
-      if (error.code === "ALREADY_SENT") emailResendDialog.showModal();
+    const parsed = parseStory(source);
+    if (!parsed.title) {
+      importStatus.textContent = "A Story title could not be identified. Keep the title as the first line and try again.";
+      return;
     }
-  }
-
-  async function generateAiDraft(topic, category) {
-    if (generationInProgress) return;
-    generationInProgress = true;
-    const issueNumber = nextIssueNumber();
+    const issueNumber = nextMonthlyNumber("issueNumber");
+    const storyNumber = nextMonthlyNumber("storyNumber");
     const date = new Date().toISOString().slice(0, 10);
-    const recentTopics = [...issues]
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 8)
-      .map((issue) => issue.title);
-    const buttons = [document.querySelector("#ai-suggest-generate"), document.querySelector("#ai-custom-generate")];
-    buttons.forEach((button) => { button.disabled = true; });
-    aiStatus.textContent = "Generating complete GeneDr Weekly draft…";
-    try {
-      const audience = document.querySelector("#ai-audience").value || "Auto";
-      const result = await window.GeneDrWeeklyAI.generateDraft({
-        topic, category, audience, issueNumber, date, recentTopics,
-        onProgress: (message) => { aiStatus.textContent = message; }
-      });
-      try {
-        const referenceResult = await window.GeneDrWeeklyReferences.retrieve(topic, "recent-plus-landmark");
-        result.references = referenceResult.references;
-      } catch (referenceError) {
-        result.references = ["No recent authoritative reference was identified. Administrator review is required."];
-      }
-      const draft = normalizeIssue({
-        ...result,
-        issueNumber,
-        date,
-        category,
-        audience,
-        slug: slugify(result.slug || result.title || topic),
-        status: "draft",
-        referencesNeedVerification: true
-      });
-      window.GeneDrWeeklyAI.validateDraft(draft);
-      if (!draft.references.length || draft.references.some((reference) => !String(reference || "").trim())) {
-        throw new window.GeneDrWeeklyAI.DraftGenerationError("MISSING_FIELDS", "The generated draft did not contain suggested references.");
-      }
-      if (issues.some((issue) => Number(issue.issueNumber) === issueNumber)) {
-        throw new window.GeneDrWeeklyAI.DraftGenerationError("DUPLICATE_ISSUE", `Issue #${issueNumber} already exists. No issue was overwritten.`);
-      }
-      const duplicateSlug = issues.find((issue) => issue.slug === draft.slug);
-      if (duplicateSlug) {
-        throw new window.GeneDrWeeklyAI.DraftGenerationError("DUPLICATE_SLUG", `The generated slug “${draft.slug}” is already used by ${issueLabel(duplicateSlug.issueNumber)}. No issue was overwritten.`);
-      }
-      issues.push(draft);
-      const topicEntry = topics.find((item) => item.title.toLowerCase() === topic.toLowerCase());
-      if (topicEntry) {
-        topicEntry.lastUsed = date;
-        topicEntry.usageCount = (topicEntry.usageCount || 0) + 1;
-        persistTopics();
-      }
-      persistBrowserIssues();
-      renderList();
-      fillForm(draft);
-      aiStatus.textContent = `${issueLabel(issueNumber)} was generated and saved as Draft. Suggested references require verification.`;
-    } catch (error) {
-      aiStatus.textContent = `${error.userMessage || error.message || "Draft generation failed."} No issue was created. You can retry with the same topic.`;
-    } finally {
-      generationInProgress = false;
-      buttons.forEach((button) => { button.disabled = false; });
-    }
-  }
-
-  function storeRegeneratedDraft(issue, message) {
-    const currentIssue = issues.find((item) => String(item.issueNumber) === activeKey);
-    if (currentIssue?.status === "published") {
-      throw new window.GeneDrWeeklyAI.DraftGenerationError("PUBLISHED_PROTECTED", "Published issues cannot be overwritten by regeneration. Create a new draft issue for revised content.");
-    }
-    const draft = normalizeIssue({ ...issue, status: "draft" });
-    const duplicateNumber = issues.find((item) => Number(item.issueNumber) === Number(draft.issueNumber) && String(item.issueNumber) !== activeKey);
-    const duplicateSlug = issues.find((item) => item.slug === draft.slug && String(item.issueNumber) !== activeKey);
-    if (duplicateNumber || duplicateSlug) {
-      throw new window.GeneDrWeeklyAI.DraftGenerationError("DUPLICATE_ISSUE", "Regeneration would duplicate an existing issue number or slug. No content was overwritten.");
-    }
-    const index = issues.findIndex((item) => String(item.issueNumber) === activeKey);
-    if (index < 0) throw new window.GeneDrWeeklyAI.DraftGenerationError("MISSING_FIELDS", "Save the issue before regenerating content.");
-    issues[index] = draft;
-    persistBrowserIssues();
-    renderList();
-    fillForm(draft);
-    saveStatus.textContent = message;
-  }
-
-  async function regenerateSection(section) {
-    if (!form.reportValidity()) return;
-    const issue = issueFromForm();
-    if (section === "editorNoteTopicIntroduction" && issue.editorNoteTopicIntroduction && !window.confirm("Replace the manually editable topic-specific Editor’s Note? The fixed introduction and closing will not change.")) return;
-    const buttons = [...document.querySelectorAll("[data-regenerate-section],[data-regenerate-full]")];
-    buttons.forEach((button) => { button.disabled = true; });
-    saveStatus.textContent = `Regenerating ${section.replace(/([A-Z])/g, " $1").toLowerCase()}…`;
-    try {
-      const result = await window.GeneDrWeeklyAI.generateSection({ section, issue });
-      if (section === "clinicalScenario") {
-        issue.scenario = result.scenario;
-        issue.question = result.question;
-      }
-      if (section === "whyThisMatters") issue.articleSections.whyThisMatters = result.whyThisMatters;
-      if (section === "mainArticle") issue.articleSections.mainArticle = result.mainArticle;
-      if (section === "keyPoints") issue.keyPoints = result.keyPoints;
-      if (section === "editorNoteTopicIntroduction") issue.editorNoteTopicIntroduction = result.editorNoteTopicIntroduction;
-      if (section === "references") {
-        issue.references = result.references;
-        issue.referencesNeedVerification = true;
-      }
-      storeRegeneratedDraft(issue, `${issueLabel(issue.issueNumber)} section regenerated and saved as Draft.`);
-    } catch (error) {
-      saveStatus.textContent = error.userMessage || error.message || "Section regeneration failed.";
-    } finally {
-      buttons.forEach((button) => { button.disabled = false; });
-    }
-  }
-
-  async function regenerateFullDraft() {
-    if (!form.reportValidity()) return;
-    const issue = issueFromForm();
-    const buttons = [...document.querySelectorAll("[data-regenerate-section],[data-regenerate-full]")];
-    buttons.forEach((button) => { button.disabled = true; });
-    saveStatus.textContent = "Regenerating the complete article…";
-    try {
-      const recentTopics = issues.filter((item) => String(item.issueNumber) !== activeKey).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8).map((item) => item.title);
-      const result = await window.GeneDrWeeklyAI.generateDraft({
-        topic: issue.title,
-        category: issue.category,
-        audience: issue.audience || "Auto",
-        issueNumber: issue.issueNumber,
-        date: issue.date,
-        recentTopics,
-        onProgress: (message) => { saveStatus.textContent = message; }
-      });
-      try {
-        const referenceResult = await window.GeneDrWeeklyReferences.retrieve(issue.title, referenceMode.value || "recent-plus-landmark");
-        result.references = referenceResult.references;
-      } catch (referenceError) {
-        result.references = issue.references?.length ? issue.references : ["No recent authoritative reference was identified. Administrator review is required."];
-      }
-      storeRegeneratedDraft({ ...result, issueNumber: issue.issueNumber, date: issue.date, status: "draft", referencesNeedVerification: true }, `${issueLabel(issue.issueNumber)} fully regenerated and saved as Draft.`);
-    } catch (error) {
-      saveStatus.textContent = error.userMessage || error.message || "Full-article regeneration failed.";
-    } finally {
-      buttons.forEach((button) => { button.disabled = false; });
-    }
-  }
-
-  async function refreshReferences(action) {
-    if (!form.reportValidity()) return;
-    const issue = issueFromForm();
-    const buttons = [...document.querySelectorAll("[data-reference-action]")];
-    buttons.forEach((button) => { button.disabled = true; });
-    saveStatus.textContent = `${action === "update" ? "Updating" : "Refreshing"} verified references from PubMed and authoritative sources…`;
-    try {
-      const result = await window.GeneDrWeeklyReferences.retrieve(issue.title, referenceMode.value);
-      issue.references = result.references;
-      issue.referencesNeedVerification = true;
-      const warning = result.warnings.length ? ` ${result.warnings.join(" ")}` : "";
-      storeRegeneratedDraft(issue, `${result.references.length} reference${result.references.length === 1 ? "" : "s"} retrieved and saved as Draft.${warning}`);
-    } catch (error) {
-      saveStatus.textContent = error.userMessage || error.message || "Reference retrieval failed. Existing references were not changed.";
-    } finally {
-      buttons.forEach((button) => { button.disabled = false; });
-    }
-  }
-
-  document.querySelector("#create-issue").addEventListener("click", () => {
-    const issue = emptyIssue();
-    fillForm(issue);
-    saveStatus.textContent = `${issueLabel(issue.issueNumber)} is unsaved. Complete the required fields and select Save Draft to add it to All Issues.`;
+    const story = normalizeIssue({
+      publicationType: "gene-detective-story",
+      issueNumber,
+      storyNumber,
+      date,
+      monthYear: formatMonthYear(date),
+      title: parsed.title,
+      subtitle: parsed.subtitle,
+      teaser: parsed.teaser,
+      slug: slugify(parsed.title) || `gene-detective-story-${String(storyNumber).padStart(3, "0")}`,
+      authorLine: parsed.authorLine,
+      storyContent: parsed.source,
+      status: "draft"
+    });
+    activeSlug = story.slug;
+    fillForm(story, `${storyLabel(storyNumber)} parsed. Review the detected details and preview before publishing.`);
+    importStatus.textContent = "Story parsed without rewriting its content.";
   });
 
-  document.querySelector("#ai-suggest-generate").addEventListener("click", () => {
-    const topic = selectLibraryTopic();
-    if (!topic) {
-      aiStatus.textContent = "No active topics are available in the topic library.";
-      return;
-    }
-    generateAiDraft(topic.title, topic.category);
-  });
-
-  document.querySelector("#ai-custom-generate").addEventListener("click", () => {
-    const input = document.querySelector("#ai-custom-topic");
-    const topic = input.value.trim();
-    if (!topic) {
-      aiStatus.textContent = "Enter a topic before generating a draft.";
-      input.focus();
-      return;
-    }
-    generateAiDraft(topic, categoryForTopic(topic));
-  });
-
-  const aiConnectionMode = window.GeneDrWeeklyAI.connectionMode();
-  if (aiConnectionMode === "secure-endpoint") aiStatus.textContent = "Secure AI generation endpoint connected.";
-  if (aiConnectionMode === "browser-ai") aiStatus.textContent = "Using this browser’s AI model. A secure server endpoint is not configured.";
-  if (aiConnectionMode === "unavailable") aiStatus.textContent = "AI generation is unavailable. Configure the secure endpoint described in data/genedr-weekly/AI_SETUP.md.";
-
-  emailButton.addEventListener("click", () => openEmailPreview(issueFromForm()));
-  document.querySelector("#send-test-email").addEventListener("click", () => sendSubscriberEmail("test"));
-  document.querySelector("#confirm-subscriber-email").addEventListener("click", () => sendSubscriberEmail("send"));
-  document.querySelector("#confirm-subscriber-resend").addEventListener("click", async () => {
-    emailResendDialog.close();
-    await sendSubscriberEmail("send", true);
-  });
-  previewPdfButton.addEventListener("click", () => {
-    if (!lastPreviewIssue) return;
-    previewArticle(lastPreviewIssue);
-    window.GeneDrWeeklyPDF.print(lastPreviewIssue, "manager");
+  document.querySelector("#clear-story-import").addEventListener("click", () => {
+    importField.value = "";
+    importStatus.textContent = "";
+    importField.focus();
   });
 
   list.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-row-action]");
     if (!button) return;
-    const issue = issues.find((item) => String(item.issueNumber) === button.dataset.key);
-    if (!issue) return;
-    if (button.dataset.rowAction === "edit") fillForm(issue);
-    if (button.dataset.rowAction === "preview") showPreview("article", issue);
-    if (button.dataset.rowAction === "delete" && issue.status !== "published") {
-      pendingDeleteKey = String(issue.issueNumber);
-      deleteMessage.textContent = `${issueLabel(issue.issueNumber)}${issue.title ? ` — ${issue.title}` : ""} will be permanently removed from this browser. This action cannot be undone.`;
+    const story = combinedIssues().find((item) => item.slug === button.dataset.slug && isMonthlyStory(item));
+    if (!story) return;
+    if (button.dataset.rowAction === "edit") fillForm(story);
+    if (button.dataset.rowAction === "preview") showPreview("article", story);
+    if (button.dataset.rowAction === "delete" && story.status !== "published") {
+      pendingDeleteSlug = story.slug;
+      deleteMessage.textContent = `${storyLabel(story.storyNumber)} — ${story.title} will be removed from this browser.`;
       deleteDialog.showModal();
     }
   });
 
   document.querySelector("#confirm-delete-issue").addEventListener("click", () => {
-    if (!pendingDeleteKey) return;
-    const issue = issues.find((item) => String(item.issueNumber) === pendingDeleteKey);
-    if (!issue || issue.status === "published") {
-      pendingDeleteKey = null;
-      return;
-    }
-    issues = issues.filter((item) => String(item.issueNumber) !== pendingDeleteKey);
-    persistBrowserIssues();
-    renderList();
-    if (activeKey === pendingDeleteKey) {
-      activeKey = null;
+    if (!pendingDeleteSlug) return;
+    browserStories = browserStories.filter((story) => story.slug !== pendingDeleteSlug || story.status === "published");
+    if (activeSlug === pendingDeleteSlug) {
+      activeSlug = null;
       editor.hidden = true;
       preview.hidden = true;
     }
-    aiStatus.textContent = `${issueLabel(issue.issueNumber)} was deleted from this browser.`;
-    pendingDeleteKey = null;
+    persistStories();
+    renderList();
+    pendingDeleteSlug = null;
   });
 
   form.addEventListener("submit", (event) => event.preventDefault());
   form.addEventListener("click", (event) => {
-    const statusButton = event.target.closest("button[data-status-action]");
+    const saveButton = event.target.closest("button[data-status-action]");
     const previewButton = event.target.closest("button[data-preview]");
     const exportButton = event.target.closest("button[data-export]");
-    const regenerateButton = event.target.closest("button[data-regenerate-section]");
-    const regenerateFullButton = event.target.closest("button[data-regenerate-full]");
-    const referenceButton = event.target.closest("button[data-reference-action]");
-    if (regenerateButton) regenerateSection(regenerateButton.dataset.regenerateSection);
-    if (regenerateFullButton) regenerateFullDraft();
-    if (referenceButton) refreshReferences(referenceButton.dataset.referenceAction);
-    if (statusButton) {
-      const status = statusButton.dataset.statusAction;
-      if (status === "published") {
-        if (form.reportValidity()) dialog.showModal();
-      } else saveIssue(status);
-    }
-    if (previewButton) showPreview(previewButton.dataset.preview);
+    const publishButton = event.target.closest("button[data-publish]");
+    if (saveButton) saveStory(saveButton.dataset.statusAction);
+    if (previewButton && form.reportValidity()) showPreview(previewButton.dataset.preview);
+    if (publishButton && form.reportValidity()) publishDialog.showModal();
     if (exportButton) {
-      const issue = saveIssue();
-      if (!issue) return;
-      if (exportButton.dataset.export === "json") download(`${issue.slug}.json`, JSON.stringify(issue, null, 2), "application/json");
-      if (exportButton.dataset.export === "markdown") download(`${issue.slug}.md`, markdownFor(issue), "text/markdown");
-      if (exportButton.dataset.export === "copy") copyIssueJson(issue).catch(() => { saveStatus.textContent = "Could not copy issue JSON."; });
+      const story = saveStory();
+      if (!story) return;
+      if (exportButton.dataset.export === "story-json") download(`${story.slug}.json`, JSON.stringify(story, null, 2), "application/json");
+      if (exportButton.dataset.export === "publishing-file") downloadPublishingFile();
+      if (exportButton.dataset.export === "copy") copyStoryJson(story).catch(() => { saveStatus.textContent = "Could not copy Story JSON."; });
     }
   });
 
-  document.querySelector("#confirm-publish").addEventListener("click", () => saveIssue("published"));
-  window.GeneDrWeeklyManagerAI = { categoryForTopic, nextIssueNumber, selectLibraryTopic, slugify };
-  document.querySelector("#editor-note-fixed-introduction").value = EDITOR_NOTE_INTRODUCTION;
-  document.querySelector("#editor-note-fixed-closing").value = EDITOR_NOTE_CLOSING;
-  form.elements.editorNoteTopicIntroduction.addEventListener("input", () => { notePreview.textContent = editorNotePreview(issueFromForm()); });
-  fillEditorialSettings();
+  document.querySelector("#confirm-publish").addEventListener("click", () => {
+    const story = saveStory("published");
+    if (!story) return;
+    downloadPublishingFile();
+    saveStatus.textContent = `${storyLabel(story.storyNumber)} is published in this browser. Send the downloaded genedr-weekly-issues.js file to Codex for public deployment.`;
+  });
+
+  document.querySelector("#manager-preview-pdf").addEventListener("click", () => {
+    if (!lastPreviewStory) return;
+    articlePreview(lastPreviewStory);
+    window.GeneDrWeeklyPDF.print(lastPreviewStory, "manager");
+  });
+
+  window.GeneDrMonthlyManager = { parseStory, slugify, publishingIssues };
   renderList();
 })();

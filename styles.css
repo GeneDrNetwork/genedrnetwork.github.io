@@ -424,7 +424,10 @@ a {
 .weekly-archive-filters button:hover,.weekly-archive-filters button:focus-visible,.weekly-archive-filters button.is-active { border-color: #138b96; color: #fff; background: #138b96; }
 .weekly-archive-empty { margin: 0; padding: 28px; border: 1px dashed #bcd6dd; border-radius: 14px; color: #526b7d; background: #fff; text-align: center; }
 .weekly-archive-list { display: grid; gap: 20px; }
+.monthly-archive-group+.monthly-archive-group { margin-top: 42px; padding-top: 34px; border-top: 2px solid #dce9ed; }
+.monthly-archive-group>h2 { margin: 0 0 20px; color: #092f54; font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.5rem,2.7vw,2.2rem); }
 .weekly-archive-card { display: block; padding: clamp(25px,4vw,40px); border: 1px solid #d7e3ea; border-left: 5px solid #159ba5; border-radius: 16px; background: #fff; box-shadow: 0 12px 28px rgba(6,25,71,.07); transition: transform 160ms ease,box-shadow 160ms ease; }
+.weekly-archive-card-legacy { border-left-color: #6f8798; }
 .weekly-archive-card:hover,.weekly-archive-card:focus-visible { transform: translateY(-3px); box-shadow: 0 19px 38px rgba(6,25,71,.13); }
 .weekly-archive-meta,.weekly-archive-footer,.weekly-article-meta { display: flex; flex-wrap: wrap; gap: 9px 20px; align-items: center; color: #5d7087; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
 .weekly-archive-card h2 { margin: 12px 0 8px; color: var(--navy); font-size: clamp(1.4rem,2.4vw,2rem); line-height: 1.2; }
@@ -458,6 +461,11 @@ a {
 .weekly-article section:first-of-type p:last-child,.weekly-article section:first-of-type strong { color: #17345f; font-weight: 800; }
 .weekly-article li { color: #243b53; font-weight: 500; line-height: 1.7; }
 .weekly-article li+li { margin-top: 9px; }
+.monthly-story-body { display: grid; gap: 20px; }
+.monthly-story-body .monthly-story-section { margin: 0; }
+.monthly-story-body .monthly-story-opening { border-left: 5px solid #159ba5; }
+.monthly-story-body section:first-of-type p:last-child { color: #243b53; font-weight: 500; }
+.monthly-story-body section p br { content: ""; display: block; margin-top: .55em; }
 .weekly-editors-note { scroll-margin-top: 24px; padding: clamp(27px,4vw,44px); border: 1px solid #bcdedd; border-left: 5px solid #159ba5; border-radius: 18px; background: linear-gradient(145deg,#f2fbfa,#fff); box-shadow: 0 10px 26px rgba(18,73,101,.065); }
 .weekly-editors-note h2 { margin: 0 0 17px; color: #087d89; font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.4rem,2.4vw,2rem); }
 .weekly-editors-note p { margin: 0; color: #243b53; font-weight: 500; line-height: 1.7; }

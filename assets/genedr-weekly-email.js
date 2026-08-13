@@ -16,8 +16,10 @@
   }
 
   function buildPreview(issue) {
+    const monthly = issue.publicationType === "gene-detective-story";
+    const number = monthly ? issue.storyNumber : issue.issueNumber;
     return {
-      subject: `GeneDr Weekly Issue #${issue.issueNumber}: ${issue.title}`,
+      subject: `${monthly ? "GeneDr Monthly Gene Detective Story" : "GeneDr Weekly Issue"} #${number}: ${issue.title}`,
       title: issue.title,
       issueNumber: issue.issueNumber,
       date: window.GeneDrWeekly.formatDate(issue.date),
