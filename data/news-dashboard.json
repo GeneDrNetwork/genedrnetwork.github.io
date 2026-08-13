@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-12T12:01:46+00:00",
+  "updated_at": "2026-08-13T12:01:39+00:00",
   "summaries": {
-    "ai": "Key developments: AI\u2019s costly buildout complicates the Fed\u2019s inflation fight; How Do You Invest In The AI Value Chain?; Better AI Infrastructure Stock: Vertiv vs. Eaton.",
-    "biotech": "Key developments: Neurocrine Biosciences rare disease drug possibly tied to safety issues, experts say; New Survey Finds U.S. Biotechs Advancing Treatments for Rare and Serious Diseases Want to Run Clinical Trials in U.S. but Regulatory Hurdles are Sending Them Abroad; Epicrispr, Vaderis secure pivotal study funding for rare disease assets.",
-    "market": "Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Rise Ahead of July CPI Print\u2014CoreWeave, Nebius, Super Mic; Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street ends down as US-Iran peace optimism fades.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.32% today; Nasdaq was weakest at -0.60%. Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Rise Ahead of July CPI Print\u2014CoreWeave, Nebius, Super Mic; Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street ends down as US-Iran peace optimism fades."
+    "ai": "Key developments: Advanced Micro Devices (AMD) Stock Is Emerging As A Core AI Infrastructure Trade; US AI Data Center Boom Slows as Permits, Power and Labor Shortages Delay Projects; Nvidia Stock Earnings August 2026: AI Chip Leader's Q2 Preview & Investment Outlook.",
+    "biotech": "Key developments: Neurocrine Biosciences and the delicate balance of benefit and risk; Fierce Biotech Fundraising Tracker '26: InduPro assembles $77M; Vaderis nets $152M series B; PTC to expand rare disease portfolio with ST-920 buy.",
+    "market": "Key developments: S&P 500 ends higher as CoreWeave results fuel AI optimism; Stock Market: Will S&P 500 Open Up or Down Today?; Stock Market Today: S&P 500, Dow Futures Rise as July Inflation Cools\u2014Cisco Systems, Netflix, Applied Mat.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.61% today; Dow Jones was weakest at -0.04%. Key developments: S&P 500 ends higher as CoreWeave results fuel AI optimism; Stock Market: Will S&P 500 Open Up or Down Today?; Stock Market Today: S&P 500, Dow Futures Rise as July Inflation Cools\u2014Cisco Systems, Netflix, Applied Mat."
   },
   "takeaways": [
-    "AI\u2019s costly buildout complicates the Fed\u2019s inflation fight - CNBC",
-    "How Do You Invest In The AI Value Chain? - Seeking Alpha",
-    "Neurocrine Biosciences rare disease drug possibly tied to safety issues, experts say - STAT",
-    "New Survey Finds U.S. Biotechs Advancing Treatments for Rare and Serious Diseases Want to Run Clinical Trials in U.S. but Regulatory Hurdles are Sending Them Abroad - Business Wire",
+    "Advanced Micro Devices (AMD) Stock Is Emerging As A Core AI Infrastructure Trade - simplywall.st",
+    "US AI Data Center Boom Slows as Permits, Power and Labor Shortages Delay Projects - \u041c\u0435\u0436\u0430. \u041d\u043e\u0432\u0438\u043d\u0438 \u0423\u043a\u0440\u0430\u0457\u043d\u0438.",
+    "Neurocrine Biosciences and the delicate balance of benefit and risk - STAT",
+    "Fierce Biotech Fundraising Tracker '26: InduPro assembles $77M; Vaderis nets $152M series B - Fierce Biotech",
     "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
-    "Jazz Pharmaceuticals to Acquire Actio Biosciences, Expanding Rare Epilepsy Portfolio - PR Newswire",
-    "Stock Market Today: S&P 500, Nasdaq 100 Futures Rise Ahead of July CPI Print\u2014CoreWeave, Nebius, Super Mic - Benzinga"
+    "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program - PR Newswire",
+    "S&P 500 ends higher as CoreWeave results fuel AI optimism - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -794,9 +794,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences, Expanding Rare Epilepsy Portfolio",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOWWFpOXM5dzMySkJRcUx4T0hMLVpGemlXWXEyZ09VRWdadHZIZlp5aGpfcmdNU0VmS0cxUTdoTFJCN3ZLSWNTUHpkRmNPaUxna0s2cXZ4MUxmMzlWc0FsYjd5TFhuNU1sX3dqb2x5VXZ0NEM3VV9TRXBrVG1SWmN5LTZNdFUwWU96REg2Ny1BRnVwQUxGUnJDZVRLd0ZnQ2F1ek05d19KQlo4VkNTT1g0U3gtdFZBa05tQ2RfcU9MRF9sLURXY2VVMlk5cVlhQ1pIbUhRWW1B?oc=5"
+      "event": "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program",
+      "date": "Wed, 12 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxQeVppY1hOQVNsUU94V3hYVmpBQnpHcURSa3hndXhYRXQyYVRwZll3UTFWMTJIRjJsRWhNY1FuNWVEbVJfTGlrdmF6RWpLRDFGSmZxM0J4bG1fVVZpYTZWM2c5MGZBZW1aT1ZkcDBPdGUxT19GY1d4UlFYenZPM2xnaE1qMlVQOFBfSEloRlNTMkZLYW9vR1JieGZ0SHFROUtDeUJiRUZiaFJJWlJ2eDJJLTZjWTA3UG8wUmJsYVRpMFA1QzBBWjRobTlQbjY0b1BBTHZsVU0xRXFNWjBvV0tvTzFqcC1FUQ?oc=5"
     },
     {
       "company": "See source",
@@ -805,6 +805,14 @@
       "event": "Jazz commits up to $1.3B to buy Actio, bolster epilepsy pipeline",
       "date": "Mon, 10 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNm1TaHFubE5WS3VQZlRjUWxDU2k3RXVkejFubGRIRmNYdGxwS1ZrMU5HZUxES2NwWjhvd2RTbXFqczNqTm54Mk82WGpvUkZ0MVQ2MUNibVdaZ19sR3Bxb1FpbWY1NmlhQUc4eklQbUZ4TmN0YUZmS3R5cVZld2pSZDFFOFVXNkxVbWpCdkR5V2syTllfZGxQVA?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Two Can-Fite Oral Drugs Advance in Phase III for Cancer, Psoriasis",
+      "date": "Wed, 12 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOTzFvQ3NIWkt5SkxRN2ZWVmNsNTN1N04xVXNCSmxYbC1XZ3JFemFxVFFZZm1iNmFWejVPVThpaDBRSzRLaGNPYXZTVGVHMHJUc1lXMmJtMnlBa1dkQnZpeXlFUlRzQldDYkVCSERfQTJHdThZTjZOTUtaR3h4a1I3S1FMM1ZoZFZyVVphdDRhdFlMNTc4MjktbnJpNU42UGxRSHNWNHJyWm0wQVktQTBPWTNDNzNfdlRZTmdBUQ?oc=5"
     },
     {
       "company": "See source",
@@ -837,44 +845,36 @@
       "event": "Jazz Pharmaceuticals expands rare epilepsy pipeline with Actio Biosciences deal",
       "date": "Mon, 10 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNYnV5Rmt6bHA4Zms5bFFaS01jZThmdWhDY0tfWGNteXYzb2Y4MFFSUHg5UFN3bXBZS2NhaDQySDhtTG9FLVZZMC1GOTBYY1ZEcWFnME14QkFUSTZ2cHF4WEVuRWx3dzl5S2xNQVBtQ21Qd3JlbnM2WklvWUEycGV0MjVuaDk1TDU1dHdNQUtWM2N6RkF4OU4zNHFYYzJPaDJ6QmpDTXRaTnlYbi13dnVUcDEteTlGb2hjYWtDcl9KUjVOWEpfYzhNRlpabGVLTDltR3NXVGtES29MTWV1bUE?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Belite Bio (NASDAQ: BLTE) wins FDA priority review for tinlarebant in Stargardt disease",
-      "date": "Tue, 11 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNM1QzQ0NhMWYzaUpJbkF2YjlydnF1MHJJWHdrSjhIWF9SQUprZF9YR1RGUFpDZnlBZkV1MXZEWV9RUlJRRUppazVwQThsOWlRR0dPUXN6VWU1azFUWEtuZzNidEtJOThiM2lXM0lGbzZoM0lrNWRFWktRamlQRjI2SWctSDdReXZ0ajV1cmlyOG9pdF9iSERmN1k1TkRCcThiS2NDZklkcFBxUU1vVG1r?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,728.20",
-      "daily": -0.32,
-      "weekly": -0.11,
-      "monthly": 2.83
+      "value": "7,748.50",
+      "daily": 0.26,
+      "weekly": 0.32,
+      "monthly": 2.72
     },
     {
       "name": "Nasdaq",
-      "value": "26,445.45",
-      "daily": -0.6,
-      "weekly": -0.52,
-      "monthly": 2.21
+      "value": "26,588.49",
+      "daily": 0.54,
+      "weekly": 0.85,
+      "monthly": 2.76
     },
     {
       "name": "Dow Jones",
-      "value": "53,791.85",
-      "daily": -0.34,
-      "weekly": -0.54,
-      "monthly": 2.46
+      "value": "53,770.27",
+      "daily": -0.04,
+      "weekly": -1.07,
+      "monthly": 2.42
     },
     {
       "name": "Russell 2000",
-      "value": "3,027.12",
-      "daily": 0.32,
-      "weekly": -0.32,
-      "monthly": 2.5
+      "value": "3,045.48",
+      "daily": 0.61,
+      "weekly": 0.87,
+      "monthly": 3.13
     }
   ]
 }
