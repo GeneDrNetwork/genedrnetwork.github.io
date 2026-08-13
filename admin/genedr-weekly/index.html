@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../styles.css?v=20260813-monthly-4" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260813-monthly-4" />
+    <link rel="stylesheet" href="../../styles.css?v=20260813-monthly-5" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260813-monthly-5" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -79,13 +79,6 @@
             <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
             <label>Status<select name="status" disabled><option value="draft">draft</option><option value="published">published</option></select></label>
             <label class="manager-field-wide">Detected author/editor line<input name="authorLine" type="text" /><span>Detected for reference; the original line remains in the full Story.</span></label>
-            <fieldset class="manager-field-wide manager-editor-note-fields">
-              <legend>Editor’s Note</legend>
-              <label>Fixed introduction<textarea id="editor-note-fixed-introduction" rows="5" readonly></textarea><span>Preserved from the original GeneDr Weekly design.</span></label>
-              <label><span class="manager-field-heading"><span>Monthly Editor’s Note</span><button id="use-previous-editor-note" class="manager-regenerate" type="button">Use Previous Note</button></span><textarea name="editorNoteTopicIntroduction" rows="6" placeholder="Add or edit the note for this month’s Story."></textarea><span>Entered manually and never replaced unless you use the button above.</span></label>
-              <label>Fixed closing<textarea id="editor-note-fixed-closing" rows="2" readonly></textarea></label>
-              <div class="manager-note-preview"><span>Homepage Editor’s Note Preview</span><p id="editor-note-homepage-preview"></p></div>
-            </fieldset>
             <label class="manager-field-wide">Complete Story — source of truth<textarea name="storyContent" rows="26" required></textarea><span>The preview is rebuilt from this exact content. No AI or rewriting is applied.</span></label>
           </div>
 
@@ -136,10 +129,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/mammoth@1.10.0/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="../../data/genedr-weekly-settings.js?v=20260813-monthly-4"></script>
-    <script src="../../data/genedr-weekly-issues.js?v=20260813-monthly-4"></script>
-    <script src="../../assets/genedr-weekly.js?v=20260813-monthly-4"></script>
-    <script src="../../assets/genedr-weekly-pdf.js?v=20260813-monthly-4"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260813-monthly-4"></script>
+    <script src="../../data/genedr-weekly-settings.js?v=20260813-monthly-5"></script>
+    <script src="../../data/genedr-weekly-issues.js?v=20260813-monthly-5"></script>
+    <script src="../../assets/genedr-weekly.js?v=20260813-monthly-5"></script>
+    <script src="../../assets/genedr-weekly-pdf.js?v=20260813-monthly-5"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260813-monthly-5"></script>
   </body>
 </html>

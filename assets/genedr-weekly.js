@@ -1,7 +1,9 @@
 (function () {
   const managerStorageKey = "genedr-monthly-manager-publications-v1";
   const editorialSettingsStorageKey = "genedr-weekly-editorial-settings-v1";
-  const EDITOR_NOTE_INTRODUCTION = "Genetics may look like a high wall from the outside. It can seem difficult to understand. But once you step through the gate, you’ll discover a fascinating world where genetics connects every specialty and transforms the way we care for patients.";
+  const LEGACY_EDITOR_NOTE_INTRODUCTION = "Genetics may look like a high wall from the outside. It can seem difficult to understand. But once you step through the gate, you’ll discover a fascinating world where genetics connects every specialty and transforms the way we care for patients.";
+  const EDITOR_NOTE_INTRODUCTION = "Genetics may look like a high wall from the outside. It can seem difficult to understand. But once you step through the gate, you’ll discover a fascinating world where genetics connects across medicine and helps us understand the stories written within each of us.";
+  const EDITOR_NOTE_MESSAGE = "Gene Detective Stories opens that world to everyone—one patient, one mystery, and one genetic clue at a time.";
   const EDITOR_NOTE_CLOSING = "Welcome to this month’s GeneDr Monthly.";
 
   const escapeHtml = (value = "") => String(value)
@@ -81,14 +83,12 @@
     status: issue.status || (issue.published ? "published" : "draft")
   });
 
-  const fullEditorNote = (issue) => [
-    EDITOR_NOTE_INTRODUCTION,
-    issue.editorNoteTopicIntroduction,
-    isMonthlyStory(issue) ? EDITOR_NOTE_CLOSING : "Welcome to this week’s GeneDr Weekly."
-  ].filter(Boolean);
+  const fullEditorNote = (issue) => isMonthlyStory(issue)
+    ? [EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_MESSAGE, EDITOR_NOTE_CLOSING]
+    : [LEGACY_EDITOR_NOTE_INTRODUCTION, issue.editorNoteTopicIntroduction, "Welcome to this week’s GeneDr Weekly."].filter(Boolean);
 
   const editorNotePreview = (issue, maximum = 310) => {
-    const text = String(issue.editorNoteTopicIntroduction || EDITOR_NOTE_INTRODUCTION).replace(/\s+/g, " ").trim();
+    const text = fullEditorNote(issue).join(" ").replace(/\s+/g, " ").trim();
     const sentences = text.match(/[^.!?]+[.!?]+(?:[”’"'](?=\s|$))?/g) || [text];
     let preview = sentences.slice(0, 3).join(" ").trim();
     const isTruncated = preview.length < text.length || preview.length > maximum;
@@ -289,7 +289,6 @@
       subtitle: "Completed clinical mysteries, published one Story at a time.",
       teaser: "The original GeneDr Weekly publication remains available while the first monthly Story is prepared.",
       homepageExcerpt: "A completed Gene Detective Story will be featured here without placing the full Story on the homepage.",
-      editorNoteTopicIntroduction: "GeneDr Monthly continues the original GeneDr Weekly experience as a monthly home for completed Gene Detective Stories.",
       status: "draft"
     });
     const settings = getEditorialSettings();
@@ -471,7 +470,7 @@
     managerStorageKey, escapeHtml, formatDate, formatMonthYear, issueLabel, storyLabel,
     isMonthlyStory, normalizeIssue, parseStory, publicationMetadataSuggestions, estimateReadingTime,
     renderStorySections, renderLegacyArticleText, getEditorialSettings, editorDisplayName, editorCredit,
-    fullEditorNote, editorNotePreview, renderEditorNote, EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_CLOSING,
+    fullEditorNote, editorNotePreview, renderEditorNote, EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_MESSAGE, EDITOR_NOTE_CLOSING,
     articleUrl, getAllIssues: () => allIssues.map((issue) => ({ ...issue }))
   };
   window.GeneDrWeekly = window.GeneDrMonthly;

@@ -2,8 +2,7 @@
   const {
     managerStorageKey, escapeHtml, formatDate, formatMonthYear, issueLabel, storyLabel,
     isMonthlyStory, normalizeIssue, parseStory, publicationMetadataSuggestions, estimateReadingTime,
-    renderStorySections, getEditorialSettings, editorCredit, editorNotePreview, renderEditorNote,
-    EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_CLOSING
+    renderStorySections, getEditorialSettings, editorCredit, editorNotePreview, renderEditorNote
   } = window.GeneDrMonthly;
 
   const form = document.querySelector("#issue-form");
@@ -19,7 +18,6 @@
   const publishDialog = document.querySelector("#publish-confirmation");
   const deleteDialog = document.querySelector("#delete-confirmation");
   const deleteMessage = document.querySelector("#delete-confirmation-message");
-  const notePreview = document.querySelector("#editor-note-homepage-preview");
   let activeSlug = null;
   let pendingDeleteSlug = null;
   let lastPreviewStory = null;
@@ -72,7 +70,6 @@
       readingTime: data.get("readingTime").trim(),
       slug: data.get("slug").trim(),
       authorLine: data.get("authorLine").trim(),
-      editorNoteTopicIntroduction: data.get("editorNoteTopicIntroduction").trim(),
       storyContent: data.get("storyContent").trim(),
       status: form.elements.status.value || "draft"
     });
@@ -84,9 +81,6 @@
     Object.entries(values).forEach(([name, value]) => {
       if (form.elements[name]) form.elements[name].value = value;
     });
-    document.querySelector("#editor-note-fixed-introduction").value = EDITOR_NOTE_INTRODUCTION;
-    document.querySelector("#editor-note-fixed-closing").value = EDITOR_NOTE_CLOSING;
-    notePreview.textContent = editorNotePreview(story);
     editor.hidden = false;
     saveStatus.textContent = message || `Editing ${storyLabel(story.storyNumber)} · browser-local copy`;
     editor.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -101,7 +95,7 @@
           <td>${escapeHtml(issue.title)}</td>
           <td><span class="manager-status">Legacy Weekly</span></td>
           <td>${escapeHtml(issue.readingTime)}</td>
-          <td><span class="manager-note-status ${issue.editorNoteTopicIntroduction ? "is-complete" : "is-missing"}">${issue.editorNoteTopicIntroduction ? "Complete" : "Fixed note only"}</span></td>
+          <td><span class="manager-note-status is-complete">Preserved</span></td>
           <td><span class="manager-status">${escapeHtml(issue.status)}</span></td>
           <td><div class="manager-row-actions"><a href="../../genedr-weekly/article.html?issue=${encodeURIComponent(issue.slug)}" target="_blank" rel="noopener">View preserved article</a></div></td>
         </tr>`;
@@ -112,7 +106,7 @@
         <td>${escapeHtml(issue.title || "Untitled Story")}</td>
         <td><span class="manager-status">Monthly Story</span></td>
         <td>${escapeHtml(issue.readingTime)}</td>
-        <td><span class="manager-note-status ${issue.editorNoteTopicIntroduction ? "is-complete" : "is-missing"}">${issue.editorNoteTopicIntroduction ? "Complete" : "Needs review"}</span></td>
+        <td><span class="manager-note-status is-complete">Permanent</span></td>
         <td><span class="manager-status">${escapeHtml(issue.status)}</span></td>
         <td><div class="manager-row-actions">
           <button type="button" data-row-action="preview" data-slug="${escapeHtml(issue.slug)}">Preview</button>
@@ -261,7 +255,6 @@
       readingTime: estimateReadingTime(parsed.source),
       slug: slugify(parsed.title) || `gene-detective-story-${String(storyNumber).padStart(3, "0")}`,
       authorLine: parsed.authorLine,
-      editorNoteTopicIntroduction: "",
       storyContent: parsed.source,
       status: "draft"
     });
@@ -368,23 +361,6 @@
     persistStories();
     renderList();
     pendingDeleteSlug = null;
-  });
-
-  document.querySelector("#use-previous-editor-note").addEventListener("click", () => {
-    const previous = combinedIssues().find((issue) =>
-      issue.slug !== activeSlug && issue.editorNoteTopicIntroduction
-    );
-    if (!previous) {
-      saveStatus.textContent = "No previous issue has a topic-specific Editor’s Note to reuse.";
-      return;
-    }
-    form.elements.editorNoteTopicIntroduction.value = previous.editorNoteTopicIntroduction;
-    notePreview.textContent = editorNotePreview(storyFromForm());
-    saveStatus.textContent = "Previous Editor’s Note copied. Review and edit it for this Story.";
-  });
-
-  form.elements.editorNoteTopicIntroduction.addEventListener("input", () => {
-    notePreview.textContent = editorNotePreview(storyFromForm());
   });
 
   form.addEventListener("submit", (event) => event.preventDefault());
