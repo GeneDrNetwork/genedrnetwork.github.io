@@ -1,7 +1,9 @@
 (function () {
   const {
     managerStorageKey, escapeHtml, formatDate, formatMonthYear, issueLabel, storyLabel,
-    isMonthlyStory, normalizeIssue, parseStory, renderStorySections
+    isMonthlyStory, normalizeIssue, parseStory, publicationMetadataSuggestions, estimateReadingTime,
+    renderStorySections, getEditorialSettings, editorCredit, editorNotePreview, renderEditorNote,
+    EDITOR_NOTE_INTRODUCTION, EDITOR_NOTE_CLOSING
   } = window.GeneDrMonthly;
 
   const form = document.querySelector("#issue-form");
@@ -17,9 +19,11 @@
   const publishDialog = document.querySelector("#publish-confirmation");
   const deleteDialog = document.querySelector("#delete-confirmation");
   const deleteMessage = document.querySelector("#delete-confirmation-message");
+  const notePreview = document.querySelector("#editor-note-homepage-preview");
   let activeSlug = null;
   let pendingDeleteSlug = null;
   let lastPreviewStory = null;
+  let metadataVariant = 0;
 
   if (window.pdfjsLib) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -64,8 +68,11 @@
       title: data.get("title").trim(),
       subtitle: data.get("subtitle").trim(),
       teaser: data.get("teaser").trim(),
+      homepageExcerpt: data.get("homepageExcerpt").trim(),
+      readingTime: data.get("readingTime").trim(),
       slug: data.get("slug").trim(),
       authorLine: data.get("authorLine").trim(),
+      editorNoteTopicIntroduction: data.get("editorNoteTopicIntroduction").trim(),
       storyContent: data.get("storyContent").trim(),
       status: form.elements.status.value || "draft"
     });
@@ -77,6 +84,9 @@
     Object.entries(values).forEach(([name, value]) => {
       if (form.elements[name]) form.elements[name].value = value;
     });
+    document.querySelector("#editor-note-fixed-introduction").value = EDITOR_NOTE_INTRODUCTION;
+    document.querySelector("#editor-note-fixed-closing").value = EDITOR_NOTE_CLOSING;
+    notePreview.textContent = editorNotePreview(story);
     editor.hidden = false;
     saveStatus.textContent = message || `Editing ${storyLabel(story.storyNumber)} · browser-local copy`;
     editor.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -90,6 +100,8 @@
           <td>${escapeHtml(formatMonthYear(issue.date))}</td>
           <td>${escapeHtml(issue.title)}</td>
           <td><span class="manager-status">Legacy Weekly</span></td>
+          <td>${escapeHtml(issue.readingTime)}</td>
+          <td><span class="manager-note-status ${issue.editorNoteTopicIntroduction ? "is-complete" : "is-missing"}">${issue.editorNoteTopicIntroduction ? "Complete" : "Fixed note only"}</span></td>
           <td><span class="manager-status">${escapeHtml(issue.status)}</span></td>
           <td><div class="manager-row-actions"><a href="../../genedr-weekly/article.html?issue=${encodeURIComponent(issue.slug)}" target="_blank" rel="noopener">View preserved article</a></div></td>
         </tr>`;
@@ -99,6 +111,8 @@
         <td>${escapeHtml(issue.monthYear || formatMonthYear(issue.date))}</td>
         <td>${escapeHtml(issue.title || "Untitled Story")}</td>
         <td><span class="manager-status">Monthly Story</span></td>
+        <td>${escapeHtml(issue.readingTime)}</td>
+        <td><span class="manager-note-status ${issue.editorNoteTopicIntroduction ? "is-complete" : "is-missing"}">${issue.editorNoteTopicIntroduction ? "Complete" : "Needs review"}</span></td>
         <td><span class="manager-status">${escapeHtml(issue.status)}</span></td>
         <td><div class="manager-row-actions">
           <button type="button" data-row-action="preview" data-slug="${escapeHtml(issue.slug)}">Preview</button>
@@ -137,34 +151,41 @@
   }
 
   function homepagePreview(story) {
+    const settings = getEditorialSettings();
     previewContent.innerHTML = `<div class="weekly-card">
       <div class="weekly-intro">
         <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
-        <h2>Gene Detective Story</h2>
-        <p class="weekly-tagline">Discover Genetics, One story at a time.</p>
-        <p class="weekly-meta">${escapeHtml(story.monthYear || formatMonthYear(story.date))} <span>•</span> ${escapeHtml(storyLabel(story.storyNumber))}</p>
+        <h2>Discover Genetics, One Story at a Time.</h2>
+        <p class="weekly-tagline">One completed Gene Detective Story each month.</p>
+        <p class="weekly-meta">${escapeHtml(storyLabel(story.storyNumber))} <span>•</span> ${escapeHtml(story.monthYear || formatMonthYear(story.date))} <span>•</span> ${escapeHtml(story.readingTime)}</p>
+        ${editorCredit(settings, "weekly-editor-credit-on-dark")}
+        <aside class="weekly-note-preview"><h3>Editor’s Note</h3><p>${escapeHtml(editorNotePreview(story))}</p><span class="manager-preview-link">Continue reading →</span></aside>
       </div>
       <div class="weekly-story">
-        <p class="weekly-overline">GeneDr Monthly</p>
-        <span class="weekly-category">${escapeHtml(storyLabel(story.storyNumber))}</span>
+        <p class="weekly-overline">Featured Gene Detective Story</p>
+        <span class="weekly-category">Gene Detective Story</span>
         <h3>${escapeHtml(story.title)}</h3>
-        <div class="weekly-scenario monthly-feature-teaser"><strong>Featured Story</strong><p>${escapeHtml(story.teaser)}</p></div>
-        <div class="weekly-actions"><span class="weekly-button weekly-button-primary">Read the Story →</span><span class="weekly-button weekly-button-secondary">Previous Stories</span></div>
+        ${story.subtitle ? `<p class="weekly-feature-subtitle">${escapeHtml(story.subtitle)}</p>` : ""}
+        <div class="weekly-scenario"><strong>Story Preview</strong><p><em>${escapeHtml(story.homepageExcerpt)}</em></p>${story.teaser !== story.homepageExcerpt ? `<p class="weekly-question">${escapeHtml(story.teaser)}</p>` : ""}</div>
+        <div class="weekly-actions"><span class="weekly-button weekly-button-primary">Continue Reading →</span><span class="weekly-button weekly-button-secondary">Story Archive</span></div>
       </div>
     </div>`;
   }
 
   function articlePreview(story) {
+    const settings = getEditorialSettings();
     previewContent.innerHTML = `<article class="weekly-article">
       <header class="weekly-article-header">
         <p class="weekly-wordmark" aria-label="GeneDr Monthly"><span>GeneDr</span> <em>Monthly</em></p>
-        <p class="weekly-article-deck">Gene Detective Story</p>
-        <p class="weekly-tagline">Discover Genetics, One story at a time.</p>
-        <div class="weekly-article-meta"><span>${escapeHtml(story.monthYear || formatMonthYear(story.date))} <b>•</b> ${escapeHtml(storyLabel(story.storyNumber))} <b>•</b> ${escapeHtml(formatDate(story.date))}</span></div>
+        <p class="weekly-article-deck">Discover Genetics, One Story at a Time.</p>
+        <p class="weekly-tagline">One completed Gene Detective Story each month.</p>
+        <div class="weekly-article-meta"><span>${escapeHtml(storyLabel(story.storyNumber))} <b>•</b> ${escapeHtml(story.monthYear || formatMonthYear(story.date))} <b>•</b> ${escapeHtml(formatDate(story.date))} <b>•</b> ${escapeHtml(story.readingTime)}</span></div>
+        ${editorCredit(settings, "weekly-editor-credit-on-dark")}
         <h1>${escapeHtml(story.title)}</h1>
         ${story.subtitle ? `<p class="weekly-article-subtitle">${escapeHtml(story.subtitle)}</p>` : ""}
         <span class="weekly-category weekly-article-category">Gene Detective Story</span>
       </header>
+      ${renderEditorNote(story)}
       <div class="monthly-story-body">${renderStorySections(story)}</div>
       <footer class="weekly-print-footer"><span>${escapeHtml(story.title)}</span><span>GeneDr Monthly · GeneDrNetwork</span></footer>
     </article>`;
@@ -219,6 +240,7 @@
       return null;
     }
     const parsed = parseStory(source);
+    const suggestions = publicationMetadataSuggestions(source, 0);
     if (!parsed.title) {
       importStatus.textContent = "A Story title could not be identified. Keep the title as the first line and try again.";
       return null;
@@ -233,16 +255,20 @@
       date,
       monthYear: formatMonthYear(date),
       title: parsed.title,
-      subtitle: parsed.subtitle,
-      teaser: parsed.teaser,
+      subtitle: suggestions.subtitle || parsed.subtitle,
+      teaser: suggestions.teaser || parsed.teaser,
+      homepageExcerpt: suggestions.homepageExcerpt || parsed.teaser,
+      readingTime: estimateReadingTime(parsed.source),
       slug: slugify(parsed.title) || `gene-detective-story-${String(storyNumber).padStart(3, "0")}`,
       authorLine: parsed.authorLine,
+      editorNoteTopicIntroduction: "",
       storyContent: parsed.source,
       status: "draft"
     });
     activeSlug = story.slug;
     fillForm(story, `${storyLabel(storyNumber)} parsed. Review the detected details and preview before publishing.`);
-    importStatus.textContent = successMessage || "Story parsed. Opening line and teaser were suggested from the Story’s original sentences.";
+    metadataVariant = 0;
+    importStatus.textContent = successMessage || "Story parsed. Publication metadata was suggested without changing the Story.";
     return story;
   }
 
@@ -344,13 +370,44 @@
     pendingDeleteSlug = null;
   });
 
+  document.querySelector("#use-previous-editor-note").addEventListener("click", () => {
+    const previous = combinedIssues().find((issue) =>
+      issue.slug !== activeSlug && issue.editorNoteTopicIntroduction
+    );
+    if (!previous) {
+      saveStatus.textContent = "No previous issue has a topic-specific Editor’s Note to reuse.";
+      return;
+    }
+    form.elements.editorNoteTopicIntroduction.value = previous.editorNoteTopicIntroduction;
+    notePreview.textContent = editorNotePreview(storyFromForm());
+    saveStatus.textContent = "Previous Editor’s Note copied. Review and edit it for this Story.";
+  });
+
+  form.elements.editorNoteTopicIntroduction.addEventListener("input", () => {
+    notePreview.textContent = editorNotePreview(storyFromForm());
+  });
+
   form.addEventListener("submit", (event) => event.preventDefault());
   form.addEventListener("click", (event) => {
     const saveButton = event.target.closest("button[data-status-action]");
     const previewButton = event.target.closest("button[data-preview]");
     const exportButton = event.target.closest("button[data-export]");
     const publishButton = event.target.closest("button[data-publish]");
+    const generateButton = event.target.closest("button[data-generate-metadata]");
     if (saveButton) saveStory(saveButton.dataset.statusAction);
+    if (generateButton) {
+      const source = form.elements.storyContent.value.trim();
+      if (!source) {
+        saveStatus.textContent = "Add the complete Story before generating publication metadata.";
+      } else {
+        metadataVariant += 1;
+        const suggestions = publicationMetadataSuggestions(source, metadataVariant);
+        const field = generateButton.dataset.generateMetadata;
+        form.elements[field].value = suggestions[field];
+        generateButton.textContent = field === "homepageExcerpt" ? "Regenerate Short Excerpt" : field === "teaser" ? "Regenerate Homepage Teaser" : "Regenerate Subtitle";
+        saveStatus.textContent = `${field === "homepageExcerpt" ? "Short homepage excerpt" : field === "teaser" ? "Homepage teaser" : "Subtitle"} regenerated. Review or edit it before publishing.`;
+      }
+    }
     if (previewButton && form.reportValidity()) showPreview(previewButton.dataset.preview);
     if (publishButton && form.reportValidity()) publishDialog.showModal();
     if (exportButton) {
