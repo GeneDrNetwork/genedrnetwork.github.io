@@ -1,5 +1,6 @@
 window.GENEDR_WEEKLY_ISSUES = [
   {
+    publicationType: "legacy-weekly",
     issueNumber: 1,
     date: "2026-07-12",
     title: "Rapid Whole Genome Sequencing: When Every Hour Matters",

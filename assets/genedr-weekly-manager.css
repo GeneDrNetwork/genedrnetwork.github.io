@@ -15,6 +15,10 @@
 .manager-panel-heading h2 { margin: 3px 0 0; color: #092f54; font-family: Georgia,"Times New Roman",serif; font-size: clamp(1.5rem,2.5vw,2rem); }
 .manager-panel-heading .manager-eyebrow { color: #16838e; }
 .manager-ai-intro { margin: -8px 0 22px; color: #496577; }
+.manager-import-intro { margin: -8px 0 20px; color: #496577; }
+.manager-story-import-label { display: block; margin-bottom: 8px; color: #193e5d; font-size: .82rem; font-weight: 800; }
+.manager-story-import { width: 100%; min-height: 420px; padding: 16px; border: 1px solid #bdd5dd; border-radius: 12px; color: #243b53; background: #fbfefe; font: 500 1.05rem/1.65 Inter,sans-serif; resize: vertical; }
+.manager-story-import:focus { outline: 3px solid rgba(20,147,157,.16); border-color: #14939d; }
 .manager-audience-control { display: flex; gap: 12px; align-items: center; width: fit-content; margin: -8px 0 22px; color: #193e5d; font-size: .82rem; font-weight: 800; }
 .manager-audience-control select { padding: 8px 10px; border: 1px solid #bdd5dd; border-radius: 8px; color: #102e4d; background: #fff; font: inherit; }
 .manager-ai-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
@@ -36,6 +40,7 @@
 .manager-table td:nth-child(3) { min-width: 250px; color: #092f54; font-weight: 700; }
 .manager-row-actions { display: flex; gap: 8px; }
 .manager-row-actions button { border: 0; color: #087d89; background: transparent; font: inherit; font-weight: 800; cursor: pointer; }
+.manager-row-actions a { color: #087d89; font-weight: 800; white-space: nowrap; }
 .manager-row-actions .manager-row-delete { color: #9a3443; }
 .manager-status { display: inline-flex; padding: 5px 9px; border-radius: 999px; background: #e6f4f5; color: #087781; font-size: .7rem; font-weight: 800; text-transform: capitalize; white-space: nowrap; }
 .manager-note-status { display: inline-flex; padding: 5px 9px; border-radius: 999px; font-size: .7rem; font-weight: 800; white-space: nowrap; }

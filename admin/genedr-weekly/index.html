@@ -4,78 +4,51 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>GeneDr Weekly Content Manager</title>
+    <title>GeneDr Monthly Content Manager</title>
     <link rel="icon" type="image/png" href="../../assets/genedrnetwork-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../styles.css?v=20260713-editorial" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260713-editorial" />
+    <link rel="stylesheet" href="../../styles.css?v=20260813-monthly" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260813-monthly" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
       <div>
         <p class="manager-eyebrow">GeneDrNetwork Administration</p>
-        <h1>GeneDr Weekly Content Manager</h1>
+        <h1>GeneDr Monthly Content Manager</h1>
       </div>
       <a href="../../index.html">View public website →</a>
     </header>
 
     <main class="manager-shell">
       <section class="manager-notice" aria-labelledby="static-workflow-title">
-        <h2 id="static-workflow-title">Static GitHub Pages workflow</h2>
-        <p>Changes made here are stored only in this browser. They do not update the GitHub repository or public website.</p>
-        <p>After approval, export the issue as JSON, add it to <code>data/genedr-weekly/issues/</code> for the content record, and add the same issue object to <code>data/genedr-weekly-issues.js</code>. Only an issue committed with <code>status: "published"</code> becomes public.</p>
+        <h2 id="static-workflow-title">Static GitHub Pages publishing</h2>
+        <p>This manager preserves your Story exactly and stores drafts in this browser. “Publish &amp; Download” creates the repository-ready publishing file; send that file to Codex for deployment to the public website.</p>
+        <p>The website does not generate, rewrite, summarize, or expand your Story.</p>
       </section>
 
-      <section class="manager-panel" aria-labelledby="editorial-settings-heading">
+      <section class="manager-panel" aria-labelledby="story-import-heading">
         <div class="manager-panel-heading">
-          <div><p class="manager-eyebrow">Publication defaults</p><h2 id="editorial-settings-heading">Editorial Settings</h2></div>
-          <span id="editorial-settings-status" class="manager-save-status" role="status" aria-live="polite"></span>
+          <div><p class="manager-eyebrow">Paste completed publication</p><h2 id="story-import-heading">Add New Gene Detective Story</h2></div>
+          <span id="story-import-status" class="manager-save-status" role="status" aria-live="polite"></span>
         </div>
-        <form id="editorial-settings-form">
-          <div class="manager-form-grid">
-            <label>Editor label<input name="editorLabel" type="text" required /></label>
-            <label>Editor name<input name="editorName" type="text" required /></label>
-            <label>Editor credentials<input name="editorCredentials" type="text" required /></label>
-            <div class="manager-editorial-preview" aria-live="polite"><span>Combined preview</span><strong id="editorial-settings-preview"></strong></div>
-          </div>
-          <div class="manager-actions"><button class="manager-button manager-button-primary" type="submit">Save Editorial Settings</button></div>
-        </form>
-      </section>
-
-      <section class="manager-panel" aria-labelledby="ai-generator-heading">
-        <div class="manager-panel-heading">
-          <div><p class="manager-eyebrow">AI-assisted drafting</p><h2 id="ai-generator-heading">AI Draft Generator</h2></div>
-          <span id="ai-generation-status" class="manager-save-status" role="status" aria-live="polite"></span>
-        </div>
-        <p class="manager-ai-intro">AI-generated content is saved only as a draft. Review medical accuracy and verify every suggested reference before approval or publication.</p>
-        <label class="manager-audience-control" for="ai-audience">Intended audience<select id="ai-audience"><option value="Auto" selected>Auto-select for topic</option><option value="Clinicians">Clinicians</option><option value="Residents">Residents</option><option value="Medical Students">Medical Students</option><option value="Genetic Counselors">Genetic Counselors</option><option value="Patients and Families">Patients and Families</option><option value="General Public">General Public</option></select></label>
-        <div class="manager-ai-options">
-          <section>
-            <p class="manager-option-label">Option A</p>
-            <h3>Choose from the topic library</h3>
-            <p>Selects an active topic that has not been used recently and assigns the next issue number.</p>
-            <button id="ai-suggest-generate" class="manager-button manager-button-primary" type="button">Suggest Topic &amp; Generate Draft</button>
-          </section>
-          <section>
-            <p class="manager-option-label">Option B</p>
-            <h3>Enter My Topic</h3>
-            <label for="ai-custom-topic">Topic</label>
-            <input id="ai-custom-topic" type="text" placeholder="Rapid Whole Genome Sequencing in Critically Ill Newborns" />
-            <button id="ai-custom-generate" class="manager-button manager-button-primary" type="button">Generate Draft</button>
-          </section>
+        <p class="manager-import-intro">Paste the complete finalized Story below. Headings, paragraphs, references, and author/editor lines remain in their original order and wording.</p>
+        <label class="manager-story-import-label" for="story-import">Complete Gene Detective Story</label>
+        <textarea id="story-import" class="manager-story-import" rows="22" placeholder="Paste the complete Story here, beginning with its title…"></textarea>
+        <div class="manager-actions">
+          <button id="parse-story" class="manager-button manager-button-primary" type="button">Parse Story &amp; Create Draft</button>
+          <button id="clear-story-import" class="manager-button" type="button">Clear</button>
         </div>
       </section>
 
       <section class="manager-panel" aria-labelledby="issues-heading">
         <div class="manager-panel-heading">
-          <div><p class="manager-eyebrow">Content library</p><h2 id="issues-heading">All Issues</h2></div>
-          <button id="create-issue" class="manager-button manager-button-primary" type="button">Create New Issue</button>
+          <div><p class="manager-eyebrow">Publication library</p><h2 id="issues-heading">Stories &amp; Previous Publications</h2></div>
         </div>
         <div class="manager-table-wrap">
           <table class="manager-table">
-            <thead><tr><th>Issue</th><th>Date</th><th>Title</th><th>Category</th><th>Reading time</th><th>Editor’s Note</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Story</th><th>Month</th><th>Title</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="manager-issue-list"></tbody>
           </table>
         </div>
@@ -83,121 +56,72 @@
 
       <section id="manager-editor" class="manager-panel" aria-labelledby="editor-heading" hidden>
         <div class="manager-panel-heading">
-          <div><p class="manager-eyebrow">Issue editor</p><h2 id="editor-heading">Edit Issue</h2></div>
+          <div><p class="manager-eyebrow">Parsed Story</p><h2 id="editor-heading">Review Publication Details</h2></div>
           <span id="save-status" class="manager-save-status" role="status" aria-live="polite"></span>
         </div>
         <form id="issue-form">
           <div class="manager-form-grid">
-            <label>Issue number<input name="issueNumber" type="number" min="1" required /></label>
-            <label>Date<input name="date" type="date" required /></label>
-            <label class="manager-field-wide">Title<input name="title" type="text" required /></label>
-            <label class="manager-field-wide">Subtitle<input name="subtitle" type="text" /></label>
+            <label>Monthly issue number<input name="issueNumber" type="number" min="1" required /></label>
+            <label>Gene Detective Story number<input name="storyNumber" type="number" min="1" required /></label>
+            <label>Publication date<input name="date" type="date" required /></label>
+            <label>Month and year<input name="monthYear" type="text" placeholder="September 2026" required /></label>
+            <label class="manager-field-wide">Story title<input name="title" type="text" required /></label>
+            <label class="manager-field-wide">Subtitle or opening line<input name="subtitle" type="text" /></label>
+            <label class="manager-field-wide">Homepage teaser<textarea name="teaser" rows="4" required></textarea><span>Parsed from the opening Story text. You may shorten it without changing the full Story.</span></label>
             <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
-            <label>Category<select name="category" required></select></label>
-            <label>Reading time<input name="readingTime" type="text" placeholder="5 min read" required /></label>
-            <label>Audience<select name="audience"></select></label>
-            <label>Status<select name="status" disabled aria-describedby="status-help"></select><span id="status-help">Status changes use the workflow buttons below.</span></label>
-            <fieldset class="manager-field-wide manager-editor-note-fields">
-              <legend>Editor’s Note</legend>
-              <label>Fixed introduction<textarea id="editor-note-fixed-introduction" rows="5" readonly></textarea><span>Included automatically in every issue.</span></label>
-              <label><span class="manager-field-heading"><span>Topic-Specific Editor’s Note</span><button class="manager-regenerate" type="button" data-regenerate-section="editorNoteTopicIntroduction">Regenerate Topic Introduction</button></span><textarea name="editorNoteTopicIntroduction" rows="6" placeholder="Add a unique 3–5 sentence introduction for this issue’s topic."></textarea><span>The AI generates only this editable middle portion.</span></label>
-              <label>Fixed closing<textarea id="editor-note-fixed-closing" rows="2" readonly></textarea><span>Included automatically in every issue.</span></label>
-              <div class="manager-note-preview"><span>Homepage Editor’s Note Preview</span><p id="editor-note-homepage-preview"></p></div>
-            </fieldset>
-            <label class="manager-field-wide"><span class="manager-field-heading"><span>Clinical scenario</span><button class="manager-regenerate" type="button" data-regenerate-section="clinicalScenario">Regenerate Clinical Scenario</button></span><textarea name="scenario" rows="5" required></textarea></label>
-            <label class="manager-field-wide">Clinical question<textarea name="question" rows="3" required></textarea></label>
-            <label class="manager-field-wide">Excerpt<textarea name="excerpt" rows="4" required></textarea></label>
-            <label class="manager-field-wide"><span class="manager-field-heading"><span>Why This Matters</span><button class="manager-regenerate" type="button" data-regenerate-section="whyThisMatters">Regenerate Why This Matters</button></span><textarea name="whyThisMatters" rows="7" required></textarea></label>
-            <label class="manager-field-wide"><span class="manager-field-heading"><span>Main Article</span><button class="manager-regenerate" type="button" data-regenerate-section="mainArticle">Regenerate Main Article</button></span><textarea name="mainArticle" rows="12" required></textarea></label>
-            <label class="manager-field-wide"><span class="manager-field-heading"><span>Key Points</span><button class="manager-regenerate" type="button" data-regenerate-section="keyPoints">Regenerate Key Points</button></span><span>One point per line</span><textarea name="keyPoints" rows="6" required></textarea></label>
-            <label class="manager-field-wide"><span class="manager-field-heading"><span id="references-field-label" class="manager-main-label">References</span></span><span class="manager-reference-tools"><select id="reference-retrieval-mode" aria-label="Reference retrieval filter"><option value="recent-only">Recent only</option><option value="recent-plus-landmark" selected>Recent plus landmark references</option><option value="guidelines-only">Guidelines only</option><option value="reviews-only">Reviews only</option><option value="clinical-trials-only">Clinical trials only</option></select><button class="manager-regenerate" type="button" data-reference-action="update">Update References</button><button class="manager-regenerate" type="button" data-reference-action="regenerate">Regenerate References</button></span><span>One verified source per line. Delete a line to remove it; cut and paste lines to reorder. Administrator verification is required before publication.</span><textarea name="references" rows="9" required></textarea></label>
-            <label class="manager-field-wide">Disclaimer<textarea name="disclaimer" rows="4" required></textarea></label>
+            <label>Status<select name="status" disabled><option value="draft">draft</option><option value="published">published</option></select></label>
+            <label class="manager-field-wide">Detected author/editor line<input name="authorLine" type="text" /><span>Detected for reference; the original line remains in the full Story.</span></label>
+            <label class="manager-field-wide">Complete Story — source of truth<textarea name="storyContent" rows="26" required></textarea><span>The preview is rebuilt from this exact content. No AI or rewriting is applied.</span></label>
           </div>
 
-          <div class="manager-actions" aria-label="Issue workflow actions">
+          <div class="manager-actions" aria-label="Story workflow actions">
             <button class="manager-button" type="button" data-status-action="draft">Save Draft</button>
-            <button class="manager-button" type="button" data-regenerate-full>Regenerate Full Article</button>
-            <button class="manager-button" type="button" data-status-action="ready-for-review">Mark Ready for Review</button>
-            <button class="manager-button" type="button" data-status-action="approved">Approve</button>
-            <button class="manager-button manager-button-primary" type="button" data-status-action="published">Publish</button>
-            <button class="manager-button manager-button-danger" type="button" data-status-action="archived">Archive</button>
+            <button class="manager-button" type="button" data-preview="card">Preview Homepage Feature</button>
+            <button class="manager-button" type="button" data-preview="article">Preview Full Story</button>
+            <button class="manager-button manager-button-primary" type="button" data-publish>Publish &amp; Download</button>
           </div>
           <div class="manager-actions manager-preview-actions">
-            <button class="manager-button" type="button" data-preview="card">Preview Homepage Card</button>
-            <button class="manager-button" type="button" data-preview="article">Preview Full Article</button>
-            <button id="email-subscribers" class="manager-button manager-button-primary" type="button" hidden>Email to Subscribers</button>
-            <button class="manager-button" type="button" data-export="json">Download JSON</button>
-            <button class="manager-button" type="button" data-export="markdown">Download Markdown</button>
-            <button class="manager-button" type="button" data-export="copy">Copy Issue JSON</button>
+            <button class="manager-button" type="button" data-export="story-json">Download Story JSON</button>
+            <button class="manager-button" type="button" data-export="publishing-file">Download Publishing File</button>
+            <button class="manager-button" type="button" data-export="copy">Copy Story JSON</button>
           </div>
         </form>
       </section>
 
       <section id="manager-preview" class="manager-panel manager-preview" aria-labelledby="preview-heading" hidden>
-        <div class="manager-panel-heading"><div><p class="manager-eyebrow">Local preview</p><h2 id="preview-heading">Issue Preview</h2></div><button id="manager-preview-pdf" class="manager-button" type="button">Export to PDF</button></div>
+        <div class="manager-panel-heading">
+          <div><p class="manager-eyebrow">Formatted preview</p><h2 id="preview-heading">Story Preview</h2></div>
+          <button id="manager-preview-pdf" class="manager-button" type="button">Export to PDF</button>
+        </div>
         <div id="manager-preview-content"></div>
       </section>
     </main>
 
     <dialog id="publish-confirmation" class="manager-dialog">
       <form method="dialog">
-        <h2>Confirm publication</h2>
-        <p>Have you reviewed the medical accuracy, references, current guidelines, drug information, diagnostic-yield data, and patient privacy content?</p>
+        <h2>Publish this Story?</h2>
+        <p>The Story will become the current featured monthly publication in this browser, and a repository-ready publishing file will download. Send that file to Codex to update the public GitHub Pages website.</p>
         <div class="manager-actions">
           <button class="manager-button" value="cancel">Cancel</button>
-          <button id="confirm-publish" class="manager-button manager-button-primary" value="confirm">Confirm and Publish</button>
+          <button id="confirm-publish" class="manager-button manager-button-primary" value="confirm">Publish &amp; Download</button>
         </div>
       </form>
     </dialog>
 
     <dialog id="delete-confirmation" class="manager-dialog">
       <form method="dialog">
-        <h2>Delete browser-local issue?</h2>
-        <p id="delete-confirmation-message">This issue will be removed from this browser. This action cannot be undone.</p>
+        <h2>Delete browser-local Story?</h2>
+        <p id="delete-confirmation-message">This draft will be removed from this browser.</p>
         <div class="manager-actions">
           <button class="manager-button" value="cancel">Cancel</button>
-          <button id="confirm-delete-issue" class="manager-button manager-button-danger" value="confirm">Confirm Delete</button>
+          <button id="confirm-delete-issue" class="manager-button manager-button-danger" value="confirm">Delete Draft</button>
         </div>
       </form>
     </dialog>
 
-    <dialog id="email-confirmation" class="manager-dialog manager-email-dialog">
-      <form method="dialog">
-        <p class="manager-eyebrow">GeneDr Weekly</p>
-        <h2>Email to Subscribers</h2>
-        <div id="email-preview-content" class="manager-email-preview"></div>
-        <p id="email-action-status" class="manager-save-status" role="status" aria-live="polite"></p>
-        <div class="manager-actions">
-          <button class="manager-button" value="cancel">Cancel</button>
-          <button id="send-test-email" class="manager-button" type="button">Send Test Email</button>
-          <button id="confirm-subscriber-email" class="manager-button manager-button-primary" type="button">Confirm and Send to Subscribers</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="email-resend-confirmation" class="manager-dialog">
-      <form method="dialog">
-        <h2>Confirm deliberate resend</h2>
-        <p>This issue has already been sent to subscribers. Sending it again may deliver a duplicate message to the full list.</p>
-        <div class="manager-actions">
-          <button class="manager-button" value="cancel">Cancel</button>
-          <button id="confirm-subscriber-resend" class="manager-button manager-button-danger" type="button">Confirm Resend to Subscribers</button>
-        </div>
-      </form>
-    </dialog>
-
-    <script src="../../data/genedr-weekly-settings.js?v=20260713-editorial"></script>
-    <script src="../../data/genedr-weekly-issues.js?v=20260713-editorial"></script>
-    <script src="../../data/genedr-weekly-topics.js"></script>
-    <script src="../../assets/genedr-weekly.js?v=20260713-editorial"></script>
-    <script src="../../assets/genedr-weekly-ai-prompt.js?v=20260713-editorial"></script>
-    <script src="../../assets/genedr-weekly-ai-config.js?v=20260713-long-draft-timeout"></script>
-    <script src="../../assets/genedr-weekly-ai.js?v=20260713-editorial"></script>
-    <script src="../../assets/genedr-weekly-references-config.js"></script>
-    <script src="../../assets/genedr-weekly-references.js"></script>
-    <script src="../../assets/genedr-weekly-email-config.js"></script>
-    <script src="../../assets/genedr-weekly-email.js"></script>
-    <script src="../../assets/genedr-weekly-pdf.js"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260713-editorial"></script>
+    <script src="../../data/genedr-weekly-issues.js?v=20260813-monthly"></script>
+    <script src="../../assets/genedr-weekly.js?v=20260813-monthly"></script>
+    <script src="../../assets/genedr-weekly-pdf.js?v=20260813-monthly"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260813-monthly"></script>
   </body>
 </html>
