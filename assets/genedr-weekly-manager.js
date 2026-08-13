@@ -10,6 +10,8 @@
   const previewContent = document.querySelector("#manager-preview-content");
   const list = document.querySelector("#manager-issue-list");
   const importField = document.querySelector("#story-import");
+  const fileField = document.querySelector("#story-file");
+  const fileImportButton = document.querySelector("#import-story-file");
   const importStatus = document.querySelector("#story-import-status");
   const saveStatus = document.querySelector("#save-status");
   const publishDialog = document.querySelector("#publish-confirmation");
@@ -18,6 +20,10 @@
   let activeSlug = null;
   let pendingDeleteSlug = null;
   let lastPreviewStory = null;
+
+  if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
 
   const repoIssues = (window.GENEDR_WEEKLY_ISSUES || []).map(normalizeIssue);
   let browserStories = [];
@@ -206,17 +212,16 @@
     saveStatus.textContent = "Story JSON copied.";
   }
 
-  document.querySelector("#parse-story").addEventListener("click", () => {
-    const source = importField.value.trim();
+  function createDraftFromSource(source, successMessage) {
     if (!source) {
-      importStatus.textContent = "Paste the completed Story before parsing.";
+      importStatus.textContent = "Paste a completed Story or import a DOCX/PDF before parsing.";
       importField.focus();
-      return;
+      return null;
     }
     const parsed = parseStory(source);
     if (!parsed.title) {
       importStatus.textContent = "A Story title could not be identified. Keep the title as the first line and try again.";
-      return;
+      return null;
     }
     const issueNumber = nextMonthlyNumber("issueNumber");
     const storyNumber = nextMonthlyNumber("storyNumber");
@@ -237,11 +242,77 @@
     });
     activeSlug = story.slug;
     fillForm(story, `${storyLabel(storyNumber)} parsed. Review the detected details and preview before publishing.`);
-    importStatus.textContent = "Story parsed without rewriting its content.";
+    importStatus.textContent = successMessage || "Story parsed. Opening line and teaser were suggested from the Story’s original sentences.";
+    return story;
+  }
+
+  async function extractDocx(file) {
+    if (!window.mammoth) throw new Error("The Word import library did not load. Refresh the page and try again.");
+    const result = await window.mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+    return result.value.trim();
+  }
+
+  async function extractPdf(file) {
+    if (!window.pdfjsLib) throw new Error("The PDF import library did not load. Refresh the page and try again.");
+    const documentTask = window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
+    const pdf = await documentTask.promise;
+    const lines = [];
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+      let line = "";
+      content.items.forEach((item) => {
+        const text = String(item.str || "");
+        if (text) {
+          const needsSpace = line && !/^\s|^[,.;:!?)]/.test(text) && !/[\s(\-/]$/.test(line);
+          line += `${needsSpace ? " " : ""}${text}`;
+        }
+        if (item.hasEOL && line.trim()) {
+          lines.push(line.trim());
+          line = "";
+        }
+      });
+      if (line.trim()) lines.push(line.trim());
+    }
+    return lines.join("\n").trim();
+  }
+
+  document.querySelector("#parse-story").addEventListener("click", () => {
+    createDraftFromSource(importField.value.trim());
+  });
+
+  fileImportButton.addEventListener("click", async () => {
+    const file = fileField.files?.[0];
+    if (!file) {
+      importStatus.textContent = "Choose a DOCX or PDF file first.";
+      fileField.focus();
+      return;
+    }
+    const extension = file.name.toLowerCase().split(".").pop();
+    if (!['docx', 'pdf'].includes(extension)) {
+      importStatus.textContent = "Choose a .docx or .pdf Story file.";
+      return;
+    }
+    fileImportButton.disabled = true;
+    importStatus.textContent = `Reading ${file.name} locally in this browser…`;
+    try {
+      const source = extension === "docx" ? await extractDocx(file) : await extractPdf(file);
+      if (!source) throw new Error(extension === "pdf"
+        ? "No selectable text was found. Use the DOCX version or a text-based PDF."
+        : "No Story text was found in this Word document.");
+      importField.value = source;
+      const reviewNote = extension === "pdf" ? " PDF extraction can alter line breaks, so compare the Story box with the original before publishing." : "";
+      createDraftFromSource(source, `${file.name} imported into the Story box. Review the suggested opening line and teaser.${reviewNote}`);
+    } catch (error) {
+      importStatus.textContent = error.message || "The Story file could not be imported.";
+    } finally {
+      fileImportButton.disabled = false;
+    }
   });
 
   document.querySelector("#clear-story-import").addEventListener("click", () => {
     importField.value = "";
+    fileField.value = "";
     importStatus.textContent = "";
     importField.focus();
   });

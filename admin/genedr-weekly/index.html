@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../styles.css?v=20260813-monthly-2" />
-    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260813-monthly-2" />
+    <link rel="stylesheet" href="../../styles.css?v=20260813-monthly-3" />
+    <link rel="stylesheet" href="../../assets/genedr-weekly-manager.css?v=20260813-monthly-3" />
   </head>
   <body class="weekly-manager-page">
     <header class="manager-header">
@@ -25,7 +25,7 @@
       <section class="manager-notice" aria-labelledby="static-workflow-title">
         <h2 id="static-workflow-title">Static GitHub Pages publishing</h2>
         <p>This manager preserves your Story exactly and stores drafts in this browser. “Publish &amp; Download” creates the repository-ready publishing file; send that file to Codex for deployment to the public website.</p>
-        <p>The website does not generate, rewrite, summarize, or expand your Story.</p>
+        <p>The website does not rewrite, summarize, or expand your Story. It only suggests an opening line and teaser using sentences already present in the Story.</p>
       </section>
 
       <section class="manager-panel" aria-labelledby="story-import-heading">
@@ -33,7 +33,13 @@
           <div><p class="manager-eyebrow">Paste completed publication</p><h2 id="story-import-heading">Add New Gene Detective Story</h2></div>
           <span id="story-import-status" class="manager-save-status" role="status" aria-live="polite"></span>
         </div>
-        <p class="manager-import-intro">Paste the complete finalized Story below. Headings, paragraphs, references, and author/editor lines remain in their original order and wording.</p>
+        <p class="manager-import-intro">Paste the complete finalized Story below, or import a DOCX or text-based PDF. Headings, paragraphs, references, and author/editor lines remain in their original order and wording.</p>
+        <div class="manager-file-import">
+          <label for="story-file">Import Word or PDF</label>
+          <input id="story-file" type="file" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" />
+          <button id="import-story-file" class="manager-button" type="button">Import Selected File</button>
+          <span>Processed locally in this browser. PDF imports require selectable text.</span>
+        </div>
         <label class="manager-story-import-label" for="story-import">Complete Gene Detective Story</label>
         <textarea id="story-import" class="manager-story-import" rows="22" placeholder="Paste the complete Story here, beginning with its title…"></textarea>
         <div class="manager-actions">
@@ -66,8 +72,8 @@
             <label>Publication date<input name="date" type="date" required /></label>
             <label>Month and year<input name="monthYear" type="text" placeholder="September 2026" required /></label>
             <label class="manager-field-wide">Story title<input name="title" type="text" required /></label>
-            <label class="manager-field-wide">Subtitle or opening line<input name="subtitle" type="text" /></label>
-            <label class="manager-field-wide">Homepage teaser<textarea name="teaser" rows="4" required></textarea><span>Parsed from the opening Story text. You may shorten it without changing the full Story.</span></label>
+            <label class="manager-field-wide">Subtitle or opening line<input name="subtitle" type="text" /><span>Suggested from an original sentence in the Story and fully editable.</span></label>
+            <label class="manager-field-wide">Homepage teaser<textarea name="teaser" rows="4" required></textarea><span>Suggested from original Story sentences. You may edit it without changing the full Story.</span></label>
             <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
             <label>Status<select name="status" disabled><option value="draft">draft</option><option value="published">published</option></select></label>
             <label class="manager-field-wide">Detected author/editor line<input name="authorLine" type="text" /><span>Detected for reference; the original line remains in the full Story.</span></label>
@@ -119,9 +125,11 @@
       </form>
     </dialog>
 
-    <script src="../../data/genedr-weekly-issues.js?v=20260813-monthly-2"></script>
-    <script src="../../assets/genedr-weekly.js?v=20260813-monthly-2"></script>
-    <script src="../../assets/genedr-weekly-pdf.js?v=20260813-monthly-2"></script>
-    <script src="../../assets/genedr-weekly-manager.js?v=20260813-monthly-2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.10.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="../../data/genedr-weekly-issues.js?v=20260813-monthly-3"></script>
+    <script src="../../assets/genedr-weekly.js?v=20260813-monthly-3"></script>
+    <script src="../../assets/genedr-weekly-pdf.js?v=20260813-monthly-3"></script>
+    <script src="../../assets/genedr-weekly-manager.js?v=20260813-monthly-3"></script>
   </body>
 </html>

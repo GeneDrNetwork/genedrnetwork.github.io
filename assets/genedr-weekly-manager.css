@@ -16,6 +16,10 @@
 .manager-panel-heading .manager-eyebrow { color: #16838e; }
 .manager-ai-intro { margin: -8px 0 22px; color: #496577; }
 .manager-import-intro { margin: -8px 0 20px; color: #496577; }
+.manager-file-import { display: grid; grid-template-columns: minmax(220px,1fr) auto; gap: 10px 14px; align-items: center; margin: 0 0 22px; padding: 18px; border: 1px solid #cfe1e7; border-radius: 12px; background: #f7fbfc; }
+.manager-file-import label { grid-column: 1/-1; color: #193e5d; font-size: .82rem; font-weight: 800; }
+.manager-file-import input { min-width: 0; color: #243b53; font: inherit; font-size: .85rem; }
+.manager-file-import>span { grid-column: 1/-1; color: #64798a; font-size: .72rem; }
 .manager-story-import-label { display: block; margin-bottom: 8px; color: #193e5d; font-size: .82rem; font-weight: 800; }
 .manager-story-import { width: 100%; min-height: 420px; padding: 16px; border: 1px solid #bdd5dd; border-radius: 12px; color: #243b53; background: #fbfefe; font: 500 1.05rem/1.65 Inter,sans-serif; resize: vertical; }
 .manager-story-import:focus { outline: 3px solid rgba(20,147,157,.16); border-color: #14939d; }
@@ -88,5 +92,5 @@
 .manager-email-preview dl>div:last-child { border: 0; }
 .manager-email-preview dt { color: #547083; font-size: .72rem; font-weight: 800; text-transform: uppercase; }
 .manager-email-preview dd { margin: 0; overflow-wrap: anywhere; }
-@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-ai-options,.manager-form-grid { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } .manager-form-grid label>.manager-field-heading,.manager-audience-control { align-items: flex-start; flex-direction: column; } }
+@media (max-width:720px) { .manager-header { align-items: flex-start; flex-direction: column; } .manager-ai-options,.manager-form-grid,.manager-file-import { grid-template-columns: 1fr; } .manager-field-wide { grid-column: auto; } .manager-panel-heading { align-items: flex-start; flex-direction: column; } .manager-button { width: 100%; justify-content: center; } .manager-actions { flex-direction: column; } .manager-form-grid label>.manager-field-heading,.manager-audience-control { align-items: flex-start; flex-direction: column; } }
 @media (max-width:560px) { .manager-email-preview dl>div { grid-template-columns: 1fr; gap: 3px; } }

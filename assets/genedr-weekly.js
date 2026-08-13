@@ -69,23 +69,59 @@
     return `${shortened.slice(0, shortened.lastIndexOf(" ")).replace(/[.,;:!?]+$/, "")}…`;
   }
 
+  function storyBlocks(source) {
+    const hasParagraphBreaks = /\n\s*\n/.test(source);
+    const paragraphBlocks = hasParagraphBreaks ? source.split(/\n\s*\n/) : [];
+    const seriesLabelSharesBlock = /^gene\s+detective\s+stor(?:y|ies)\s*#?\s*\d+[^\n]*\n/i.test(paragraphBlocks[0] || "");
+    const mostlySingleLineDocument = paragraphBlocks.length <= 2 && source.split("\n").filter((line) => line.trim()).length > 10;
+    return (hasParagraphBreaks && !seriesLabelSharesBlock && !mostlySingleLineDocument ? paragraphBlocks : source.split("\n"))
+      .map((block) => block.trim())
+      .filter(Boolean);
+  }
+
+  function suggestedTeaser(blocks, excludedBlock) {
+    const selections = [];
+    for (const block of blocks) {
+      if (block === excludedBlock || looksLikeHeading(block)) continue;
+      if (/^(by|author|source case|adapted from|written by|edited by|edited and reviewed by)\s*[:—–-]?\s*/i.test(block)) continue;
+      const candidate = block.replace(/\s+/g, " ").trim();
+      if (!candidate) continue;
+      selections.push(candidate);
+      const combined = selections.join(" ");
+      if (combined.length >= 170 || selections.length === 3) return truncate(combined);
+    }
+    return truncate(selections.join(" "));
+  }
+
+  function looksLikeAuthorLine(block) {
+    const value = String(block || "").replace(/\s+/g, " ").trim();
+    if (!value || value.length > 180) return false;
+    if (/^(author|written by|edited by|edited and reviewed by)\s*[:—–-]\s*\S+/i.test(value)) return true;
+    return /^by\s+[A-Z][A-Za-z.'’\-]+/.test(value) && !/[.!?]$/.test(value) && value.split(/\s+/).length <= 18;
+  }
+
   function parseStory(value) {
     const source = String(value || "").replace(/\r\n?/g, "\n").trim();
-    const rawBlocks = source.split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);
+    const rawBlocks = storyBlocks(source);
     if (!rawBlocks.length) return { title: "", subtitle: "", teaser: "", authorLine: "", sections: [], source };
 
-    const title = cleanHeading(rawBlocks[0].replace(/^title\s*:\s*/i, ""));
-    let cursor = 1;
+    let titleIndex = 0;
+    if (/^gene\s+detective\s+stor(?:y|ies)\s*#?\s*\d+/i.test(rawBlocks[0]) && rawBlocks[1]) titleIndex = 1;
+    const title = cleanHeading(rawBlocks[titleIndex].replace(/^title\s*:\s*/i, ""));
+    let cursor = titleIndex + 1;
     let subtitle = "";
-    if (rawBlocks[cursor] && !looksLikeHeading(rawBlocks[cursor]) && rawBlocks[cursor].length <= 180 && !/[.!?]$/.test(rawBlocks[cursor])) {
+    if (rawBlocks[cursor] && !looksLikeHeading(rawBlocks[cursor]) && rawBlocks[cursor].length <= 220) {
       subtitle = rawBlocks[cursor].replace(/^subtitle\s*:\s*/i, "").trim();
       cursor += 1;
     }
 
     const bodyBlocks = rawBlocks.slice(cursor);
-    const authorBlock = bodyBlocks.find((block) => /^(by|author|written by|edited by|edited and reviewed by)\s*[:—–-]?\s+/i.test(block));
-    const authorLine = authorBlock ? authorBlock.replace(/\s+/g, " ").trim() : "";
-    const teaserBlock = bodyBlocks.find((block) => !looksLikeHeading(block) && block !== authorBlock) || "";
+    const authorBlock = bodyBlocks.find(looksLikeAuthorLine);
+    const authorHeadingIndex = bodyBlocks.findIndex((block) => /^author\s*:?$/i.test(block));
+    const authorLine = authorBlock
+      ? authorBlock.replace(/\s+/g, " ").trim()
+      : (authorHeadingIndex >= 0 ? String(bodyBlocks[authorHeadingIndex + 1] || "").replace(/\s+/g, " ").trim() : "");
+    const teaser = suggestedTeaser(bodyBlocks, authorBlock);
     const sections = [];
     let current = { heading: "", level: 2, blocks: [] };
     bodyBlocks.forEach((block) => {
@@ -102,7 +138,7 @@
       }
     });
     if (current.heading || current.blocks.length) sections.push(current);
-    return { title, subtitle, teaser: truncate(teaserBlock), authorLine, sections, source };
+    return { title, subtitle, teaser, authorLine, sections, source };
   }
 
   function renderStorySections(issue) {
