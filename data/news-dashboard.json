@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-13T12:01:39+00:00",
+  "updated_at": "2026-08-14T11:59:35+00:00",
   "summaries": {
-    "ai": "Key developments: Advanced Micro Devices (AMD) Stock Is Emerging As A Core AI Infrastructure Trade; US AI Data Center Boom Slows as Permits, Power and Labor Shortages Delay Projects; Nvidia Stock Earnings August 2026: AI Chip Leader's Q2 Preview & Investment Outlook.",
-    "biotech": "Key developments: Neurocrine Biosciences and the delicate balance of benefit and risk; Fierce Biotech Fundraising Tracker '26: InduPro assembles $77M; Vaderis nets $152M series B; PTC to expand rare disease portfolio with ST-920 buy.",
-    "market": "Key developments: S&P 500 ends higher as CoreWeave results fuel AI optimism; Stock Market: Will S&P 500 Open Up or Down Today?; Stock Market Today: S&P 500, Dow Futures Rise as July Inflation Cools\u2014Cisco Systems, Netflix, Applied Mat.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.61% today; Dow Jones was weakest at -0.04%. Key developments: S&P 500 ends higher as CoreWeave results fuel AI optimism; Stock Market: Will S&P 500 Open Up or Down Today?; Stock Market Today: S&P 500, Dow Futures Rise as July Inflation Cools\u2014Cisco Systems, Netflix, Applied Mat."
+    "ai": "Key developments: Nvidia $500 Billion AI Financing Deal: Wall Street's Biggest Infrastructure Bet; NVIDIA Pushes the AI Factory From Rack to Asset Class; Half-trillion Nvidia chip financing threatens China AI ambitions.",
+    "biotech": "Key developments: Rare Ventures, a First-of-its-kind Platform for Accelerating Rare Disease Therapies, Launches in Pittsburgh; Fierce Biotech Fundraising Tracker '26: InduPro assembles $77M; Vaderis nets $152M series B; US biotechs prefer doing FIH trials in USA but regulatory hurdles sending them abroad.",
+    "market": "Key developments: S&P 500 notches record-high close as rate-hike worries ease; Nasdaq, S&P 500 Futures Edge Higher Ahead Of Fed Minutes: Why NVDA, TSLA, AAPL, APLD, PANW Are On Traders' Radar Today; US Stock Market Today: S&P 500 Futures Edge Up On Sticky Inflation And Deficit Worries.",
+    "market_movers": "Nasdaq led tracked indexes at +0.81% today; Dow Jones was weakest at +0.13%. Key developments: S&P 500 notches record-high close as rate-hike worries ease; Nasdaq, S&P 500 Futures Edge Higher Ahead Of Fed Minutes: Why NVDA, TSLA, AAPL, APLD, PANW Are On Traders' Radar Today; US Stock Market Today: S&P 500 Futures Edge Up On Sticky Inflation And Deficit Worries."
   },
   "takeaways": [
-    "Advanced Micro Devices (AMD) Stock Is Emerging As A Core AI Infrastructure Trade - simplywall.st",
-    "US AI Data Center Boom Slows as Permits, Power and Labor Shortages Delay Projects - \u041c\u0435\u0436\u0430. \u041d\u043e\u0432\u0438\u043d\u0438 \u0423\u043a\u0440\u0430\u0457\u043d\u0438.",
-    "Neurocrine Biosciences and the delicate balance of benefit and risk - STAT",
+    "Nvidia $500 Billion AI Financing Deal: Wall Street's Biggest Infrastructure Bet - Intellectia AI",
+    "NVIDIA Pushes the AI Factory From Rack to Asset Class - Data Center Frontier",
+    "Rare Ventures, a First-of-its-kind Platform for Accelerating Rare Disease Therapies, Launches in Pittsburgh - Carnegie Mellon University",
     "Fierce Biotech Fundraising Tracker '26: InduPro assembles $77M; Vaderis nets $152M series B - Fierce Biotech",
     "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
     "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program - PR Newswire",
-    "S&P 500 ends higher as CoreWeave results fuel AI optimism - Reuters"
+    "S&P 500 notches record-high close as rate-hike worries ease - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -850,31 +850,31 @@
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,748.50",
-      "daily": 0.26,
-      "weekly": 0.32,
-      "monthly": 2.72
+      "value": "7,798.99",
+      "daily": 0.65,
+      "weekly": 1.15,
+      "monthly": 2.99
     },
     {
       "name": "Nasdaq",
-      "value": "26,588.49",
-      "daily": 0.54,
-      "weekly": 0.85,
-      "monthly": 2.76
+      "value": "26,803.03",
+      "daily": 0.81,
+      "weekly": 1.73,
+      "monthly": 2.03
     },
     {
       "name": "Dow Jones",
-      "value": "53,770.27",
-      "daily": -0.04,
-      "weekly": -1.07,
-      "monthly": 2.42
+      "value": "53,839.99",
+      "daily": 0.13,
+      "weekly": -0.08,
+      "monthly": 2.24
     },
     {
       "name": "Russell 2000",
-      "value": "3,045.48",
-      "daily": 0.61,
-      "weekly": 0.87,
-      "monthly": 3.13
+      "value": "3,052.85",
+      "daily": 0.24,
+      "weekly": 1.71,
+      "monthly": 2.97
     }
   ]
 }
