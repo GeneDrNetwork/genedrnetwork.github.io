@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-14T11:59:35+00:00",
+  "updated_at": "2026-08-15T11:37:25+00:00",
   "summaries": {
-    "ai": "Key developments: Nvidia $500 Billion AI Financing Deal: Wall Street's Biggest Infrastructure Bet; NVIDIA Pushes the AI Factory From Rack to Asset Class; Half-trillion Nvidia chip financing threatens China AI ambitions.",
-    "biotech": "Key developments: Rare Ventures, a First-of-its-kind Platform for Accelerating Rare Disease Therapies, Launches in Pittsburgh; Fierce Biotech Fundraising Tracker '26: InduPro assembles $77M; Vaderis nets $152M series B; US biotechs prefer doing FIH trials in USA but regulatory hurdles sending them abroad.",
-    "market": "Key developments: S&P 500 notches record-high close as rate-hike worries ease; Nasdaq, S&P 500 Futures Edge Higher Ahead Of Fed Minutes: Why NVDA, TSLA, AAPL, APLD, PANW Are On Traders' Radar Today; US Stock Market Today: S&P 500 Futures Edge Up On Sticky Inflation And Deficit Worries.",
-    "market_movers": "Nasdaq led tracked indexes at +0.81% today; Dow Jones was weakest at +0.13%. Key developments: S&P 500 notches record-high close as rate-hike worries ease; Nasdaq, S&P 500 Futures Edge Higher Ahead Of Fed Minutes: Why NVDA, TSLA, AAPL, APLD, PANW Are On Traders' Radar Today; US Stock Market Today: S&P 500 Futures Edge Up On Sticky Inflation And Deficit Worries."
+    "ai": "Key developments: A public consultation on a proposed artificial intelligence (AI) data center here broke down on Friday, Aug. 14, after the Norwegian proponent walked out of the venue and then hurled insults and legal threats at journalists covering the event. Link to the full story; 3 Under-the-Radar Chip Stocks Wall Street Is Sleeping On in August; Corning Stock And 2 AI Infrastructure Picks For Data Center Demand.",
+    "biotech": "Key developments: Biotech has more women leaders. Old double standards persist, executive says; Cell therapy weekly: three regenerative and gene therapies reach key clinical milestones for rare diseases; First human trials of designer protein therapies stun US neuroscientists.",
+    "market": "Key developments: Stock Market Today: S&P 500 Slips From Record as US Retail Sales Fall; Stock market today: S&P 500, Nasdaq edge higher on cooler inflation data, strong earnings; Stock Market Today: Dow Jones Futures Slip, S&P 500, Nasdaq 100 Gains as US Says it Can Maintain Iran Blo.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Stock Market Today: S&P 500 Slips From Record as US Retail Sales Fall; Stock market today: S&P 500, Nasdaq edge higher on cooler inflation data, strong earnings; Stock Market Today: Dow Jones Futures Slip, S&P 500, Nasdaq 100 Gains as US Says it Can Maintain Iran Blo."
   },
   "takeaways": [
-    "Nvidia $500 Billion AI Financing Deal: Wall Street's Biggest Infrastructure Bet - Intellectia AI",
-    "NVIDIA Pushes the AI Factory From Rack to Asset Class - Data Center Frontier",
-    "Rare Ventures, a First-of-its-kind Platform for Accelerating Rare Disease Therapies, Launches in Pittsburgh - Carnegie Mellon University",
-    "Fierce Biotech Fundraising Tracker '26: InduPro assembles $77M; Vaderis nets $152M series B - Fierce Biotech",
+    "A public consultation on a proposed artificial intelligence (AI) data center here broke down on Friday, Aug. 14, after the Norwegian proponent walked out of the venue and then hurled insults and legal threats at journalists covering the event. Link to the full story - facebook.com",
+    "3 Under-the-Radar Chip Stocks Wall Street Is Sleeping On in August - 24/7 Wall St.",
+    "Biotech has more women leaders. Old double standards persist, executive says - Reuters",
+    "Cell therapy weekly: three regenerative and gene therapies reach key clinical milestones for rare diseases - RegMedNet",
     "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
     "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program - PR Newswire",
-    "S&P 500 notches record-high close as rate-hike worries ease - Reuters"
+    "Stock Market Today: S&P 500 Slips From Record as US Retail Sales Fall - Eurasia Business News"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,14 +802,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz commits up to $1.3B to buy Actio, bolster epilepsy pipeline",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNm1TaHFubE5WS3VQZlRjUWxDU2k3RXVkejFubGRIRmNYdGxwS1ZrMU5HZUxES2NwWjhvd2RTbXFqczNqTm54Mk82WGpvUkZ0MVQ2MUNibVdaZ19sR3Bxb1FpbWY1NmlhQUc4eklQbUZ4TmN0YUZmS3R5cVZld2pSZDFFOFVXNkxVbWpCdkR5V2syTllfZGxQVA?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Two Can-Fite Oral Drugs Advance in Phase III for Cancer, Psoriasis",
       "date": "Wed, 12 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOTzFvQ3NIWkt5SkxRN2ZWVmNsNTN1N04xVXNCSmxYbC1XZ3JFemFxVFFZZm1iNmFWejVPVThpaDBRSzRLaGNPYXZTVGVHMHJUc1lXMmJtMnlBa1dkQnZpeXlFUlRzQldDYkVCSERfQTJHdThZTjZOTUtaR3h4a1I3S1FMM1ZoZFZyVVphdDRhdFlMNTc4MjktbnJpNU42UGxRSHNWNHJyWm0wQVktQTBPWTNDNzNfdlRZTmdBUQ?oc=5"
@@ -818,17 +810,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences for $1.32 Billion",
+      "event": "Jazz commits up to $1.3B to buy Actio, bolster epilepsy pipeline",
       "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5CWGE0c1FxVkk4c3hnYTh0enBJbHhCV2ZsMzRORjNrY04wRkJQc1BSTXR1X21mMjd2dFFmcUp0Tm9EQWNBbzgxNlE3SXpSY243S3p2aTFvM1o0cF9JdExIRUljd2cwYXg3ZHBDaEp4RW5POHgyZ1M0bTk2dw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "FDA grants orphan drug status to potential treatment for ALL",
-      "date": "Fri, 07 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPZ2t5Y0NZTmNUaWtfSTRWLWVNVFVJSDRJQVl4V1JSRWQ3dXVGTWFJbnBGNHZwMHc3QmhRemx4WWpMRW04dkZtS2dXQlEtNHdaUVliaUx5ZnExRVljdHRRSVFFYjd4OHFCZFZ3RGs2VUdncnJyZ1BkNVkxS3I4cjRXZ2hPTlBia2RpSWc?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNm1TaHFubE5WS3VQZlRjUWxDU2k3RXVkejFubGRIRmNYdGxwS1ZrMU5HZUxES2NwWjhvd2RTbXFqczNqTm54Mk82WGpvUkZ0MVQ2MUNibVdaZ19sR3Bxb1FpbWY1NmlhQUc4eklQbUZ4TmN0YUZmS3R5cVZld2pSZDFFOFVXNkxVbWpCdkR5V2syTllfZGxQVA?oc=5"
     },
     {
       "company": "See source",
@@ -845,36 +829,52 @@
       "event": "Jazz Pharmaceuticals expands rare epilepsy pipeline with Actio Biosciences deal",
       "date": "Mon, 10 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNYnV5Rmt6bHA4Zms5bFFaS01jZThmdWhDY0tfWGNteXYzb2Y4MFFSUHg5UFN3bXBZS2NhaDQySDhtTG9FLVZZMC1GOTBYY1ZEcWFnME14QkFUSTZ2cHF4WEVuRWx3dzl5S2xNQVBtQ21Qd3JlbnM2WklvWUEycGV0MjVuaDk1TDU1dHdNQUtWM2N6RkF4OU4zNHFYYzJPaDJ6QmpDTXRaTnlYbi13dnVUcDEteTlGb2hjYWtDcl9KUjVOWEpfYzhNRlpabGVLTDltR3NXVGtES29MTWV1bUE?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "BLTE Stock Rises as FDA Grants Priority Review to Tinlarebant NDA",
+      "date": "Wed, 12 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNR2tDRF8zVlpMQnJ5Z0R3bWd6M1dra1AyUzQ5YzJaOXFRNUJ3Wkp3MjNPTGwwOEpxWk4zRVJxakNEX2w2aEh6ODhIMHIxMTVNaHJEQWRmQU5qSkZFYVNBR09DTE50ZnFhM2tmcXRHYTFvQlZGY2hXT0hBMGIyQ2NzajlxVC1WdkhpX092Z2ljbEtDSDVsX1NuQlM0UGlwRXZrclB2YkdtN2M4SkFsLVJMc3VtSDRyWjZaLU1YaEZn?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "MoonLake Immunotherapeutics (MLTX) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5PZ2xtSjFBeWluOVJPNkY0aTlaaHhPSDRUVDFWczFFUHRWeklhNkEzQURNTjhONHZKT2VISUJ0S20yZW5zaGxzOEhvcVE5TTlFYmluWXBOdXZ3bk1tNVEzeFBObnFKZW9Y?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,798.99",
-      "daily": 0.65,
-      "weekly": 1.15,
-      "monthly": 2.99
+      "value": "7,785.76",
+      "daily": -0.17,
+      "weekly": 0.36,
+      "monthly": 3.34
     },
     {
       "name": "Nasdaq",
-      "value": "26,803.03",
-      "daily": 0.81,
-      "weekly": 1.73,
-      "monthly": 2.03
+      "value": "26,729.16",
+      "daily": -0.28,
+      "weekly": 0.14,
+      "monthly": 1.75
     },
     {
       "name": "Dow Jones",
-      "value": "53,839.99",
-      "daily": 0.13,
-      "weekly": -0.08,
+      "value": "53,732.41",
+      "daily": -0.2,
+      "weekly": -0.56,
       "monthly": 2.24
     },
     {
       "name": "Russell 2000",
-      "value": "3,052.85",
-      "daily": 0.24,
-      "weekly": 1.71,
-      "monthly": 2.97
+      "value": "3,068.42",
+      "daily": 0.51,
+      "weekly": 1.12,
+      "monthly": 3.16
     }
   ]
 }
