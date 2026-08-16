@@ -1,19 +1,18 @@
 {
-  "updated_at": "2026-08-15T11:37:25+00:00",
+  "updated_at": "2026-08-16T11:37:35+00:00",
   "summaries": {
-    "ai": "Key developments: A public consultation on a proposed artificial intelligence (AI) data center here broke down on Friday, Aug. 14, after the Norwegian proponent walked out of the venue and then hurled insults and legal threats at journalists covering the event. Link to the full story; 3 Under-the-Radar Chip Stocks Wall Street Is Sleeping On in August; Corning Stock And 2 AI Infrastructure Picks For Data Center Demand.",
-    "biotech": "Key developments: Biotech has more women leaders. Old double standards persist, executive says; Cell therapy weekly: three regenerative and gene therapies reach key clinical milestones for rare diseases; First human trials of designer protein therapies stun US neuroscientists.",
-    "market": "Key developments: Stock Market Today: S&P 500 Slips From Record as US Retail Sales Fall; Stock market today: S&P 500, Nasdaq edge higher on cooler inflation data, strong earnings; Stock Market Today: Dow Jones Futures Slip, S&P 500, Nasdaq 100 Gains as US Says it Can Maintain Iran Blo.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Stock Market Today: S&P 500 Slips From Record as US Retail Sales Fall; Stock market today: S&P 500, Nasdaq edge higher on cooler inflation data, strong earnings; Stock Market Today: Dow Jones Futures Slip, S&P 500, Nasdaq 100 Gains as US Says it Can Maintain Iran Blo."
+    "ai": "Key developments: These 5 AI Stocks Have Returned 300%-Plus Over the Past 3 Years -- and 1 Still Looks Dirt Cheap; Nvidia Earnings Preview August 2026: AI Chip Leader's Next Catalyst; Big Tech\u2019s AI Data Center Power Demands Trigger $15B PJM Auction and a Nuclear SMR Boom.",
+    "biotech": "Key developments: Moderna (MRNA) Starts Ebola Vaccine Trial As Fair Value Questions Persist.",
+    "market": "Key developments: Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today; Wall Street holds near its record following the latest weak update on the US economy - ABC News; Stock market today: Dow, S&P 500, Nasdaq slip amid US-Iran impasse, Alphabet stock sinks.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today; Wall Street holds near its record following the latest weak update on the US economy - ABC News; Stock market today: Dow, S&P 500, Nasdaq slip amid US-Iran impasse, Alphabet stock sinks."
   },
   "takeaways": [
-    "A public consultation on a proposed artificial intelligence (AI) data center here broke down on Friday, Aug. 14, after the Norwegian proponent walked out of the venue and then hurled insults and legal threats at journalists covering the event. Link to the full story - facebook.com",
-    "3 Under-the-Radar Chip Stocks Wall Street Is Sleeping On in August - 24/7 Wall St.",
-    "Biotech has more women leaders. Old double standards persist, executive says - Reuters",
-    "Cell therapy weekly: three regenerative and gene therapies reach key clinical milestones for rare diseases - RegMedNet",
+    "These 5 AI Stocks Have Returned 300%-Plus Over the Past 3 Years -- and 1 Still Looks Dirt Cheap - The Motley Fool",
+    "Nvidia Earnings Preview August 2026: AI Chip Leader's Next Catalyst - intellectia.ai",
+    "Moderna (MRNA) Starts Ebola Vaccine Trial As Fair Value Questions Persist - simplywall.st",
     "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
     "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program - PR Newswire",
-    "Stock Market Today: S&P 500 Slips From Record as US Retail Sales Fall - Eurasia Business News"
+    "Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today - Stocktwits"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,6 +801,14 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "AC Immune (ACIU) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
+      "date": "Tue, 11 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5CZnpfMUUxTGhydy1ZRzktYzBPSUZLYllpb21aUTJLZktZdTJGSGc0c1lYSmI2eVdFRGVCV3ZCaHFxOW4xSWIwUnBjeWFSS1ppZkFtc3FKdnpqYlA5MVFIcDZqQ2hwNWgx?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Two Can-Fite Oral Drugs Advance in Phase III for Cancer, Psoriasis",
       "date": "Wed, 12 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOTzFvQ3NIWkt5SkxRN2ZWVmNsNTN1N04xVXNCSmxYbC1XZ3JFemFxVFFZZm1iNmFWejVPVThpaDBRSzRLaGNPYXZTVGVHMHJUc1lXMmJtMnlBa1dkQnZpeXlFUlRzQldDYkVCSERfQTJHdThZTjZOTUtaR3h4a1I3S1FMM1ZoZFZyVVphdDRhdFlMNTc4MjktbnJpNU42UGxRSHNWNHJyWm0wQVktQTBPWTNDNzNfdlRZTmdBUQ?oc=5"
@@ -818,9 +825,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "NAVLIN Regulatory Roundup: Approvals & Special Designations",
+      "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences for $1.32 Billion",
       "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPUnQ3S3Z6U2JHc2dFQWFVQUhhcGphT21mX1NvN1hXSFNYYXVCeHVIMnhDdjExU3RjNlJHeGlRd191eFlVd3hfS29lejNWTGVvdUI1MFlIWnJBeGdaSS1UQVIxbUVGbjFVQ1lENl9BOGR2NlZFTm5zVEc5a1FmSjQ5R1ZSSjJyUjdvTzBlQWxNVW5tSF9SZnJZc0E0b2N6Qnc?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5CWGE0c1FxVkk4c3hnYTh0enBJbHhCV2ZsMzRORjNrY04wRkJQc1BSTXR1X21mMjd2dFFmcUp0Tm9EQWNBbzgxNlE3SXpSY243S3p2aTFvM1o0cF9JdExIRUljd2cwYXg3ZHBDaEp4RW5POHgyZ1M0bTk2dw?oc=5"
     },
     {
       "company": "See source",
@@ -837,14 +844,6 @@
       "event": "BLTE Stock Rises as FDA Grants Priority Review to Tinlarebant NDA",
       "date": "Wed, 12 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNR2tDRF8zVlpMQnJ5Z0R3bWd6M1dra1AyUzQ5YzJaOXFRNUJ3Wkp3MjNPTGwwOEpxWk4zRVJxakNEX2w2aEh6ODhIMHIxMTVNaHJEQWRmQU5qSkZFYVNBR09DTE50ZnFhM2tmcXRHYTFvQlZGY2hXT0hBMGIyQ2NzajlxVC1WdkhpX092Z2ljbEtDSDVsX1NuQlM0UGlwRXZrclB2YkdtN2M4SkFsLVJMc3VtSDRyWjZaLU1YaEZn?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "MoonLake Immunotherapeutics (MLTX) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5PZ2xtSjFBeWluOVJPNkY0aTlaaHhPSDRUVDFWczFFUHRWeklhNkEzQURNTjhONHZKT2VISUJ0S20yZW5zaGxzOEhvcVE5TTlFYmluWXBOdXZ3bk1tNVEzeFBObnFKZW9Y?oc=5"
     }
   ],
   "markets": [
@@ -860,7 +859,7 @@
       "value": "26,729.16",
       "daily": -0.28,
       "weekly": 0.14,
-      "monthly": 1.75
+      "monthly": 3.27
     },
     {
       "name": "Dow Jones",
