@@ -1,18 +1,19 @@
 {
-  "updated_at": "2026-08-16T11:37:35+00:00",
+  "updated_at": "2026-08-17T11:43:57+00:00",
   "summaries": {
-    "ai": "Key developments: These 5 AI Stocks Have Returned 300%-Plus Over the Past 3 Years -- and 1 Still Looks Dirt Cheap; Nvidia Earnings Preview August 2026: AI Chip Leader's Next Catalyst; Big Tech\u2019s AI Data Center Power Demands Trigger $15B PJM Auction and a Nuclear SMR Boom.",
-    "biotech": "Key developments: Moderna (MRNA) Starts Ebola Vaccine Trial As Fair Value Questions Persist.",
-    "market": "Key developments: Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today; Wall Street holds near its record following the latest weak update on the US economy - ABC News; Stock market today: Dow, S&P 500, Nasdaq slip amid US-Iran impasse, Alphabet stock sinks.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today; Wall Street holds near its record following the latest weak update on the US economy - ABC News; Stock market today: Dow, S&P 500, Nasdaq slip amid US-Iran impasse, Alphabet stock sinks."
+    "ai": "Key developments: Nvidia widens AI portfolio with LG humanoid robot collaboration, expanding beyond data centers; Why Big Tech\u2019s AI Spending Is $3 Trillion Higher Than It Seems; Nvidia cuts OpenAI data center guarantee.",
+    "biotech": "Key developments: After 2 undisclosed gene therapy deaths, can China\u2019s alternative regulatory path still be trusted?; Pharma: Argenx reports positive research results for Vyvgart; Your Questions Answered: Emerging Trends in Pharma Funding and M&A.",
+    "market": "Key developments: Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street Says the Stock Market's Return Will Crush the Long-Term Average in the Next Year; Can Retail Earnings Keep S&P 500 Rally Alive? NLST, AVGO, LUNR, MRK Stocks In Focus.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street Says the Stock Market's Return Will Crush the Long-Term Average in the Next Year; Can Retail Earnings Keep S&P 500 Rally Alive? NLST, AVGO, LUNR, MRK Stocks In Focus."
   },
   "takeaways": [
-    "These 5 AI Stocks Have Returned 300%-Plus Over the Past 3 Years -- and 1 Still Looks Dirt Cheap - The Motley Fool",
-    "Nvidia Earnings Preview August 2026: AI Chip Leader's Next Catalyst - intellectia.ai",
-    "Moderna (MRNA) Starts Ebola Vaccine Trial As Fair Value Questions Persist - simplywall.st",
+    "Nvidia widens AI portfolio with LG humanoid robot collaboration, expanding beyond data centers - TechStock\u00b2",
+    "Why Big Tech\u2019s AI Spending Is $3 Trillion Higher Than It Seems - WSJ",
+    "After 2 undisclosed gene therapy deaths, can China\u2019s alternative regulatory path still be trusted? - Fierce Biotech",
+    "Pharma: Argenx reports positive research results for Vyvgart - Belga Share",
     "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
     "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program - PR Newswire",
-    "Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today - Stocktwits"
+    "Stock Market: Will S&P 500 Open Up or Down Today? - Benzinga"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -833,17 +834,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz Pharmaceuticals expands rare epilepsy pipeline with Actio Biosciences deal",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNYnV5Rmt6bHA4Zms5bFFaS01jZThmdWhDY0tfWGNteXYzb2Y4MFFSUHg5UFN3bXBZS2NhaDQySDhtTG9FLVZZMC1GOTBYY1ZEcWFnME14QkFUSTZ2cHF4WEVuRWx3dzl5S2xNQVBtQ21Qd3JlbnM2WklvWUEycGV0MjVuaDk1TDU1dHdNQUtWM2N6RkF4OU4zNHFYYzJPaDJ6QmpDTXRaTnlYbi13dnVUcDEteTlGb2hjYWtDcl9KUjVOWEpfYzhNRlpabGVLTDltR3NXVGtES29MTWV1bUE?oc=5"
+      "event": "BLTE Stock Rises as FDA Grants Priority Review to Tinlarebant NDA",
+      "date": "Wed, 12 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNR2tDRF8zVlpMQnJ5Z0R3bWd6M1dra1AyUzQ5YzJaOXFRNUJ3Wkp3MjNPTGwwOEpxWk4zRVJxakNEX2w2aEh6ODhIMHIxMTVNaHJEQWRmQU5qSkZFYVNBR09DTE50ZnFhM2tmcXRHYTFvQlZGY2hXT0hBMGIyQ2NzajlxVC1WdkhpX092Z2ljbEtDSDVsX1NuQlM0UGlwRXZrclB2YkdtN2M4SkFsLVJMc3VtSDRyWjZaLU1YaEZn?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "BLTE Stock Rises as FDA Grants Priority Review to Tinlarebant NDA",
-      "date": "Wed, 12 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNR2tDRF8zVlpMQnJ5Z0R3bWd6M1dra1AyUzQ5YzJaOXFRNUJ3Wkp3MjNPTGwwOEpxWk4zRVJxakNEX2w2aEh6ODhIMHIxMTVNaHJEQWRmQU5qSkZFYVNBR09DTE50ZnFhM2tmcXRHYTFvQlZGY2hXT0hBMGIyQ2NzajlxVC1WdkhpX092Z2ljbEtDSDVsX1NuQlM0UGlwRXZrclB2YkdtN2M4SkFsLVJMc3VtSDRyWjZaLU1YaEZn?oc=5"
+      "event": "Jazz Pharmaceuticals expands rare epilepsy pipeline with Actio Biosciences deal",
+      "date": "Mon, 10 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNYnV5Rmt6bHA4Zms5bFFaS01jZThmdWhDY0tfWGNteXYzb2Y4MFFSUHg5UFN3bXBZS2NhaDQySDhtTG9FLVZZMC1GOTBYY1ZEcWFnME14QkFUSTZ2cHF4WEVuRWx3dzl5S2xNQVBtQ21Qd3JlbnM2WklvWUEycGV0MjVuaDk1TDU1dHdNQUtWM2N6RkF4OU4zNHFYYzJPaDJ6QmpDTXRaTnlYbi13dnVUcDEteTlGb2hjYWtDcl9KUjVOWEpfYzhNRlpabGVLTDltR3NXVGtES29MTWV1bUE?oc=5"
     }
   ],
   "markets": [
@@ -859,7 +860,7 @@
       "value": "26,729.16",
       "daily": -0.28,
       "weekly": 0.14,
-      "monthly": 3.27
+      "monthly": 1.75
     },
     {
       "name": "Dow Jones",
@@ -873,7 +874,7 @@
       "value": "3,068.42",
       "daily": 0.51,
       "weekly": 1.12,
-      "monthly": 3.16
+      "monthly": 3.1
     }
   ]
 }
