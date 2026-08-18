@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-17T11:43:57+00:00",
+  "updated_at": "2026-08-18T11:44:09+00:00",
   "summaries": {
-    "ai": "Key developments: Nvidia widens AI portfolio with LG humanoid robot collaboration, expanding beyond data centers; Why Big Tech\u2019s AI Spending Is $3 Trillion Higher Than It Seems; Nvidia cuts OpenAI data center guarantee.",
-    "biotech": "Key developments: After 2 undisclosed gene therapy deaths, can China\u2019s alternative regulatory path still be trusted?; Pharma: Argenx reports positive research results for Vyvgart; Your Questions Answered: Emerging Trends in Pharma Funding and M&A.",
-    "market": "Key developments: Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street Says the Stock Market's Return Will Crush the Long-Term Average in the Next Year; Can Retail Earnings Keep S&P 500 Rally Alive? NLST, AVGO, LUNR, MRK Stocks In Focus.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Stock Market: Will S&P 500 Open Up or Down Today?; Wall Street Says the Stock Market's Return Will Crush the Long-Term Average in the Next Year; Can Retail Earnings Keep S&P 500 Rally Alive? NLST, AVGO, LUNR, MRK Stocks In Focus."
+    "ai": "Key developments: Intel (INTC) Pushes Deeper Into AI Data Centers With Co Packaged Optics; Nvidia AI Financing: Wall Street Partnership Creates New Asset Class; Five AI infrastructure stocks riding the data centre boom.",
+    "biotech": "Key developments: Rare Disease Study Gets A Boost From Crowdsourced Patient Reported Data; Amylyx readies approval push after GLP-1 inhibitor halves blood sugar crashes in ph. 3 win; Amylyx eyes FDA filing for GLP-1 blocker after late-stage win in post-bariatric hypoglycemia.",
+    "market": "Key developments: Wall Street indexes slip as oil prices rise, retail results awaited; Why Dow, S&P 500, Nasdaq Futures Are Slipping Overnight: SNDK, MSTR, NBIS, NKE Stocks Are In Focus; Dow, S&P 500, Nasdaq Futures Edge Higher On Cooling Inflation Signs, Strong Big Bank Earnings: IBM, APLD, SKYH, NBIS in Focus.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Wall Street indexes slip as oil prices rise, retail results awaited; Why Dow, S&P 500, Nasdaq Futures Are Slipping Overnight: SNDK, MSTR, NBIS, NKE Stocks Are In Focus; Dow, S&P 500, Nasdaq Futures Edge Higher On Cooling Inflation Signs, Strong Big Bank Earnings: IBM, APLD, SKYH, NBIS in Focus."
   },
   "takeaways": [
-    "Nvidia widens AI portfolio with LG humanoid robot collaboration, expanding beyond data centers - TechStock\u00b2",
-    "Why Big Tech\u2019s AI Spending Is $3 Trillion Higher Than It Seems - WSJ",
-    "After 2 undisclosed gene therapy deaths, can China\u2019s alternative regulatory path still be trusted? - Fierce Biotech",
-    "Pharma: Argenx reports positive research results for Vyvgart - Belga Share",
+    "Intel (INTC) Pushes Deeper Into AI Data Centers With Co Packaged Optics - simplywall.st",
+    "Nvidia AI Financing: Wall Street Partnership Creates New Asset Class - Intellectia AI",
+    "Rare Disease Study Gets A Boost From Crowdsourced Patient Reported Data - clinicalleader.com",
+    "Amylyx readies approval push after GLP-1 inhibitor halves blood sugar crashes in ph. 3 win - Fierce Biotech",
     "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
     "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program - PR Newswire",
-    "Stock Market: Will S&P 500 Open Up or Down Today? - Benzinga"
+    "Wall Street indexes slip as oil prices rise, retail results awaited - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,14 +802,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "AC Immune (ACIU) FDA Approvals, PDUFA Dates & Drug Alerts 2026",
-      "date": "Tue, 11 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5CZnpfMUUxTGhydy1ZRzktYzBPSUZLYllpb21aUTJLZktZdTJGSGc0c1lYSmI2eVdFRGVCV3ZCaHFxOW4xSWIwUnBjeWFSS1ppZkFtc3FKdnpqYlA5MVFIcDZqQ2hwNWgx?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Two Can-Fite Oral Drugs Advance in Phase III for Cancer, Psoriasis",
       "date": "Wed, 12 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOTzFvQ3NIWkt5SkxRN2ZWVmNsNTN1N04xVXNCSmxYbC1XZ3JFemFxVFFZZm1iNmFWejVPVThpaDBRSzRLaGNPYXZTVGVHMHJUc1lXMmJtMnlBa1dkQnZpeXlFUlRzQldDYkVCSERfQTJHdThZTjZOTUtaR3h4a1I3S1FMM1ZoZFZyVVphdDRhdFlMNTc4MjktbnJpNU42UGxRSHNWNHJyWm0wQVktQTBPWTNDNzNfdlRZTmdBUQ?oc=5"
@@ -818,17 +810,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz commits up to $1.3B to buy Actio, bolster epilepsy pipeline",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNm1TaHFubE5WS3VQZlRjUWxDU2k3RXVkejFubGRIRmNYdGxwS1ZrMU5HZUxES2NwWjhvd2RTbXFqczNqTm54Mk82WGpvUkZ0MVQ2MUNibVdaZ19sR3Bxb1FpbWY1NmlhQUc4eklQbUZ4TmN0YUZmS3R5cVZld2pSZDFFOFVXNkxVbWpCdkR5V2syTllfZGxQVA?oc=5"
+      "event": "Palvella Therapeutics Eyes 2027 QTORIN Approval as Rare-Disease Pipeline Expands",
+      "date": "Sun, 16 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNbjktcUZ5Zk45bkhURGZRdlZKU3RMaWRMM0dra1FHSmZLd1FKZlpnRkc3RU1ZTE4wVThXcVhBb0NXbTRxX2QwbUVVV0h0SlVuQi1qRGJOMDRpVmdkMWM3NTAwb1VTVGtNZU0waWFGTEFBTk9Bb3BIelQ2cDNxcThPVW5HNFlveHJwaDc2R0poMGJsSUVfWDVhU3ZNTmlYVkhHNEs1cDRnY3d1ZlZfMXAwaElNVXlVREVmOEJlcXlQMlkyZURTNXMwdFF1ZEQ3WUtBX2UtMnZubw?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz Pharmaceuticals to Acquire Actio Biosciences for $1.32 Billion",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5CWGE0c1FxVkk4c3hnYTh0enBJbHhCV2ZsMzRORjNrY04wRkJQc1BSTXR1X21mMjd2dFFmcUp0Tm9EQWNBbzgxNlE3SXpSY243S3p2aTFvM1o0cF9JdExIRUljd2cwYXg3ZHBDaEp4RW5POHgyZ1M0bTk2dw?oc=5"
+      "event": "Longeveron Announces 2026 Second Quarter Financial Results and Provides Business Update",
+      "date": "Thu, 13 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQZVA4M2JsNEctTUExRlI3NlZlYkkxa1M2dVBZQ054UGlNNlhVSDVKNHR0VmRYQ29IcE9vZVRiV1RFYkljNUZ1RXBPeUVrQzlwWmdod09PX0lZUi1Ka2FYVmpRMXdxLVNBMUNabE5paV83NUktaXFxeU9waURhZmEwNEVMWlhzTHZtbXJ4bGJzLUZ3MzlLeHBJWGJSb2pqS0x3Rl9tV01OUjJSVFJCdS1SNFRFVU0zV0FmVDdDbnFxOGNDN1Y2X2c?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "Jazz Pharma buys the only shot at a disease with no FDA treatment",
+      "date": "Wed, 12 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNNFZKLWFSTFVHZ182Qi05TzhJaW84NGNPT2IzalNPbDZ6b1RYSzFoWk9nbWdENUZ6QUVVUkRCYWQ4MHpVWFpQa3Y2YUp2ZWU0b08xSHRRTGk2NG9qTnhoR1JUeWF2TE1ENU83U1RYUFdhNFplTEU5U3NyVHVTTDJXTVJTUFRBYVY3Y2F3STRpLVA4SGM1UUc3MHA4MnAtUDJlMnc0?oc=5"
     },
     {
       "company": "See source",
@@ -836,15 +836,15 @@
       "indication": "See source",
       "event": "BLTE Stock Rises as FDA Grants Priority Review to Tinlarebant NDA",
       "date": "Wed, 12 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNR2tDRF8zVlpMQnJ5Z0R3bWd6M1dra1AyUzQ5YzJaOXFRNUJ3Wkp3MjNPTGwwOEpxWk4zRVJxakNEX2w2aEh6ODhIMHIxMTVNaHJEQWRmQU5qSkZFYVNBR09DTE50ZnFhM2tmcXRHYTFvQlZGY2hXT0hBMGIyQ2NzajlxVC1WdkhpX092Z2ljbEtDSDVsX1NuQlM0UGlwRXZrclB2YkdtN2M4SkFsLVJMc3VtSDRyWjZaLU1YaEZn?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxNV0U1blJPLWxCT2pxSEJnM3ZFcTQzRkstbkFXT09LczItV1Z0a1ZneV8zRDV2TldtVnVhR1ZrYmx2OFY1WHFoVTh2SElUbkgxYTNITW5DVnVTNy1weUhWaGYtbGVOcEUzU0VaMHpFT193ejJDUHIxM3hUMUowYVlvZUxUbS1lRXg3VFpWNEhJY2lwU2JYdWgyMTFoNmd5ZXRja2lnSUUxWThlWERDTWZCQ0dwUl9vNFNtOUttSGpjR3laOEc5OGV6bmVJd3k3b0o3anNLQ2gtWkRtMnJHVFBuYWJ3cGU?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz Pharmaceuticals expands rare epilepsy pipeline with Actio Biosciences deal",
-      "date": "Mon, 10 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNYnV5Rmt6bHA4Zms5bFFaS01jZThmdWhDY0tfWGNteXYzb2Y4MFFSUHg5UFN3bXBZS2NhaDQySDhtTG9FLVZZMC1GOTBYY1ZEcWFnME14QkFUSTZ2cHF4WEVuRWx3dzl5S2xNQVBtQ21Qd3JlbnM2WklvWUEycGV0MjVuaDk1TDU1dHdNQUtWM2N6RkF4OU4zNHFYYzJPaDJ6QmpDTXRaTnlYbi13dnVUcDEteTlGb2hjYWtDcl9KUjVOWEpfYzhNRlpabGVLTDltR3NXVGtES29MTWV1bUE?oc=5"
+      "event": "Greater Philadelphia \u2013 Regional Life Sciences Roundup \u2013 August 14, 2026",
+      "date": "Fri, 14 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQMHpDdkVSWk1ZZjh0WmVpVEs3LUYzckpVWHQ5dWdjNjVMOWxpVEVEOHJOaGhHVjlIOG5VNkNEejM3V0x6MmJYTHRpZjh5X1VkVXNYTGY4TVpsVDZSVnc1LXZ1ZjFfdnF6cjgyQjNpRllSWUJpazZOOWhqTjFzNTBESVVaOGlmX25vaWI0dzVqclNXNERGb1E?oc=5"
     }
   ],
   "markets": [
@@ -853,28 +853,28 @@
       "value": "7,785.76",
       "daily": -0.17,
       "weekly": 0.36,
-      "monthly": 3.34
+      "monthly": 4.6
     },
     {
       "name": "Nasdaq",
       "value": "26,729.16",
       "daily": -0.28,
       "weekly": 0.14,
-      "monthly": 1.75
+      "monthly": 4.79
     },
     {
       "name": "Dow Jones",
       "value": "53,732.41",
       "daily": -0.2,
       "weekly": -0.56,
-      "monthly": 2.24
+      "monthly": 3.65
     },
     {
       "name": "Russell 2000",
       "value": "3,068.42",
       "daily": 0.51,
       "weekly": 1.12,
-      "monthly": 3.1
+      "monthly": 4.28
     }
   ]
 }
