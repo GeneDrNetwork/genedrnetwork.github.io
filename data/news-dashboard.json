@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-18T11:44:09+00:00",
+  "updated_at": "2026-08-19T11:43:33+00:00",
   "summaries": {
-    "ai": "Key developments: Intel (INTC) Pushes Deeper Into AI Data Centers With Co Packaged Optics; Nvidia AI Financing: Wall Street Partnership Creates New Asset Class; Five AI infrastructure stocks riding the data centre boom.",
-    "biotech": "Key developments: Rare Disease Study Gets A Boost From Crowdsourced Patient Reported Data; Amylyx readies approval push after GLP-1 inhibitor halves blood sugar crashes in ph. 3 win; Amylyx eyes FDA filing for GLP-1 blocker after late-stage win in post-bariatric hypoglycemia.",
-    "market": "Key developments: Wall Street indexes slip as oil prices rise, retail results awaited; Why Dow, S&P 500, Nasdaq Futures Are Slipping Overnight: SNDK, MSTR, NBIS, NKE Stocks Are In Focus; Dow, S&P 500, Nasdaq Futures Edge Higher On Cooling Inflation Signs, Strong Big Bank Earnings: IBM, APLD, SKYH, NBIS in Focus.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.51% today; Nasdaq was weakest at -0.28%. Key developments: Wall Street indexes slip as oil prices rise, retail results awaited; Why Dow, S&P 500, Nasdaq Futures Are Slipping Overnight: SNDK, MSTR, NBIS, NKE Stocks Are In Focus; Dow, S&P 500, Nasdaq Futures Edge Higher On Cooling Inflation Signs, Strong Big Bank Earnings: IBM, APLD, SKYH, NBIS in Focus."
+    "ai": "Key developments: 5 metals behind the machines powering today's AI boom; AI Infrastructure Shifts to Energy, Minerals, Networking; NVIDIA-Backed Groq Raises $350 Million To Build the World\u2019s Leading AI Inference Cloud.",
+    "biotech": "Key developments: UTA rethinks Ph.D. training in rare disease; BioMarin to Acquire Alesta Therapeutics to Gain ALE1, a Potential First Oral Therapy for Hypophosphatasia, Adding an Important Clinical Program to BioMarin's Pipeline; Another disappointment: AstraZeneca halts Phase III lung cancer trial for volrustomig - european-biotechnology.com.",
+    "market": "Key developments: Tech selloff weighs down Wall Street as bond yields climb; Stock Market Today: Stock Market News And Analysis; Stock Market: Will S&P 500 Open Up or Down Today?.",
+    "market_movers": "Dow Jones led tracked indexes at -0.22% today; Nasdaq was weakest at -1.33%. Key developments: Tech selloff weighs down Wall Street as bond yields climb; Stock Market Today: Stock Market News And Analysis; Stock Market: Will S&P 500 Open Up or Down Today?."
   },
   "takeaways": [
-    "Intel (INTC) Pushes Deeper Into AI Data Centers With Co Packaged Optics - simplywall.st",
-    "Nvidia AI Financing: Wall Street Partnership Creates New Asset Class - Intellectia AI",
-    "Rare Disease Study Gets A Boost From Crowdsourced Patient Reported Data - clinicalleader.com",
-    "Amylyx readies approval push after GLP-1 inhibitor halves blood sugar crashes in ph. 3 win - Fierce Biotech",
-    "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina - Ophthalmology Times Europe",
-    "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program - PR Newswire",
-    "Wall Street indexes slip as oil prices rise, retail results awaited - Reuters"
+    "5 metals behind the machines powering today's AI boom - Interesting Engineering",
+    "AI Infrastructure Shifts to Energy, Minerals, Networking - datacenters.economictimes.indiatimes.com",
+    "UTA rethinks Ph.D. training in rare disease - uta.edu",
+    "BioMarin to Acquire Alesta Therapeutics to Gain ALE1, a Potential First Oral Therapy for Hypophosphatasia, Adding an Important Clinical Program to BioMarin's Pipeline - PR Newswire",
+    "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing - pharmtech.com",
+    "LEO adds to dermatology portfolio with $435M deal for late-stage rare disease drug - BioSpace",
+    "Tech selloff weighs down Wall Street as bond yields climb - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,9 +786,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA grants priority review to tinlarebant NDA for Stargardt disease type 1 | Eye Care Network - Modern Retina",
-      "date": "Tue, 11 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPSzVueUFyQ1F6NzV2cXBHV0xzR0MwUXE3WHhOYkZRbWxLMHlUTm9PM0EyWXdmSE1uTkplT3pKNkg0akF2bjlkNlBfUkszVjZIVVEwM0tha2xETExXdlBsUjJGTFFxYllSYVZsOTdHWlNYaWpJdldLUlF6YWZSVnRKT1gyR1ZoRVBlLUhpTlVqRklUbThpRmhjVFJ1allBTVVSRlpCQ2UySGRJVWlTRS1ZZnlNdk4?oc=5"
+      "event": "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing",
+      "date": "Tue, 18 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQYko4VUI3eVlNaElackh2ZEYxbGV4WVh1OG5LcGwxUG9KUnprNnVJZmlfX1RmbmJIMldsRU9sa1JaT1pZcXpBcTYyYjF4UG90elZCaUdQU2w2NWhBN2ltUUYxYlNEUXVNR0s4bHF2alM5UWc0RGE4UWVLUl80UTVCdzZIUkw3Y3RjMkNzOTlicGFSeHlqb2tQRUxoOU5BRmhyUDluTUpEQlIzT3YxaWcwenljSQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "LEO adds to dermatology portfolio with $435M deal for late-stage rare disease drug",
+      "date": "Tue, 18 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOcU1faHgyclZsZ2xxcy03RHNBNHc2bWZva2RkQXVCQzhBTlR3VEtPN1FwekFFY25WTXVDOVU4bG1aWUFfdHRSbVFiOUpUb09EajlOMU1wN1VPWHc2Vk5MWDFJa2xXTHMzenZyQU9LVkFHa0ctMkN0SGo3dWZqTl8yWDVwcHRwUjlnZXA1Q0pmRGpQZHpzZlJLRXdGZUNmbXQ3YVRrYWw3WXExdWxzc1dRbm1feDh1QQ?oc=5"
     },
     {
       "company": "See source",
@@ -802,14 +810,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Two Can-Fite Oral Drugs Advance in Phase III for Cancer, Psoriasis",
-      "date": "Wed, 12 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOTzFvQ3NIWkt5SkxRN2ZWVmNsNTN1N04xVXNCSmxYbC1XZ3JFemFxVFFZZm1iNmFWejVPVThpaDBRSzRLaGNPYXZTVGVHMHJUc1lXMmJtMnlBa1dkQnZpeXlFUlRzQldDYkVCSERfQTJHdThZTjZOTUtaR3h4a1I3S1FMM1ZoZFZyVVphdDRhdFlMNTc4MjktbnJpNU42UGxRSHNWNHJyWm0wQVktQTBPWTNDNzNfdlRZTmdBUQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Palvella Therapeutics Eyes 2027 QTORIN Approval as Rare-Disease Pipeline Expands",
       "date": "Sun, 16 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNbjktcUZ5Zk45bkhURGZRdlZKU3RMaWRMM0dra1FHSmZLd1FKZlpnRkc3RU1ZTE4wVThXcVhBb0NXbTRxX2QwbUVVV0h0SlVuQi1qRGJOMDRpVmdkMWM3NTAwb1VTVGtNZU0waWFGTEFBTk9Bb3BIelQ2cDNxcThPVW5HNFlveHJwaDc2R0poMGJsSUVfWDVhU3ZNTmlYVkhHNEs1cDRnY3d1ZlZfMXAwaElNVXlVREVmOEJlcXlQMlkyZURTNXMwdFF1ZEQ3WUtBX2UtMnZubw?oc=5"
@@ -818,9 +818,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Longeveron Announces 2026 Second Quarter Financial Results and Provides Business Update",
-      "date": "Thu, 13 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQZVA4M2JsNEctTUExRlI3NlZlYkkxa1M2dVBZQ054UGlNNlhVSDVKNHR0VmRYQ29IcE9vZVRiV1RFYkljNUZ1RXBPeUVrQzlwWmdod09PX0lZUi1Ka2FYVmpRMXdxLVNBMUNabE5paV83NUktaXFxeU9waURhZmEwNEVMWlhzTHZtbXJ4bGJzLUZ3MzlLeHBJWGJSb2pqS0x3Rl9tV01OUjJSVFJCdS1SNFRFVU0zV0FmVDdDbnFxOGNDN1Y2X2c?oc=5"
+      "event": "Leo Pharma buys rare skin disease drug in $435M deal",
+      "date": "Tue, 18 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPdkR4VG1JZ0piZmdPWkE1TW15TkR2dG1iNWFacHZlNDVZd05VdzJGdTRJS1ZLYzlJYUxLTE1jWTYxeVF5TWUxWHdEOWJLYjEzcllMU190OVBIcVJIeENEM2RUYnE1MF9YZFM2eVVQR211MEcxbV9jX3d6RjY0c0Nrb3gySDNYa25DcjlTOGNXVjZva0R0aUtIV18ySVFtZw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "NAVLIN Regulatory Roundup: Approvals & Special Designations",
+      "date": "Mon, 17 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQTGdLUFAzM2VYNks0ZHpfTnc1NFR4ZmNqQ2NxZnlQNWloRVJvTHNQcnRXVmU4Tzh1cDlvUEM3VDBtMXRRUVJVRjdfVDdBcGUydzRqYnpBTld5bUh4aTlvZW9fQ0RxaXl6TjZZak42MElnek9ELTV2NnY5VFBfclRNMXVtMkY1bHJMNEdLNWlOVUVRY3F1Y1J3UUpKU1JSZ1E?oc=5"
     },
     {
       "company": "See source",
@@ -834,14 +842,6 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "BLTE Stock Rises as FDA Grants Priority Review to Tinlarebant NDA",
-      "date": "Wed, 12 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxNV0U1blJPLWxCT2pxSEJnM3ZFcTQzRkstbkFXT09LczItV1Z0a1ZneV8zRDV2TldtVnVhR1ZrYmx2OFY1WHFoVTh2SElUbkgxYTNITW5DVnVTNy1weUhWaGYtbGVOcEUzU0VaMHpFT193ejJDUHIxM3hUMUowYVlvZUxUbS1lRXg3VFpWNEhJY2lwU2JYdWgyMTFoNmd5ZXRja2lnSUUxWThlWERDTWZCQ0dwUl9vNFNtOUttSGpjR3laOEc5OGV6bmVJd3k3b0o3anNLQ2gtWkRtMnJHVFBuYWJ3cGU?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Greater Philadelphia \u2013 Regional Life Sciences Roundup \u2013 August 14, 2026",
       "date": "Fri, 14 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQMHpDdkVSWk1ZZjh0WmVpVEs3LUYzckpVWHQ5dWdjNjVMOWxpVEVEOHJOaGhHVjlIOG5VNkNEejM3V0x6MmJYTHRpZjh5X1VkVXNYTGY4TVpsVDZSVnc1LXZ1ZjFfdnF6cjgyQjNpRllSWUJpazZOOWhqTjFzNTBESVVaOGlmX25vaWI0dzVqclNXNERGb1E?oc=5"
@@ -850,31 +850,31 @@
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,785.76",
-      "daily": -0.17,
-      "weekly": 0.36,
-      "monthly": 4.6
+      "value": "7,691.76",
+      "daily": -0.69,
+      "weekly": -0.47,
+      "monthly": 3.34
     },
     {
       "name": "Nasdaq",
-      "value": "26,729.16",
-      "daily": -0.28,
-      "weekly": 0.14,
-      "monthly": 4.79
+      "value": "26,289.71",
+      "daily": -1.33,
+      "weekly": -0.59,
+      "monthly": 3.06
     },
     {
       "name": "Dow Jones",
-      "value": "53,732.41",
-      "daily": -0.2,
-      "weekly": -0.56,
-      "monthly": 3.65
+      "value": "53,343.40",
+      "daily": -0.22,
+      "weekly": -0.83,
+      "monthly": 2.9
     },
     {
       "name": "Russell 2000",
-      "value": "3,068.42",
-      "daily": 0.51,
-      "weekly": 1.12,
-      "monthly": 4.28
+      "value": "3,017.89",
+      "daily": -1.3,
+      "weekly": -0.3,
+      "monthly": 2.56
     }
   ]
 }
