@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-19T11:43:33+00:00",
+  "updated_at": "2026-08-20T11:46:10+00:00",
   "summaries": {
-    "ai": "Key developments: 5 metals behind the machines powering today's AI boom; AI Infrastructure Shifts to Energy, Minerals, Networking; NVIDIA-Backed Groq Raises $350 Million To Build the World\u2019s Leading AI Inference Cloud.",
-    "biotech": "Key developments: UTA rethinks Ph.D. training in rare disease; BioMarin to Acquire Alesta Therapeutics to Gain ALE1, a Potential First Oral Therapy for Hypophosphatasia, Adding an Important Clinical Program to BioMarin's Pipeline; Another disappointment: AstraZeneca halts Phase III lung cancer trial for volrustomig - european-biotechnology.com.",
-    "market": "Key developments: Tech selloff weighs down Wall Street as bond yields climb; Stock Market Today: Stock Market News And Analysis; Stock Market: Will S&P 500 Open Up or Down Today?.",
-    "market_movers": "Dow Jones led tracked indexes at -0.22% today; Nasdaq was weakest at -1.33%. Key developments: Tech selloff weighs down Wall Street as bond yields climb; Stock Market Today: Stock Market News And Analysis; Stock Market: Will S&P 500 Open Up or Down Today?."
+    "ai": "Key developments: Our AI leadership depends on data centers; AI\u2019s Next Big Problem Is Not Chips Or Power. It\u2019s Growing Opposition To Data Centers.; Microsoft Stock And 2 AI Infrastructure Picks For Rising Data Center Demand.",
+    "biotech": "Key developments: Capricor Therapeutics\u2019 Duchenne treatment is heading for an FDA rejection; Opinion: Why pediatric rare oncology outperforms in a volatile biotech market; DMD Biotech Delivers Early Muscle Data as SAT-3247 Advances.",
+    "market": "Key developments: Tech Futures Rise After Biotechs Soar, These Sectors Lag; US Stock Market Today: S&P 500 Futures Edge Higher On Softer Inflation And Housing Jitters; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus.",
+    "market_movers": "Russell 2000 led tracked indexes at +0.50% today; Nasdaq was weakest at +0.16%. Key developments: Tech Futures Rise After Biotechs Soar, These Sectors Lag; US Stock Market Today: S&P 500 Futures Edge Higher On Softer Inflation And Housing Jitters; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus."
   },
   "takeaways": [
-    "5 metals behind the machines powering today's AI boom - Interesting Engineering",
-    "AI Infrastructure Shifts to Energy, Minerals, Networking - datacenters.economictimes.indiatimes.com",
-    "UTA rethinks Ph.D. training in rare disease - uta.edu",
-    "BioMarin to Acquire Alesta Therapeutics to Gain ALE1, a Potential First Oral Therapy for Hypophosphatasia, Adding an Important Clinical Program to BioMarin's Pipeline - PR Newswire",
-    "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing - pharmtech.com",
+    "Our AI leadership depends on data centers - New York Daily News",
+    "AI\u2019s Next Big Problem Is Not Chips Or Power. It\u2019s Growing Opposition To Data Centers. - International Business Times",
+    "Capricor Therapeutics\u2019 Duchenne treatment is heading for an FDA rejection - STAT",
+    "Opinion: Why pediatric rare oncology outperforms in a volatile biotech market - BioSpace",
+    "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing - PharmTech.com",
     "LEO adds to dermatology portfolio with $435M deal for late-stage rare disease drug - BioSpace",
-    "Tech selloff weighs down Wall Street as bond yields climb - Reuters"
+    "Tech Futures Rise After Biotechs Soar, These Sectors Lag - Investor's Business Daily"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,25 +802,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "PTC to Expand Rare Disease Portfolio with Acquisition of BLA-Stage ST-920 Fabry Disease Program",
-      "date": "Wed, 12 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxQeVppY1hOQVNsUU94V3hYVmpBQnpHcURSa3hndXhYRXQyYVRwZll3UTFWMTJIRjJsRWhNY1FuNWVEbVJfTGlrdmF6RWpLRDFGSmZxM0J4bG1fVVZpYTZWM2c5MGZBZW1aT1ZkcDBPdGUxT19GY1d4UlFYenZPM2xnaE1qMlVQOFBfSEloRlNTMkZLYW9vR1JieGZ0SHFROUtDeUJiRUZiaFJJWlJ2eDJJLTZjWTA3UG8wUmJsYVRpMFA1QzBBWjRobTlQbjY0b1BBTHZsVU0xRXFNWjBvV0tvTzFqcC1FUQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Palvella Therapeutics Eyes 2027 QTORIN Approval as Rare-Disease Pipeline Expands",
-      "date": "Sun, 16 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNbjktcUZ5Zk45bkhURGZRdlZKU3RMaWRMM0dra1FHSmZLd1FKZlpnRkc3RU1ZTE4wVThXcVhBb0NXbTRxX2QwbUVVV0h0SlVuQi1qRGJOMDRpVmdkMWM3NTAwb1VTVGtNZU0waWFGTEFBTk9Bb3BIelQ2cDNxcThPVW5HNFlveHJwaDc2R0poMGJsSUVfWDVhU3ZNTmlYVkhHNEs1cDRnY3d1ZlZfMXAwaElNVXlVREVmOEJlcXlQMlkyZURTNXMwdFF1ZEQ3WUtBX2UtMnZubw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Leo Pharma buys rare skin disease drug in $435M deal",
       "date": "Tue, 18 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPdkR4VG1JZ0piZmdPWkE1TW15TkR2dG1iNWFacHZlNDVZd05VdzJGdTRJS1ZLYzlJYUxLTE1jWTYxeVF5TWUxWHdEOWJLYjEzcllMU190OVBIcVJIeENEM2RUYnE1MF9YZFM2eVVQR211MEcxbV9jX3d6RjY0c0Nrb3gySDNYa25DcjlTOGNXVjZva0R0aUtIV18ySVFtZw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "LEO Pharma Acquires Potential First Oral Therapy for EPP and XLP",
+      "date": "Tue, 18 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQQ0JmeG1Da2pfWkx3WHcwclp4QXdfSU43b3gzRzlRMG9qVG50cmxIMHM0U3owaXhnNHlMbFQ5Z2VUT0VuQ1N3amhXZ2ZtRllTZjBER3BIMFRlTEQwR1NJVEI3X2RyTlBudjRHVVFPc3NGTVRJVUVyNlZzWlVyTjg4ZGF1MlprMlZWOWd5bVJqWndOTnhsS3lKNGxVTmJnQQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "OS Therapies Expects 3-Year Survival Data in September",
+      "date": "Thu, 13 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNTzBqV3plbEJEem9oU2txZ1NIZDRpd21TWXJOM05nbU5EMlFZUGluYkgtclB0ZlNFU056QVAzNWNaSjg2SUJIdG5MaGlJNVN2WEpmNEtVZGNmam5vTFMwLXJFaE9EMWdKTEl1Y25jbTEwZEdaQkplN3hCMGtBYmF1TVEydE54OWZJOVhBUTdsQVY4ZnQ5LW1Ib2VBdXNYWFlremVpdng3RXd3akQ2eVZtNHdlTVFjQnVSd0U4N293?oc=5"
     },
     {
       "company": "See source",
@@ -834,9 +834,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Jazz Pharma buys the only shot at a disease with no FDA treatment",
-      "date": "Wed, 12 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNNFZKLWFSTFVHZ182Qi05TzhJaW84NGNPT2IzalNPbDZ6b1RYSzFoWk9nbWdENUZ6QUVVUkRCYWQ4MHpVWFpQa3Y2YUp2ZWU0b08xSHRRTGk2NG9qTnhoR1JUeWF2TE1ENU83U1RYUFdhNFplTEU5U3NyVHVTTDJXTVJTUFRBYVY3Y2F3STRpLVA4SGM1UUc3MHA4MnAtUDJlMnc0?oc=5"
+      "event": "Palvella Therapeutics Eyes 2027 QTORIN Approval as Rare-Disease Pipeline Expands",
+      "date": "Sun, 16 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxPa0czWXVUTWtkWVFpQ0pwOTBHSVhPb2JUaHpkYzN3TUNsQWh3WWR4eGU5YTdlWVBQNHhkVTYxcjA0aTdKSGlCZUJVWWRXcjR2YVI0ZjMyODBrdGtVTFMtRFcxRTcwOWNCLWdSR0ZqTDIxYkdqc1BaQlp3Tm11SF9HN3Zud0pDOUFOLWt5ZEg3RzJ0emM2eThlRFBoQ2dLb0c4MHVXdzhQSkpVNkM5OUl2dTI0T1FtVlpVSk5RbFVMMnBLU1hIaVN3VVhQd19JWG1hVi1UT0U1S2o?oc=5"
     },
     {
       "company": "See source",
@@ -850,31 +850,31 @@
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,691.76",
-      "daily": -0.69,
-      "weekly": -0.47,
-      "monthly": 3.34
+      "value": "7,707.98",
+      "daily": 0.21,
+      "weekly": -0.52,
+      "monthly": 2.65
     },
     {
       "name": "Nasdaq",
-      "value": "26,289.71",
-      "daily": -1.33,
-      "weekly": -0.59,
-      "monthly": 3.06
+      "value": "26,331.09",
+      "daily": 0.16,
+      "weekly": -0.97,
+      "monthly": 1.91
     },
     {
       "name": "Dow Jones",
-      "value": "53,343.40",
-      "daily": -0.22,
-      "weekly": -0.83,
-      "monthly": 2.9
+      "value": "53,463.05",
+      "daily": 0.22,
+      "weekly": -0.57,
+      "monthly": 2.37
     },
     {
       "name": "Russell 2000",
-      "value": "3,017.89",
-      "daily": -1.3,
-      "weekly": -0.3,
-      "monthly": 2.56
+      "value": "3,032.94",
+      "daily": 0.5,
+      "weekly": -0.41,
+      "monthly": 1.52
     }
   ]
 }
