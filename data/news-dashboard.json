@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-20T11:46:10+00:00",
+  "updated_at": "2026-08-21T11:45:16+00:00",
   "summaries": {
-    "ai": "Key developments: Our AI leadership depends on data centers; AI\u2019s Next Big Problem Is Not Chips Or Power. It\u2019s Growing Opposition To Data Centers.; Microsoft Stock And 2 AI Infrastructure Picks For Rising Data Center Demand.",
-    "biotech": "Key developments: Capricor Therapeutics\u2019 Duchenne treatment is heading for an FDA rejection; Opinion: Why pediatric rare oncology outperforms in a volatile biotech market; DMD Biotech Delivers Early Muscle Data as SAT-3247 Advances.",
-    "market": "Key developments: Tech Futures Rise After Biotechs Soar, These Sectors Lag; US Stock Market Today: S&P 500 Futures Edge Higher On Softer Inflation And Housing Jitters; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus.",
-    "market_movers": "Russell 2000 led tracked indexes at +0.50% today; Nasdaq was weakest at +0.16%. Key developments: Tech Futures Rise After Biotechs Soar, These Sectors Lag; US Stock Market Today: S&P 500 Futures Edge Higher On Softer Inflation And Housing Jitters; Dow, S&P 500, Nasdaq Futures Climb As AI Frenzy Drives Record Rally: Why CSCO, LUNR, ONDS, NVDA, NOK Are In Focus."
+    "ai": "Key developments: AI Data Centers Need High-Speed Ethernet, Liquid Cooling; Up to $100 billion! Broadcom (AVGO.US) plans massive AI chip financing to intensify competition for NVIDIA\u2019s (NVDA.US) market dominance; Open Design Becomes the Standard for AI Data Centers as OCP Korea Draws 1,500 Attendees.",
+    "biotech": "Key developments: Avance Clinical Appoints Inaugural Chief Commercial Officer, Reinforcing Global Growth Strategy; AI Antibody Design Just Got Its First Honest Report Card \u2014 And the Grade Is Complicated; FDA approves Ultragenyx gene therapy.",
+    "market": "Key developments: Stock Market Today: Dow Jones, S&P 500 Futures Gain as Scott Bessent Touts 'Toughest Sanctions' for Iran\u2014Ross Stores, Strategy, Flowers Foods in Focus; Stock Market: Will S&P 500 Open Up or Down Today?; Dow, S&P 500, Nasdaq Futures Climb On Tech Earnings Optimism: AKAN, AAPL, RDDT, RIVN Stocks In Focus.",
+    "market_movers": "S&P 500 led tracked indexes at -0.87% today; Russell 2000 was weakest at -1.34%. Key developments: Stock Market Today: Dow Jones, S&P 500 Futures Gain as Scott Bessent Touts 'Toughest Sanctions' for Iran\u2014Ross Stores, Strategy, Flowers Foods in Focus; Stock Market: Will S&P 500 Open Up or Down Today?; Dow, S&P 500, Nasdaq Futures Climb On Tech Earnings Optimism: AKAN, AAPL, RDDT, RIVN Stocks In Focus."
   },
   "takeaways": [
-    "Our AI leadership depends on data centers - New York Daily News",
-    "AI\u2019s Next Big Problem Is Not Chips Or Power. It\u2019s Growing Opposition To Data Centers. - International Business Times",
-    "Capricor Therapeutics\u2019 Duchenne treatment is heading for an FDA rejection - STAT",
-    "Opinion: Why pediatric rare oncology outperforms in a volatile biotech market - BioSpace",
+    "AI Data Centers Need High-Speed Ethernet, Liquid Cooling - ET Datacenters",
+    "Up to $100 billion! Broadcom (AVGO.US) plans massive AI chip financing to intensify competition for NVIDIA\u2019s (NVDA.US) market dominance - Moomoo",
+    "Avance Clinical Appoints Inaugural Chief Commercial Officer, Reinforcing Global Growth Strategy - GlobeNewswire",
+    "AI Antibody Design Just Got Its First Honest Report Card \u2014 And the Grade Is Complicated - The Clinical Trial Vanguard",
     "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing - PharmTech.com",
     "LEO adds to dermatology portfolio with $435M deal for late-stage rare disease drug - BioSpace",
-    "Tech Futures Rise After Biotechs Soar, These Sectors Lag - Investor's Business Daily"
+    "Stock Market Today: Dow Jones, S&P 500 Futures Gain as Scott Bessent Touts 'Toughest Sanctions' for Iran\u2014Ross Stores, Strategy, Flowers Foods in Focus - TradingView"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -802,25 +802,25 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "FDA Approves Garetosmab-grts (Pasatru) for Bone Lesions in Rare Disease FOP",
+      "date": "Thu, 20 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPQXZqb3pNdHRiVmVhS3ZCd3BQd1R3dW5wVGZ0WG81NHhGVjhCZjU4Qy1LeTJVNi1iV05VRk4wTTU2S3F3cVVPMHRmZGhiU3BaanlrY0tOeEUzNjdGM0VFTHFTMElZcC05UVI0aTNNWEFCTXRlYXBjc0thRUU3YUpWTk5CcVRfQ2Ztak9KN0Zwd0NoXy1VbktMRWxEWXRicWtUWFhZazIyTE9qNk9j?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA Approves Pasatru For Adults With Fibrodysplasia Ossificans Progressiva",
+      "date": "Thu, 20 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQLWVFZkxjTjlqcXFCbVphZnhIdDZEdHFLNU9lQWF6Mkw4b2JGeDBlWXI2Y0JJNVhWQWtlanF0MUFNbEdrLXBrdTBMaEd2T0FMZmRBY0t0R0dLdlItWlFRZXI4WUpWbF9zU0NIcTZpWlNOMjJ0R0ZKR3E4YlNkY09EUGwzQ3Q4T0l5N1ZfT3pIcFhmbEtvME92ZTNycTk?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Leo Pharma buys rare skin disease drug in $435M deal",
       "date": "Tue, 18 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPdkR4VG1JZ0piZmdPWkE1TW15TkR2dG1iNWFacHZlNDVZd05VdzJGdTRJS1ZLYzlJYUxLTE1jWTYxeVF5TWUxWHdEOWJLYjEzcllMU190OVBIcVJIeENEM2RUYnE1MF9YZFM2eVVQR211MEcxbV9jX3d6RjY0c0Nrb3gySDNYa25DcjlTOGNXVjZva0R0aUtIV18ySVFtZw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "LEO Pharma Acquires Potential First Oral Therapy for EPP and XLP",
-      "date": "Tue, 18 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQQ0JmeG1Da2pfWkx3WHcwclp4QXdfSU43b3gzRzlRMG9qVG50cmxIMHM0U3owaXhnNHlMbFQ5Z2VUT0VuQ1N3amhXZ2ZtRllTZjBER3BIMFRlTEQwR1NJVEI3X2RyTlBudjRHVVFPc3NGTVRJVUVyNlZzWlVyTjg4ZGF1MlprMlZWOWd5bVJqWndOTnhsS3lKNGxVTmJnQQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "OS Therapies Expects 3-Year Survival Data in September",
-      "date": "Thu, 13 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNTzBqV3plbEJEem9oU2txZ1NIZDRpd21TWXJOM05nbU5EMlFZUGluYkgtclB0ZlNFU056QVAzNWNaSjg2SUJIdG5MaGlJNVN2WEpmNEtVZGNmam5vTFMwLXJFaE9EMWdKTEl1Y25jbTEwZEdaQkplN3hCMGtBYmF1TVEydE54OWZJOVhBUTdsQVY4ZnQ5LW1Ib2VBdXNYWFlremVpdng3RXd3akQ2eVZtNHdlTVFjQnVSd0U4N293?oc=5"
     },
     {
       "company": "See source",
@@ -842,39 +842,39 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Greater Philadelphia \u2013 Regional Life Sciences Roundup \u2013 August 14, 2026",
+      "event": "No approved treatment for Peeling Skin Syndrome as Quoin plans Phase 2/3 study",
       "date": "Fri, 14 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQMHpDdkVSWk1ZZjh0WmVpVEs3LUYzckpVWHQ5dWdjNjVMOWxpVEVEOHJOaGhHVjlIOG5VNkNEejM3V0x6MmJYTHRpZjh5X1VkVXNYTGY4TVpsVDZSVnc1LXZ1ZjFfdnF6cjgyQjNpRllSWUJpazZOOWhqTjFzNTBESVVaOGlmX25vaWI0dzVqclNXNERGb1E?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQcnFndXdVTDd6R0otUEtOcGJHLVR2dW9ZbW0tNDJETWZiWkhocEtnZTN6M2FGdnRsM3hxTFJ6MUMtNm5KTTVDTV9MNV9zdUF4NzVUTzRHem9UU3FEVFhsbGszWUxqUEFWeVgtZ2hzMmc3Qk5Ib2ItWlhPVmQybXVlQkliblVwVk5BNXVjQ014VFJ5eGRYdnB3T08zQ01LNVR2MmRrSTBvanMwOWFzQW5LWEJHbHFHNTV2VWszY3dB?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,707.98",
-      "daily": 0.21,
-      "weekly": -0.52,
-      "monthly": 2.65
+      "value": "7,641.16",
+      "daily": -0.87,
+      "weekly": -2.02,
+      "monthly": 1.9
     },
     {
       "name": "Nasdaq",
-      "value": "26,331.09",
-      "daily": 0.16,
-      "weekly": -0.97,
-      "monthly": 1.91
+      "value": "26,067.17",
+      "daily": -1.0,
+      "weekly": -2.75,
+      "monthly": 1.46
     },
     {
       "name": "Dow Jones",
-      "value": "53,463.05",
-      "daily": 0.22,
-      "weekly": -0.57,
-      "monthly": 2.37
+      "value": "52,759.21",
+      "daily": -1.32,
+      "weekly": -2.01,
+      "monthly": 1.04
     },
     {
       "name": "Russell 2000",
-      "value": "3,032.94",
-      "daily": 0.5,
-      "weekly": -0.41,
-      "monthly": 1.52
+      "value": "2,992.43",
+      "daily": -1.34,
+      "weekly": -1.98,
+      "monthly": 1.1
     }
   ]
 }
