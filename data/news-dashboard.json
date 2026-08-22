@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-21T11:45:16+00:00",
+  "updated_at": "2026-08-22T11:39:28+00:00",
   "summaries": {
-    "ai": "Key developments: AI Data Centers Need High-Speed Ethernet, Liquid Cooling; Up to $100 billion! Broadcom (AVGO.US) plans massive AI chip financing to intensify competition for NVIDIA\u2019s (NVDA.US) market dominance; Open Design Becomes the Standard for AI Data Centers as OCP Korea Draws 1,500 Attendees.",
-    "biotech": "Key developments: Avance Clinical Appoints Inaugural Chief Commercial Officer, Reinforcing Global Growth Strategy; AI Antibody Design Just Got Its First Honest Report Card \u2014 And the Grade Is Complicated; FDA approves Ultragenyx gene therapy.",
-    "market": "Key developments: Stock Market Today: Dow Jones, S&P 500 Futures Gain as Scott Bessent Touts 'Toughest Sanctions' for Iran\u2014Ross Stores, Strategy, Flowers Foods in Focus; Stock Market: Will S&P 500 Open Up or Down Today?; Dow, S&P 500, Nasdaq Futures Climb On Tech Earnings Optimism: AKAN, AAPL, RDDT, RIVN Stocks In Focus.",
-    "market_movers": "S&P 500 led tracked indexes at -0.87% today; Russell 2000 was weakest at -1.34%. Key developments: Stock Market Today: Dow Jones, S&P 500 Futures Gain as Scott Bessent Touts 'Toughest Sanctions' for Iran\u2014Ross Stores, Strategy, Flowers Foods in Focus; Stock Market: Will S&P 500 Open Up or Down Today?; Dow, S&P 500, Nasdaq Futures Climb On Tech Earnings Optimism: AKAN, AAPL, RDDT, RIVN Stocks In Focus."
+    "ai": "Key developments: The Artificial Intelligence Arms Race: America Is Spending Billions, But China May Have Found a Cheaper Way to Win; AI data center company Nscale plans to go public in the US as early as September, aiming to raise up to $3 billion; Exclusive | Nvidia in Talks to Invest in Data-Center Power Developer Cloverleaf Infrastructure.",
+    "biotech": "Key developments: Hertz Foundation Entrepreneurship Award Supports Open-Access Map of the Human Cell Surface | Newswise; Moderna and Merck say personalized melanoma cancer vaccine worked in late-stage trial; Your Questions Answered: What This Week's Rare Disease and Specialty Drug News Tells Us About Where the Industry Is Heading.",
+    "market": "Key developments: Nasdaq, S&P 500 Futures Gain After Tech-Led Rebound: Why NVDA, QCOM, AAPL, APLD, ASTS, NUVL Are Keeping Traders Engaged Today; Wall St rises on the day but falls for the week; bond yields and Iran in focus; Track Current Stock Market Data On The S&P 500, Nasdaq, Dow Jones And SPDR ETFs.",
+    "market_movers": "Dow Jones led tracked indexes at +0.98% today; S&P 500 was weakest at +0.43%. Key developments: Nasdaq, S&P 500 Futures Gain After Tech-Led Rebound: Why NVDA, QCOM, AAPL, APLD, ASTS, NUVL Are Keeping Traders Engaged Today; Wall St rises on the day but falls for the week; bond yields and Iran in focus; Track Current Stock Market Data On The S&P 500, Nasdaq, Dow Jones And SPDR ETFs."
   },
   "takeaways": [
-    "AI Data Centers Need High-Speed Ethernet, Liquid Cooling - ET Datacenters",
-    "Up to $100 billion! Broadcom (AVGO.US) plans massive AI chip financing to intensify competition for NVIDIA\u2019s (NVDA.US) market dominance - Moomoo",
-    "Avance Clinical Appoints Inaugural Chief Commercial Officer, Reinforcing Global Growth Strategy - GlobeNewswire",
-    "AI Antibody Design Just Got Its First Honest Report Card \u2014 And the Grade Is Complicated - The Clinical Trial Vanguard",
-    "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing - PharmTech.com",
+    "The Artificial Intelligence Arms Race: America Is Spending Billions, But China May Have Found a Cheaper Way to Win - Substack",
+    "AI data center company Nscale plans to go public in the US as early as September, aiming to raise up to $3 billion - Bitget",
+    "Hertz Foundation Entrepreneurship Award Supports Open-Access Map of the Human Cell Surface | Newswise - Newswise",
+    "Moderna and Merck say personalized melanoma cancer vaccine worked in late-stage trial - Drug Discovery News",
+    "FDA Approves Garetosmab-grts (Pasatru) for Bone Lesions in Rare Disease FOP - BioPharm International",
     "LEO adds to dermatology portfolio with $435M deal for late-stage rare disease drug - BioSpace",
-    "Stock Market Today: Dow Jones, S&P 500 Futures Gain as Scott Bessent Touts 'Toughest Sanctions' for Iran\u2014Ross Stores, Strategy, Flowers Foods in Focus - TradingView"
+    "Nasdaq, S&P 500 Futures Gain After Tech-Led Rebound: Why NVDA, QCOM, AAPL, APLD, ASTS, NUVL Are Keeping Traders Engaged Today - Stocktwits"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -786,9 +786,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing",
-      "date": "Tue, 18 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQYko4VUI3eVlNaElackh2ZEYxbGV4WVh1OG5LcGwxUG9KUnprNnVJZmlfX1RmbmJIMldsRU9sa1JaT1pZcXpBcTYyYjF4UG90elZCaUdQU2w2NWhBN2ltUUYxYlNEUXVNR0s4bHF2alM5UWc0RGE4UWVLUl80UTVCdzZIUkw3Y3RjMkNzOTlicGFSeHlqb2tQRUxoOU5BRmhyUDluTUpEQlIzT3YxaWcwenljSQ?oc=5"
+      "event": "FDA Approves Garetosmab-grts (Pasatru) for Bone Lesions in Rare Disease FOP",
+      "date": "Thu, 20 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPQXZqb3pNdHRiVmVhS3ZCd3BQd1R3dW5wVGZ0WG81NHhGVjhCZjU4Qy1LeTJVNi1iV05VRk4wTTU2S3F3cVVPMHRmZGhiU3BaanlrY0tOeEUzNjdGM0VFTHFTMElZcC05UVI0aTNNWEFCTXRlYXBjc0thRUU3YUpWTk5CcVRfQ2Ztak9KN0Zwd0NoXy1VbktMRWxEWXRicWtUWFhZazIyTE9qNk9j?oc=5"
     },
     {
       "company": "See source",
@@ -802,9 +802,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Approves Garetosmab-grts (Pasatru) for Bone Lesions in Rare Disease FOP",
-      "date": "Thu, 20 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPQXZqb3pNdHRiVmVhS3ZCd3BQd1R3dW5wVGZ0WG81NHhGVjhCZjU4Qy1LeTJVNi1iV05VRk4wTTU2S3F3cVVPMHRmZGhiU3BaanlrY0tOeEUzNjdGM0VFTHFTMElZcC05UVI0aTNNWEFCTXRlYXBjc0thRUU3YUpWTk5CcVRfQ2Ztak9KN0Zwd0NoXy1VbktMRWxEWXRicWtUWFhZazIyTE9qNk9j?oc=5"
+      "event": "Dersimelagon Acquisition Highlights Shift Toward Late-Stage Rare Disease Licensing",
+      "date": "Tue, 18 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQYko4VUI3eVlNaElackh2ZEYxbGV4WVh1OG5LcGwxUG9KUnprNnVJZmlfX1RmbmJIMldsRU9sa1JaT1pZcXpBcTYyYjF4UG90elZCaUdQU2w2NWhBN2ltUUYxYlNEUXVNR0s4bHF2alM5UWc0RGE4UWVLUl80UTVCdzZIUkw3Y3RjMkNzOTlicGFSeHlqb2tQRUxoOU5BRmhyUDluTUpEQlIzT3YxaWcwenljSQ?oc=5"
     },
     {
       "company": "See source",
@@ -826,55 +826,55 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "NAVLIN Regulatory Roundup: Approvals & Special Designations",
-      "date": "Mon, 17 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQTGdLUFAzM2VYNks0ZHpfTnc1NFR4ZmNqQ2NxZnlQNWloRVJvTHNQcnRXVmU4Tzh1cDlvUEM3VDBtMXRRUVJVRjdfVDdBcGUydzRqYnpBTld5bUh4aTlvZW9fQ0RxaXl6TjZZak42MElnek9ELTV2NnY5VFBfclRNMXVtMkY1bHJMNEdLNWlOVUVRY3F1Y1J3UUpKU1JSZ1E?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
       "event": "Palvella Therapeutics Eyes 2027 QTORIN Approval as Rare-Disease Pipeline Expands",
       "date": "Sun, 16 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxPa0czWXVUTWtkWVFpQ0pwOTBHSVhPb2JUaHpkYzN3TUNsQWh3WWR4eGU5YTdlWVBQNHhkVTYxcjA0aTdKSGlCZUJVWWRXcjR2YVI0ZjMyODBrdGtVTFMtRFcxRTcwOWNCLWdSR0ZqTDIxYkdqc1BaQlp3Tm11SF9HN3Zud0pDOUFOLWt5ZEg3RzJ0emM2eThlRFBoQ2dLb0c4MHVXdzhQSkpVNkM5OUl2dTI0T1FtVlpVSk5RbFVMMnBLU1hIaVN3VVhQd19JWG1hVi1UT0U1S2o?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQUnlDWWFRTTZSc1VFNFRIRUxCbEZtS3FocVlBQzdCWG5yNkhqUDVmWlRvQkptaV8yS0ZlY2JZbThQLUVYR2lOWXluN00tMDdhWlFmU3ZWbXAzeUVWSnllOWY0NHNXNV9HR1dnakhTXzVYVk9qT2cyVmt0eXRWSk1OV1k0Y1AwdFhJbXVGWUtGUklvZ09hZkQ4RndUMWtTV0dqbllzVW5uWjU3dTlTdzhiV3p3Z2hvLTYzWmhERHBQbjRGdFJIekVBazlyVWhjcEE?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "No approved treatment for Peeling Skin Syndrome as Quoin plans Phase 2/3 study",
-      "date": "Fri, 14 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQcnFndXdVTDd6R0otUEtOcGJHLVR2dW9ZbW0tNDJETWZiWkhocEtnZTN6M2FGdnRsM3hxTFJ6MUMtNm5KTTVDTV9MNV9zdUF4NzVUTzRHem9UU3FEVFhsbGszWUxqUEFWeVgtZ2hzMmc3Qk5Ib2ItWlhPVmQybXVlQkliblVwVk5BNXVjQ014VFJ5eGRYdnB3T08zQ01LNVR2MmRrSTBvanMwOWFzQW5LWEJHbHFHNTV2VWszY3dB?oc=5"
+      "event": "Scholar Rock is prepared to launch its SMA drug if FDA approves by Sept. 30",
+      "date": "Fri, 21 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQU1JwbHZNSDl0Q3RPZzRxNktpY3JGMk5VWXl4a012b2dCemVFb2Y2UDhNLURhenJKNVFqS1RJMjk0ejhYUWZkOFRHeGhpY09VRGJfSk5JNXV5bWlUelJ2bFExSTJZR2lqQ1JPOTIzMGI4dmxDNVFxMkxvd2l4dXI2ZEN5ajk0NGpMT1pOQm1xcUZ0bUcyV3FZQXhndzAxT3BNeWpPVmF5VTZ6VklHZl82aVFhajd5Nlk?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "LEO Pharma pens $435m deal for Tanabe Pharma\u2019s dersimelagon",
+      "date": "Wed, 19 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQMm1rMEFsMzhfaVg3VlIxZXBmalhqNVItN3JOcXBDYm5DUDM3OWRFN2NNeFFkVmNvQ2NIb285RkhESHlER1BpTEJBUllYZkY3UG1HNlQzeG50Q1YtUGdKSlN0QzlJLTRuVjBYZFVQdjVhMlg2N3dNOTJ6SXJobll2MXNNSGpuZzBEVTY4?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,641.16",
-      "daily": -0.87,
-      "weekly": -2.02,
-      "monthly": 1.9
+      "value": "7,674.37",
+      "daily": 0.43,
+      "weekly": -1.43,
+      "monthly": 3.59
     },
     {
       "name": "Nasdaq",
-      "value": "26,067.17",
-      "daily": -1.0,
-      "weekly": -2.75,
-      "monthly": 1.46
+      "value": "26,180.46",
+      "daily": 0.43,
+      "weekly": -2.05,
+      "monthly": 4.15
     },
     {
       "name": "Dow Jones",
-      "value": "52,759.21",
-      "daily": -1.32,
-      "weekly": -2.01,
-      "monthly": 1.04
+      "value": "53,277.01",
+      "daily": 0.98,
+      "weekly": -0.85,
+      "monthly": 3.03
     },
     {
       "name": "Russell 2000",
-      "value": "2,992.43",
-      "daily": -1.34,
-      "weekly": -1.98,
-      "monthly": 1.1
+      "value": "3,017.87",
+      "daily": 0.85,
+      "weekly": -1.65,
+      "monthly": 2.64
     }
   ]
 }
