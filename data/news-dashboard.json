@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-23T11:39:19+00:00",
+  "updated_at": "2026-08-24T11:46:31+00:00",
   "summaries": {
-    "ai": "Key developments: 3 Data Center Stocks Powering the AI Buildout; Nvidia customers notified about AI-related price hikes above 15%; Nvidia customers notified about AI-related price hikes above 15%, Bloomberg News reports.",
-    "biotech": "Key developments: Biotech Stocks To Add to Your Watchlist - August 22nd; How Investors Are Reacting To Biogen (BIIB) Raising EPS Guidance On Late-Stage Drug Trial Milestones; FDA nod to Ultragenyx gene therapy for rare GSDIa disorder.",
-    "market": "Key developments: Nasdaq, S&P 500 Futures Dip As Markets Brace For Inflation Data, More Hormuz Tensions: SNOW, DELL, ONDS, NBIS, SIDU Are In Focus; S&P 500, Nasdaq, Dow Forecast: Rising Yields Test Rally Ahead of Nvidia, Fed; Nasdaq, S&P 500 Futures Rise As Chip Rally Counters Iran Jitters Ahead Of Big Tech Earnings: Why IREN, ACHR, TSLA, BA Stocks Are Drawing Focus.",
-    "market_movers": "Dow Jones led tracked indexes at +0.98% today; S&P 500 was weakest at +0.43%. Key developments: Nasdaq, S&P 500 Futures Dip As Markets Brace For Inflation Data, More Hormuz Tensions: SNOW, DELL, ONDS, NBIS, SIDU Are In Focus; S&P 500, Nasdaq, Dow Forecast: Rising Yields Test Rally Ahead of Nvidia, Fed; Nasdaq, S&P 500 Futures Rise As Chip Rally Counters Iran Jitters Ahead Of Big Tech Earnings: Why IREN, ACHR, TSLA, BA Stocks Are Drawing Focus."
+    "ai": "Key developments: Nvidia Has Investors Looking Again At These AI Data Center Chip Stocks; Above The Noise: AI, Earnings, And Permabears; Lumentum Is Winning AI Stock's Next Big Infrastructure Bottleneck.",
+    "biotech": "Key developments: AN2 Therapeutics Appoints Cameron Trenor, M.D., as Chief Medical Officer; Abcuro Adds $66M to Try Again in Rare Inflammatory Disorder With No Approved Drugs; Novotech Strengthens Presence in Japan with Opening of Tokyo Office.",
+    "market": "Key developments: US Stock Market Today: S&P 500 Futures Rise On Steady Services And AI Earnings Hopes; Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today; S&P, Nasdaq futures slip as markets await Iran sanctions, Nvidia results.",
+    "market_movers": "Dow Jones led tracked indexes at +0.98% today; S&P 500 was weakest at +0.43%. Key developments: US Stock Market Today: S&P 500 Futures Rise On Steady Services And AI Earnings Hopes; Nasdaq, S&P 500 Futures Rise Despite US\u2013Iran Flare-Up: Why AAPL, META, TSLA, PLTR, GME, SKK Are Keeping Traders Engaged Today; S&P, Nasdaq futures slip as markets await Iran sanctions, Nvidia results."
   },
   "takeaways": [
-    "3 Data Center Stocks Powering the AI Buildout - 24/7 Wall St.",
-    "Nvidia customers notified about AI-related price hikes above 15% - Fortune",
-    "Biotech Stocks To Add to Your Watchlist - August 22nd - MarketBeat",
-    "How Investors Are Reacting To Biogen (BIIB) Raising EPS Guidance On Late-Stage Drug Trial Milestones - simplywall.st",
+    "Nvidia Has Investors Looking Again At These AI Data Center Chip Stocks - simplywall.st",
+    "Above The Noise: AI, Earnings, And Permabears - Seeking Alpha",
+    "AN2 Therapeutics Appoints Cameron Trenor, M.D., as Chief Medical Officer - Business Wire",
+    "Abcuro Adds $66M to Try Again in Rare Inflammatory Disorder With No Approved Drugs - MedCity News",
     "LEO adds to dermatology portfolio with $435M deal for late-stage rare disease drug - BioSpace",
     "FDA Approves Garetosmab-grts (Pasatru) for Bone Lesions in Rare Disease FOP - BioPharm International",
-    "Nasdaq, S&P 500 Futures Dip As Markets Brace For Inflation Data, More Hormuz Tensions: SNOW, DELL, ONDS, NBIS, SIDU Are In Focus - Stocktwits"
+    "US Stock Market Today: S&P 500 Futures Rise On Steady Services And AI Earnings Hopes - simplywall.st"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -834,17 +834,17 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "LEO Pharma Acquires Potential First Oral Therapy for EPP and XLP",
-      "date": "Tue, 18 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOdWpMa2tfT0dkZ0UzeDA5bW0xVGJZTzRPalN3QVJMTTc2WGNqdHNEOXhQZWstZG1JcXF1ZTRMaU9fMk9QQ0lpMHRaYVBJUURRSnNDZlkzZ0Q3Vm5GUEVwMl9MdUY2TUs2RHJWYVk4TmVubDZHSnVLeERCMVo2azQtaXNFMmZBV01Ud1VsSmhlaWsxaFpwN2NkblVqQUJCeC1FMVVYSQ?oc=5"
+      "event": "Regeneron Secures FDA Approval for Rare Genetic Disorder Drug",
+      "date": "Thu, 20 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQQXY4MDQzc2dkQmhhUHI3SjAyRzBpRnMtd3VnLVFpMi0yc25YeFM3ZUZMX3JldjBHekF0M0w1WWNIS01CZkVzaGkySmszT1lhLTB6emFwS2pYeXRqbHMzRWNINEVfSFB0N055d3pQdEZtcjN0QjYzOEpCMWxvcGJtQzdRMVBQSnBaT3lnMkZubVVpcUNHRXhlRng3ZFI4RFNXb0RiUXNuZDkydDlPTEw5YmtUMHhGVEVjZ2NxS3padWVHS3dwSjM1ZU8tT01qR09mU3BOaGhoUU5TX3c?oc=5"
     },
     {
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "Scholar Rock is prepared to launch its SMA drug if FDA approves by Sept. 30",
-      "date": "Fri, 21 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQU1JwbHZNSDl0Q3RPZzRxNktpY3JGMk5VWXl4a012b2dCemVFb2Y2UDhNLURhenJKNVFqS1RJMjk0ejhYUWZkOFRHeGhpY09VRGJfSk5JNXV5bWlUelJ2bFExSTJZR2lqQ1JPOTIzMGI4dmxDNVFxMkxvd2l4dXI2ZEN5ajk0NGpMT1pOQm1xcUZ0bUcyV3FZQXhndzAxT3BNeWpPVmF5VTZ6VklHZl82aVFhajd5Nlk?oc=5"
+      "event": "LEO Pharma Acquires Potential First Oral Therapy for EPP and XLP",
+      "date": "Tue, 18 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOdWpMa2tfT0dkZ0UzeDA5bW0xVGJZTzRPalN3QVJMTTc2WGNqdHNEOXhQZWstZG1JcXF1ZTRMaU9fMk9QQ0lpMHRaYVBJUURRSnNDZlkzZ0Q3Vm5GUEVwMl9MdUY2TUs2RHJWYVk4TmVubDZHSnVLeERCMVo2azQtaXNFMmZBV01Ud1VsSmhlaWsxaFpwN2NkblVqQUJCeC1FMVVYSQ?oc=5"
     }
   ],
   "markets": [
