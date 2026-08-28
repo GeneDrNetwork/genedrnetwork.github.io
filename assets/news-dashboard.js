@@ -1,12 +1,15 @@
-const DATA_URL = "../data/news-dashboard.json";
+const scriptSource = document.currentScript && document.currentScript.src ? document.currentScript.src : document.baseURI;
+const dataUrl = new URL("../data/news-dashboard.json", scriptSource);
+dataUrl.searchParams.set("_", Date.now().toString());
+const DATA_URL = dataUrl.href;
 
-const escapeHtml = (value = "") => String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-  .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+const escapeHtml = (value = "") => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
 const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value || "No update available."; };
 
 const PLACEHOLDER_SCORES = [88, 84, 81, 78, 75, 72, 69, 66, 63, 60];
 const stageFor = (score) => score >= 85 ? "Hot" : score >= 76 ? "Heating Up" : score >= 66 ? "Emerging" : "Cooling";
-const stageClass = (stage) => stage.toLowerCase().replaceAll(" ", "-");
+const stageClass = (stage = "") => String(stage).toLowerCase().replace(/\s+/g, "-");
 const detailItem = (label, value, placeholder = false) => `<div class="detail-item${placeholder ? " detail-placeholder" : ""}"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`;
 
 function aiRadarRows(data) {
@@ -102,17 +105,36 @@ function initTabs() {
   }));
 }
 
+function renderSafely(render, fallbackId) {
+  try {
+    render();
+  } catch (error) {
+    const target = document.getElementById(fallbackId);
+    if (target) target.innerHTML = `<p class="loading-state error-state">This section could not be displayed. The rest of the dashboard remains available.</p>`;
+    console.error(`GeneDr dashboard section ${fallbackId}:`, error);
+  }
+}
+
 function renderDashboard(data) {
+  if (!data || typeof data !== "object") throw new Error("Dashboard JSON is not an object.");
   const updated = new Date(data.updated_at);
   setText("last-updated", Number.isNaN(updated.valueOf()) ? data.updated_at : updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
-  setText("ai-summary", data.summaries?.ai); setText("biotech-summary", data.summaries?.biotech); setText("market-movers", data.summaries?.market_movers);
-  renderAiRadar(aiRadarRows(data)); renderBiotechRadar(biotechRadarRows(data));
-  renderOpportunities("ai-opportunities", data.monthly_picks?.ai); renderOpportunities("biotech-opportunities", data.monthly_picks?.biotech);
-  renderWatchlist(data); renderMarkets(data.markets);
+  setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("market-movers", data.summaries && data.summaries.market_movers);
+  renderSafely(() => renderAiRadar(aiRadarRows(data)), "ai-radar");
+  renderSafely(() => renderBiotechRadar(biotechRadarRows(data)), "biotech-radar");
+  renderSafely(() => renderOpportunities("ai-opportunities", data.monthly_picks && data.monthly_picks.ai), "ai-opportunities");
+  renderSafely(() => renderOpportunities("biotech-opportunities", data.monthly_picks && data.monthly_picks.biotech), "biotech-opportunities");
+  renderSafely(() => renderWatchlist(data), "my-watchlist");
+  renderSafely(() => renderMarkets(data.markets), "market-cards");
 }
 
 initTabs();
-fetch(DATA_URL, { cache: "no-store" }).then((response) => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); }).then(renderDashboard).catch((error) => {
+fetch(DATA_URL, { cache: "no-store", headers: { Accept: "application/json" } }).then((response) => {
+  if (!response.ok) throw new Error(`Dashboard data request failed with HTTP ${response.status}.`);
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) throw new Error(`Dashboard data returned ${contentType || "an unknown content type"} instead of JSON.`);
+  return response.json();
+}).then(renderDashboard).catch((error) => {
   setText("last-updated", "Dashboard temporarily unavailable");
   document.querySelectorAll(".loading-state").forEach((element) => { element.textContent = "The daily data feed could not be loaded. Please try again shortly."; });
   console.error("GeneDr Investment Intelligence dashboard:", error);
