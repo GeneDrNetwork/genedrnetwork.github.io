@@ -27,6 +27,165 @@ except ImportError:
     SSL_CONTEXT = ssl.create_default_context()
 
 
+def company_registry_record(company, ticker, aliases=(), exchange="", listing_status="Public", domain="both"):
+    return {"company": company, "ticker": ticker, "aliases": tuple(dict.fromkeys((company.lower(), *aliases))),
+            "exchange": exchange, "listing_status": listing_status, "domain": domain}
+
+
+COMPANY_REGISTRY = [
+    company_registry_record("NVIDIA", "NVDA", ("nvidia",), domain="ai"),
+    company_registry_record("AMD", "AMD", ("advanced micro devices", "amd"), domain="ai"),
+    company_registry_record("TSMC", "TSM", ("taiwan semiconductor", "tsmc"), domain="ai"),
+    company_registry_record("Broadcom", "AVGO", domain="ai"), company_registry_record("Micron", "MU", domain="ai"),
+    company_registry_record("Arista Networks", "ANET", ("arista",), domain="ai"),
+    company_registry_record("Vertiv", "VRT", domain="ai"), company_registry_record("Eaton", "ETN", domain="ai"),
+    company_registry_record("Dell Technologies", "DELL", ("dell",), domain="ai"),
+    company_registry_record("Super Micro Computer", "SMCI", ("supermicro", "super micro"), domain="ai"),
+    company_registry_record("CoreWeave", "CRWV", domain="ai"), company_registry_record("Microsoft", "MSFT", domain="ai"),
+    company_registry_record("Alphabet", "GOOGL", ("google", "google cloud"), domain="ai"),
+    company_registry_record("Amazon", "AMZN", ("amazon web services", "aws"), domain="ai"),
+    company_registry_record("Meta Platforms", "META", ("meta",), domain="ai"),
+    company_registry_record("Oracle", "ORCL", domain="ai"), company_registry_record("Intel", "INTC", domain="ai"),
+    company_registry_record("Qualcomm", "QCOM", domain="ai"), company_registry_record("Arm Holdings", "ARM", ("arm",), domain="ai"),
+    company_registry_record("Apple", "AAPL", domain="ai"), company_registry_record("Cisco", "CSCO", domain="ai"),
+    company_registry_record("Marvell Technology", "MRVL", ("marvell",), domain="ai"),
+    company_registry_record("Applied Materials", "AMAT", domain="ai"), company_registry_record("CBRE", "CBRE", domain="ai"),
+    company_registry_record("S&P Global", "SPGI", ("s&p global", "s&p global ratings"), domain="ai"),
+    company_registry_record("ASML", "ASML", domain="ai"), company_registry_record("Equinix", "EQIX", domain="ai"),
+    company_registry_record("Constellation Energy", "CEG", ("constellation",), domain="ai"),
+    company_registry_record("GE Vernova", "GEV", domain="ai"), company_registry_record("Tesla", "TSLA", domain="ai"),
+    company_registry_record("ABB", "ABB", domain="ai"), company_registry_record("Teradyne", "TER", domain="ai"),
+    company_registry_record("Mobileye", "MBLY", domain="ai"), company_registry_record("CrowdStrike", "CRWD", domain="ai"),
+    company_registry_record("Palo Alto Networks", "PANW", ("palo alto",), domain="ai"),
+    company_registry_record("Cloudflare", "NET", domain="ai"), company_registry_record("Samsara", "IOT", domain="ai"),
+    company_registry_record("Rubrik", "RBRK", domain="ai"), company_registry_record("Oklo", "OKLO", domain="ai"),
+    company_registry_record("Astera Labs", "ALAB", domain="ai"), company_registry_record("Tempus AI", "TEM", domain="both"),
+    company_registry_record("Aurora Innovation", "AUR", ("aurora",), domain="ai"),
+    company_registry_record("GE HealthCare", "GEHC", domain="both"), company_registry_record("Illumina", "ILMN", domain="both"),
+    company_registry_record("IREN", "IREN", domain="ai"),
+    company_registry_record("Infineon Technologies", "IFX:XETRA", ("infineon",), exchange="XETRA", domain="ai"),
+    company_registry_record("SK hynix", "000660:KRX", ("sk hynix",), exchange="KRX", domain="ai"),
+    company_registry_record("OpenAI", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Anthropic", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("xAI", "Private", ("xai",), listing_status="Private", domain="ai"),
+    company_registry_record("SpaceX", "Private", ("spacex", "spacexai"), listing_status="Private", domain="ai"),
+    company_registry_record("Cerebras Systems", "Private", ("cerebras",), listing_status="Private", domain="ai"),
+    company_registry_record("Groq", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Figure AI", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Scale AI", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Physical Intelligence", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Tenstorrent", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Celestial AI", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Crusoe", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Fervo Energy", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Form Energy", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Lightmatter", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Waabi", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Shield AI", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Wiz", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("HiddenLayer", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("Hailo", "Private", listing_status="Private", domain="ai"),
+    company_registry_record("SiMa.ai", "Private", ("sima.ai",), listing_status="Private", domain="ai"),
+    company_registry_record("Owkin", "Private", listing_status="Private", domain="both"),
+    company_registry_record("PathAI", "Private", listing_status="Private", domain="both"),
+    company_registry_record("Vertex Pharmaceuticals", "VRTX", ("vertex",), domain="biotech"),
+    company_registry_record("Sarepta Therapeutics", "SRPT", ("sarepta",), domain="biotech"),
+    company_registry_record("Regeneron", "REGN", domain="biotech"),
+    company_registry_record("Alnylam Pharmaceuticals", "ALNY", ("alnylam",), domain="biotech"),
+    company_registry_record("BioMarin Pharmaceutical", "BMRN", ("biomarin",), domain="biotech"),
+    company_registry_record("Ultragenyx Pharmaceutical", "RARE", ("ultragenyx",), domain="biotech"),
+    company_registry_record("argenx", "ARGX", domain="biotech"), company_registry_record("Ionis Pharmaceuticals", "IONS", ("ionis",), domain="biotech"),
+    company_registry_record("CRISPR Therapeutics", "CRSP", domain="biotech"),
+    company_registry_record("Intellia Therapeutics", "NTLA", ("intellia",), domain="biotech"),
+    company_registry_record("Beam Therapeutics", "BEAM", domain="biotech"), company_registry_record("Prime Medicine", "PRME", domain="biotech"),
+    company_registry_record("Krystal Biotech", "KRYS", domain="biotech"), company_registry_record("Rocket Pharmaceuticals", "RCKT", domain="biotech"),
+    company_registry_record("Stoke Therapeutics", "STOK", domain="biotech"), company_registry_record("Scholar Rock", "SRRK", domain="biotech"),
+    company_registry_record("Maze Therapeutics", "MAZE", domain="biotech"), company_registry_record("Metagenomi", "MGX", domain="biotech"),
+    company_registry_record("ProQR Therapeutics", "PRQR", ("proqr",), domain="biotech"),
+    company_registry_record("Moderna", "MRNA", domain="biotech"), company_registry_record("Cytokinetics", "CYTK", domain="biotech"),
+    company_registry_record("Implantica", "IMP A SDB:STO", exchange="Nasdaq Stockholm", domain="biotech"),
+    company_registry_record("Roche", "ROP:SIX", ("genentech",), exchange="SIX", domain="biotech"),
+    company_registry_record("Jazz Pharmaceuticals", "JAZZ", ("jazz",), domain="biotech"),
+    company_registry_record("Biohaven", "BHVN", domain="biotech"),
+    company_registry_record("SK Biopharmaceuticals", "326030:KRX", ("sk biopharma", "sk biopharmaceuticals"), exchange="KRX", domain="biotech"),
+    company_registry_record("Biogen", "BIIB", domain="biotech"), company_registry_record("Gilead Sciences", "GILD", ("gilead",), domain="biotech"),
+    company_registry_record("Amgen", "AMGN", domain="biotech"), company_registry_record("Eli Lilly", "LLY", domain="biotech"),
+    company_registry_record("Novo Nordisk", "NVO", domain="biotech"), company_registry_record("Merck", "MRK", domain="biotech"),
+    company_registry_record("Pfizer", "PFE", domain="biotech"), company_registry_record("Bristol Myers Squibb", "BMY", domain="biotech"),
+    company_registry_record("AstraZeneca", "AZN", domain="biotech"), company_registry_record("Sanofi", "SNY", domain="biotech"),
+    company_registry_record("Novartis", "NVS", domain="biotech"), company_registry_record("Generate Biomedicines", "Private", listing_status="Private", domain="biotech"),
+    company_registry_record("Cellares", "Private", listing_status="Private", domain="biotech"),
+    company_registry_record("Sentivera", "Private", listing_status="Private", domain="biotech"),
+    company_registry_record("U.S. Food and Drug Administration", "N/A", ("food and drug administration", "fda"), listing_status="Non-public", domain="both"),
+    company_registry_record("National Institutes of Health", "N/A", ("nih",), listing_status="Non-public", domain="both"),
+    company_registry_record("Jiangsu provincial government", "N/A", ("china's jiangsu", "jiangsu provincial government"), listing_status="Non-public", domain="biotech"),
+]
+
+COMPANY_ALIAS_INDEX = {alias: record for record in COMPANY_REGISTRY for alias in record["aliases"]}
+COMPANY_TICKER_INDEX = {record["ticker"].upper(): record for record in COMPANY_REGISTRY if record["ticker"] not in ("Private", "N/A")}
+
+
+def company_identity(company, ticker=None):
+    name = (company or "").strip()
+    supplied_ticker = (ticker or "").strip()
+    record = COMPANY_ALIAS_INDEX.get(name.lower()) or COMPANY_TICKER_INDEX.get(supplied_ticker.upper())
+    if record:
+        return {key: record[key] for key in ("company", "ticker", "exchange", "listing_status")}
+    if any(term in name.lower() for term in ("university", "government", "ministry", "regulator", "administration")):
+        return {"company": name or "Organization not identified", "ticker": "N/A", "exchange": "", "listing_status": "Non-public"}
+    if supplied_ticker in ("Private", "N/A"):
+        return {"company": name or "Company not identified", "ticker": supplied_ticker, "exchange": "",
+                "listing_status": "Private" if supplied_ticker == "Private" else "Non-public"}
+    return {"company": name or "Missing / not established", "ticker": supplied_ticker or "Missing",
+            "exchange": "", "listing_status": "Public" if supplied_ticker and supplied_ticker != "Missing" else "Unknown"}
+
+
+def company_identities_in_text(text, domain=None):
+    lowered = text.lower()
+    matches = []
+    for alias, record in COMPANY_ALIAS_INDEX.items():
+        if domain and record["domain"] not in (domain, "both"):
+            continue
+        match = re.search(rf"(?<![a-z0-9]){re.escape(alias)}(?![a-z0-9])", lowered)
+        if match:
+            matches.append((match.start(), -len(alias), record))
+    identities = []
+    seen = set()
+    for _, _, record in sorted(matches):
+        if record["company"] in seen:
+            continue
+        seen.add(record["company"])
+        identities.append({key: record[key] for key in ("company", "ticker", "exchange", "listing_status")})
+    return identities
+
+
+def company_identity_fields(text, company=None, ticker=None, domain=None):
+    identities = company_identities_in_text(text, domain)
+    if not identities:
+        organization = re.search(r"\b([A-Z][A-Za-z&.' -]{2,70}?(?:University|Administration|Ministry|Government))\b", text)
+        if organization:
+            identities.append(company_identity(organization.group(1)))
+    investable = next((item for item in identities if item["ticker"] != "N/A"), None)
+    if investable and identities[0] is not investable:
+        identities.remove(investable)
+        identities.insert(0, investable)
+    fallback = company_identity(company, ticker) if company or ticker else None
+    if fallback and not fallback["company"].startswith("Missing") and fallback["company"] not in {item["company"] for item in identities}:
+        identities.insert(0, fallback)
+    primary = identities[0] if identities else fallback or company_identity("", "")
+    related = identities[1:]
+    return {**primary, "related_companies": [item["company"] for item in related],
+            "related_tickers": [item["ticker"] for item in related], "company_identities": identities}
+
+
+def normalize_news_company_story(story, domain):
+    clean = dict(story)
+    evidence_text = " ".join((clean.get("headline", ""), clean.get("new_information", ""),
+                              clean.get("company", ""), " ".join(clean.get("related_companies", []))))
+    clean.update(company_identity_fields(evidence_text, clean.get("company"), clean.get("ticker"), domain))
+    return clean
+
+
 def leader(company, ticker, sector, role, market_cap="Large Cap", growth="High"):
     return {"company": company, "ticker": ticker, "sector": sector, "role": role,
             "market_cap": market_cap, "growth_potential": growth}
@@ -478,18 +637,9 @@ OFFICIAL_BIOTECH_FEEDS = [
 ]
 
 BIOTECH_COMPANIES = {
-    "moderna": ("Moderna", "MRNA"), "intellia": ("Intellia Therapeutics", "NTLA"),
-    "beam therapeutics": ("Beam Therapeutics", "BEAM"), "alnylam": ("Alnylam Pharmaceuticals", "ALNY"),
-    "cytokinetics": ("Cytokinetics", "CYTK"), "implantica": ("Implantica", "Missing"),
-    "stoke therapeutics": ("Stoke Therapeutics", "STOK"), "maze therapeutics": ("Maze Therapeutics", "MAZE"),
-    "krystal biotech": ("Krystal Biotech", "KRYS"), "vertex": ("Vertex Pharmaceuticals", "VRTX"),
-    "regeneron": ("Regeneron", "REGN"), "biogen": ("Biogen", "BIIB"),
-    "gilead": ("Gilead Sciences", "GILD"), "amgen": ("Amgen", "AMGN"),
-    "eli lilly": ("Eli Lilly", "LLY"), "novo nordisk": ("Novo Nordisk", "NVO"),
-    "roche": ("Roche", "RHHBY"), "genentech": ("Genentech", "RHHBY"),
-    "merck": ("Merck", "MRK"), "pfizer": ("Pfizer", "PFE"),
-    "bristol myers squibb": ("Bristol Myers Squibb", "BMY"), "astrazeneca": ("AstraZeneca", "AZN"),
-    "sanofi": ("Sanofi", "SNY"), "novartis": ("Novartis", "NVS"),
+    alias: (record["company"], record["ticker"])
+    for record in COMPANY_REGISTRY if record["domain"] in ("biotech", "both") and record["ticker"] != "N/A"
+    for alias in record["aliases"]
 }
 
 BIOTECH_PROGRAMS = (
@@ -687,12 +837,7 @@ def news_fingerprint(headline, source_name):
 
 
 def named_ai_companies(text):
-    positions = []
-    for term in PRIMARY_SOURCE_TERMS:
-        match = re.search(rf"(?<![a-z0-9]){re.escape(term)}(?![a-z0-9])", text.lower())
-        if match:
-            positions.append((match.start(), term))
-    return [term for _, term in sorted(positions)]
+    return [identity["company"] for identity in company_identities_in_text(text, "ai")]
 
 
 def news_event_family(text):
@@ -843,6 +988,7 @@ def score_ai_news_item(item, run_at, previous_trends, previous_ids):
         return None
     event_hits = sorted({term for term in INVESTMENT_EVENT_TERMS if term in combined})
     named_companies = named_ai_companies(combined)
+    identity_fields = company_identity_fields(combined_text, domain="ai")
     quantified_headline = re.search(r"(?:[$€£]\s?\d|\d[\d,.]*\s*(?:million|billion|trillion|gpus?|megawatts?|gigawatts?|%))", headline, flags=re.IGNORECASE)
     headline_facts = [headline] if quantified_headline and any(term in headline.lower() for term in INVESTMENT_EVENT_TERMS) else []
     facts = list(dict.fromkeys(headline_facts + item.get("primary_evidence", []) + extract_evidence_facts(combined_text)))[:3]
@@ -885,6 +1031,7 @@ def score_ai_news_item(item, run_at, previous_trends, previous_ids):
         missing.append("Source link")
     return {
         "id": story_id, "headline": headline, "published_at": published_at, "source": source_name,
+        **identity_fields,
         "source_type": source_label, "news_importance_score": importance,
         "event_type": EVENT_TYPE_LABELS.get(item.get("_event_family", "general"), "Company Update"),
         "new_information": news_new_information(facts, headline),
@@ -951,6 +1098,7 @@ def sanitize_news_story(story):
         clean["direction"] = inferred_direction
     clean["missing_data"] = [item for item in clean.get("missing_data", [])
                              if not str(item).lower().startswith("potential beneficiaries")]
+    clean.update(company_identity_fields(event_text, clean.get("company"), clean.get("ticker"), "ai"))
     return clean
 
 
@@ -961,6 +1109,13 @@ def build_news_radar_interface(current_stories, archived_stories):
             events.append({
                 "event_id": story.get("id"),
                 "event_date": story.get("published_at"),
+                "company": story.get("company"),
+                "ticker": story.get("ticker"),
+                "exchange": story.get("exchange"),
+                "listing_status": story.get("listing_status"),
+                "related_companies": story.get("related_companies", []),
+                "related_tickers": story.get("related_tickers", []),
+                "company_identities": story.get("company_identities", []),
                 "event_type": story.get("event_type"),
                 "direction": story.get("direction"),
                 "confirmation_status": story.get("status"),
@@ -980,11 +1135,23 @@ def build_news_radar_interface(current_stories, archived_stories):
     }
 
 
+def deduplicate_news_records(records):
+    by_headline = {}
+    for item in records:
+        key = re.sub(r"[^a-z0-9]+", " ", item.get("headline", "").lower()).strip() or item.get("id")
+        existing = by_headline.get(key)
+        if not existing or (item.get("news_importance_score", 0), item.get("published_at") or item.get("first_seen", "")) > (
+                existing.get("news_importance_score", 0), existing.get("published_at") or existing.get("first_seen", "")):
+            by_headline[key] = item
+    return list(by_headline.values())
+
+
 def build_ai_news_section(items, previous_section, run_at):
     previous_current = [sanitize_news_story(item) for item in previous_section.get("stories", [])
                         if source_quality(item.get("source", ""))[0] and item.get("quality_schema_version") in (3, 4)]
-    previous_archive = [sanitize_news_story(item) for item in previous_section.get("important_news_archive", [])
-                        if source_quality(item.get("source", ""))[0] and item.get("quality_schema_version") in (3, 4)]
+    previous_archive = deduplicate_news_records(
+        sanitize_news_story(item) for item in previous_section.get("important_news_archive", [])
+        if source_quality(item.get("source", ""))[0] and item.get("quality_schema_version") in (3, 4))
     previous_records = previous_current + previous_archive
     previous_ids = {item.get("id") for item in previous_records if item.get("id")}
     previous_trends = {trend for item in previous_records for trend in item.get("affected_trends", [])}
@@ -1002,7 +1169,8 @@ def build_ai_news_section(items, previous_section, run_at):
     for item in previous_current:
         if item.get("id") and item["id"] not in selected_ids and item.get("source_link") not in selected_evidence_urls:
             archive_by_id.setdefault(item["id"], item)
-    archive = sorted(archive_by_id.values(), key=lambda item: item.get("published_at") or item.get("first_seen", ""), reverse=True)
+    archive = sorted(deduplicate_news_records(archive_by_id.values()),
+                     key=lambda item: item.get("published_at") or item.get("first_seen", ""), reverse=True)
     return {"stories": selected, "important_news_archive": archive,
             "radar_evidence_interface": build_news_radar_interface(selected, archive),
             "selection_status": f"Selected {len(selected)} source-qualified, investment-relevant stories.",
@@ -1037,11 +1205,9 @@ def biotech_source_quality(source_name):
 
 
 def named_biotech_company(text):
-    lowered = text.lower()
-    matches = [(lowered.find(term), company, ticker) for term, (company, ticker) in BIOTECH_COMPANIES.items()
-               if contains_term(lowered, term)]
-    if matches:
-        return min(matches)[1:]
+    identity = company_identity_fields(text, domain="biotech")
+    if identity["ticker"] != "Missing":
+        return identity["company"], identity["ticker"]
     generic = re.search(r"\b([A-Z][A-Za-z0-9&.' -]{2,55}?(?:Therapeutics|Pharmaceuticals|Biosciences|Biopharma|Biotech))\b", text)
     if generic:
         return generic.group(1).strip(), "Missing"
@@ -1243,6 +1409,8 @@ def score_biotech_news_item(item, run_at, previous_ids):
         return None
     event_type = item.get("_event_type") or biotech_event_type(combined_text)
     company, ticker = (item.get("_company"), item.get("_ticker")) if item.get("_company") else named_biotech_company(combined_text)
+    identity_fields = company_identity_fields(combined_text, company, ticker, "biotech")
+    company, ticker = identity_fields["company"], identity_fields["ticker"]
     program = item.get("_program") or named_biotech_program(combined_text)
     indication = biotech_indication(combined_text)
     facts = list(dict.fromkeys(item.get("primary_evidence", []) + extract_biotech_facts(combined_text)))[:3]
@@ -1281,6 +1449,7 @@ def score_biotech_news_item(item, run_at, previous_ids):
         missing.append("Publication date/time")
     return {
         "id": story_id, "headline": headline, "company": company, "ticker": ticker,
+        **identity_fields,
         "drug_program": program, "indication": indication, "event_type": event_type,
         "development_stage": biotech_stage(combined_text, event_type), "new_information": new_information,
         "previous_state": previous_state, "new_state": new_state, "direction": biotech_direction(combined_text),
@@ -1327,7 +1496,8 @@ def biotech_news_radar_interface(current_stories, archived_stories):
     for archived, stories in ((False, current_stories), (True, archived_stories)):
         for story in stories:
             events.append({key: story.get(key) for key in (
-                "id", "published_at", "company", "ticker", "drug_program", "indication", "event_type",
+                "id", "published_at", "company", "ticker", "exchange", "listing_status", "related_companies",
+                "related_tickers", "company_identities", "drug_program", "indication", "event_type",
                 "development_stage", "new_information", "previous_state", "new_state", "direction",
                 "news_importance_score", "affected_radar_factors", "subsectors", "status", "source_link", "evidence_sources",
             )} | {"archived": archived})
@@ -1339,8 +1509,11 @@ def biotech_news_radar_interface(current_stories, archived_stories):
 
 
 def build_biotech_news_section(items, previous_section, run_at):
-    previous_current = [item for item in previous_section.get("stories", []) if item.get("quality_schema_version") == 1]
-    previous_archive = [item for item in previous_section.get("important_news_archive", []) if item.get("quality_schema_version") == 1]
+    previous_current = [normalize_news_company_story(item, "biotech") for item in previous_section.get("stories", [])
+                        if item.get("quality_schema_version") == 1]
+    previous_archive = deduplicate_news_records(
+        normalize_news_company_story(item, "biotech") for item in previous_section.get("important_news_archive", [])
+        if item.get("quality_schema_version") == 1)
     previous_ids = {item.get("id") for item in previous_current + previous_archive if item.get("id")}
     scored = [score_biotech_news_item(item, run_at, previous_ids) for item in cluster_biotech_news_items(items)]
     scored = [item for item in scored if item]
@@ -1365,7 +1538,8 @@ def build_biotech_news_section(items, previous_section, run_at):
         normalized_headline = re.sub(r"[^a-z0-9]+", " ", item.get("headline", "").lower()).strip()
         if item.get("id") not in current_ids and normalized_headline not in current_headlines and item.get("source_link") not in current_links:
             archive_by_id[item["id"]] = item
-    archive = sorted(archive_by_id.values(), key=lambda item: item.get("published_at") or item.get("first_seen", ""), reverse=True)
+    archive = sorted(deduplicate_news_records(archive_by_id.values()),
+                     key=lambda item: item.get("published_at") or item.get("first_seen", ""), reverse=True)
     return {"stories": current, "important_news_archive": archive,
             "radar_evidence_interface": biotech_news_radar_interface(current, archive),
             "selection_status": f"Selected {len(current)} prominent event{'s' if len(current) != 1 else ''}; {len(archive_candidates)} new event{'s' if len(archive_candidates) != 1 else ''} added to Evidence History.",
@@ -1383,6 +1557,73 @@ def biotech_news_methodology():
         "scoring_boundary": "News scores event importance only. Scientific Evidence, Catalyst Impact, Expectation Gap, Sector Trend and Opportunity Score are not calculated here.",
         "selection_policy": "No quota is filled; only events meeting the configured thresholds are retained.",
     }
+
+
+def normalize_company_row(row):
+    normalized = dict(row)
+    normalized.update(company_identity(normalized.get("company"), normalized.get("ticker")))
+    normalized.setdefault("related_companies", [])
+    normalized.setdefault("related_tickers", [])
+    return normalized
+
+
+def normalize_company_list(value):
+    identities = []
+    for name in (part.strip() for part in (value or "").split(",")):
+        if not name:
+            continue
+        identity = company_identity(name)
+        identities.append(identity)
+    return identities
+
+
+def formatted_company_list(identities):
+    return ", ".join(f"{item['company']} ({item['ticker']})" for item in identities)
+
+
+def normalize_investment_data(data):
+    for section_name, domain in (("ai_technology", "ai"), ("biotech_healthcare", "biotech")):
+        section = data.get("top_investment_news", {}).get(section_name, {})
+        section["stories"] = [normalize_news_company_story(item, domain) for item in section.get("stories", [])]
+        section["important_news_archive"] = [normalize_news_company_story(item, domain)
+                                               for item in section.get("important_news_archive", [])]
+        if section_name == "ai_technology":
+            section["radar_evidence_interface"] = build_news_radar_interface(
+                section["stories"], section["important_news_archive"])
+        else:
+            section["radar_evidence_interface"] = biotech_news_radar_interface(
+                section["stories"], section["important_news_archive"])
+
+    for key in ("infrastructure_leaders", "platform_leaders", "emerging"):
+        data.get("ai", {})[key] = [normalize_company_row(item) for item in data.get("ai", {}).get(key, [])]
+    for item in data.get("ai", {}).get("demand_drivers", []):
+        public_identities = normalize_company_list(item.get("public_companies", ""))
+        emerging_identities = normalize_company_list(item.get("emerging_companies", ""))
+        item["public_company_identities"] = public_identities
+        item["emerging_company_identities"] = emerging_identities
+        item["public_companies"] = formatted_company_list(public_identities)
+        item["emerging_companies"] = formatted_company_list(emerging_identities)
+
+    for key in ("leaders", "emerging"):
+        data.get("biotech", {})[key] = [normalize_company_row(item) for item in data.get("biotech", {}).get(key, [])]
+    data.get("radar", {})["biotech"] = [normalize_company_row(item) for item in data.get("radar", {}).get("biotech", [])]
+    validation = data.get("radar_validation", {}).get("mrna", {}).get("result")
+    if validation:
+        data["radar_validation"]["mrna"]["result"] = normalize_company_row(validation)
+    for category in ("ai", "biotech"):
+        data.get("monthly_picks", {})[category] = [normalize_company_row(item)
+                                                    for item in data.get("monthly_picks", {}).get(category, [])]
+        data.get("watchlists", {})[category] = [normalize_company_row(item)
+                                                 for item in data.get("watchlists", {}).get(category, [])]
+    for item in data.get("fda", []):
+        item.setdefault("ticker", "N/A")
+        item.setdefault("listing_status", "Non-public")
+        item.setdefault("exchange", "")
+    data["company_normalization"] = {
+        "schema_version": "global-company-identity-v1",
+        "ticker_policy": "U.S. canonical ticker; foreign primary ticker with exchange; Private for private companies; N/A for non-public organizations.",
+    }
+    return data
 
 
 def build():
@@ -1446,6 +1687,7 @@ def build():
         "watchlists": {"ai": watch_rows(AI_WATCH), "biotech": watch_rows(BIOTECH_WATCH)},
         "monthly_picks": MONTHLY_PICKS, "fda": fda, "markets": markets,
     }
+    data = normalize_investment_data(data)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(data, indent=2, ensure_ascii=True) + "\n")
     print(f"Updated {OUTPUT}")

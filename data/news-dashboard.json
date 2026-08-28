@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-28T21:26:24+00:00",
+  "updated_at": "2026-08-29T01:42:15+00:00",
   "top_investment_news": {
     "ai_technology": {
       "stories": [
@@ -8,6 +8,20 @@
           "headline": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027",
           "published_at": "2026-08-26T20:20+00:00",
           "source": "NVIDIA Newsroom",
+          "company": "NVIDIA",
+          "ticker": "NVDA",
+          "exchange": "",
+          "listing_status": "Public",
+          "related_companies": [],
+          "related_tickers": [],
+          "company_identities": [
+            {
+              "company": "NVIDIA",
+              "ticker": "NVDA",
+              "exchange": "",
+              "listing_status": "Public"
+            }
+          ],
           "source_type": "Primary/company source",
           "news_importance_score": 100,
           "event_type": "Financial Results",
@@ -88,18 +102,42 @@
               "revenue"
             ],
             "named_companies": [
-              "nvidia"
+              "NVIDIA"
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 4
         },
         {
-          "id": "228d0c0093cf0b1a14fa",
+          "id": "74014dea50fbf4f42c49",
           "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
           "published_at": "2026-08-26T21:05+00:00",
           "source": "NVIDIA Newsroom",
+          "company": "Amazon",
+          "ticker": "AMZN",
+          "exchange": "",
+          "listing_status": "Public",
+          "related_companies": [
+            "NVIDIA"
+          ],
+          "related_tickers": [
+            "NVDA"
+          ],
+          "company_identities": [
+            {
+              "company": "Amazon",
+              "ticker": "AMZN",
+              "exchange": "",
+              "listing_status": "Public"
+            },
+            {
+              "company": "NVIDIA",
+              "ticker": "NVDA",
+              "exchange": "",
+              "listing_status": "Public"
+            }
+          ],
           "source_type": "Primary/company source",
           "news_importance_score": 90,
           "event_type": "Capacity / Contract",
@@ -177,20 +215,43 @@
               "deploy"
             ],
             "named_companies": [
-              "aws",
-              "nvidia",
-              "amazon"
+              "Amazon",
+              "NVIDIA"
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 4
         },
         {
-          "id": "5f68b2853c80e559f4f9",
+          "id": "6b6ef738fdedc0dd1891",
           "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
           "published_at": "2026-08-24T15:00+00:00",
           "source": "NVIDIA Newsroom",
+          "company": "SpaceX",
+          "ticker": "Private",
+          "exchange": "",
+          "listing_status": "Private",
+          "related_companies": [
+            "NVIDIA"
+          ],
+          "related_tickers": [
+            "NVDA"
+          ],
+          "company_identities": [
+            {
+              "company": "SpaceX",
+              "ticker": "Private",
+              "exchange": "",
+              "listing_status": "Private"
+            },
+            {
+              "company": "NVIDIA",
+              "ticker": "NVDA",
+              "exchange": "",
+              "listing_status": "Public"
+            }
+          ],
           "source_type": "Primary/company source",
           "news_importance_score": 87,
           "event_type": "Capacity / Contract",
@@ -266,18 +327,43 @@
               "deploy"
             ],
             "named_companies": [
-              "nvidia"
+              "SpaceX",
+              "NVIDIA"
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 4
         },
         {
-          "id": "4431f55507a3a9109e4c",
+          "id": "3f1d530448241fa4be3d",
           "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
           "published_at": "2026-08-24T15:00+00:00",
           "source": "NVIDIA Newsroom",
+          "company": "NVIDIA",
+          "ticker": "NVDA",
+          "exchange": "",
+          "listing_status": "Public",
+          "related_companies": [
+            "Groq"
+          ],
+          "related_tickers": [
+            "Private"
+          ],
+          "company_identities": [
+            {
+              "company": "NVIDIA",
+              "ticker": "NVDA",
+              "exchange": "",
+              "listing_status": "Public"
+            },
+            {
+              "company": "Groq",
+              "ticker": "Private",
+              "exchange": "",
+              "listing_status": "Private"
+            }
+          ],
           "source_type": "Primary/company source",
           "news_importance_score": 82,
           "event_type": "Product / Platform",
@@ -346,20 +432,35 @@
               "deploy"
             ],
             "named_companies": [
-              "nvidia"
+              "NVIDIA",
+              "Groq"
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 4
         },
         {
-          "id": "d0520ba8dcdfc8fa1d6d",
+          "id": "96123b5a23e0becb5691",
           "headline": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says",
           "published_at": "2026-08-27T12:01+00:00",
           "source": "S&P Global",
+          "company": "S&P Global",
+          "ticker": "SPGI",
+          "exchange": "",
+          "listing_status": "Public",
+          "related_companies": [],
+          "related_tickers": [],
+          "company_identities": [
+            {
+              "company": "S&P Global",
+              "ticker": "SPGI",
+              "exchange": "",
+              "listing_status": "Public"
+            }
+          ],
           "source_type": "Primary research/industry source",
-          "news_importance_score": 70,
+          "news_importance_score": 80,
           "event_type": "Company Update",
           "new_information": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says.",
           "direction": "Expanding",
@@ -423,10 +524,12 @@
             "investment_event_terms": [
               "investment"
             ],
-            "named_companies": []
+            "named_companies": [
+              "S&P Global"
+            ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 4
         }
       ],
@@ -521,7 +624,31 @@
           "quality_schema_version": 4,
           "event_type": "Capacity / Contract",
           "direction": "Expanding",
-          "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems."
+          "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems.",
+          "company": "NVIDIA",
+          "ticker": "NVDA",
+          "exchange": "",
+          "listing_status": "Public",
+          "related_companies": [
+            "Groq"
+          ],
+          "related_tickers": [
+            "Private"
+          ],
+          "company_identities": [
+            {
+              "company": "NVIDIA",
+              "ticker": "NVDA",
+              "exchange": "",
+              "listing_status": "Public"
+            },
+            {
+              "company": "Groq",
+              "ticker": "Private",
+              "exchange": "",
+              "listing_status": "Private"
+            }
+          ]
         }
       ],
       "radar_evidence_interface": {
@@ -531,6 +658,20 @@
           {
             "event_id": "5f8fe4d36353fc328e64",
             "event_date": "2026-08-26T20:20+00:00",
+            "company": "NVIDIA",
+            "ticker": "NVDA",
+            "exchange": "",
+            "listing_status": "Public",
+            "related_companies": [],
+            "related_tickers": [],
+            "company_identities": [
+              {
+                "company": "NVIDIA",
+                "ticker": "NVDA",
+                "exchange": "",
+                "listing_status": "Public"
+              }
+            ],
             "event_type": "Financial Results",
             "direction": "Expanding",
             "confirmation_status": "CONFIRMING",
@@ -572,8 +713,32 @@
             "archived": false
           },
           {
-            "event_id": "228d0c0093cf0b1a14fa",
+            "event_id": "74014dea50fbf4f42c49",
             "event_date": "2026-08-26T21:05+00:00",
+            "company": "Amazon",
+            "ticker": "AMZN",
+            "exchange": "",
+            "listing_status": "Public",
+            "related_companies": [
+              "NVIDIA"
+            ],
+            "related_tickers": [
+              "NVDA"
+            ],
+            "company_identities": [
+              {
+                "company": "Amazon",
+                "ticker": "AMZN",
+                "exchange": "",
+                "listing_status": "Public"
+              },
+              {
+                "company": "NVIDIA",
+                "ticker": "NVDA",
+                "exchange": "",
+                "listing_status": "Public"
+              }
+            ],
             "event_type": "Capacity / Contract",
             "direction": "Mixed",
             "confirmation_status": "CONFIRMING",
@@ -611,8 +776,32 @@
             "archived": false
           },
           {
-            "event_id": "5f68b2853c80e559f4f9",
+            "event_id": "6b6ef738fdedc0dd1891",
             "event_date": "2026-08-24T15:00+00:00",
+            "company": "SpaceX",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private",
+            "related_companies": [
+              "NVIDIA"
+            ],
+            "related_tickers": [
+              "NVDA"
+            ],
+            "company_identities": [
+              {
+                "company": "SpaceX",
+                "ticker": "Private",
+                "exchange": "",
+                "listing_status": "Private"
+              },
+              {
+                "company": "NVIDIA",
+                "ticker": "NVDA",
+                "exchange": "",
+                "listing_status": "Public"
+              }
+            ],
             "event_type": "Capacity / Contract",
             "direction": "Mixed",
             "confirmation_status": "CONFIRMING",
@@ -648,8 +837,32 @@
             "archived": false
           },
           {
-            "event_id": "4431f55507a3a9109e4c",
+            "event_id": "3f1d530448241fa4be3d",
             "event_date": "2026-08-24T15:00+00:00",
+            "company": "NVIDIA",
+            "ticker": "NVDA",
+            "exchange": "",
+            "listing_status": "Public",
+            "related_companies": [
+              "Groq"
+            ],
+            "related_tickers": [
+              "Private"
+            ],
+            "company_identities": [
+              {
+                "company": "NVIDIA",
+                "ticker": "NVDA",
+                "exchange": "",
+                "listing_status": "Public"
+              },
+              {
+                "company": "Groq",
+                "ticker": "Private",
+                "exchange": "",
+                "listing_status": "Private"
+              }
+            ],
             "event_type": "Product / Platform",
             "direction": "Expanding",
             "confirmation_status": "CONFIRMING",
@@ -681,12 +894,26 @@
             "archived": false
           },
           {
-            "event_id": "d0520ba8dcdfc8fa1d6d",
+            "event_id": "96123b5a23e0becb5691",
             "event_date": "2026-08-27T12:01+00:00",
+            "company": "S&P Global",
+            "ticker": "SPGI",
+            "exchange": "",
+            "listing_status": "Public",
+            "related_companies": [],
+            "related_tickers": [],
+            "company_identities": [
+              {
+                "company": "S&P Global",
+                "ticker": "SPGI",
+                "exchange": "",
+                "listing_status": "Public"
+              }
+            ],
             "event_type": "Company Update",
             "direction": "Expanding",
             "confirmation_status": "CONFIRMING",
-            "news_importance_score": 70,
+            "news_importance_score": 80,
             "new_information": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says.",
             "affected_trends": [
               "AI Models/Applications",
@@ -716,6 +943,30 @@
           {
             "event_id": "2e5bf4fcda9170846987",
             "event_date": "2026-08-25T15:00+00:00",
+            "company": "NVIDIA",
+            "ticker": "NVDA",
+            "exchange": "",
+            "listing_status": "Public",
+            "related_companies": [
+              "Groq"
+            ],
+            "related_tickers": [
+              "Private"
+            ],
+            "company_identities": [
+              {
+                "company": "NVIDIA",
+                "ticker": "NVDA",
+                "exchange": "",
+                "listing_status": "Public"
+              },
+              {
+                "company": "Groq",
+                "ticker": "Private",
+                "exchange": "",
+                "listing_status": "Private"
+              }
+            ],
             "event_type": "Capacity / Contract",
             "direction": "Expanding",
             "confirmation_status": "NEW",
@@ -784,6 +1035,18 @@
           "headline": "Cytokinetics details trial win for what could be its next approval",
           "company": "Cytokinetics",
           "ticker": "CYTK",
+          "exchange": "",
+          "listing_status": "Public",
+          "related_companies": [],
+          "related_tickers": [],
+          "company_identities": [
+            {
+              "company": "Cytokinetics",
+              "ticker": "CYTK",
+              "exchange": "",
+              "listing_status": "Public"
+            }
+          ],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "Clinical Results",
@@ -844,14 +1107,36 @@
             "Indication",
             "Development stage"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 1
         },
         {
-          "id": "c9852a158f80c64a6d47",
+          "id": "88df1ca77ccc01abe789",
           "headline": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant",
           "company": "Implantica",
-          "ticker": "Missing",
+          "ticker": "IMP A SDB:STO",
+          "exchange": "Nasdaq Stockholm",
+          "listing_status": "Public",
+          "related_companies": [
+            "U.S. Food and Drug Administration"
+          ],
+          "related_tickers": [
+            "N/A"
+          ],
+          "company_identities": [
+            {
+              "company": "Implantica",
+              "ticker": "IMP A SDB:STO",
+              "exchange": "Nasdaq Stockholm",
+              "listing_status": "Public"
+            },
+            {
+              "company": "U.S. Food and Drug Administration",
+              "ticker": "N/A",
+              "exchange": "",
+              "listing_status": "Non-public"
+            }
+          ],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "Regulatory / FDA",
@@ -907,18 +1192,39 @@
             }
           },
           "missing_data": [
-            "Company/ticker",
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 1
         },
         {
-          "id": "6139cb4372b0264acd6a",
+          "id": "4d2876dc62820dadfa9d",
           "headline": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch",
-          "company": "SK Biopharma",
-          "ticker": "Missing",
+          "company": "SK Biopharmaceuticals",
+          "ticker": "326030:KRX",
+          "exchange": "KRX",
+          "listing_status": "Public",
+          "related_companies": [
+            "Biohaven"
+          ],
+          "related_tickers": [
+            "BHVN"
+          ],
+          "company_identities": [
+            {
+              "company": "SK Biopharmaceuticals",
+              "ticker": "326030:KRX",
+              "exchange": "KRX",
+              "listing_status": "Public"
+            },
+            {
+              "company": "Biohaven",
+              "ticker": "BHVN",
+              "exchange": "",
+              "listing_status": "Public"
+            }
+          ],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "M&A / Licensing / Partnership",
@@ -975,18 +1281,47 @@
             }
           },
           "missing_data": [
-            "Company/ticker",
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 1
         },
         {
-          "id": "76ff191373099373d457",
+          "id": "fddb373f00c197d87dd5",
           "headline": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug",
           "company": "Roche",
-          "ticker": "RHHBY",
+          "ticker": "ROP:SIX",
+          "exchange": "SIX",
+          "listing_status": "Public",
+          "related_companies": [
+            "U.S. Food and Drug Administration",
+            "Jazz Pharmaceuticals"
+          ],
+          "related_tickers": [
+            "N/A",
+            "JAZZ"
+          ],
+          "company_identities": [
+            {
+              "company": "Roche",
+              "ticker": "ROP:SIX",
+              "exchange": "SIX",
+              "listing_status": "Public"
+            },
+            {
+              "company": "U.S. Food and Drug Administration",
+              "ticker": "N/A",
+              "exchange": "",
+              "listing_status": "Non-public"
+            },
+            {
+              "company": "Jazz Pharmaceuticals",
+              "ticker": "JAZZ",
+              "exchange": "",
+              "listing_status": "Public"
+            }
+          ],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "Regulatory / FDA",
@@ -1045,16 +1380,28 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 1
         }
       ],
       "important_news_archive": [
         {
-          "id": "bd0341ac4f69c1bd3460",
+          "id": "c62db9833665aeef317a",
           "headline": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing",
-          "company": "Missing / not established",
-          "ticker": "Missing",
+          "company": "Jiangsu provincial government",
+          "ticker": "N/A",
+          "exchange": "",
+          "listing_status": "Non-public",
+          "related_companies": [],
+          "related_tickers": [],
+          "company_identities": [
+            {
+              "company": "Jiangsu provincial government",
+              "ticker": "N/A",
+              "exchange": "",
+              "listing_status": "Non-public"
+            }
+          ],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "M&A / Licensing / Partnership",
@@ -1063,7 +1410,7 @@
           "previous_state": "Missing / not established",
           "new_state": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing.",
           "direction": "Neutral / not established",
-          "news_importance_score": 69,
+          "news_importance_score": 77,
           "affected_radar_factors": [
             "Biotech Sector Context"
           ],
@@ -1092,7 +1439,7 @@
               "weight": 30
             },
             "company_sector_impact": {
-              "score": 3,
+              "score": 11,
               "weight": 25
             },
             "novelty": {
@@ -1110,11 +1457,10 @@
             }
           },
           "missing_data": [
-            "Company/ticker",
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 1
         },
         {
@@ -1122,6 +1468,11 @@
           "headline": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO",
           "company": "Missing / not established",
           "ticker": "Missing",
+          "exchange": "",
+          "listing_status": "Unknown",
+          "related_companies": [],
+          "related_tickers": [],
+          "company_identities": [],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "Capital Markets / Financing",
@@ -1182,14 +1533,26 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 1
         },
         {
-          "id": "3bdd5e00727a729f9fd2",
+          "id": "a47f3f902bf001c8a769",
           "headline": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal",
-          "company": "Missing / not established",
-          "ticker": "Missing",
+          "company": "Sentivera",
+          "ticker": "Private",
+          "exchange": "",
+          "listing_status": "Private",
+          "related_companies": [],
+          "related_tickers": [],
+          "company_identities": [
+            {
+              "company": "Sentivera",
+              "ticker": "Private",
+              "exchange": "",
+              "listing_status": "Private"
+            }
+          ],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "M&A / Licensing / Partnership",
@@ -1198,7 +1561,7 @@
           "previous_state": "Missing / not established",
           "new_state": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal.",
           "direction": "Neutral / not established",
-          "news_importance_score": 69,
+          "news_importance_score": 77,
           "affected_radar_factors": [
             "Corporate Strategy"
           ],
@@ -1227,7 +1590,7 @@
               "weight": 30
             },
             "company_sector_impact": {
-              "score": 8,
+              "score": 16,
               "weight": 25
             },
             "novelty": {
@@ -1245,18 +1608,29 @@
             }
           },
           "missing_data": [
-            "Company/ticker",
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-29T01:42+00:00",
           "quality_schema_version": 1
         },
         {
-          "id": "b20b5016afe284675cc2",
+          "id": "25049850db119f5d4ad9",
           "headline": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees",
-          "company": "Missing / not established",
-          "ticker": "Missing",
+          "company": "Cellares",
+          "ticker": "Private",
+          "exchange": "",
+          "listing_status": "Private",
+          "related_companies": [],
+          "related_tickers": [],
+          "company_identities": [
+            {
+              "company": "Cellares",
+              "ticker": "Private",
+              "exchange": "",
+              "listing_status": "Private"
+            }
+          ],
           "drug_program": "Missing / not established",
           "indication": "Missing / not established",
           "event_type": "Commercial Event",
@@ -1265,7 +1639,7 @@
           "previous_state": "Missing / not established",
           "new_state": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees.",
           "direction": "Neutral / not established",
-          "news_importance_score": 65,
+          "news_importance_score": 73,
           "affected_radar_factors": [
             "Commercialization",
             "Platform Validation"
@@ -1295,7 +1669,7 @@
               "weight": 30
             },
             "company_sector_impact": {
-              "score": 10,
+              "score": 18,
               "weight": 25
             },
             "novelty": {
@@ -1313,12 +1687,11 @@
             }
           },
           "missing_data": [
-            "Company/ticker",
             "Drug/program",
             "Indication",
             "Development stage"
           ],
-          "first_seen": "2026-08-28T21:26+00:00",
+          "first_seen": "2026-08-28T20:59+00:00",
           "quality_schema_version": 1
         }
       ],
@@ -1331,6 +1704,18 @@
             "published_at": "2026-08-28T10:17+00:00",
             "company": "Cytokinetics",
             "ticker": "CYTK",
+            "exchange": "",
+            "listing_status": "Public",
+            "related_companies": [],
+            "related_tickers": [],
+            "company_identities": [
+              {
+                "company": "Cytokinetics",
+                "ticker": "CYTK",
+                "exchange": "",
+                "listing_status": "Public"
+              }
+            ],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "Clinical Results",
@@ -1362,10 +1747,32 @@
             "archived": false
           },
           {
-            "id": "c9852a158f80c64a6d47",
+            "id": "88df1ca77ccc01abe789",
             "published_at": "2026-08-25T11:48+00:00",
             "company": "Implantica",
-            "ticker": "Missing",
+            "ticker": "IMP A SDB:STO",
+            "exchange": "Nasdaq Stockholm",
+            "listing_status": "Public",
+            "related_companies": [
+              "U.S. Food and Drug Administration"
+            ],
+            "related_tickers": [
+              "N/A"
+            ],
+            "company_identities": [
+              {
+                "company": "Implantica",
+                "ticker": "IMP A SDB:STO",
+                "exchange": "Nasdaq Stockholm",
+                "listing_status": "Public"
+              },
+              {
+                "company": "U.S. Food and Drug Administration",
+                "ticker": "N/A",
+                "exchange": "",
+                "listing_status": "Non-public"
+              }
+            ],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "Regulatory / FDA",
@@ -1396,10 +1803,32 @@
             "archived": false
           },
           {
-            "id": "6139cb4372b0264acd6a",
+            "id": "4d2876dc62820dadfa9d",
             "published_at": "2026-08-26T08:47+00:00",
-            "company": "SK Biopharma",
-            "ticker": "Missing",
+            "company": "SK Biopharmaceuticals",
+            "ticker": "326030:KRX",
+            "exchange": "KRX",
+            "listing_status": "Public",
+            "related_companies": [
+              "Biohaven"
+            ],
+            "related_tickers": [
+              "BHVN"
+            ],
+            "company_identities": [
+              {
+                "company": "SK Biopharmaceuticals",
+                "ticker": "326030:KRX",
+                "exchange": "KRX",
+                "listing_status": "Public"
+              },
+              {
+                "company": "Biohaven",
+                "ticker": "BHVN",
+                "exchange": "",
+                "listing_status": "Public"
+              }
+            ],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "M&A / Licensing / Partnership",
@@ -1431,10 +1860,40 @@
             "archived": false
           },
           {
-            "id": "76ff191373099373d457",
+            "id": "fddb373f00c197d87dd5",
             "published_at": "2026-08-27T12:00+00:00",
             "company": "Roche",
-            "ticker": "RHHBY",
+            "ticker": "ROP:SIX",
+            "exchange": "SIX",
+            "listing_status": "Public",
+            "related_companies": [
+              "U.S. Food and Drug Administration",
+              "Jazz Pharmaceuticals"
+            ],
+            "related_tickers": [
+              "N/A",
+              "JAZZ"
+            ],
+            "company_identities": [
+              {
+                "company": "Roche",
+                "ticker": "ROP:SIX",
+                "exchange": "SIX",
+                "listing_status": "Public"
+              },
+              {
+                "company": "U.S. Food and Drug Administration",
+                "ticker": "N/A",
+                "exchange": "",
+                "listing_status": "Non-public"
+              },
+              {
+                "company": "Jazz Pharmaceuticals",
+                "ticker": "JAZZ",
+                "exchange": "",
+                "listing_status": "Public"
+              }
+            ],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "Regulatory / FDA",
@@ -1465,10 +1924,22 @@
             "archived": false
           },
           {
-            "id": "bd0341ac4f69c1bd3460",
+            "id": "c62db9833665aeef317a",
             "published_at": "2026-08-26T16:48+00:00",
-            "company": "Missing / not established",
-            "ticker": "Missing",
+            "company": "Jiangsu provincial government",
+            "ticker": "N/A",
+            "exchange": "",
+            "listing_status": "Non-public",
+            "related_companies": [],
+            "related_tickers": [],
+            "company_identities": [
+              {
+                "company": "Jiangsu provincial government",
+                "ticker": "N/A",
+                "exchange": "",
+                "listing_status": "Non-public"
+              }
+            ],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "M&A / Licensing / Partnership",
@@ -1477,7 +1948,7 @@
             "previous_state": "Missing / not established",
             "new_state": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing.",
             "direction": "Neutral / not established",
-            "news_importance_score": 69,
+            "news_importance_score": 77,
             "affected_radar_factors": [
               "Biotech Sector Context"
             ],
@@ -1503,6 +1974,11 @@
             "published_at": "2026-08-26T13:45+00:00",
             "company": "Missing / not established",
             "ticker": "Missing",
+            "exchange": "",
+            "listing_status": "Unknown",
+            "related_companies": [],
+            "related_tickers": [],
+            "company_identities": [],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "Capital Markets / Financing",
@@ -1534,10 +2010,22 @@
             "archived": true
           },
           {
-            "id": "3bdd5e00727a729f9fd2",
+            "id": "a47f3f902bf001c8a769",
             "published_at": "2026-08-25T13:24+00:00",
-            "company": "Missing / not established",
-            "ticker": "Missing",
+            "company": "Sentivera",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private",
+            "related_companies": [],
+            "related_tickers": [],
+            "company_identities": [
+              {
+                "company": "Sentivera",
+                "ticker": "Private",
+                "exchange": "",
+                "listing_status": "Private"
+              }
+            ],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "M&A / Licensing / Partnership",
@@ -1546,7 +2034,7 @@
             "previous_state": "Missing / not established",
             "new_state": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal.",
             "direction": "Neutral / not established",
-            "news_importance_score": 69,
+            "news_importance_score": 77,
             "affected_radar_factors": [
               "Corporate Strategy"
             ],
@@ -1568,10 +2056,22 @@
             "archived": true
           },
           {
-            "id": "b20b5016afe284675cc2",
+            "id": "25049850db119f5d4ad9",
             "published_at": "2026-08-24T21:26+00:00",
-            "company": "Missing / not established",
-            "ticker": "Missing",
+            "company": "Cellares",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private",
+            "related_companies": [],
+            "related_tickers": [],
+            "company_identities": [
+              {
+                "company": "Cellares",
+                "ticker": "Private",
+                "exchange": "",
+                "listing_status": "Private"
+              }
+            ],
             "drug_program": "Missing / not established",
             "indication": "Missing / not established",
             "event_type": "Commercial Event",
@@ -1580,7 +2080,7 @@
             "previous_state": "Missing / not established",
             "new_state": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees.",
             "direction": "Neutral / not established",
-            "news_importance_score": 65,
+            "news_importance_score": 73,
             "affected_radar_factors": [
               "Commercialization",
               "Platform Validation"
@@ -1604,7 +2104,7 @@
           }
         ]
       },
-      "selection_status": "Selected 4 prominent events; 4 new events added to Evidence History.",
+      "selection_status": "Selected 4 prominent events; 3 new events added to Evidence History.",
       "methodology": {
         "engine_version": "biotech-news-v1",
         "prominent_threshold": 80,
@@ -1625,18 +2125,18 @@
   },
   "summaries": {
     "ai": "Key developments: NVIDIA Announces Upcoming Event for Financial Community; AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI; NVIDIA Announces Financial Results for Second Quarter Fiscal 2027.",
-    "biotech": "Key developments: BioNTech-Genentech cancer vax records more deaths than control in scrapped ph. 2 test; Akeso CEO looks beyond lung cancer with biliary tract win, counters ivonescimab debate; Layoff Tracker: Cellares cuts jobs after losing pharma customer.",
-    "market": "Key developments: US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower; Nasdaq, S&P 500, Dow Futures Edge Higher, Brushing Off Fresh US-Iran Clashes As Earnings Take Center Stage: TSLA, NOW, GOOGL, NOK In Focus; Stock Market Today: S&P 500, Dow Futures Rise, Nasdaq 100 Slips Ahead of Kevin Warsh's Jackson Hole Speec.",
-    "market_movers": "Dow Jones led tracked indexes at -0.02% today; Russell 2000 was weakest at -1.39%. Key developments: US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower; Nasdaq, S&P 500, Dow Futures Edge Higher, Brushing Off Fresh US-Iran Clashes As Earnings Take Center Stage: TSLA, NOW, GOOGL, NOK In Focus; Stock Market Today: S&P 500, Dow Futures Rise, Nasdaq 100 Slips Ahead of Kevin Warsh's Jackson Hole Speec."
+    "biotech": "Key developments: BioNTech-Genentech cancer vax records more deaths than control in scrapped ph. 2 test; Oncolys BioPharma surges on publication of censavudine trial results in overseas medical journal; Layoff Tracker: Cellares cuts jobs after losing pharma customer.",
+    "market": "Key developments: Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers; Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight; US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower.",
+    "market_movers": "Dow Jones led tracked indexes at -0.02% today; Russell 2000 was weakest at -1.39%. Key developments: Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers; Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight; US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower."
   },
   "takeaways": [
     "NVIDIA Announces Upcoming Event for Financial Community",
     "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
     "BioNTech-Genentech cancer vax records more deaths than control in scrapped ph. 2 test - Fierce Biotech",
-    "Akeso CEO looks beyond lung cancer with biliary tract win, counters ivonescimab debate - Fierce Pharma",
+    "Oncolys BioPharma surges on publication of censavudine trial results in overseas medical journal - finance.biggo.com",
     "Anavex Life Sciences Reports Third Fiscal Quarter 2026 Financial Results and Business Update - Anavex Life Sciences",
     "Gildeuretinol gains Japan orphan designation for Stargardt disease - Ophthalmology Times",
-    "US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower - NDTV Profit"
+    "Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers - Investor's Business Daily"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -1646,7 +2146,11 @@
         "sector": "AI Chips",
         "role": "Accelerated computing platform and dominant AI accelerator ecosystem",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "AMD",
@@ -1654,7 +2158,11 @@
         "sector": "AI Chips",
         "role": "Alternative accelerators and data-center CPUs",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "TSMC",
@@ -1662,7 +2170,11 @@
         "sector": "Semiconductor Manufacturing",
         "role": "Leading-edge foundry capacity for advanced AI silicon",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Broadcom",
@@ -1670,7 +2182,11 @@
         "sector": "Networking / Custom Silicon",
         "role": "AI networking and hyperscaler custom accelerators",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Micron",
@@ -1678,7 +2194,11 @@
         "sector": "Memory",
         "role": "High-bandwidth memory required by AI accelerators",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Arista Networks",
@@ -1686,7 +2206,11 @@
         "sector": "AI Networking",
         "role": "High-speed Ethernet for scale-out AI clusters",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Vertiv",
@@ -1694,7 +2218,11 @@
         "sector": "Data Centers / Power",
         "role": "Cooling and power systems for high-density compute",
         "market_cap": "Mid Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Dell Technologies",
@@ -1702,7 +2230,11 @@
         "sector": "AI Servers",
         "role": "Enterprise AI servers and integrated infrastructure",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Super Micro Computer",
@@ -1710,7 +2242,11 @@
         "sector": "AI Servers",
         "role": "Rack-scale, liquid-cooled AI server systems",
         "market_cap": "Mid Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "CoreWeave",
@@ -1718,7 +2254,11 @@
         "sector": "GPU Cloud",
         "role": "Specialized cloud capacity optimized for AI workloads",
         "market_cap": "Mid Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ],
     "platform_leaders": [
@@ -1728,7 +2268,11 @@
         "sector": "Cloud / Foundation Models",
         "role": "Azure AI distribution and OpenAI ecosystem",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Alphabet",
@@ -1736,7 +2280,11 @@
         "sector": "Cloud / Foundation Models",
         "role": "Gemini models, TPU infrastructure, and global products",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Amazon",
@@ -1744,7 +2292,11 @@
         "sector": "Cloud / Foundation Models",
         "role": "AWS infrastructure and multi-model enterprise platform",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Meta Platforms",
@@ -1752,7 +2304,11 @@
         "sector": "Foundation Models",
         "role": "Open model ecosystem and consumer distribution",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "OpenAI",
@@ -1760,7 +2316,11 @@
         "sector": "Foundation Models",
         "role": "Frontier model and developer platform",
         "market_cap": "Private",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Anthropic",
@@ -1768,7 +2328,11 @@
         "sector": "Foundation Models",
         "role": "Enterprise-focused frontier models and safety research",
         "market_cap": "Private",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "xAI",
@@ -1776,7 +2340,11 @@
         "sector": "Foundation Models",
         "role": "Rapidly scaling compute, models, and product distribution",
         "market_cap": "Private",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       }
     ],
     "emerging": [
@@ -1787,7 +2355,12 @@
         "thesis": "Wafer-scale systems can lower training and inference latency for specialized workloads.",
         "market_cap": "Private",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "Private",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 2,
@@ -1796,7 +2369,12 @@
         "thesis": "Purpose-built inference architecture targets predictable, low-latency model serving.",
         "market_cap": "Private",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "Private",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 3,
@@ -1805,7 +2383,12 @@
         "thesis": "General-purpose humanoids could translate foundation-model progress into physical labor.",
         "market_cap": "Private",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "Private",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 4,
@@ -1814,7 +2397,12 @@
         "thesis": "Connectivity silicon addresses bandwidth and memory bottlenecks inside AI systems.",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "ALAB",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 5,
@@ -1823,7 +2411,12 @@
         "thesis": "Clinical data and diagnostics platform can compound as multimodal healthcare AI expands.",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "TEM",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 6,
@@ -1832,7 +2425,12 @@
         "thesis": "Driver-as-a-service model provides focused exposure to autonomous trucking.",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "AUR",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 7,
@@ -1841,7 +2439,12 @@
         "thesis": "Global edge network can host inference near users while securing AI applications.",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "NET",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 8,
@@ -1850,7 +2453,12 @@
         "thesis": "Connected-operations data creates a base for AI-led fleet and physical-asset optimization.",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "IOT",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 9,
@@ -1859,7 +2467,12 @@
         "thesis": "Cyber-resilience and protected enterprise data become more valuable as AI attack surfaces grow.",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "RBRK",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 10,
@@ -1868,7 +2481,12 @@
         "thesis": "Evaluation and high-quality training data remain critical infrastructure for advanced models.",
         "market_cap": "Private",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "Private",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 11,
@@ -1877,7 +2495,12 @@
         "thesis": "Generalist robot models target cross-platform embodied intelligence.",
         "market_cap": "Private",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "Private",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 12,
@@ -1886,7 +2509,12 @@
         "thesis": "Advanced nuclear development offers long-duration clean power exposure for data centers.",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "OKLO",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ],
     "demand_drivers": [
@@ -1894,71 +2522,423 @@
         "rank": 1,
         "area": "AI Compute",
         "why": "Training and inference workloads continue to scale in size, frequency, and model complexity.",
-        "public_companies": "NVIDIA, AMD, Broadcom",
-        "emerging_companies": "Cerebras, Groq, Tenstorrent"
+        "public_companies": "NVIDIA (NVDA), AMD (AMD), Broadcom (AVGO)",
+        "emerging_companies": "Cerebras Systems (Private), Groq (Private), Tenstorrent (Private)",
+        "public_company_identities": [
+          {
+            "company": "NVIDIA",
+            "ticker": "NVDA",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "AMD",
+            "ticker": "AMD",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Broadcom",
+            "ticker": "AVGO",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Cerebras Systems",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "Groq",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "Tenstorrent",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 2,
         "area": "Advanced Semiconductors",
         "why": "AI systems require leading-edge logic, packaging, and high-bandwidth memory.",
-        "public_companies": "TSMC, ASML, Micron",
-        "emerging_companies": "Astera Labs, Celestial AI"
+        "public_companies": "TSMC (TSM), ASML (ASML), Micron (MU)",
+        "emerging_companies": "Astera Labs (ALAB), Celestial AI (Private)",
+        "public_company_identities": [
+          {
+            "company": "TSMC",
+            "ticker": "TSM",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "ASML",
+            "ticker": "ASML",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Micron",
+            "ticker": "MU",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Astera Labs",
+            "ticker": "ALAB",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Celestial AI",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 3,
         "area": "Data Centers",
         "why": "Accelerated clusters need purpose-built facilities, cooling, and dense rack integration.",
-        "public_companies": "Vertiv, Equinix, Dell",
-        "emerging_companies": "CoreWeave, Crusoe"
+        "public_companies": "Vertiv (VRT), Equinix (EQIX), Dell Technologies (DELL)",
+        "emerging_companies": "CoreWeave (CRWV), Crusoe (Private)",
+        "public_company_identities": [
+          {
+            "company": "Vertiv",
+            "ticker": "VRT",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Equinix",
+            "ticker": "EQIX",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Dell Technologies",
+            "ticker": "DELL",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "CoreWeave",
+            "ticker": "CRWV",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Crusoe",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 4,
         "area": "Energy & Power Infrastructure",
         "why": "AI campuses strain grids and create demand for generation, storage, and transmission.",
-        "public_companies": "Constellation, GE Vernova, Eaton",
-        "emerging_companies": "Oklo, Fervo Energy, Form Energy"
+        "public_companies": "Constellation Energy (CEG), GE Vernova (GEV), Eaton (ETN)",
+        "emerging_companies": "Oklo (OKLO), Fervo Energy (Private), Form Energy (Private)",
+        "public_company_identities": [
+          {
+            "company": "Constellation Energy",
+            "ticker": "CEG",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "GE Vernova",
+            "ticker": "GEV",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Eaton",
+            "ticker": "ETN",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Oklo",
+            "ticker": "OKLO",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Fervo Energy",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "Form Energy",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 5,
         "area": "AI Networking",
         "why": "Distributed training requires faster, lower-latency movement of data between accelerators.",
-        "public_companies": "Broadcom, Arista, Marvell",
-        "emerging_companies": "Lightmatter, Celestial AI"
+        "public_companies": "Broadcom (AVGO), Arista Networks (ANET), Marvell Technology (MRVL)",
+        "emerging_companies": "Lightmatter (Private), Celestial AI (Private)",
+        "public_company_identities": [
+          {
+            "company": "Broadcom",
+            "ticker": "AVGO",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Arista Networks",
+            "ticker": "ANET",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Marvell Technology",
+            "ticker": "MRVL",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Lightmatter",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "Celestial AI",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 6,
         "area": "Robotics",
         "why": "Better perception and foundation models are expanding addressable tasks in factories and services.",
-        "public_companies": "Tesla, ABB, Teradyne",
-        "emerging_companies": "Figure AI, Physical Intelligence"
+        "public_companies": "Tesla (TSLA), ABB (ABB), Teradyne (TER)",
+        "emerging_companies": "Figure AI (Private), Physical Intelligence (Private)",
+        "public_company_identities": [
+          {
+            "company": "Tesla",
+            "ticker": "TSLA",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "ABB",
+            "ticker": "ABB",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Teradyne",
+            "ticker": "TER",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Figure AI",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "Physical Intelligence",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 7,
         "area": "Autonomous Systems",
         "why": "Improving models and lower compute costs support commercial autonomy in transport and defense.",
-        "public_companies": "Tesla, Mobileye, Aurora",
-        "emerging_companies": "Waabi, Shield AI"
+        "public_companies": "Tesla (TSLA), Mobileye (MBLY), Aurora Innovation (AUR)",
+        "emerging_companies": "Waabi (Private), Shield AI (Private)",
+        "public_company_identities": [
+          {
+            "company": "Tesla",
+            "ticker": "TSLA",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Mobileye",
+            "ticker": "MBLY",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Aurora Innovation",
+            "ticker": "AUR",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Waabi",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "Shield AI",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 8,
         "area": "AI Cybersecurity",
         "why": "AI increases attack volume while creating new identity, model, and data-protection requirements.",
-        "public_companies": "CrowdStrike, Palo Alto, Cloudflare",
-        "emerging_companies": "Wiz, HiddenLayer"
+        "public_companies": "CrowdStrike (CRWD), Palo Alto Networks (PANW), Cloudflare (NET)",
+        "emerging_companies": "Wiz (Private), HiddenLayer (Private)",
+        "public_company_identities": [
+          {
+            "company": "CrowdStrike",
+            "ticker": "CRWD",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Palo Alto Networks",
+            "ticker": "PANW",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Cloudflare",
+            "ticker": "NET",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Wiz",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "HiddenLayer",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 9,
         "area": "Edge AI",
         "why": "On-device inference reduces latency, bandwidth use, and privacy exposure.",
-        "public_companies": "Qualcomm, Arm, Apple",
-        "emerging_companies": "Hailo, SiMa.ai"
+        "public_companies": "Qualcomm (QCOM), Arm Holdings (ARM), Apple (AAPL)",
+        "emerging_companies": "Hailo (Private), SiMa.ai (Private)",
+        "public_company_identities": [
+          {
+            "company": "Qualcomm",
+            "ticker": "QCOM",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Arm Holdings",
+            "ticker": "ARM",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Apple",
+            "ticker": "AAPL",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Hailo",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "SiMa.ai",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       },
       {
         "rank": 10,
         "area": "AI Healthcare",
         "why": "Multimodal clinical data can improve diagnostics, discovery, and operational efficiency.",
-        "public_companies": "Tempus AI, GE HealthCare, Illumina",
-        "emerging_companies": "Owkin, PathAI"
+        "public_companies": "Tempus AI (TEM), GE HealthCare (GEHC), Illumina (ILMN)",
+        "emerging_companies": "Owkin (Private), PathAI (Private)",
+        "public_company_identities": [
+          {
+            "company": "Tempus AI",
+            "ticker": "TEM",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "GE HealthCare",
+            "ticker": "GEHC",
+            "exchange": "",
+            "listing_status": "Public"
+          },
+          {
+            "company": "Illumina",
+            "ticker": "ILMN",
+            "exchange": "",
+            "listing_status": "Public"
+          }
+        ],
+        "emerging_company_identities": [
+          {
+            "company": "Owkin",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          },
+          {
+            "company": "PathAI",
+            "ticker": "Private",
+            "exchange": "",
+            "listing_status": "Private"
+          }
+        ]
       }
     ]
   },
@@ -1971,7 +2951,11 @@
         "proven_therapy": "TRIKAFTA; CASGEVY",
         "pipeline": "Pain, kidney disease, cell therapy",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Sarepta Therapeutics",
@@ -1980,7 +2964,11 @@
         "proven_therapy": "Duchenne muscular dystrophy therapies",
         "pipeline": "Gene therapy and RNA medicines",
         "market_cap": "Mid Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Regeneron",
@@ -1989,7 +2977,11 @@
         "proven_therapy": "EYLEA; Dupixent",
         "pipeline": "Oncology, immunology, genetic medicines",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Alnylam Pharmaceuticals",
@@ -1998,7 +2990,11 @@
         "proven_therapy": "ONPATTRO; AMVUTTRA",
         "pipeline": "Cardiometabolic and rare disease",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "BioMarin Pharmaceutical",
@@ -2007,7 +3003,11 @@
         "proven_therapy": "VOXZOGO; enzyme therapies",
         "pipeline": "Genetic disease programs",
         "market_cap": "Mid Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Ultragenyx Pharmaceutical",
@@ -2016,7 +3016,11 @@
         "proven_therapy": "Multiple metabolic disease therapies",
         "pipeline": "Gene therapy and metabolic disease",
         "market_cap": "Mid Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "argenx",
@@ -2025,7 +3029,11 @@
         "proven_therapy": "VYVGART",
         "pipeline": "Broad antibody-fragment indication expansion",
         "market_cap": "Large Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Ionis Pharmaceuticals",
@@ -2034,7 +3042,11 @@
         "proven_therapy": "RNA-targeted medicines",
         "pipeline": "Neurology and cardiometabolic disease",
         "market_cap": "Mid Cap",
-        "growth_potential": "High"
+        "growth_potential": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ],
     "emerging": [
@@ -2047,7 +3059,12 @@
         "catalysts": "Commercial execution and pipeline data",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "CRSP",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 2,
@@ -2058,7 +3075,12 @@
         "catalysts": "Late-stage clinical readouts",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "NTLA",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 3,
@@ -2069,7 +3091,12 @@
         "catalysts": "Clinical proof-of-concept data",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "BEAM",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 4,
@@ -2080,7 +3107,12 @@
         "catalysts": "Early clinical updates",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "PRME",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 5,
@@ -2091,7 +3123,12 @@
         "catalysts": "Launch execution and label expansion",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "KRYS",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 6,
@@ -2102,7 +3139,12 @@
         "catalysts": "Regulatory and pivotal milestones",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "RCKT",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 7,
@@ -2113,7 +3155,12 @@
         "catalysts": "Dose and durability updates",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "STOK",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 8,
@@ -2124,7 +3171,12 @@
         "catalysts": "Regulatory and launch preparation",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "SRRK",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 9,
@@ -2135,7 +3187,12 @@
         "catalysts": "Phase 2 clinical data",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "MAZE",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 10,
@@ -2146,7 +3203,12 @@
         "catalysts": "IND and partnership progress",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "MGX",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 11,
@@ -2157,7 +3219,12 @@
         "catalysts": "Clinical and partnership updates",
         "market_cap": "Private",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "Private",
+        "exchange": "",
+        "listing_status": "Private",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 12,
@@ -2168,7 +3235,12 @@
         "catalysts": "Clinical trial initiation and data",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "PRQR",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ]
   },
@@ -2205,7 +3277,7 @@
         "catalyst_score": 67,
         "upcoming_catalyst": "FDA acceptance of the lonvo-z BLA \u2014 Second half of 2026",
         "opportunity_status": "Monitoring",
-        "score_as_of": "2026-08-28",
+        "score_as_of": "2026-08-29",
         "engine_version": "biotech-catalyst-radar-v1",
         "score_components": [
           {
@@ -2311,7 +3383,11 @@
           "Expectation Gap",
           "Positioning / Technical Setup"
         ],
-        "data_completeness": 75
+        "data_completeness": 75,
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "ticker": "BEAM",
@@ -2349,7 +3425,7 @@
         "catalyst_score": 63,
         "upcoming_catalyst": "Updated Phase 1/2 BEAM-302 data at ERS \u2014 September 8, 2026",
         "opportunity_status": "Monitoring",
-        "score_as_of": "2026-08-28",
+        "score_as_of": "2026-08-29",
         "engine_version": "biotech-catalyst-radar-v1",
         "score_components": [
           {
@@ -2475,7 +3551,11 @@
           "Expectation Gap",
           "Positioning / Technical Setup"
         ],
-        "data_completeness": 75
+        "data_completeness": 75,
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "ticker": "MAZE",
@@ -2508,7 +3588,7 @@
         "catalyst_score": 58,
         "upcoming_catalyst": "Additional HORIZON Phase 2 cohort data \u2014 Late 2026 / early 2027",
         "opportunity_status": "Monitoring",
-        "score_as_of": "2026-08-28",
+        "score_as_of": "2026-08-29",
         "engine_version": "biotech-catalyst-radar-v1",
         "score_components": [
           {
@@ -2614,7 +3694,11 @@
           "Expectation Gap",
           "Positioning / Technical Setup"
         ],
-        "data_completeness": 75
+        "data_completeness": 75,
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "ticker": "STOK",
@@ -2642,7 +3726,7 @@
         "catalyst_score": 58,
         "upcoming_catalyst": "FDA pre-NDA meeting and regulatory-path update \u2014 Second half of 2026",
         "opportunity_status": "Monitoring",
-        "score_as_of": "2026-08-28",
+        "score_as_of": "2026-08-29",
         "engine_version": "biotech-catalyst-radar-v1",
         "score_components": [
           {
@@ -2728,7 +3812,11 @@
           "Expectation Gap",
           "Positioning / Technical Setup"
         ],
-        "data_completeness": 75
+        "data_completeness": 75,
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "ticker": "PRQR",
@@ -2761,7 +3849,7 @@
         "catalyst_score": 47,
         "upcoming_catalyst": "Full AX-0810 and initial AX-0811 Phase 1 data \u2014 By year-end 2026",
         "opportunity_status": "Low Priority",
-        "score_as_of": "2026-08-28",
+        "score_as_of": "2026-08-29",
         "engine_version": "biotech-catalyst-radar-v1",
         "score_components": [
           {
@@ -2867,7 +3955,11 @@
           "Expectation Gap",
           "Positioning / Technical Setup"
         ],
-        "data_completeness": 75
+        "data_completeness": 75,
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "ticker": "KRYS",
@@ -2895,7 +3987,7 @@
         "catalyst_score": 45,
         "upcoming_catalyst": "IOLITE registrational top-line results \u2014 Fourth quarter 2026",
         "opportunity_status": "Low Priority",
-        "score_as_of": "2026-08-28",
+        "score_as_of": "2026-08-29",
         "engine_version": "biotech-catalyst-radar-v1",
         "score_components": [
           {
@@ -2976,7 +4068,11 @@
           "Expectation Gap",
           "Positioning / Technical Setup"
         ],
-        "data_completeness": 55
+        "data_completeness": 55,
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ],
     "methodology": {
@@ -3147,7 +4243,11 @@
           "Expectation Gap",
           "Positioning / Technical Setup"
         ],
-        "data_completeness": 75
+        "data_completeness": 75,
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       "note": "Retrospective validation input is frozen at July 31, 2026; the August 5 FDA outcome is deliberately excluded."
     }
@@ -3162,7 +4262,11 @@
         "catalyst": "Product ramps and hyperscaler deployments",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "Medium"
+        "risk": "Medium",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Tempus AI",
@@ -3172,7 +4276,11 @@
         "catalyst": "Clinical adoption and data partnerships",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Aurora Innovation",
@@ -3182,7 +4290,11 @@
         "catalyst": "Driverless route and fleet expansion",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Rubrik",
@@ -3192,7 +4304,11 @@
         "catalyst": "Subscription growth and platform expansion",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "Medium"
+        "risk": "Medium",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Oklo",
@@ -3202,7 +4318,11 @@
         "catalyst": "Licensing and customer agreements",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Serve Robotics",
@@ -3212,7 +4332,11 @@
         "catalyst": "Fleet expansion and unit economics",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Innodata",
@@ -3222,7 +4346,11 @@
         "catalyst": "Customer diversification and margin growth",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ],
     "biotech": [
@@ -3234,7 +4362,11 @@
         "catalyst": "Clinical proof-of-concept readouts",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Intellia Therapeutics",
@@ -3244,7 +4376,11 @@
         "catalyst": "Late-stage HAE and ATTR updates",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Stoke Therapeutics",
@@ -3254,7 +4390,11 @@
         "catalyst": "Dravet durability and pivotal planning",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Rocket Pharmaceuticals",
@@ -3264,7 +4404,11 @@
         "catalyst": "Regulatory milestones",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Maze Therapeutics",
@@ -3274,7 +4418,11 @@
         "catalyst": "Phase 2 kidney data",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "Scholar Rock",
@@ -3284,7 +4432,11 @@
         "catalyst": "Regulatory progress and obesity data",
         "market_cap": "Mid Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "company": "ProQR Therapeutics",
@@ -3294,7 +4446,11 @@
         "catalyst": "First clinical data and partnerships",
         "market_cap": "Small Cap",
         "growth_potential": "High",
-        "risk": "High"
+        "risk": "High",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ]
   },
@@ -3306,7 +4462,12 @@
         "thesis": "Full-stack leadership in accelerated computing.",
         "catalyst": "New architecture ramps and cloud capex",
         "opportunity": "Expanding training, inference, and enterprise AI",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "NVDA",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 2,
@@ -3314,7 +4475,12 @@
         "thesis": "Networking plus custom silicon captures two AI bottlenecks.",
         "catalyst": "Hyperscaler accelerator ramps",
         "opportunity": "Custom AI compute and scale-out networking",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "AVGO",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 3,
@@ -3322,7 +4488,12 @@
         "thesis": "Power and thermal density make cooling mission-critical.",
         "catalyst": "Data-center backlog conversion",
         "opportunity": "Long-cycle buildout of high-density facilities",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "VRT",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 4,
@@ -3330,7 +4501,12 @@
         "thesis": "Connectivity content rises with heterogeneous AI systems.",
         "catalyst": "New product deployments",
         "opportunity": "Growing share of AI server connectivity",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "ALAB",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 5,
@@ -3338,7 +4514,12 @@
         "thesis": "Clinical data flywheel supports diagnostics and AI products.",
         "catalyst": "Volume growth and partnerships",
         "opportunity": "AI-native precision medicine platform",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "TEM",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ],
     "biotech": [
@@ -3348,7 +4529,12 @@
         "thesis": "Durable rare-disease franchise funds a diversified pipeline.",
         "catalyst": "Launch execution and pipeline readouts",
         "opportunity": "Expansion beyond cystic fibrosis",
-        "risk": "Low"
+        "risk": "Low",
+        "ticker": "VRTX",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 2,
@@ -3356,7 +4542,12 @@
         "thesis": "Validated RNAi platform is expanding into large indications.",
         "catalyst": "Cardiometabolic launch execution",
         "opportunity": "Broad repeatable RNAi pipeline",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "ALNY",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 3,
@@ -3364,7 +4555,12 @@
         "thesis": "Late-stage in vivo editing may validate one-time systemic therapy.",
         "catalyst": "Clinical and regulatory updates",
         "opportunity": "Reusable in vivo CRISPR platform",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "NTLA",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 4,
@@ -3372,7 +4568,12 @@
         "thesis": "Commercial validation supports a redosable gene-therapy platform.",
         "catalyst": "Launch growth and pipeline data",
         "opportunity": "Expansion across skin, lung, and rare disease",
-        "risk": "Medium"
+        "risk": "Medium",
+        "ticker": "KRYS",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       },
       {
         "rank": 5,
@@ -3380,7 +4581,12 @@
         "thesis": "Protein-restoration approach could transform Dravet treatment.",
         "catalyst": "Durability and pivotal-path updates",
         "opportunity": "Platform across haploinsufficient diseases",
-        "risk": "High"
+        "risk": "High",
+        "ticker": "STOK",
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
       }
     ]
   },
@@ -3391,7 +4597,10 @@
       "indication": "See source",
       "event": "Anavex Life Sciences Reports Third Fiscal Quarter 2026 Financial Results and Business Update",
       "date": "Tue, 25 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOd3E0eUl0N1ExMktfbHRIaEh2TjdXYVNNX2JxeHRKaHdzVC02SVhZYnJQS3oxUUxxcElyLXBhek9fM2gyeU5kZlk2MlYwZGItVWxMVndUb3NtMkZlcG9KeGFnRHlwbWhxX2loUU5BR1dNd1NDYmF6NktwWkFkZ2QyNVNEQ0VRTkJicElrZHFIMjhmVndLWE9tdGhlTVdKX1htOHNDb1MzWkVfR0dITlNmQVRuSjJ3MUdT?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOd3E0eUl0N1ExMktfbHRIaEh2TjdXYVNNX2JxeHRKaHdzVC02SVhZYnJQS3oxUUxxcElyLXBhek9fM2gyeU5kZlk2MlYwZGItVWxMVndUb3NtMkZlcG9KeGFnRHlwbWhxX2loUU5BR1dNd1NDYmF6NktwWkFkZ2QyNVNEQ0VRTkJicElrZHFIMjhmVndLWE9tdGhlTVdKX1htOHNDb1MzWkVfR0dITlNmQVRuSjJ3MUdT?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     },
     {
       "company": "See source",
@@ -3399,7 +4608,10 @@
       "indication": "See source",
       "event": "Gildeuretinol gains Japan orphan designation for Stargardt disease",
       "date": "Thu, 27 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOUThBTzRtUEVrVzVkZm9qdEQ5eHdXODU5N1Q0NDQ0VGlDYVp4TWsyNkp1N2k5ZXVtSGdtbmx3R3pYUnpxNkZJZ0FsbmVFUklxWU5JU3IxT0o4Mmlta0VPb2NTdXM5bHRUS0NqbC13WnNTTWdfbXdveWZLbEVzNVV4blF5RWlWdS10ZDJYa1ZId0dfQVNxNmZpMm9ZeTVtd3ZPbnpONk1OYmpWZw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOUThBTzRtUEVrVzVkZm9qdEQ5eHdXODU5N1Q0NDQ0VGlDYVp4TWsyNkp1N2k5ZXVtSGdtbmx3R3pYUnpxNkZJZ0FsbmVFUklxWU5JU3IxT0o4Mmlta0VPb2NTdXM5bHRUS0NqbC13WnNTTWdfbXdveWZLbEVzNVV4blF5RWlWdS10ZDJYa1ZId0dfQVNxNmZpMm9ZeTVtd3ZPbnpONk1OYmpWZw?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     },
     {
       "company": "See source",
@@ -3407,7 +4619,10 @@
       "indication": "See source",
       "event": "Sangrail Debuts as New Biotech, Picks Up Dropped Gene Therapy for Sanfilippo Syndrome Type B",
       "date": "Thu, 27 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNVl9OdGplQ3FHd1NZNFZJX2ZXUkxETE5WOF9tdFlmNk5hSkJpeEdoMmJ0ZU9DeTIydDV6bVl3VEJJenI5WWUzQndEc1FUaTNBSHJMNmRUcVRnNVNZZU1tT1lOTU5mRnFNbUJ6WlYwblJacG40Wi1LNThOeWZmcVpMYzVjX1JTZ29CSlBRSUtqQnAtRUxIQVltMEZhNUVfZUExRE15UmtOdnhTb253Z21jb0J3VEZBLUZJdnUtZ1M4UUx2Qm1MRFg5WlRwUDYzWTZS?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNVl9OdGplQ3FHd1NZNFZJX2ZXUkxETE5WOF9tdFlmNk5hSkJpeEdoMmJ0ZU9DeTIydDV6bVl3VEJJenI5WWUzQndEc1FUaTNBSHJMNmRUcVRnNVNZZU1tT1lOTU5mRnFNbUJ6WlYwblJacG40Wi1LNThOeWZmcVpMYzVjX1JTZ29CSlBRSUtqQnAtRUxIQVltMEZhNUVfZUExRE15UmtOdnhTb253Z21jb0J3VEZBLUZJdnUtZ1M4UUx2Qm1MRFg5WlRwUDYzWTZS?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     },
     {
       "company": "See source",
@@ -3415,7 +4630,10 @@
       "indication": "See source",
       "event": "PTC to acquire Sangamo\u2019s gene therapy for Fabry disease",
       "date": "Thu, 27 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOczlKR092NER2dkVXajhJNjJ3WjA0TGMyX2VVV1dIVTFRcnZ1SnZUMTl4UW1aaXgwRnZ3Y1VMQnd1dkxKemhzZ2laSWIycGg2YzVWNy1MaFd4Zm1WNkFlU1hHLXUyQ1Y2bTlQYlZ6TmtkX0VodEV2bjhmY3pvaDM0dFZ4WWg3SmN5dHc?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOczlKR092NER2dkVXajhJNjJ3WjA0TGMyX2VVV1dIVTFRcnZ1SnZUMTl4UW1aaXgwRnZ3Y1VMQnd1dkxKemhzZ2laSWIycGg2YzVWNy1MaFd4Zm1WNkFlU1hHLXUyQ1Y2bTlQYlZ6TmtkX0VodEV2bjhmY3pvaDM0dFZ4WWg3SmN5dHc?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     },
     {
       "company": "See source",
@@ -3423,7 +4641,10 @@
       "indication": "See source",
       "event": "Mahzi Therapeutics Announces FDA Rare Pediatric Disease Designation for MZ-1866 Investigational Therapy for Pitt Hopkins Syndrome",
       "date": "Tue, 25 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxQYl9NMUJXZEZmX1hnUnJTNEJvTUNMLUgyc09ic1NBalVSRzFUUkNfZEU3ajhHUWNlN2lJeU9rSmlkdXVhX1ZScHRZOVgwcHk0UUhkUU1zdHFHQXgtQWZ2clpsZ0E3ZmpwaHhIZktjS252WUZXemYxWXg2X21CbnAyczlUMk9uWHlMV1JnZGNtM2NBREotdUxCSTRqaDhRdFExUVhpOWdDTk1YWmVyMzE1ZmYyYnBCVFpzV1V4VlNlVEFlVkY2N1R5TFpDVDAzREZoSnNOOTVDQXFIN3h0cDg2dE04MkU0WXdIdnpkSmFZTFFKV2pHTDYxa0JMbkhBdw?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxQYl9NMUJXZEZmX1hnUnJTNEJvTUNMLUgyc09ic1NBalVSRzFUUkNfZEU3ajhHUWNlN2lJeU9rSmlkdXVhX1ZScHRZOVgwcHk0UUhkUU1zdHFHQXgtQWZ2clpsZ0E3ZmpwaHhIZktjS252WUZXemYxWXg2X21CbnAyczlUMk9uWHlMV1JnZGNtM2NBREotdUxCSTRqaDhRdFExUVhpOWdDTk1YWmVyMzE1ZmYyYnBCVFpzV1V4VlNlVEFlVkY2N1R5TFpDVDAzREZoSnNOOTVDQXFIN3h0cDg2dE04MkU0WXdIdnpkSmFZTFFKV2pHTDYxa0JMbkhBdw?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     },
     {
       "company": "See source",
@@ -3431,7 +4652,10 @@
       "indication": "See source",
       "event": "FDA grants fast track status to novel inhaled therapy for IPF",
       "date": "Wed, 26 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQNkY5WnlUdnFKS3Bsa2Vkd1BON0xPVFlKUTZrem1MaVhYalFFcDZGbnNEQ0M3Z2FKNEo1SEYwS3luR1MwMHZGUlJ5MkJObDJncmZwNEhUanNiVk9pU3FiVFV4RGRJQnhORTZPWFVodEpaSldIazNEM3JsSHFDYlJfOHlULWFRUFoyNURpOUpNMFB3UloyVFltYlhjbEpfWVQtUHRMTnh0MDM?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQNkY5WnlUdnFKS3Bsa2Vkd1BON0xPVFlKUTZrem1MaVhYalFFcDZGbnNEQ0M3Z2FKNEo1SEYwS3luR1MwMHZGUlJ5MkJObDJncmZwNEhUanNiVk9pU3FiVFV4RGRJQnhORTZPWFVodEpaSldIazNEM3JsSHFDYlJfOHlULWFRUFoyNURpOUpNMFB3UloyVFltYlhjbEpfWVQtUHRMTnh0MDM?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     },
     {
       "company": "See source",
@@ -3439,7 +4663,10 @@
       "indication": "See source",
       "event": "FDA Grants Rare Pediatric Disease Designation to Mahzi's AAV9 Gene Therapy MZ-1866 for Pitt Hopkins Syndrome",
       "date": "Tue, 25 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOalJNYjFBakVYMHRRYXJEN3g4cC1JeFNtU3k1WmZ3NVNTSXZ3VnhqNkRHY1piUTE4TnllR2k0ODFPcFdwd0tKZEpPQ0tZZHQ1dmd4amFxRk9yRzdYZmpCRF9vWldMZTBUNUlGU05BRFZvMU93YnlXTko2VUNQR21aZFBFeG5ObHdMS3o2Z1N6cUVaNGZSdkZLQW1zX19rU3ZndEhHSzZiWThQcnA3Mjc0ZUxNT3pSU2dUd194WVJuSmNOSkp6THNNRlZoTklQY2lwT0wweU1sRjdQMWRFcmhaUHFPeGdzQQ?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOalJNYjFBakVYMHRRYXJEN3g4cC1JeFNtU3k1WmZ3NVNTSXZ3VnhqNkRHY1piUTE4TnllR2k0ODFPcFdwd0tKZEpPQ0tZZHQ1dmd4amFxRk9yRzdYZmpCRF9vWldMZTBUNUlGU05BRFZvMU93YnlXTko2VUNQR21aZFBFeG5ObHdMS3o2Z1N6cUVaNGZSdkZLQW1zX19rU3ZndEhHSzZiWThQcnA3Mjc0ZUxNT3pSU2dUd194WVJuSmNOSkp6THNNRlZoTklQY2lwT0wweU1sRjdQMWRFcmhaUHFPeGdzQQ?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     },
     {
       "company": "See source",
@@ -3447,7 +4674,10 @@
       "indication": "See source",
       "event": "Spruce Biosciences Announces Positive Pre-BLA Meetings with FDA and Confirms BLA Submission for TA-ERT on Track for Q4 2026",
       "date": "Mon, 24 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxNR1ptUkVKM3ZnTmhOcmxieFUxc1FoM1pDbGpnbFdLbUFkVW5fdU1zemR5cG42LVIwblBMNnhBVERyTzJZWTFKNWR2djY4bkZBYThubXB1WkVzRDBYNGRiVkUzQWE3RWxHQ1VmWE95TWF1dkJCeG9CaFVNUjVkcGFTT25vZTdvY2I3UjZnRzY0OUhYSG81QmlDaWZHLXNjQ2E1cWFTQmgydmdpd3RZcGlWbU9nV3hyLVpLN0dvODloNnVVdFhvNU52Yk4wd29KSEdNTFpwY2VubGJPajJHR24wamRwb0U5TzBlOS02U0dXZDMtYVZuMXBzOHdJenhSYlVLRGhWR3hQZHB4RF9v?oc=5"
+      "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxNR1ptUkVKM3ZnTmhOcmxieFUxc1FoM1pDbGpnbFdLbUFkVW5fdU1zemR5cG42LVIwblBMNnhBVERyTzJZWTFKNWR2djY4bkZBYThubXB1WkVzRDBYNGRiVkUzQWE3RWxHQ1VmWE95TWF1dkJCeG9CaFVNUjVkcGFTT25vZTdvY2I3UjZnRzY0OUhYSG81QmlDaWZHLXNjQ2E1cWFTQmgydmdpd3RZcGlWbU9nV3hyLVpLN0dvODloNnVVdFhvNU52Yk4wd29KSEdNTFpwY2VubGJPajJHR24wamRwb0U5TzBlOS02U0dXZDMtYVZuMXBzOHdJenhSYlVLRGhWR3hQZHB4RF9v?oc=5",
+      "ticker": "N/A",
+      "listing_status": "Non-public",
+      "exchange": ""
     }
   ],
   "markets": [
@@ -3479,5 +4709,9 @@
       "weekly": -1.51,
       "monthly": 0.89
     }
-  ]
+  ],
+  "company_normalization": {
+    "schema_version": "global-company-identity-v1",
+    "ticker_policy": "U.S. canonical ticker; foreign primary ticker with exchange; Private for private companies; N/A for non-public organizations."
+  }
 }

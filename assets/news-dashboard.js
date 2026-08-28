@@ -68,6 +68,16 @@ function newsScore(label, value) {
   return `<span class="news-score"><small>${escapeHtml(label)}</small><strong>${score === null ? "Missing" : escapeHtml(score)}</strong>${score === null ? "" : "<i>/100</i>"}</span>`;
 }
 
+function companyTickerLabel(row = {}) {
+  const company = row.company || "Company missing";
+  const ticker = row.ticker && row.ticker !== "Missing" ? ` · ${row.ticker}` : "";
+  return `${company}${ticker}`;
+}
+
+function relatedTickerLabel(row = {}) {
+  return Array.isArray(row.related_tickers) && row.related_tickers.length ? `Related: ${row.related_tickers.join(", ")}` : "";
+}
+
 function renderNewsCard(story) {
   const sourceUrl = safeSourceUrl(story.source_link);
   const trendTags = (story.affected_trends || []).map((trend) => `<span>${escapeHtml(trend)}</span>`).join("");
@@ -78,6 +88,7 @@ function renderNewsCard(story) {
   }).join("");
   return `<article class="top-news-card">
     <div class="news-card-meta"><span>${escapeHtml(formatNewsDate(story.published_at))}</span><span>${escapeHtml(story.source || "Source missing")}</span><b class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</b></div>
+    <div class="news-card-meta"><span>${escapeHtml(companyTickerLabel(story))}</span>${relatedTickerLabel(story) ? `<span>${escapeHtml(relatedTickerLabel(story))}</span>` : ""}</div>
     <h3>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h3>
     <div class="news-score-row">${newsScore("Importance", story.news_importance_score)}</div>
     <div class="news-why"><strong>What changed</strong><p>${escapeHtml(story.new_information || "Missing")}</p></div>
@@ -95,7 +106,7 @@ function renderTopNews(section = {}) {
   document.getElementById("ai-top-news").innerHTML = stories.map(renderNewsCard).join("") || `<p class="loading-state">No source-qualified AI or technology stories are available yet. The daily updater will preserve prior selections when feeds are unavailable.</p>`;
   document.getElementById("ai-news-archive").innerHTML = archive.map((story) => {
     const url = safeSourceUrl(story.source_link);
-    return `<article class="news-archive-item"><div><span>${escapeHtml(formatNewsDate(story.published_at))} · ${escapeHtml(story.source || "Source missing")} · ${escapeHtml(story.event_type || "Event type missing")} · ${escapeHtml(story.direction || "Direction missing")}</span>
+    return `<article class="news-archive-item"><div><span>${escapeHtml(formatNewsDate(story.published_at))} · ${escapeHtml(companyTickerLabel(story))} · ${escapeHtml(story.event_type || "Event type missing")} · ${escapeHtml(story.direction || "Direction missing")}</span>
       <h4>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h4></div>
       <span class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</span><strong>${escapeHtml(story.news_importance_score)}<small>/100</small></strong></article>`;
   }).join("") || `<p class="loading-state">The archive will populate as important stories rotate out of Top Investment News.</p>`;
@@ -110,10 +121,10 @@ function renderBiotechNewsCard(story) {
     const label = `${item.primary ? "Primary" : "Corroborating"}: ${item.source}${item.date ? ` · ${formatNewsDate(item.date)}` : ""}`;
     return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>` : escapeHtml(label)}</li>`;
   }).join("");
-  const companyLabel = `${story.company || "Company missing"}${story.ticker && story.ticker !== "Missing" ? ` · ${story.ticker}` : ""}`;
+  const companyLabel = companyTickerLabel(story);
   return `<article class="top-news-card biotech-news-card">
     <div class="news-card-meta"><span>${escapeHtml(formatNewsDate(story.published_at))}</span><span>${escapeHtml(story.source || "Source missing")}</span><b class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</b></div>
-    <div class="news-card-meta"><span>${escapeHtml(companyLabel)}</span><span>${escapeHtml(story.drug_program || "Program missing")}</span></div>
+    <div class="news-card-meta"><span>${escapeHtml(companyLabel)}</span><span>${escapeHtml(story.drug_program || "Program missing")}</span>${relatedTickerLabel(story) ? `<span>${escapeHtml(relatedTickerLabel(story))}</span>` : ""}</div>
     <h3>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h3>
     <div class="news-score-row">${newsScore("Importance", story.news_importance_score)}</div>
     <div class="news-why"><strong>What changed</strong><p>${escapeHtml(story.new_information || "Missing")}</p></div>
@@ -131,7 +142,7 @@ function renderBiotechNews(section = {}) {
   document.getElementById("biotech-top-news").innerHTML = stories.map(renderBiotechNewsCard).join("") || `<p class="loading-state">No biotech events currently meet the prominent-news threshold. Qualified events remain available in Evidence History.</p>`;
   document.getElementById("biotech-news-archive").innerHTML = archive.map((story) => {
     const url = safeSourceUrl(story.source_link);
-    const company = `${story.company || "Company missing"}${story.ticker && story.ticker !== "Missing" ? ` · ${story.ticker}` : ""}`;
+    const company = companyTickerLabel(story);
     return `<article class="news-archive-item"><div><span>${escapeHtml(formatNewsDate(story.published_at))} · ${escapeHtml(company)} · ${escapeHtml(story.event_type || "Event type missing")} · ${escapeHtml(story.direction || "Direction missing")}</span>
       <h4>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h4></div>
       <span class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</span><strong>${escapeHtml(story.news_importance_score)}<small>/100</small></strong></article>`;
@@ -172,7 +183,7 @@ function renderBiotechRadar(rows) {
 
 function renderOpportunities(targetId, rows = []) {
   document.getElementById(targetId).innerHTML = rows.map((row) => `<article class="opportunity-card"><div class="opportunity-rank">${escapeHtml(row.rank)}</div>
-    <div><div class="opportunity-top"><h4>${escapeHtml(row.company)}</h4><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></div>
+    <div><div class="opportunity-top"><h4>${escapeHtml(companyTickerLabel(row))}</h4><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></div>
     <p>${escapeHtml(row.thesis)}</p><dl><div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst)}</dd></div><div><dt>Long-term</dt><dd>${escapeHtml(row.opportunity)}</dd></div></dl></div></article>`).join("") || `<p class="loading-state">No opportunities are available.</p>`;
 }
 
