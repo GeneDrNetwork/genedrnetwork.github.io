@@ -5,7 +5,7 @@ const DATA_URL = dataUrl.href;
 
 const escapeHtml = (value = "") => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
   .replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
-const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value || "No update available."; };
+const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value ?? "No update available."; };
 
 const PLACEHOLDER_SCORES = [88, 84, 81, 78, 75, 72, 69, 66, 63, 60];
 const stageFor = (score) => score >= 85 ? "Hot" : score >= 76 ? "Heating Up" : score >= 66 ? "Emerging" : "Cooling";
@@ -30,23 +30,7 @@ function aiRadarRows(data) {
 
 function biotechRadarRows(data) {
   if (Array.isArray(data.radar?.biotech)) return data.radar.biotech;
-  const leaders = new Map((data.biotech?.leaders || []).map((item) => [item.company, item]));
-  const tickers = new Map((data.watchlists?.biotech || []).map((item) => [item.company, item.ticker]));
-  return (data.biotech?.emerging || []).map((item, index) => {
-    const score = PLACEHOLDER_SCORES[index] || Math.max(50, 88 - index * 3);
-    const leader = leaders.get(item.company);
-    return {
-      ticker: tickers.get(item.company) || leader?.ticker || "—", company: item.company, catalyst: item.catalysts,
-      catalyst_score: score, expected_timing: "Timing pending", stage: stageFor(score), why_important: item.lead_programs,
-      opportunity_status: index < 3 ? "Priority watch" : "Monitoring", clinical_evidence: `Lead programs: ${item.lead_programs}`,
-      upcoming_catalyst: item.catalysts, previous_results: "Trial-history analysis will be supplied by the future Radar Engine.",
-      regulatory_status: "The existing FDA feed continues to update daily; company-level mapping is pending.",
-      commercial_potential: `${item.technology} platform; ${item.market_cap || "market-cap context pending"}.`,
-      market_expectation: "Pricing analysis will be supplied by the future Radar Engine.",
-      positioning: "Positioning and short-interest data are not yet connected.",
-      risks: `${item.risk || "Unscored"} research risk; detailed invalidation analysis pending.`, watch_next: item.catalysts
-    };
-  });
+  return [];
 }
 
 function renderScore(score, label) {
@@ -66,16 +50,86 @@ function renderAiRadar(rows) {
     </dl></details>`).join("") || `<p class="loading-state">No AI trends are available.</p>`;
 }
 
+function safeSourceUrl(value) {
+  try {
+    const url = new URL(String(value));
+    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+  } catch (_) { return ""; }
+}
+
+function formatNewsDate(value) {
+  if (!value) return "Date/time missing";
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? value : date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+}
+
+function newsScore(label, value) {
+  const score = Number.isFinite(Number(value)) ? Math.max(0, Math.min(100, Number(value))) : null;
+  return `<span class="news-score"><small>${escapeHtml(label)}</small><strong>${score === null ? "Missing" : escapeHtml(score)}</strong>${score === null ? "" : "<i>/100</i>"}</span>`;
+}
+
+function renderNewsCard(story) {
+  const sourceUrl = safeSourceUrl(story.source_link);
+  const trendTags = (story.affected_trends || []).map((trend) => `<span>${escapeHtml(trend)}</span>`).join("");
+  const evidenceSources = (story.evidence_sources || []).map((item) => {
+    const url = safeSourceUrl(item.url);
+    const label = `${item.primary ? "Primary" : "Corroborating"}: ${item.source}${item.date ? ` · ${formatNewsDate(item.date)}` : ""}`;
+    return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>` : escapeHtml(label)}</li>`;
+  }).join("");
+  return `<article class="top-news-card">
+    <div class="news-card-meta"><span>${escapeHtml(formatNewsDate(story.published_at))}</span><span>${escapeHtml(story.source || "Source missing")}</span><b class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</b></div>
+    <h3>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h3>
+    <div class="news-score-row">${newsScore("Importance", story.news_importance_score)}</div>
+    <div class="news-why"><strong>What changed</strong><p>${escapeHtml(story.new_information || "Missing")}</p></div>
+    <dl class="news-detail-grid"><div><dt>Event type</dt><dd>${escapeHtml(story.event_type || "Missing")}</dd></div><div><dt>Direction</dt><dd>${escapeHtml(story.direction || "Missing")}</dd></div><div><dt>Affected trends</dt><dd class="news-trend-tags">${trendTags || "Missing"}</dd></div><div><dt>Relevant impacts</dt><dd>${escapeHtml(story.impact_chain || "Missing")}</dd></div></dl>
+    ${evidenceSources ? `<div class="news-evidence-sources"><strong>Sources &amp; evidence</strong><ul>${evidenceSources}</ul></div>` : ""}
+    ${sourceUrl ? `<a class="news-source-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read source <span aria-hidden="true">↗</span></a>` : `<span class="news-source-link missing-value">Source link missing</span>`}
+  </article>`;
+}
+
+function renderTopNews(section = {}) {
+  const stories = Array.isArray(section.stories) ? section.stories : [];
+  const archive = Array.isArray(section.important_news_archive) ? section.important_news_archive : [];
+  setText("ai-news-selection-status", section.selection_status || "AI Technology News V1 active");
+  setText("ai-news-archive-count", archive.length);
+  document.getElementById("ai-top-news").innerHTML = stories.map(renderNewsCard).join("") || `<p class="loading-state">No source-qualified AI or technology stories are available yet. The daily updater will preserve prior selections when feeds are unavailable.</p>`;
+  document.getElementById("ai-news-archive").innerHTML = archive.map((story) => {
+    const url = safeSourceUrl(story.source_link);
+    return `<article class="news-archive-item"><div><span>${escapeHtml(formatNewsDate(story.published_at))} · ${escapeHtml(story.source || "Source missing")} · ${escapeHtml(story.event_type || "Event type missing")} · ${escapeHtml(story.direction || "Direction missing")}</span>
+      <h4>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h4></div>
+      <span class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</span><strong>${escapeHtml(story.news_importance_score)}<small>/100</small></strong></article>`;
+  }).join("") || `<p class="loading-state">The archive will populate as important stories rotate out of Top Investment News.</p>`;
+}
+
+function renderScoreBreakdown(components = [], completeness) {
+  const rows = components.map((component) => `<li class="${component.missing ? "score-component-missing" : ""}">
+    <span>${escapeHtml(component.label)}</span><strong>${escapeHtml(component.score)} / ${escapeHtml(component.weight)}</strong>
+    <small>${escapeHtml(component.rationale)}</small></li>`).join("");
+  return `<div class="detail-item detail-wide score-breakdown"><dt>Score Breakdown</dt><dd><ul>${rows}</ul>
+    <p>Evidence coverage: ${escapeHtml(completeness)} / 100 weighted points. Missing inputs score zero.</p></dd></div>`;
+}
+
+function renderSources(sources = [], scoreAsOf) {
+  const links = sources.map((item) => {
+    const url = safeSourceUrl(item.url);
+    const label = `${item.title}${item.date ? ` (${item.date})` : ""}`;
+    return url ? `<li><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>` : `<li>${escapeHtml(label)}</li>`;
+  }).join("");
+  return `<div class="detail-item detail-wide radar-sources"><dt>Evidence Sources</dt><dd><ul>${links || "<li>No source connected.</li>"}</ul>
+    <p>Score as of ${escapeHtml(scoreAsOf)}.</p></dd></div>`;
+}
+
 function renderBiotechRadar(rows) {
   document.getElementById("biotech-radar").innerHTML = rows.map((row) => `<details class="radar-item biotech-radar-item"><summary>
       <span class="radar-name"><strong>${escapeHtml(row.company)}</strong><small>${escapeHtml(row.ticker)} · ${escapeHtml(row.catalyst)}</small></span>${renderScore(row.catalyst_score, "Catalyst score")}
       <span class="timing">${escapeHtml(row.expected_timing)}</span><span><b class="stage ${stageClass(row.stage)}">${escapeHtml(row.stage)}</b></span>
-      <span class="radar-copy">${escapeHtml(row.why_important)}</span><span class="status-badge">${escapeHtml(row.opportunity_status)}</span><span class="expand-control" aria-hidden="true">+</span>
+      <span class="radar-copy">${escapeHtml(row.why_important)}</span><span class="status-badge ${stageClass(row.opportunity_status)}">${escapeHtml(row.opportunity_status)}</span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid biotech-details">
-      ${detailItem("Clinical Evidence", row.clinical_evidence)}${detailItem("Upcoming Catalyst", row.upcoming_catalyst)}${detailItem("Previous Trial Results", row.previous_results, true)}
-      ${detailItem("FDA / Regulatory Status", row.regulatory_status, true)}${detailItem("Commercial Potential", row.commercial_potential)}
-      ${detailItem("Market Expectation / Priced In", row.market_expectation, true)}${detailItem("Positioning / Short Interest", row.positioning, true)}
+      ${detailItem("Clinical Evidence", row.clinical_evidence, String(row.clinical_evidence).startsWith("Missing"))}${detailItem("Upcoming Catalyst", row.upcoming_catalyst)}${detailItem("Previous Trial Results", row.previous_results, String(row.previous_results).startsWith("Missing"))}
+      ${detailItem("FDA / Regulatory Status", row.regulatory_status)}${detailItem("Commercial Potential", row.commercial_potential)}
+      ${detailItem("Market Expectation / Priced In", row.market_expectation, String(row.market_expectation).startsWith("Missing"))}${detailItem("Positioning / Short Interest", row.positioning, String(row.positioning).startsWith("Missing"))}
       ${detailItem("Risks", row.risks)}${detailItem("What to Watch Next", row.watch_next)}
+      ${renderScoreBreakdown(row.score_components, row.data_completeness)}${renderSources(row.sources, row.score_as_of)}
     </dl></details>`).join("") || `<p class="loading-state">No biotech opportunities are available.</p>`;
 }
 
@@ -120,6 +174,7 @@ function renderDashboard(data) {
   const updated = new Date(data.updated_at);
   setText("last-updated", Number.isNaN(updated.valueOf()) ? data.updated_at : updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
   setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("market-movers", data.summaries && data.summaries.market_movers);
+  renderSafely(() => renderTopNews(data.top_investment_news && data.top_investment_news.ai_technology), "ai-top-news");
   renderSafely(() => renderAiRadar(aiRadarRows(data)), "ai-radar");
   renderSafely(() => renderBiotechRadar(biotechRadarRows(data)), "biotech-radar");
   renderSafely(() => renderOpportunities("ai-opportunities", data.monthly_picks && data.monthly_picks.ai), "ai-opportunities");

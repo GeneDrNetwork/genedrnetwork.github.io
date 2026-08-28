@@ -1,19 +1,818 @@
 {
-  "updated_at": "2026-08-27T21:03:14+00:00",
+  "updated_at": "2026-08-28T20:32:50+00:00",
+  "top_investment_news": {
+    "ai_technology": {
+      "stories": [
+        {
+          "id": "5f8fe4d36353fc328e64",
+          "headline": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027",
+          "published_at": "2026-08-26T20:20+00:00",
+          "source": "NVIDIA Newsroom",
+          "source_type": "Primary/company source",
+          "news_importance_score": 100,
+          "status": "CONFIRMING",
+          "affected_trends": [
+            "AI Models/Applications",
+            "Compute",
+            "Data Centers"
+          ],
+          "direct_effects": [
+            "AI Models/Applications",
+            "Compute",
+            "Data Centers"
+          ],
+          "second_order_effects": [
+            "Power/Electrical",
+            "Cooling"
+          ],
+          "impact_chain": "Direct: AI Models/Applications, Compute, Data Centers. Second-order: Power/Electrical, Cooling.",
+          "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
+          "publisher_url": "https://nvidianews.nvidia.com/",
+          "evidence_sources": [
+            {
+              "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027",
+              "source": "NVIDIA Newsroom",
+              "date": "2026-08-26T20:20+00:00",
+              "url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
+              "source_type": "Primary/company source",
+              "primary": true
+            },
+            {
+              "title": "Nvidia adds more than $400 billion in value after blowout earnings boost AI confidence",
+              "source": "CNBC",
+              "date": "2026-08-27T08:04+00:00",
+              "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1wT0tKVG5QdjJIV3RXNmZNYUROM1dJYWJ3d3VOUzdKUEZjTFgweTFXNlhFT3RwLUoxZ1E4SXYzQ0g4LUFYdW9tNkNVUmE5OE5TendnYU02ekhBeThSZDRpTVBwcmlCRXdkcDVoetIBckFVX3lxTFBTYXloWFBxMWUxVXBhV1VLdkJzbWpITXdabzh3b00zYXlnb0ZHcEZlRjFqRHRtWmF4QjA2ei1Id3hTQ3N3X1lQcGZyQkJKRzhZalpsbmZrd3lRd2gxQXRpMWpQUUpiVTFxTHJ3N0NEY0k1Zw?oc=5",
+              "source_type": "Reliable financial news source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "source_quality": {
+              "points": 20,
+              "basis": "Primary/company source"
+            },
+            "materiality": {
+              "points": 30,
+              "facts": [
+                "Revenue is expected to be $108.0 billion, plus or minus 2%.",
+                "Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago.",
+                "Edge Computing Second-quarter Edge Computing revenue was $7.2 billion, up 13% from the previous quarter and up 27% from a year ago."
+              ]
+            },
+            "industry_reach": {
+              "points": 15,
+              "direct_segments": [
+                "AI Models/Applications",
+                "Compute",
+                "Data Centers"
+              ],
+              "second_order_segments": [
+                "Power/Electrical",
+                "Cooling"
+              ]
+            },
+            "primary_confirmation": {
+              "points": 10,
+              "available": true
+            },
+            "corroboration": {
+              "points": 5,
+              "source_count": 2
+            },
+            "investment_event_terms": [
+              "earnings",
+              "financial results",
+              "revenue"
+            ],
+            "forward_signal_terms": [
+              "expected"
+            ],
+            "named_companies": [
+              "nvidia"
+            ]
+          },
+          "missing_data": [],
+          "first_seen": "2026-08-28T15:52+00:00",
+          "quality_schema_version": 4,
+          "event_type": "Financial Results",
+          "direction": "Expanding",
+          "new_information": "Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago."
+        },
+        {
+          "id": "228d0c0093cf0b1a14fa",
+          "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+          "published_at": "2026-08-26T21:05+00:00",
+          "source": "NVIDIA Newsroom",
+          "source_type": "Primary/company source",
+          "news_importance_score": 90,
+          "status": "CONFIRMING",
+          "affected_trends": [
+            "AI Models/Applications",
+            "Compute",
+            "HBM/Memory",
+            "Networking/Optical",
+            "Data Centers"
+          ],
+          "direct_effects": [
+            "AI Models/Applications",
+            "Compute",
+            "HBM/Memory",
+            "Networking/Optical",
+            "Data Centers"
+          ],
+          "second_order_effects": [
+            "Power/Electrical",
+            "Cooling"
+          ],
+          "impact_chain": "Direct: AI Models/Applications, Compute, HBM/Memory, Networking/Optical, Data Centers. Second-order: Power/Electrical, Cooling.",
+          "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai",
+          "publisher_url": "https://nvidianews.nvidia.com/",
+          "evidence_sources": [
+            {
+              "title": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+              "source": "NVIDIA Newsroom",
+              "date": "2026-08-26T21:05+00:00",
+              "url": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai",
+              "source_type": "Primary/company source",
+              "primary": true
+            }
+          ],
+          "score_evidence": {
+            "source_quality": {
+              "points": 20,
+              "basis": "Primary/company source"
+            },
+            "materiality": {
+              "points": 25,
+              "facts": [
+                "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "Building on already-rapid customer adoption of NVIDIA-accelerated compute on AWS, the companies plan to deploy 2 million additional NVIDIA GPUs across AWS\u2019s global infrastructure and deepen their work together across AI factories, CPUs, networking, open models, data processing and robotics, delivering co-engineered AI solutions that enable customers to accelerate AI development and deployment at unprecedented scale.",
+                "As part of the expanded collaboration, the companies are working to: Deploy 2 million additional NVIDIA GPUs across AWS\u2019s global infrastructure in 2027-2028 Bring NVIDIA Vera CPU\u2011based infrastructure to AWS Extend NVIDIA NVLink Fusion\u2122 with custom NVIDIA high\u2011bandwidth memory (NVHBM) Build AI factories for the U.S."
+              ]
+            },
+            "industry_reach": {
+              "points": 15,
+              "direct_segments": [
+                "AI Models/Applications",
+                "Compute",
+                "HBM/Memory",
+                "Networking/Optical",
+                "Data Centers"
+              ],
+              "second_order_segments": [
+                "Power/Electrical",
+                "Cooling"
+              ]
+            },
+            "primary_confirmation": {
+              "points": 10,
+              "available": true
+            },
+            "corroboration": {
+              "points": 0,
+              "source_count": 1
+            },
+            "investment_event_terms": [
+              "deliver",
+              "deploy"
+            ],
+            "forward_signal_terms": [
+              "deliver",
+              "deploy",
+              "plans"
+            ],
+            "named_companies": [
+              "aws",
+              "nvidia",
+              "amazon"
+            ]
+          },
+          "missing_data": [],
+          "first_seen": "2026-08-28T15:52+00:00",
+          "quality_schema_version": 4,
+          "event_type": "Capacity / Contract",
+          "direction": "Expanding",
+          "new_information": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI. Building on already-rapid customer adoption of NVIDIA-accelerated compute on AWS, the companies plan to deploy 2 million additional NVIDIA GPUs across AWS\u2019s global infrastructure and deepen their work together across AI factories, CPUs, networking, open models, data processing and robotics, delivering co-engineered AI solutions that enable customers to accelerate AI development and deployment at unprecedented scale."
+        },
+        {
+          "id": "5f68b2853c80e559f4f9",
+          "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+          "published_at": "2026-08-24T15:00+00:00",
+          "source": "NVIDIA Newsroom",
+          "source_type": "Primary/company source",
+          "news_importance_score": 87,
+          "status": "CONFIRMING",
+          "affected_trends": [
+            "AI Models/Applications",
+            "Compute",
+            "HBM/Memory",
+            "Data Centers"
+          ],
+          "direct_effects": [
+            "AI Models/Applications",
+            "Compute",
+            "HBM/Memory",
+            "Data Centers"
+          ],
+          "second_order_effects": [
+            "Power/Electrical",
+            "Cooling"
+          ],
+          "impact_chain": "Direct: AI Models/Applications, Compute, HBM/Memory, Data Centers. Second-order: Power/Electrical, Cooling.",
+          "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale",
+          "publisher_url": "https://nvidianews.nvidia.com/",
+          "evidence_sources": [
+            {
+              "title": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+              "source": "NVIDIA Newsroom",
+              "date": "2026-08-24T15:00+00:00",
+              "url": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale",
+              "source_type": "Primary/company source",
+              "primary": true
+            }
+          ],
+          "score_evidence": {
+            "source_quality": {
+              "points": 20,
+              "basis": "Primary/company source"
+            },
+            "materiality": {
+              "points": 25,
+              "facts": [
+                "Vera features 88 NVIDIA-designed Olympus cores, NVIDIA Spatial Multithreading technology and high-bandwidth LPDDR5X memory, delivering up to 1.2TB/s of bandwidth.",
+                "SpaceXAI plans to extend its use of NVIDIA accelerated computing into space, with the first-generation Starmind AI satellite based on an optimized NVIDIA Vera Rubin NVL72 system.",
+                "SpaceXAI plans to expand its AI infrastructure behind Grok on NVIDIA Vera Rubin , while extending an optimized Vera Rubin NVL72 into space with its first-generation Starmind satellite."
+              ]
+            },
+            "industry_reach": {
+              "points": 15,
+              "direct_segments": [
+                "AI Models/Applications",
+                "Compute",
+                "HBM/Memory",
+                "Data Centers"
+              ],
+              "second_order_segments": [
+                "Power/Electrical",
+                "Cooling"
+              ]
+            },
+            "primary_confirmation": {
+              "points": 10,
+              "available": true
+            },
+            "corroboration": {
+              "points": 0,
+              "source_count": 1
+            },
+            "investment_event_terms": [
+              "adopts",
+              "deliver",
+              "deploy"
+            ],
+            "forward_signal_terms": [
+              "deliver",
+              "deploy",
+              "plans",
+              "will"
+            ],
+            "named_companies": [
+              "nvidia"
+            ]
+          },
+          "missing_data": [],
+          "first_seen": "2026-08-28T15:52+00:00",
+          "quality_schema_version": 4,
+          "event_type": "Product / Platform",
+          "direction": "Mixed",
+          "new_information": "Vera features 88 NVIDIA-designed Olympus cores, NVIDIA Spatial Multithreading technology and high-bandwidth LPDDR5X memory, delivering up to 1.2TB/s of bandwidth. SpaceXAI plans to extend its use of NVIDIA accelerated computing into space, with the first-generation Starmind AI satellite based on an optimized NVIDIA Vera Rubin NVL72 system."
+        },
+        {
+          "id": "4431f55507a3a9109e4c",
+          "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+          "published_at": "2026-08-24T15:00+00:00",
+          "source": "NVIDIA Newsroom",
+          "source_type": "Primary/company source",
+          "news_importance_score": 82,
+          "status": "NEW",
+          "affected_trends": [
+            "AI Models/Applications",
+            "Compute"
+          ],
+          "direct_effects": [
+            "AI Models/Applications",
+            "Compute"
+          ],
+          "second_order_effects": [
+            "HBM/Memory",
+            "Foundry/Advanced Packaging"
+          ],
+          "impact_chain": "Direct: AI Models/Applications, Compute. Second-order: HBM/Memory, Foundry/Advanced Packaging.",
+          "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai",
+          "publisher_url": "https://nvidianews.nvidia.com/",
+          "evidence_sources": [
+            {
+              "title": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+              "source": "NVIDIA Newsroom",
+              "date": "2026-08-24T15:00+00:00",
+              "url": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai",
+              "source_type": "Primary/company source",
+              "primary": true
+            }
+          ],
+          "score_evidence": {
+            "source_quality": {
+              "points": 20,
+              "basis": "Primary/company source"
+            },
+            "materiality": {
+              "points": 25,
+              "facts": [
+                "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems.",
+                "An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems.",
+                "It delivered a record 3,400 output tokens per second in Artificial Analysis benchmarking running Gemma 4 31B, an open source agentic model, with a 100,000-token context critical for agentic systems \u2014 the fastest performance ever recorded for the model."
+              ]
+            },
+            "industry_reach": {
+              "points": 10,
+              "direct_segments": [
+                "AI Models/Applications",
+                "Compute"
+              ],
+              "second_order_segments": [
+                "HBM/Memory",
+                "Foundry/Advanced Packaging"
+              ]
+            },
+            "primary_confirmation": {
+              "points": 10,
+              "available": true
+            },
+            "corroboration": {
+              "points": 0,
+              "source_count": 1
+            },
+            "investment_event_terms": [
+              "deliver",
+              "deploy"
+            ],
+            "forward_signal_terms": [
+              "deliver",
+              "deploy"
+            ],
+            "named_companies": [
+              "nvidia"
+            ]
+          },
+          "missing_data": [],
+          "first_seen": "2026-08-28T15:52+00:00",
+          "quality_schema_version": 4,
+          "event_type": "Capacity / Contract",
+          "direction": "Expanding",
+          "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems."
+        },
+        {
+          "id": "d0520ba8dcdfc8fa1d6d",
+          "headline": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says",
+          "published_at": "2026-08-27T12:01+00:00",
+          "source": "S&P Global",
+          "source_type": "Primary research/industry source",
+          "news_importance_score": 70,
+          "status": "NEW",
+          "affected_trends": [
+            "AI Models/Applications",
+            "Data Centers"
+          ],
+          "direct_effects": [
+            "AI Models/Applications",
+            "Data Centers"
+          ],
+          "second_order_effects": [
+            "Power/Electrical",
+            "Cooling"
+          ],
+          "impact_chain": "Direct: AI Models/Applications, Data Centers. Second-order: Power/Electrical, Cooling.",
+          "source_link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxORjdyeVBXMTR5MXduWVVQVWdkdnNiWk5SZlR6d1ZXYzRjZjhyZXpTbmx4TUpCU19MbFg1WXA3REZ4aXlmbEFvTW14cEprOTNMR2lNUmNuanNqcDJ0NF9oTkktS0tCdjBHVFpLNmFPUXByMTIwWWh5QWpqdWlaemx6V280a2dtTEFNTkg3U0prek11WmgwdDNWX2lPN2lFOElYdTY2RnZLbHhqYTRobWV0cTExVXBGOWNrcDdOejZRUQ?oc=5",
+          "publisher_url": "https://press.spglobal.com",
+          "evidence_sources": [
+            {
+              "title": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says",
+              "source": "S&P Global",
+              "date": "2026-08-27T12:01+00:00",
+              "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxORjdyeVBXMTR5MXduWVVQVWdkdnNiWk5SZlR6d1ZXYzRjZjhyZXpTbmx4TUpCU19MbFg1WXA3REZ4aXlmbEFvTW14cEprOTNMR2lNUmNuanNqcDJ0NF9oTkktS0tCdjBHVFpLNmFPUXByMTIwWWh5QWpqdWlaemx6V280a2dtTEFNTkg3U0prek11WmgwdDNWX2lPN2lFOElYdTY2RnZLbHhqYTRobWV0cTExVXBGOWNrcDdOejZRUQ?oc=5",
+              "source_type": "Primary research/industry source",
+              "primary": true
+            }
+          ],
+          "score_evidence": {
+            "source_quality": {
+              "points": 20,
+              "basis": "Primary research/industry source"
+            },
+            "materiality": {
+              "points": 20,
+              "facts": [
+                "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says",
+                "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says - S&P Global"
+              ]
+            },
+            "industry_reach": {
+              "points": 10,
+              "direct_segments": [
+                "AI Models/Applications",
+                "Data Centers"
+              ],
+              "second_order_segments": [
+                "Power/Electrical",
+                "Cooling"
+              ]
+            },
+            "primary_confirmation": {
+              "points": 10,
+              "available": true
+            },
+            "corroboration": {
+              "points": 0,
+              "source_count": 1
+            },
+            "investment_event_terms": [
+              "investment"
+            ],
+            "forward_signal_terms": [
+              "investment"
+            ],
+            "named_companies": []
+          },
+          "missing_data": [],
+          "first_seen": "2026-08-28T15:52+00:00",
+          "quality_schema_version": 4,
+          "event_type": "Company Update",
+          "direction": "Expanding",
+          "new_information": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says."
+        }
+      ],
+      "important_news_archive": [
+        {
+          "id": "2e5bf4fcda9170846987",
+          "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+          "published_at": "2026-08-25T15:00+00:00",
+          "source": "NVIDIA Newsroom",
+          "source_type": "Primary/company source",
+          "news_importance_score": 87,
+          "status": "NEW",
+          "affected_trends": [
+            "AI Models/Applications",
+            "Compute"
+          ],
+          "direct_effects": [
+            "AI Models/Applications",
+            "Compute"
+          ],
+          "second_order_effects": [
+            "HBM/Memory",
+            "Foundry/Advanced Packaging"
+          ],
+          "impact_chain": "Direct: AI Models/Applications, Compute. Second-order: HBM/Memory, Foundry/Advanced Packaging.",
+          "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai",
+          "publisher_url": "https://nvidianews.nvidia.com/",
+          "evidence_sources": [
+            {
+              "title": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+              "source": "NVIDIA Newsroom",
+              "date": "2026-08-25T15:00+00:00",
+              "url": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai",
+              "source_type": "Primary/company source",
+              "primary": true
+            },
+            {
+              "title": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+              "source": "NVIDIA Newsroom",
+              "date": "2026-08-24T15:00+00:00",
+              "url": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai",
+              "source_type": "Primary/company source",
+              "primary": true
+            }
+          ],
+          "score_evidence": {
+            "source_quality": {
+              "points": 20,
+              "basis": "Primary/company source"
+            },
+            "materiality": {
+              "points": 25,
+              "facts": [
+                "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems.",
+                "An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems.",
+                "It delivered a record 3,400 output tokens per second in Artificial Analysis benchmarking running Gemma 4 31B, an open source agentic model, with a 100,000-token context critical for agentic systems \u2014 the fastest performance ever recorded for the model."
+              ]
+            },
+            "industry_reach": {
+              "points": 10,
+              "direct_segments": [
+                "AI Models/Applications",
+                "Compute"
+              ],
+              "second_order_segments": [
+                "HBM/Memory",
+                "Foundry/Advanced Packaging"
+              ]
+            },
+            "primary_confirmation": {
+              "points": 10,
+              "available": true
+            },
+            "corroboration": {
+              "points": 5,
+              "source_count": 2
+            },
+            "investment_event_terms": [
+              "deliver",
+              "deploy"
+            ],
+            "forward_signal_terms": [
+              "deliver",
+              "deploy"
+            ],
+            "named_companies": [
+              "nvidia"
+            ]
+          },
+          "missing_data": [],
+          "first_seen": "2026-08-28T15:51+00:00",
+          "quality_schema_version": 4,
+          "event_type": "Capacity / Contract",
+          "direction": "Expanding",
+          "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems."
+        }
+      ],
+      "radar_evidence_interface": {
+        "schema_version": "news-to-radar-evidence-v1",
+        "description": "Source-backed news-event evidence only; contains no Radar scores or opportunity rankings.",
+        "events": [
+          {
+            "event_id": "5f8fe4d36353fc328e64",
+            "event_date": "2026-08-26T20:20+00:00",
+            "event_type": "Financial Results",
+            "direction": "Expanding",
+            "confirmation_status": "CONFIRMING",
+            "news_importance_score": 100,
+            "new_information": "Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago.",
+            "affected_trends": [
+              "AI Models/Applications",
+              "Compute",
+              "Data Centers"
+            ],
+            "direct_effects": [
+              "AI Models/Applications",
+              "Compute",
+              "Data Centers"
+            ],
+            "second_order_effects": [
+              "Power/Electrical",
+              "Cooling"
+            ],
+            "evidence_sources": [
+              {
+                "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027",
+                "source": "NVIDIA Newsroom",
+                "date": "2026-08-26T20:20+00:00",
+                "url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
+                "source_type": "Primary/company source",
+                "primary": true
+              },
+              {
+                "title": "Nvidia adds more than $400 billion in value after blowout earnings boost AI confidence",
+                "source": "CNBC",
+                "date": "2026-08-27T08:04+00:00",
+                "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1wT0tKVG5QdjJIV3RXNmZNYUROM1dJYWJ3d3VOUzdKUEZjTFgweTFXNlhFT3RwLUoxZ1E4SXYzQ0g4LUFYdW9tNkNVUmE5OE5TendnYU02ekhBeThSZDRpTVBwcmlCRXdkcDVoetIBckFVX3lxTFBTYXloWFBxMWUxVXBhV1VLdkJzbWpITXdabzh3b00zYXlnb0ZHcEZlRjFqRHRtWmF4QjA2ei1Id3hTQ3N3X1lQcGZyQkJKRzhZalpsbmZrd3lRd2gxQXRpMWpQUUpiVTFxTHJ3N0NEY0k1Zw?oc=5",
+                "source_type": "Reliable financial news source",
+                "primary": false
+              }
+            ],
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
+            "archived": false
+          },
+          {
+            "event_id": "228d0c0093cf0b1a14fa",
+            "event_date": "2026-08-26T21:05+00:00",
+            "event_type": "Capacity / Contract",
+            "direction": "Expanding",
+            "confirmation_status": "CONFIRMING",
+            "news_importance_score": 90,
+            "new_information": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI. Building on already-rapid customer adoption of NVIDIA-accelerated compute on AWS, the companies plan to deploy 2 million additional NVIDIA GPUs across AWS\u2019s global infrastructure and deepen their work together across AI factories, CPUs, networking, open models, data processing and robotics, delivering co-engineered AI solutions that enable customers to accelerate AI development and deployment at unprecedented scale.",
+            "affected_trends": [
+              "AI Models/Applications",
+              "Compute",
+              "HBM/Memory",
+              "Networking/Optical",
+              "Data Centers"
+            ],
+            "direct_effects": [
+              "AI Models/Applications",
+              "Compute",
+              "HBM/Memory",
+              "Networking/Optical",
+              "Data Centers"
+            ],
+            "second_order_effects": [
+              "Power/Electrical",
+              "Cooling"
+            ],
+            "evidence_sources": [
+              {
+                "title": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "source": "NVIDIA Newsroom",
+                "date": "2026-08-26T21:05+00:00",
+                "url": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai",
+                "source_type": "Primary/company source",
+                "primary": true
+              }
+            ],
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai",
+            "archived": false
+          },
+          {
+            "event_id": "5f68b2853c80e559f4f9",
+            "event_date": "2026-08-24T15:00+00:00",
+            "event_type": "Product / Platform",
+            "direction": "Mixed",
+            "confirmation_status": "CONFIRMING",
+            "news_importance_score": 87,
+            "new_information": "Vera features 88 NVIDIA-designed Olympus cores, NVIDIA Spatial Multithreading technology and high-bandwidth LPDDR5X memory, delivering up to 1.2TB/s of bandwidth. SpaceXAI plans to extend its use of NVIDIA accelerated computing into space, with the first-generation Starmind AI satellite based on an optimized NVIDIA Vera Rubin NVL72 system.",
+            "affected_trends": [
+              "AI Models/Applications",
+              "Compute",
+              "HBM/Memory",
+              "Data Centers"
+            ],
+            "direct_effects": [
+              "AI Models/Applications",
+              "Compute",
+              "HBM/Memory",
+              "Data Centers"
+            ],
+            "second_order_effects": [
+              "Power/Electrical",
+              "Cooling"
+            ],
+            "evidence_sources": [
+              {
+                "title": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "source": "NVIDIA Newsroom",
+                "date": "2026-08-24T15:00+00:00",
+                "url": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale",
+                "source_type": "Primary/company source",
+                "primary": true
+              }
+            ],
+            "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale",
+            "archived": false
+          },
+          {
+            "event_id": "4431f55507a3a9109e4c",
+            "event_date": "2026-08-24T15:00+00:00",
+            "event_type": "Capacity / Contract",
+            "direction": "Expanding",
+            "confirmation_status": "NEW",
+            "news_importance_score": 82,
+            "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems.",
+            "affected_trends": [
+              "AI Models/Applications",
+              "Compute"
+            ],
+            "direct_effects": [
+              "AI Models/Applications",
+              "Compute"
+            ],
+            "second_order_effects": [
+              "HBM/Memory",
+              "Foundry/Advanced Packaging"
+            ],
+            "evidence_sources": [
+              {
+                "title": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "source": "NVIDIA Newsroom",
+                "date": "2026-08-24T15:00+00:00",
+                "url": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai",
+                "source_type": "Primary/company source",
+                "primary": true
+              }
+            ],
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai",
+            "archived": false
+          },
+          {
+            "event_id": "d0520ba8dcdfc8fa1d6d",
+            "event_date": "2026-08-27T12:01+00:00",
+            "event_type": "Company Update",
+            "direction": "Expanding",
+            "confirmation_status": "NEW",
+            "news_importance_score": 70,
+            "new_information": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says.",
+            "affected_trends": [
+              "AI Models/Applications",
+              "Data Centers"
+            ],
+            "direct_effects": [
+              "AI Models/Applications",
+              "Data Centers"
+            ],
+            "second_order_effects": [
+              "Power/Electrical",
+              "Cooling"
+            ],
+            "evidence_sources": [
+              {
+                "title": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says",
+                "source": "S&P Global",
+                "date": "2026-08-27T12:01+00:00",
+                "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxORjdyeVBXMTR5MXduWVVQVWdkdnNiWk5SZlR6d1ZXYzRjZjhyZXpTbmx4TUpCU19MbFg1WXA3REZ4aXlmbEFvTW14cEprOTNMR2lNUmNuanNqcDJ0NF9oTkktS0tCdjBHVFpLNmFPUXByMTIwWWh5QWpqdWlaemx6V280a2dtTEFNTkg3U0prek11WmgwdDNWX2lPN2lFOElYdTY2RnZLbHhqYTRobWV0cTExVXBGOWNrcDdOejZRUQ?oc=5",
+                "source_type": "Primary research/industry source",
+                "primary": true
+              }
+            ],
+            "source_link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxORjdyeVBXMTR5MXduWVVQVWdkdnNiWk5SZlR6d1ZXYzRjZjhyZXpTbmx4TUpCU19MbFg1WXA3REZ4aXlmbEFvTW14cEprOTNMR2lNUmNuanNqcDJ0NF9oTkktS0tCdjBHVFpLNmFPUXByMTIwWWh5QWpqdWlaemx6V280a2dtTEFNTkg3U0prek11WmgwdDNWX2lPN2lFOElYdTY2RnZLbHhqYTRobWV0cTExVXBGOWNrcDdOejZRUQ?oc=5",
+            "archived": false
+          },
+          {
+            "event_id": "2e5bf4fcda9170846987",
+            "event_date": "2026-08-25T15:00+00:00",
+            "event_type": "Capacity / Contract",
+            "direction": "Expanding",
+            "confirmation_status": "NEW",
+            "news_importance_score": 87,
+            "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems.",
+            "affected_trends": [
+              "AI Models/Applications",
+              "Compute"
+            ],
+            "direct_effects": [
+              "AI Models/Applications",
+              "Compute"
+            ],
+            "second_order_effects": [
+              "HBM/Memory",
+              "Foundry/Advanced Packaging"
+            ],
+            "evidence_sources": [
+              {
+                "title": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "source": "NVIDIA Newsroom",
+                "date": "2026-08-25T15:00+00:00",
+                "url": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai",
+                "source_type": "Primary/company source",
+                "primary": true
+              },
+              {
+                "title": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "source": "NVIDIA Newsroom",
+                "date": "2026-08-24T15:00+00:00",
+                "url": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai",
+                "source_type": "Primary/company source",
+                "primary": true
+              }
+            ],
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai",
+            "archived": true
+          }
+        ]
+      },
+      "selection_status": "No qualifying new stories were available; the prior selection was preserved.",
+      "methodology": {
+        "engine_version": "ai-technology-news-v1.1",
+        "industry_map": [
+          "AI Models/Applications",
+          "Compute",
+          "HBM/Memory",
+          "Foundry/Advanced Packaging",
+          "Networking/Optical",
+          "Data Centers",
+          "Power/Electrical",
+          "Cooling",
+          "Grid/Energy/Materials"
+        ],
+        "minimum_importance_score": 70,
+        "source_policy": "Official company feeds are ingested directly and clustered with configured reliable financial and industry coverage. Unsupported publishers do not qualify.",
+        "archive_policy": "Prior selected stories move to the archive when they leave the current top-news set; records are deduplicated by normalized headline and source.",
+        "scoring_note": "Importance uses source quality, quantified materiality, direct industry reach, primary confirmation, company specificity, corroboration and recency. News does not calculate Radar scores or rank investment opportunities.",
+        "selection_policy": "At most five stories are shown. No quota is filled; only stories scoring at least 70 qualify."
+      }
+    }
+  },
   "summaries": {
-    "ai": "Key developments: 4 AI Concepts Every Investor Should Know; AI industry says Trump plans to tax chips in the \u201csingle dumbest way imaginable\u201d; President Trump\u2019s Love of Tariffs Comes Into Conflict With His Love of Data Centers.",
-    "biotech": "Key developments: FDA approves Roivant therapy for rare autoimmune disease; Rare disease at FDA: two frameworks, one queue; Michael Polansky has a new, skin-focused biotech. Don\u2019t call it a drug company..",
-    "market": "Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Gain, While Dow Slips Following NVDA Blockbuster Q2 Report\u2014 CRM, CRWD, HPQ in Focus; US Stock Futures Climb as Nvidia\u2019s Outlook Lifts Tech Sector; Stock Market Today: S&P 500, Nasdaq Futures Rise on Nvidia Earnings as Dow Jones Lags.",
-    "market_movers": "Nasdaq led tracked indexes at +1.57% today; Dow Jones was weakest at +0.20%. Key developments: Stock Market Today: S&P 500, Nasdaq 100 Futures Gain, While Dow Slips Following NVDA Blockbuster Q2 Report\u2014 CRM, CRWD, HPQ in Focus; US Stock Futures Climb as Nvidia\u2019s Outlook Lifts Tech Sector; Stock Market Today: S&P 500, Nasdaq Futures Rise on Nvidia Earnings as Dow Jones Lags."
+    "ai": "No new AI headlines were found in today's public feeds. Monitoring continues.",
+    "biotech": "No new biotech headlines were found in today's public feeds. Monitoring continues.",
+    "market": "No new market headlines were found in today's public feeds. Monitoring continues.",
+    "market_movers": "Dow Jones led tracked indexes at +0.14% today; Russell 2000 was weakest at -0.57%. No new market headlines were found in today's public feeds. Monitoring continues."
   },
   "takeaways": [
-    "4 AI Concepts Every Investor Should Know - Schaeffer's Investment Research",
-    "AI industry says Trump plans to tax chips in the \u201csingle dumbest way imaginable\u201d - Ars Technica",
+    "NVIDIA Announces Upcoming Event for Financial Community",
+    "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+    "HiRO and Differentia Biotech Forge Strategic Alliance to Redefine Clinical Trial Design Through AI-Powered Simulation - PR Newswire",
     "FDA approves Roivant therapy for rare autoimmune disease - STAT",
-    "Rare disease at FDA: two frameworks, one queue - The Pharma Letter",
     "Anavex Life Sciences Reports Third Fiscal Quarter 2026 Financial Results and Business Update - Anavex Life Sciences",
     "Gildeuretinol gains Japan orphan designation for Stargardt disease - Ophthalmology Times",
-    "Stock Market Today: S&P 500, Nasdaq 100 Futures Gain, While Dow Slips Following NVDA Blockbuster Q2 Report\u2014 CRM, CRWD, HPQ in Focus - TradingView"
+    "US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower - NDTV Profit"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -549,6 +1348,986 @@
       }
     ]
   },
+  "radar": {
+    "biotech": [
+      {
+        "ticker": "NTLA",
+        "company": "Intellia Therapeutics",
+        "program": "lonvoguran ziclumeran (lonvo-z)",
+        "catalyst": "FDA acceptance of the lonvo-z BLA",
+        "expected_timing": "Second half of 2026",
+        "stage": "BLA submission / review",
+        "why_important": "Acceptance would move a potentially first-in-class, one-time in vivo CRISPR therapy for HAE into FDA review.",
+        "clinical_evidence": "Positive Phase 3 HAELO results were reported and published in the New England Journal of Medicine.",
+        "previous_results": "The company reported positive pivotal HAELO results; this v1 source set does not independently reproduce the full endpoint tables.",
+        "regulatory_status": "The company anticipates FDA acceptance of the BLA in the second half of 2026 and a potential U.S. launch in the first half of 2027.",
+        "commercial_potential": "A provider survey cited by the company found high stated prescribing interest; actual price, penetration and addressable treated population remain unverified here.",
+        "market_expectation": "Missing: no verified consensus probability, event-implied move, or valuation sensitivity is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "FDA filing acceptance is not approval; manufacturing, safety, durability and commercialization risks remain.",
+        "watch_next": "BLA acceptance notice, review designation, PDUFA timing and any FDA requests.",
+        "sources": [
+          {
+            "title": "Intellia Q2 2026 results",
+            "url": "https://ir.intelliatx.com/node/12826",
+            "date": "2026-08-06"
+          },
+          {
+            "title": "Intellia full-year 2025 results",
+            "url": "https://ir.intelliatx.com/node/12501",
+            "date": "2026-02-26"
+          }
+        ],
+        "catalyst_score": 67,
+        "upcoming_catalyst": "FDA acceptance of the lonvo-z BLA \u2014 Second half of 2026",
+        "opportunity_status": "Monitoring",
+        "score_as_of": "2026-08-28",
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": [
+          {
+            "key": "catalyst_importance",
+            "label": "Catalyst Importance",
+            "score": 25,
+            "weight": 25,
+            "rationale": "A pivotal regulatory filing acceptance can materially change approval probability.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Intellia Q2 2026 results",
+                "date": "2026-08-06",
+                "url": "https://ir.intelliatx.com/node/12826"
+              },
+              {
+                "title": "Intellia full-year 2025 results",
+                "date": "2026-02-26",
+                "url": "https://ir.intelliatx.com/node/12501"
+              }
+            ]
+          },
+          {
+            "key": "prior_evidence",
+            "label": "Prior Evidence",
+            "score": 20,
+            "weight": 20,
+            "rationale": "Positive Phase 3 results support the filing.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Intellia Q2 2026 results",
+                "date": "2026-08-06",
+                "url": "https://ir.intelliatx.com/node/12826"
+              },
+              {
+                "title": "Intellia full-year 2025 results",
+                "date": "2026-02-26",
+                "url": "https://ir.intelliatx.com/node/12501"
+              }
+            ]
+          },
+          {
+            "key": "catalyst_timing",
+            "label": "Catalyst Timing",
+            "score": 10,
+            "weight": 15,
+            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Intellia Q2 2026 results",
+                "date": "2026-08-06",
+                "url": "https://ir.intelliatx.com/node/12826"
+              },
+              {
+                "title": "Intellia full-year 2025 results",
+                "date": "2026-02-26",
+                "url": "https://ir.intelliatx.com/node/12501"
+              }
+            ]
+          },
+          {
+            "key": "commercial_impact",
+            "label": "Commercial Impact",
+            "score": 12,
+            "weight": 15,
+            "rationale": "One-time therapy in HAE has differentiated potential, but v1 lacks an independently verified revenue model.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Intellia Q2 2026 results",
+                "date": "2026-08-06",
+                "url": "https://ir.intelliatx.com/node/12826"
+              },
+              {
+                "title": "Intellia full-year 2025 results",
+                "date": "2026-02-26",
+                "url": "https://ir.intelliatx.com/node/12501"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "score": 0,
+            "weight": 15,
+            "rationale": "Missing verified market-expectation data.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "positioning",
+            "label": "Positioning / Technical Setup",
+            "score": 0,
+            "weight": 10,
+            "rationale": "Missing verified positioning and technical data.",
+            "missing": true,
+            "evidence": []
+          }
+        ],
+        "missing_data": [
+          "Expectation Gap",
+          "Positioning / Technical Setup"
+        ],
+        "data_completeness": 75
+      },
+      {
+        "ticker": "BEAM",
+        "company": "Beam Therapeutics",
+        "program": "BEAM-302",
+        "catalyst": "Updated Phase 1/2 BEAM-302 data at ERS",
+        "expected_timing": "September 8, 2026",
+        "stage": "Phase 1/2; pivotal cohort dosing",
+        "why_important": "The update may further validate in vivo base editing and the accelerated pivotal path in alpha-1 antitrypsin deficiency.",
+        "clinical_evidence": "Earlier clinical data showed durable correction of the disease-causing protein phenotype and reduction of mutant Z-AAT.",
+        "previous_results": "At 60 mg, the company reported mean steady-state total AAT of 16.1 \u00b5M, all patients above the 11 \u00b5M protective threshold, 94% corrected M-AAT and 84% mutant Z-AAT reduction.",
+        "regulatory_status": "A pivotal cohort is dosing under an accelerated development path; the program is not approved.",
+        "commercial_potential": "The company estimates about 100,000 U.S. PiZZ patients and low diagnosis rates, with substantial unmet need.",
+        "market_expectation": "Missing: no verified consensus expectations or options-implied event move is connected.",
+        "positioning": "Missing: no dated short-interest, fund-flow, or technical-setup dataset is connected.",
+        "risks": "Small early cohorts, durability, liver safety, dose selection and translation into clinical outcomes may invalidate the thesis.",
+        "watch_next": "Dose-response, durability, safety, pivotal-cohort design and regulator-aligned endpoints.",
+        "sources": [
+          {
+            "title": "Beam ERS presentation announcement",
+            "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302",
+            "date": "2026-07-23"
+          },
+          {
+            "title": "Beam updated BEAM-302 clinical data",
+            "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data",
+            "date": "2026-03-25"
+          },
+          {
+            "title": "Beam Q2 2026 results",
+            "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results",
+            "date": "2026-08-04"
+          }
+        ],
+        "catalyst_score": 63,
+        "upcoming_catalyst": "Updated Phase 1/2 BEAM-302 data at ERS \u2014 September 8, 2026",
+        "opportunity_status": "Monitoring",
+        "score_as_of": "2026-08-28",
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": [
+          {
+            "key": "catalyst_importance",
+            "label": "Catalyst Importance",
+            "score": 20,
+            "weight": 25,
+            "rationale": "Registrational-enabling clinical data can alter program and platform probability.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Beam ERS presentation announcement",
+                "date": "2026-07-23",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302"
+              },
+              {
+                "title": "Beam updated BEAM-302 clinical data",
+                "date": "2026-03-25",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data"
+              },
+              {
+                "title": "Beam Q2 2026 results",
+                "date": "2026-08-04",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "prior_evidence",
+            "label": "Prior Evidence",
+            "score": 16,
+            "weight": 20,
+            "rationale": "Positive human proof-of-concept exists, but evidence remains early-stage and cohort sizes are limited.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Beam ERS presentation announcement",
+                "date": "2026-07-23",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302"
+              },
+              {
+                "title": "Beam updated BEAM-302 clinical data",
+                "date": "2026-03-25",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data"
+              },
+              {
+                "title": "Beam Q2 2026 results",
+                "date": "2026-08-04",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "catalyst_timing",
+            "label": "Catalyst Timing",
+            "score": 15,
+            "weight": 15,
+            "rationale": "Exact catalyst date is within 90 days.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Beam ERS presentation announcement",
+                "date": "2026-07-23",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302"
+              },
+              {
+                "title": "Beam updated BEAM-302 clinical data",
+                "date": "2026-03-25",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data"
+              },
+              {
+                "title": "Beam Q2 2026 results",
+                "date": "2026-08-04",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "commercial_impact",
+            "label": "Commercial Impact",
+            "score": 12,
+            "weight": 15,
+            "rationale": "Large rare-disease population and differentiated one-time correction are documented; pricing and penetration are not.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Beam ERS presentation announcement",
+                "date": "2026-07-23",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302"
+              },
+              {
+                "title": "Beam updated BEAM-302 clinical data",
+                "date": "2026-03-25",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data"
+              },
+              {
+                "title": "Beam Q2 2026 results",
+                "date": "2026-08-04",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "score": 0,
+            "weight": 15,
+            "rationale": "Missing verified market-expectation data.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "positioning",
+            "label": "Positioning / Technical Setup",
+            "score": 0,
+            "weight": 10,
+            "rationale": "Missing verified positioning and technical data.",
+            "missing": true,
+            "evidence": []
+          }
+        ],
+        "missing_data": [
+          "Expectation Gap",
+          "Positioning / Technical Setup"
+        ],
+        "data_completeness": 75
+      },
+      {
+        "ticker": "MAZE",
+        "company": "Maze Therapeutics",
+        "program": "MZE829",
+        "catalyst": "Additional HORIZON Phase 2 cohort data",
+        "expected_timing": "Late 2026 / early 2027",
+        "stage": "Phase 2",
+        "why_important": "Additional cohorts may confirm a genetically defined response signal and support pivotal development in APOL1-mediated kidney disease.",
+        "clinical_evidence": "The company reported positive Phase 2 proof-of-concept results with proteinuria reductions in broad AMKD and severe FSGS cohorts.",
+        "previous_results": "Mean proteinuria reduction was reported as 35.6% at week 12 in broad AMKD and 61.8% in severe FSGS, with no serious or severe treatment-related adverse events.",
+        "regulatory_status": "The company is preparing for a potential pivotal study in the first half of 2027; MZE829 is not approved.",
+        "commercial_potential": "The company estimates more than one million U.S. patients with APOL1-mediated kidney disease.",
+        "market_expectation": "Missing: no verified consensus expectations or valuation sensitivity is connected.",
+        "positioning": "Missing: no dated short-interest or technical-setup dataset is connected.",
+        "risks": "Small cohorts, open-label interpretation, biomarker-to-outcome translation and safety in larger populations remain risks.",
+        "watch_next": "Consistency across cohorts, durability, safety, subgroup response and pivotal-study design.",
+        "sources": [
+          {
+            "title": "Maze Q2 2026 results",
+            "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results",
+            "date": "2026-08-11"
+          },
+          {
+            "title": "Maze Q1 2026 results",
+            "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results",
+            "date": "2026-05-12"
+          }
+        ],
+        "catalyst_score": 58,
+        "upcoming_catalyst": "Additional HORIZON Phase 2 cohort data \u2014 Late 2026 / early 2027",
+        "opportunity_status": "Monitoring",
+        "score_as_of": "2026-08-28",
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": [
+          {
+            "key": "catalyst_importance",
+            "label": "Catalyst Importance",
+            "score": 20,
+            "weight": 25,
+            "rationale": "Confirmatory Phase 2 data can enable pivotal development.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Maze Q2 2026 results",
+                "date": "2026-08-11",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results"
+              },
+              {
+                "title": "Maze Q1 2026 results",
+                "date": "2026-05-12",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "prior_evidence",
+            "label": "Prior Evidence",
+            "score": 16,
+            "weight": 20,
+            "rationale": "Positive human proof-of-concept exists, but cohort sizes are still limited.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Maze Q2 2026 results",
+                "date": "2026-08-11",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results"
+              },
+              {
+                "title": "Maze Q1 2026 results",
+                "date": "2026-05-12",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "catalyst_timing",
+            "label": "Catalyst Timing",
+            "score": 10,
+            "weight": 15,
+            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Maze Q2 2026 results",
+                "date": "2026-08-11",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results"
+              },
+              {
+                "title": "Maze Q1 2026 results",
+                "date": "2026-05-12",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "commercial_impact",
+            "label": "Commercial Impact",
+            "score": 12,
+            "weight": 15,
+            "rationale": "A large genetically defined population is cited, but pricing and penetration are not independently modeled.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Maze Q2 2026 results",
+                "date": "2026-08-11",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results"
+              },
+              {
+                "title": "Maze Q1 2026 results",
+                "date": "2026-05-12",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "score": 0,
+            "weight": 15,
+            "rationale": "Missing verified market-expectation data.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "positioning",
+            "label": "Positioning / Technical Setup",
+            "score": 0,
+            "weight": 10,
+            "rationale": "Missing verified positioning and technical data.",
+            "missing": true,
+            "evidence": []
+          }
+        ],
+        "missing_data": [
+          "Expectation Gap",
+          "Positioning / Technical Setup"
+        ],
+        "data_completeness": 75
+      },
+      {
+        "ticker": "STOK",
+        "company": "Stoke Therapeutics",
+        "program": "zorevunersen",
+        "catalyst": "FDA pre-NDA meeting and regulatory-path update",
+        "expected_timing": "Second half of 2026",
+        "stage": "Phase 3 / pre-NDA",
+        "why_important": "A constructive pre-NDA outcome could clarify the rolling NDA path for a potential disease-modifying Dravet syndrome therapy.",
+        "clinical_evidence": "The company reports supportive safety and efficacy across four years of follow-up; a Phase 3 readout is expected in 2027.",
+        "previous_results": "Long-term clinical evidence is described as supportive by the company; full patient-level evidence is not reproduced in this v1 dataset.",
+        "regulatory_status": "Pre-NDA meeting planned for the second half of 2026 and rolling NDA submission planned for the first quarter of 2027.",
+        "commercial_potential": "Potential first-in-class disease-modifying treatment in a severe rare epilepsy; a verified revenue model is missing.",
+        "market_expectation": "Missing: no verified probability-weighted consensus or event-implied move is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "Meeting outcomes may not be disclosed in detail; FDA may require Phase 3 data or additional evidence before approval.",
+        "watch_next": "Company disclosure after the pre-NDA meeting and confirmation of the rolling NDA plan.",
+        "sources": [
+          {
+            "title": "Stoke Q2 2026 results",
+            "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/",
+            "date": "2026-08-03"
+          }
+        ],
+        "catalyst_score": 58,
+        "upcoming_catalyst": "FDA pre-NDA meeting and regulatory-path update \u2014 Second half of 2026",
+        "opportunity_status": "Monitoring",
+        "score_as_of": "2026-08-28",
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": [
+          {
+            "key": "catalyst_importance",
+            "label": "Catalyst Importance",
+            "score": 20,
+            "weight": 25,
+            "rationale": "Regulatory-path clarification can materially change time-to-filing and approval probability.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Stoke Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/"
+              }
+            ]
+          },
+          {
+            "key": "prior_evidence",
+            "label": "Prior Evidence",
+            "score": 16,
+            "weight": 20,
+            "rationale": "Multi-year human evidence is supportive, but pivotal confirmation remains pending.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Stoke Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/"
+              }
+            ]
+          },
+          {
+            "key": "catalyst_timing",
+            "label": "Catalyst Timing",
+            "score": 10,
+            "weight": 15,
+            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Stoke Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/"
+              }
+            ]
+          },
+          {
+            "key": "commercial_impact",
+            "label": "Commercial Impact",
+            "score": 12,
+            "weight": 15,
+            "rationale": "Potential disease modification in a severe rare disease is meaningful; v1 lacks a verified revenue model.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Stoke Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "score": 0,
+            "weight": 15,
+            "rationale": "Missing verified market-expectation data.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "positioning",
+            "label": "Positioning / Technical Setup",
+            "score": 0,
+            "weight": 10,
+            "rationale": "Missing verified positioning and technical data.",
+            "missing": true,
+            "evidence": []
+          }
+        ],
+        "missing_data": [
+          "Expectation Gap",
+          "Positioning / Technical Setup"
+        ],
+        "data_completeness": 75
+      },
+      {
+        "ticker": "PRQR",
+        "company": "ProQR Therapeutics",
+        "program": "AX-0810 / AX-0811",
+        "catalyst": "Full AX-0810 and initial AX-0811 Phase 1 data",
+        "expected_timing": "By year-end 2026",
+        "stage": "Phase 1",
+        "why_important": "The readout could strengthen the first clinical validation of ProQR's Axiomer RNA-editing platform and show next-generation activity.",
+        "clinical_evidence": "Initial AX-0810 data showed target engagement, up to eight-fold bile-acid increases, favorable reported safety and no serious adverse events or pruritus.",
+        "previous_results": "Initial Phase 1 target engagement supports platform activity, but clinical efficacy and larger-cohort safety remain unproven.",
+        "regulatory_status": "AX-0811 CTA was submitted in July 2026; both programs remain investigational.",
+        "commercial_potential": "Platform validation could affect multiple programs, but indication-level pricing, population and penetration are not established in v1.",
+        "market_expectation": "Missing: no verified consensus, probability-weighted valuation, or event-implied move is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "Early target engagement may not translate into clinical benefit; dose, durability, safety and platform reproducibility remain uncertain.",
+        "watch_next": "Editing level, dose-response, durability, safety and evidence that AX-0811 improves potency or duration.",
+        "sources": [
+          {
+            "title": "ProQR Q2 2026 results",
+            "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results",
+            "date": "2026-08-13"
+          },
+          {
+            "title": "ProQR positive AX-0810 data",
+            "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform",
+            "date": "2026-06-25"
+          }
+        ],
+        "catalyst_score": 47,
+        "upcoming_catalyst": "Full AX-0810 and initial AX-0811 Phase 1 data \u2014 By year-end 2026",
+        "opportunity_status": "Low Priority",
+        "score_as_of": "2026-08-28",
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": [
+          {
+            "key": "catalyst_importance",
+            "label": "Catalyst Importance",
+            "score": 15,
+            "weight": 25,
+            "rationale": "Early clinical platform validation may change valuation but is not registrational.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "ProQR Q2 2026 results",
+                "date": "2026-08-13",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
+              },
+              {
+                "title": "ProQR positive AX-0810 data",
+                "date": "2026-06-25",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
+              }
+            ]
+          },
+          {
+            "key": "prior_evidence",
+            "label": "Prior Evidence",
+            "score": 12,
+            "weight": 20,
+            "rationale": "Initial human target engagement exists; clinical efficacy is not established.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "ProQR Q2 2026 results",
+                "date": "2026-08-13",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
+              },
+              {
+                "title": "ProQR positive AX-0810 data",
+                "date": "2026-06-25",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
+              }
+            ]
+          },
+          {
+            "key": "catalyst_timing",
+            "label": "Catalyst Timing",
+            "score": 12,
+            "weight": 15,
+            "rationale": "A defined quarter or similarly narrow window falls within six months.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "ProQR Q2 2026 results",
+                "date": "2026-08-13",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
+              },
+              {
+                "title": "ProQR positive AX-0810 data",
+                "date": "2026-06-25",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
+              }
+            ]
+          },
+          {
+            "key": "commercial_impact",
+            "label": "Commercial Impact",
+            "score": 8,
+            "weight": 15,
+            "rationale": "Platform read-through is meaningful, but commercial inputs are largely missing.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "ProQR Q2 2026 results",
+                "date": "2026-08-13",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
+              },
+              {
+                "title": "ProQR positive AX-0810 data",
+                "date": "2026-06-25",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "score": 0,
+            "weight": 15,
+            "rationale": "Missing verified market-expectation data.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "positioning",
+            "label": "Positioning / Technical Setup",
+            "score": 0,
+            "weight": 10,
+            "rationale": "Missing verified positioning and technical data.",
+            "missing": true,
+            "evidence": []
+          }
+        ],
+        "missing_data": [
+          "Expectation Gap",
+          "Positioning / Technical Setup"
+        ],
+        "data_completeness": 75
+      },
+      {
+        "ticker": "KRYS",
+        "company": "Krystal Biotech",
+        "program": "KB803",
+        "catalyst": "IOLITE registrational top-line results",
+        "expected_timing": "Fourth quarter 2026",
+        "stage": "Registrational study",
+        "why_important": "A registrational readout could establish a second ophthalmic use of the company's redosable gene-delivery platform in dystrophic epidermolysis bullosa.",
+        "clinical_evidence": "Missing: the cited Q2 source confirms full enrollment but does not provide program-specific clinical efficacy results.",
+        "previous_results": "Missing from the connected source set; no result is assumed.",
+        "regulatory_status": "The IOLITE registrational study is fully enrolled; KB803 is not approved.",
+        "commercial_potential": "Could treat or prevent corneal abrasions in DEB, but v1 lacks verified patient, pricing and penetration inputs.",
+        "market_expectation": "Missing: no verified consensus expectations or event-implied move is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "No connected program-specific efficacy evidence; registrational endpoints, safety and regulatory acceptability remain uncertain.",
+        "watch_next": "Top-line efficacy, safety, durability and regulatory next steps.",
+        "sources": [
+          {
+            "title": "Krystal Q2 2026 results",
+            "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and",
+            "date": "2026-08-03"
+          }
+        ],
+        "catalyst_score": 45,
+        "upcoming_catalyst": "IOLITE registrational top-line results \u2014 Fourth quarter 2026",
+        "opportunity_status": "Low Priority",
+        "score_as_of": "2026-08-28",
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": [
+          {
+            "key": "catalyst_importance",
+            "label": "Catalyst Importance",
+            "score": 25,
+            "weight": 25,
+            "rationale": "A registrational top-line result can materially change approval probability.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Krystal Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
+              }
+            ]
+          },
+          {
+            "key": "prior_evidence",
+            "label": "Prior Evidence",
+            "score": 0,
+            "weight": 20,
+            "rationale": "Missing program-specific clinical evidence in the connected source set.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "catalyst_timing",
+            "label": "Catalyst Timing",
+            "score": 12,
+            "weight": 15,
+            "rationale": "A defined quarter or similarly narrow window falls within six months.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Krystal Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
+              }
+            ]
+          },
+          {
+            "key": "commercial_impact",
+            "label": "Commercial Impact",
+            "score": 8,
+            "weight": 15,
+            "rationale": "A meaningful rare-disease complication is addressed, but commercial inputs are missing.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Krystal Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "score": 0,
+            "weight": 15,
+            "rationale": "Missing verified market-expectation data.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "positioning",
+            "label": "Positioning / Technical Setup",
+            "score": 0,
+            "weight": 10,
+            "rationale": "Missing verified positioning and technical data.",
+            "missing": true,
+            "evidence": []
+          }
+        ],
+        "missing_data": [
+          "Prior Evidence",
+          "Expectation Gap",
+          "Positioning / Technical Setup"
+        ],
+        "data_completeness": 55
+      }
+    ],
+    "methodology": {
+      "engine_version": "biotech-catalyst-radar-v1",
+      "horizon": "Potentially valuation-changing catalysts expected within the next 183 days (approximately six months).",
+      "weights": {
+        "catalyst_importance": 25,
+        "prior_evidence": 20,
+        "catalyst_timing": 15,
+        "commercial_impact": 15,
+        "expectation_gap": 15,
+        "positioning": 10
+      },
+      "classifications": {
+        "85-100": "High Priority",
+        "70-84": "Priority Watch",
+        "55-69": "Monitoring",
+        "0-54": "Low Priority"
+      },
+      "missing_data_policy": "Missing evidence is never inferred. A missing component receives zero points and is listed in missing_data.",
+      "timing_rules": {
+        "exact_date_within_90_days": 15,
+        "defined_quarter_or_narrow_window": 12,
+        "broader_company_guidance_within_six_months": 10,
+        "outside_window_or_missing": 0
+      },
+      "scope_note": "V1 scores a curated, source-backed catalyst set. It does not yet discover catalysts or ingest consensus, options, short-interest, or fund-flow data automatically."
+    }
+  },
+  "radar_validation": {
+    "mrna": {
+      "cutoff_date": "2026-07-31",
+      "future_information_used": false,
+      "result": {
+        "ticker": "MRNA",
+        "company": "Moderna",
+        "program": "mRNA-1010 (mFLUSIVA)",
+        "catalyst": "FDA PDUFA decision for mFLUSIVA",
+        "expected_timing": "August 5, 2026",
+        "stage": "BLA review",
+        "why_important": "Approval would represent Moderna's fifth product and expand the commercial respiratory portfolio into seasonal influenza.",
+        "clinical_evidence": "The amended BLA was accepted and the FDA recommendation was based on the Phase 3 program; the v1 cutoff source set does not reproduce all endpoint tables.",
+        "previous_results": "A Phase 3 regulatory package supported the accepted amended BLA. No post-July 31 outcome information is used.",
+        "regulatory_status": "FDA PDUFA date of August 5, 2026, as disclosed by July 31, 2026.",
+        "commercial_potential": "A fifth approved product could broaden Moderna's respiratory franchise, but the v1 case has no independently verified product-level forecast.",
+        "market_expectation": "Missing as of the cutoff: no verified consensus approval probability or event-implied move in the connected sources.",
+        "positioning": "Missing as of the cutoff: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "Regulatory rejection or delay, label restrictions, competitive flu vaccines and commercial execution.",
+        "watch_next": "FDA decision on August 5, 2026; outcome deliberately excluded from the retrospective input set.",
+        "sources": [
+          {
+            "title": "Moderna Q2 2026 results",
+            "url": "https://investors.modernatx.com/quarterly-results",
+            "date": "2026-07-31"
+          },
+          {
+            "title": "Moderna June 2026 Form 10-Q",
+            "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm",
+            "date": "2026-07-31"
+          }
+        ],
+        "catalyst_score": 70,
+        "upcoming_catalyst": "FDA PDUFA decision for mFLUSIVA \u2014 August 5, 2026",
+        "opportunity_status": "Priority Watch",
+        "score_as_of": "2026-07-31",
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": [
+          {
+            "key": "catalyst_importance",
+            "label": "Catalyst Importance",
+            "score": 25,
+            "weight": 25,
+            "rationale": "An FDA approval decision is a maximum-importance valuation catalyst.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Moderna Q2 2026 results",
+                "date": "2026-07-31",
+                "url": "https://investors.modernatx.com/quarterly-results"
+              },
+              {
+                "title": "Moderna June 2026 Form 10-Q",
+                "date": "2026-07-31",
+                "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm"
+              }
+            ]
+          },
+          {
+            "key": "prior_evidence",
+            "label": "Prior Evidence",
+            "score": 18,
+            "weight": 20,
+            "rationale": "An accepted BLA backed by Phase 3 evidence is strong, but full endpoint detail is not present in the connected cutoff sources.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Moderna Q2 2026 results",
+                "date": "2026-07-31",
+                "url": "https://investors.modernatx.com/quarterly-results"
+              },
+              {
+                "title": "Moderna June 2026 Form 10-Q",
+                "date": "2026-07-31",
+                "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm"
+              }
+            ]
+          },
+          {
+            "key": "catalyst_timing",
+            "label": "Catalyst Timing",
+            "score": 15,
+            "weight": 15,
+            "rationale": "Exact catalyst date is within 90 days.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Moderna Q2 2026 results",
+                "date": "2026-07-31",
+                "url": "https://investors.modernatx.com/quarterly-results"
+              },
+              {
+                "title": "Moderna June 2026 Form 10-Q",
+                "date": "2026-07-31",
+                "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm"
+              }
+            ]
+          },
+          {
+            "key": "commercial_impact",
+            "label": "Commercial Impact",
+            "score": 12,
+            "weight": 15,
+            "rationale": "Portfolio expansion is material, but a verified product forecast is missing.",
+            "missing": false,
+            "evidence": [
+              {
+                "title": "Moderna Q2 2026 results",
+                "date": "2026-07-31",
+                "url": "https://investors.modernatx.com/quarterly-results"
+              },
+              {
+                "title": "Moderna June 2026 Form 10-Q",
+                "date": "2026-07-31",
+                "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "score": 0,
+            "weight": 15,
+            "rationale": "Missing verified cutoff-date market-expectation data.",
+            "missing": true,
+            "evidence": []
+          },
+          {
+            "key": "positioning",
+            "label": "Positioning / Technical Setup",
+            "score": 0,
+            "weight": 10,
+            "rationale": "Missing verified cutoff-date positioning and technical data.",
+            "missing": true,
+            "evidence": []
+          }
+        ],
+        "missing_data": [
+          "Expectation Gap",
+          "Positioning / Technical Setup"
+        ],
+        "data_completeness": 75
+      },
+      "note": "Retrospective validation input is frozen at July 31, 2026; the August 5 FDA outcome is deliberately excluded."
+    }
+  },
   "watchlists": {
     "ai": [
       {
@@ -802,17 +2581,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Grants Rare Pediatric Disease Designation to Mahzi's AAV9 Gene Therapy MZ-1866 for Pitt Hopkins Syndrome",
-      "date": "Tue, 25 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOalJNYjFBakVYMHRRYXJEN3g4cC1JeFNtU3k1WmZ3NVNTSXZ3VnhqNkRHY1piUTE4TnllR2k0ODFPcFdwd0tKZEpPQ0tZZHQ1dmd4amFxRk9yRzdYZmpCRF9vWldMZTBUNUlGU05BRFZvMU93YnlXTko2VUNQR21aZFBFeG5ObHdMS3o2Z1N6cUVaNGZSdkZLQW1zX19rU3ZndEhHSzZiWThQcnA3Mjc0ZUxNT3pSU2dUd194WVJuSmNOSkp6THNNRlZoTklQY2lwT0wweU1sRjdQMWRFcmhaUHFPeGdzQQ?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Mahzi Therapeutics Announces FDA Rare Pediatric Disease Designation for MZ-1866 Investigational Therapy for Pitt Hopkins Syndrome",
-      "date": "Tue, 25 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxQYl9NMUJXZEZmX1hnUnJTNEJvTUNMLUgyc09ic1NBalVSRzFUUkNfZEU3ajhHUWNlN2lJeU9rSmlkdXVhX1ZScHRZOVgwcHk0UUhkUU1zdHFHQXgtQWZ2clpsZ0E3ZmpwaHhIZktjS252WUZXemYxWXg2X21CbnAyczlUMk9uWHlMV1JnZGNtM2NBREotdUxCSTRqaDhRdFExUVhpOWdDTk1YWmVyMzE1ZmYyYnBCVFpzV1V4VlNlVEFlVkY2N1R5TFpDVDAzREZoSnNOOTVDQXFIN3h0cDg2dE04MkU0WXdIdnpkSmFZTFFKV2pHTDYxa0JMbkhBdw?oc=5"
+      "event": "Sangrail Debuts as New Biotech, Picks Up Dropped Gene Therapy for Sanfilippo Syndrome Type B",
+      "date": "Thu, 27 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNVl9OdGplQ3FHd1NZNFZJX2ZXUkxETE5WOF9tdFlmNk5hSkJpeEdoMmJ0ZU9DeTIydDV6bVl3VEJJenI5WWUzQndEc1FUaTNBSHJMNmRUcVRnNVNZZU1tT1lOTU5mRnFNbUJ6WlYwblJacG40Wi1LNThOeWZmcVpMYzVjX1JTZ29CSlBRSUtqQnAtRUxIQVltMEZhNUVfZUExRE15UmtOdnhTb253Z21jb0J3VEZBLUZJdnUtZ1M4UUx2Qm1MRFg5WlRwUDYzWTZS?oc=5"
     },
     {
       "company": "See source",
@@ -826,55 +2597,63 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
+      "event": "Mahzi Therapeutics Announces FDA Rare Pediatric Disease Designation for MZ-1866 Investigational Therapy for Pitt Hopkins Syndrome",
+      "date": "Tue, 25 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxQYl9NMUJXZEZmX1hnUnJTNEJvTUNMLUgyc09ic1NBalVSRzFUUkNfZEU3ajhHUWNlN2lJeU9rSmlkdXVhX1ZScHRZOVgwcHk0UUhkUU1zdHFHQXgtQWZ2clpsZ0E3ZmpwaHhIZktjS252WUZXemYxWXg2X21CbnAyczlUMk9uWHlMV1JnZGNtM2NBREotdUxCSTRqaDhRdFExUVhpOWdDTk1YWmVyMzE1ZmYyYnBCVFpzV1V4VlNlVEFlVkY2N1R5TFpDVDAzREZoSnNOOTVDQXFIN3h0cDg2dE04MkU0WXdIdnpkSmFZTFFKV2pHTDYxa0JMbkhBdw?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA grants fast track status to novel inhaled therapy for IPF",
+      "date": "Wed, 26 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQNkY5WnlUdnFKS3Bsa2Vkd1BON0xPVFlKUTZrem1MaVhYalFFcDZGbnNEQ0M3Z2FKNEo1SEYwS3luR1MwMHZGUlJ5MkJObDJncmZwNEhUanNiVk9pU3FiVFV4RGRJQnhORTZPWFVodEpaSldIazNEM3JsSHFDYlJfOHlULWFRUFoyNURpOUpNMFB3UloyVFltYlhjbEpfWVQtUHRMTnh0MDM?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
+      "event": "FDA Grants Rare Pediatric Disease Designation to Mahzi's AAV9 Gene Therapy MZ-1866 for Pitt Hopkins Syndrome",
+      "date": "Tue, 25 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOalJNYjFBakVYMHRRYXJEN3g4cC1JeFNtU3k1WmZ3NVNTSXZ3VnhqNkRHY1piUTE4TnllR2k0ODFPcFdwd0tKZEpPQ0tZZHQ1dmd4amFxRk9yRzdYZmpCRF9vWldMZTBUNUlGU05BRFZvMU93YnlXTko2VUNQR21aZFBFeG5ObHdMS3o2Z1N6cUVaNGZSdkZLQW1zX19rU3ZndEhHSzZiWThQcnA3Mjc0ZUxNT3pSU2dUd194WVJuSmNOSkp6THNNRlZoTklQY2lwT0wweU1sRjdQMWRFcmhaUHFPeGdzQQ?oc=5"
+    },
+    {
+      "company": "See source",
+      "product": "See source",
+      "indication": "See source",
       "event": "Spruce Biosciences Announces Positive Pre-BLA Meetings with FDA and Confirms BLA Submission for TA-ERT on Track for Q4 2026",
       "date": "Mon, 24 Aug 2026",
       "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxNR1ptUkVKM3ZnTmhOcmxieFUxc1FoM1pDbGpnbFdLbUFkVW5fdU1zemR5cG42LVIwblBMNnhBVERyTzJZWTFKNWR2djY4bkZBYThubXB1WkVzRDBYNGRiVkUzQWE3RWxHQ1VmWE95TWF1dkJCeG9CaFVNUjVkcGFTT25vZTdvY2I3UjZnRzY0OUhYSG81QmlDaWZHLXNjQ2E1cWFTQmgydmdpd3RZcGlWbU9nV3hyLVpLN0dvODloNnVVdFhvNU52Yk4wd29KSEdNTFpwY2VubGJPajJHR24wamRwb0U5TzBlOS02U0dXZDMtYVZuMXBzOHdJenhSYlVLRGhWR3hQZHB4RF9v?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Scholar Rock Provides Update on Global Apitegromab Regulatory Progress Across U.S., Europe, and Japan",
-      "date": "Fri, 21 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMipwJBVV95cUxNd25BaGI2VV9xdEZma2dPdDI5RDd2b2tyVmpLcG5IZXl3ZDhiOUpQem02S3BSZ093a2pCb2ZhVjNUVEpCNk5KLVBJcXB6TmROMW5yUmlWalM3Zzh5SjBaQ2tJU2VZSGRSeTBSd01ZZEZXc1FaZmpaUlZhaTE3b0lyNGZBb2ZvZVlPc0cxeHBKd0gyUjlfdDJTSDlMTnB3MUloZk1CRFRuV0pxR3ZMZWN0elBtN2JPWFJnTjU2bjA4LXVwa0pjVVAxemZYa2Z0d3RXY2lIU3BaZUpjNmZhaXlaaGJDTGZXc29Db0xWY3pjcXlYcFNQcXM3bG81cC15b2JSUE01aThvZFc0cFRxaThrQ1JLc2I4T2JJcWVoTkZ3OXVLNzVPbjkw?oc=5"
-    },
-    {
-      "company": "See source",
-      "product": "See source",
-      "indication": "See source",
-      "event": "Werewolf Therapeutics merges with Ambros",
-      "date": "Mon, 24 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOelVpUFY1YmJSeEliWkRJSnNwcGFZMjNid3lERTNyQVFRS0lMbE52N2ZkWE9iWW50NkNQMHlaRWpmWWFEMG1DNktDT20zU0p3ZXdMYjNZUFRQNnoyblYzaEF0WTUwZmNLRGVzblBBWnVpTExoYXhIMnVEdC1SSTlwWUF6dTBPTjlTUUVRMEdDYVBwQktueXI1SDNqNGZ5bW8zMmNYUGQzSko3S2Vf?oc=5"
     }
   ],
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,730.99",
-      "daily": 0.72,
-      "weekly": 1.18,
-      "monthly": 5.67
+      "value": "7,734.71",
+      "daily": 0.05,
+      "weekly": 0.79,
+      "monthly": 3.99
     },
     {
       "name": "Nasdaq",
-      "value": "26,541.35",
-      "daily": 1.57,
-      "weekly": 1.82,
-      "monthly": 8.58
+      "value": "26,524.09",
+      "daily": -0.07,
+      "weekly": 1.31,
+      "monthly": 5.58
     },
     {
       "name": "Dow Jones",
-      "value": "53,569.44",
-      "daily": 0.2,
-      "weekly": 1.54,
-      "monthly": 3.83
+      "value": "53,642.52",
+      "daily": 0.14,
+      "weekly": 0.69,
+      "monthly": 2.75
     },
     {
       "name": "Russell 2000",
-      "value": "3,014.34",
-      "daily": 0.28,
-      "weekly": 0.73,
-      "monthly": 3.72
+      "value": "2,997.23",
+      "daily": -0.57,
+      "weekly": -0.68,
+      "monthly": 1.74
     }
   ]
 }

@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import csv
+import hashlib
+import html
 import io
 import json
 import re
@@ -12,6 +14,7 @@ import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -135,10 +138,283 @@ BIOTECH_WATCH = [
     ("ProQR Therapeutics", "PRQR", "RNA Editing", "Programmable RNA editing could offer repeatable, reversible correction.", "First clinical data and partnerships", "Small Cap", "High", "High"),
 ]
 
+CATALYST_WEIGHTS = {
+    "catalyst_importance": 25,
+    "prior_evidence": 20,
+    "catalyst_timing": 15,
+    "commercial_impact": 15,
+    "expectation_gap": 15,
+    "positioning": 10,
+}
+
+
+def source(title, url, date):
+    return {"title": title, "url": url, "date": date}
+
+
+BIOTECH_CATALYSTS = [
+    {
+        "ticker": "NTLA", "company": "Intellia Therapeutics", "program": "lonvoguran ziclumeran (lonvo-z)",
+        "catalyst": "FDA acceptance of the lonvo-z BLA", "expected_timing": "Second half of 2026",
+        "window_start": "2026-08-27", "window_end": "2026-12-31", "stage": "BLA submission / review",
+        "why_important": "Acceptance would move a potentially first-in-class, one-time in vivo CRISPR therapy for HAE into FDA review.",
+        "clinical_evidence": "Positive Phase 3 HAELO results were reported and published in the New England Journal of Medicine.",
+        "previous_results": "The company reported positive pivotal HAELO results; this v1 source set does not independently reproduce the full endpoint tables.",
+        "regulatory_status": "The company anticipates FDA acceptance of the BLA in the second half of 2026 and a potential U.S. launch in the first half of 2027.",
+        "commercial_potential": "A provider survey cited by the company found high stated prescribing interest; actual price, penetration and addressable treated population remain unverified here.",
+        "market_expectation": "Missing: no verified consensus probability, event-implied move, or valuation sensitivity is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "FDA filing acceptance is not approval; manufacturing, safety, durability and commercialization risks remain.",
+        "watch_next": "BLA acceptance notice, review designation, PDUFA timing and any FDA requests.",
+        "components": {
+            "catalyst_importance": (25, "A pivotal regulatory filing acceptance can materially change approval probability."),
+            "prior_evidence": (20, "Positive Phase 3 results support the filing."),
+            "commercial_impact": (12, "One-time therapy in HAE has differentiated potential, but v1 lacks an independently verified revenue model."),
+            "expectation_gap": (0, "Missing verified market-expectation data."),
+            "positioning": (0, "Missing verified positioning and technical data."),
+        },
+        "sources": [
+            source("Intellia Q2 2026 results", "https://ir.intelliatx.com/node/12826", "2026-08-06"),
+            source("Intellia full-year 2025 results", "https://ir.intelliatx.com/node/12501", "2026-02-26"),
+        ],
+    },
+    {
+        "ticker": "BEAM", "company": "Beam Therapeutics", "program": "BEAM-302",
+        "catalyst": "Updated Phase 1/2 BEAM-302 data at ERS", "expected_timing": "September 8, 2026",
+        "window_start": "2026-09-08", "window_end": "2026-09-08", "stage": "Phase 1/2; pivotal cohort dosing",
+        "why_important": "The update may further validate in vivo base editing and the accelerated pivotal path in alpha-1 antitrypsin deficiency.",
+        "clinical_evidence": "Earlier clinical data showed durable correction of the disease-causing protein phenotype and reduction of mutant Z-AAT.",
+        "previous_results": "At 60 mg, the company reported mean steady-state total AAT of 16.1 µM, all patients above the 11 µM protective threshold, 94% corrected M-AAT and 84% mutant Z-AAT reduction.",
+        "regulatory_status": "A pivotal cohort is dosing under an accelerated development path; the program is not approved.",
+        "commercial_potential": "The company estimates about 100,000 U.S. PiZZ patients and low diagnosis rates, with substantial unmet need.",
+        "market_expectation": "Missing: no verified consensus expectations or options-implied event move is connected.",
+        "positioning": "Missing: no dated short-interest, fund-flow, or technical-setup dataset is connected.",
+        "risks": "Small early cohorts, durability, liver safety, dose selection and translation into clinical outcomes may invalidate the thesis.",
+        "watch_next": "Dose-response, durability, safety, pivotal-cohort design and regulator-aligned endpoints.",
+        "components": {
+            "catalyst_importance": (20, "Registrational-enabling clinical data can alter program and platform probability."),
+            "prior_evidence": (16, "Positive human proof-of-concept exists, but evidence remains early-stage and cohort sizes are limited."),
+            "commercial_impact": (12, "Large rare-disease population and differentiated one-time correction are documented; pricing and penetration are not."),
+            "expectation_gap": (0, "Missing verified market-expectation data."),
+            "positioning": (0, "Missing verified positioning and technical data."),
+        },
+        "sources": [
+            source("Beam ERS presentation announcement", "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302", "2026-07-23"),
+            source("Beam updated BEAM-302 clinical data", "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data", "2026-03-25"),
+            source("Beam Q2 2026 results", "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results", "2026-08-04"),
+        ],
+    },
+    {
+        "ticker": "MAZE", "company": "Maze Therapeutics", "program": "MZE829",
+        "catalyst": "Additional HORIZON Phase 2 cohort data", "expected_timing": "Late 2026 / early 2027",
+        "window_start": "2026-11-01", "window_end": "2027-02-27", "stage": "Phase 2",
+        "why_important": "Additional cohorts may confirm a genetically defined response signal and support pivotal development in APOL1-mediated kidney disease.",
+        "clinical_evidence": "The company reported positive Phase 2 proof-of-concept results with proteinuria reductions in broad AMKD and severe FSGS cohorts.",
+        "previous_results": "Mean proteinuria reduction was reported as 35.6% at week 12 in broad AMKD and 61.8% in severe FSGS, with no serious or severe treatment-related adverse events.",
+        "regulatory_status": "The company is preparing for a potential pivotal study in the first half of 2027; MZE829 is not approved.",
+        "commercial_potential": "The company estimates more than one million U.S. patients with APOL1-mediated kidney disease.",
+        "market_expectation": "Missing: no verified consensus expectations or valuation sensitivity is connected.",
+        "positioning": "Missing: no dated short-interest or technical-setup dataset is connected.",
+        "risks": "Small cohorts, open-label interpretation, biomarker-to-outcome translation and safety in larger populations remain risks.",
+        "watch_next": "Consistency across cohorts, durability, safety, subgroup response and pivotal-study design.",
+        "components": {
+            "catalyst_importance": (20, "Confirmatory Phase 2 data can enable pivotal development."),
+            "prior_evidence": (16, "Positive human proof-of-concept exists, but cohort sizes are still limited."),
+            "commercial_impact": (12, "A large genetically defined population is cited, but pricing and penetration are not independently modeled."),
+            "expectation_gap": (0, "Missing verified market-expectation data."),
+            "positioning": (0, "Missing verified positioning and technical data."),
+        },
+        "sources": [
+            source("Maze Q2 2026 results", "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results", "2026-08-11"),
+            source("Maze Q1 2026 results", "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results", "2026-05-12"),
+        ],
+    },
+    {
+        "ticker": "STOK", "company": "Stoke Therapeutics", "program": "zorevunersen",
+        "catalyst": "FDA pre-NDA meeting and regulatory-path update", "expected_timing": "Second half of 2026",
+        "window_start": "2026-08-27", "window_end": "2026-12-31", "stage": "Phase 3 / pre-NDA",
+        "why_important": "A constructive pre-NDA outcome could clarify the rolling NDA path for a potential disease-modifying Dravet syndrome therapy.",
+        "clinical_evidence": "The company reports supportive safety and efficacy across four years of follow-up; a Phase 3 readout is expected in 2027.",
+        "previous_results": "Long-term clinical evidence is described as supportive by the company; full patient-level evidence is not reproduced in this v1 dataset.",
+        "regulatory_status": "Pre-NDA meeting planned for the second half of 2026 and rolling NDA submission planned for the first quarter of 2027.",
+        "commercial_potential": "Potential first-in-class disease-modifying treatment in a severe rare epilepsy; a verified revenue model is missing.",
+        "market_expectation": "Missing: no verified probability-weighted consensus or event-implied move is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "Meeting outcomes may not be disclosed in detail; FDA may require Phase 3 data or additional evidence before approval.",
+        "watch_next": "Company disclosure after the pre-NDA meeting and confirmation of the rolling NDA plan.",
+        "components": {
+            "catalyst_importance": (20, "Regulatory-path clarification can materially change time-to-filing and approval probability."),
+            "prior_evidence": (16, "Multi-year human evidence is supportive, but pivotal confirmation remains pending."),
+            "commercial_impact": (12, "Potential disease modification in a severe rare disease is meaningful; v1 lacks a verified revenue model."),
+            "expectation_gap": (0, "Missing verified market-expectation data."),
+            "positioning": (0, "Missing verified positioning and technical data."),
+        },
+        "sources": [source("Stoke Q2 2026 results", "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/", "2026-08-03")],
+    },
+    {
+        "ticker": "PRQR", "company": "ProQR Therapeutics", "program": "AX-0810 / AX-0811",
+        "catalyst": "Full AX-0810 and initial AX-0811 Phase 1 data", "expected_timing": "By year-end 2026",
+        "window_start": "2026-10-01", "window_end": "2026-12-31", "stage": "Phase 1",
+        "why_important": "The readout could strengthen the first clinical validation of ProQR's Axiomer RNA-editing platform and show next-generation activity.",
+        "clinical_evidence": "Initial AX-0810 data showed target engagement, up to eight-fold bile-acid increases, favorable reported safety and no serious adverse events or pruritus.",
+        "previous_results": "Initial Phase 1 target engagement supports platform activity, but clinical efficacy and larger-cohort safety remain unproven.",
+        "regulatory_status": "AX-0811 CTA was submitted in July 2026; both programs remain investigational.",
+        "commercial_potential": "Platform validation could affect multiple programs, but indication-level pricing, population and penetration are not established in v1.",
+        "market_expectation": "Missing: no verified consensus, probability-weighted valuation, or event-implied move is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "Early target engagement may not translate into clinical benefit; dose, durability, safety and platform reproducibility remain uncertain.",
+        "watch_next": "Editing level, dose-response, durability, safety and evidence that AX-0811 improves potency or duration.",
+        "components": {
+            "catalyst_importance": (15, "Early clinical platform validation may change valuation but is not registrational."),
+            "prior_evidence": (12, "Initial human target engagement exists; clinical efficacy is not established."),
+            "commercial_impact": (8, "Platform read-through is meaningful, but commercial inputs are largely missing."),
+            "expectation_gap": (0, "Missing verified market-expectation data."),
+            "positioning": (0, "Missing verified positioning and technical data."),
+        },
+        "sources": [
+            source("ProQR Q2 2026 results", "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results", "2026-08-13"),
+            source("ProQR positive AX-0810 data", "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform", "2026-06-25"),
+        ],
+    },
+    {
+        "ticker": "KRYS", "company": "Krystal Biotech", "program": "KB803",
+        "catalyst": "IOLITE registrational top-line results", "expected_timing": "Fourth quarter 2026",
+        "window_start": "2026-10-01", "window_end": "2026-12-31", "stage": "Registrational study",
+        "why_important": "A registrational readout could establish a second ophthalmic use of the company's redosable gene-delivery platform in dystrophic epidermolysis bullosa.",
+        "clinical_evidence": "Missing: the cited Q2 source confirms full enrollment but does not provide program-specific clinical efficacy results.",
+        "previous_results": "Missing from the connected source set; no result is assumed.",
+        "regulatory_status": "The IOLITE registrational study is fully enrolled; KB803 is not approved.",
+        "commercial_potential": "Could treat or prevent corneal abrasions in DEB, but v1 lacks verified patient, pricing and penetration inputs.",
+        "market_expectation": "Missing: no verified consensus expectations or event-implied move is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "No connected program-specific efficacy evidence; registrational endpoints, safety and regulatory acceptability remain uncertain.",
+        "watch_next": "Top-line efficacy, safety, durability and regulatory next steps.",
+        "components": {
+            "catalyst_importance": (25, "A registrational top-line result can materially change approval probability."),
+            "prior_evidence": (0, "Missing program-specific clinical evidence in the connected source set."),
+            "commercial_impact": (8, "A meaningful rare-disease complication is addressed, but commercial inputs are missing."),
+            "expectation_gap": (0, "Missing verified market-expectation data."),
+            "positioning": (0, "Missing verified positioning and technical data."),
+        },
+        "sources": [source("Krystal Q2 2026 results", "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and", "2026-08-03")],
+    },
+]
+
+MRNA_VALIDATION_CASE = {
+    "ticker": "MRNA", "company": "Moderna", "program": "mRNA-1010 (mFLUSIVA)",
+    "catalyst": "FDA PDUFA decision for mFLUSIVA", "expected_timing": "August 5, 2026",
+    "window_start": "2026-08-05", "window_end": "2026-08-05", "stage": "BLA review",
+    "why_important": "Approval would represent Moderna's fifth product and expand the commercial respiratory portfolio into seasonal influenza.",
+    "clinical_evidence": "The amended BLA was accepted and the FDA recommendation was based on the Phase 3 program; the v1 cutoff source set does not reproduce all endpoint tables.",
+    "previous_results": "A Phase 3 regulatory package supported the accepted amended BLA. No post-July 31 outcome information is used.",
+    "regulatory_status": "FDA PDUFA date of August 5, 2026, as disclosed by July 31, 2026.",
+    "commercial_potential": "A fifth approved product could broaden Moderna's respiratory franchise, but the v1 case has no independently verified product-level forecast.",
+    "market_expectation": "Missing as of the cutoff: no verified consensus approval probability or event-implied move in the connected sources.",
+    "positioning": "Missing as of the cutoff: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+    "risks": "Regulatory rejection or delay, label restrictions, competitive flu vaccines and commercial execution.",
+    "watch_next": "FDA decision on August 5, 2026; outcome deliberately excluded from the retrospective input set.",
+    "components": {
+        "catalyst_importance": (25, "An FDA approval decision is a maximum-importance valuation catalyst."),
+        "prior_evidence": (18, "An accepted BLA backed by Phase 3 evidence is strong, but full endpoint detail is not present in the connected cutoff sources."),
+        "commercial_impact": (12, "Portfolio expansion is material, but a verified product forecast is missing."),
+        "expectation_gap": (0, "Missing verified cutoff-date market-expectation data."),
+        "positioning": (0, "Missing verified cutoff-date positioning and technical data."),
+    },
+    "sources": [
+        source("Moderna Q2 2026 results", "https://investors.modernatx.com/quarterly-results", "2026-07-31"),
+        source("Moderna June 2026 Form 10-Q", "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm", "2026-07-31"),
+    ],
+}
+
 
 def watch_rows(values):
     return [{"company": c, "ticker": t, "sector": s, "why": w, "catalyst": k, "market_cap": m,
              "growth_potential": g, "risk": r} for c, t, s, w, k, m, g, r in values]
+
+
+def catalyst_classification(score):
+    if score >= 85:
+        return "High Priority"
+    if score >= 70:
+        return "Priority Watch"
+    if score >= 55:
+        return "Monitoring"
+    return "Low Priority"
+
+
+def timing_component(item, as_of):
+    start = datetime.fromisoformat(item["window_start"]).date()
+    end = datetime.fromisoformat(item["window_end"]).date()
+    days_to_start = (start - as_of).days
+    days_to_end = (end - as_of).days
+    window_days = (end - start).days
+    if days_to_end < 0 or days_to_start > 183:
+        return 0, "Outside the forward six-month radar window.", True
+    if start == end and 0 <= days_to_start <= 90:
+        return 15, "Exact catalyst date is within 90 days.", False
+    if window_days <= 92 and days_to_start <= 183:
+        return 12, "A defined quarter or similarly narrow window falls within six months.", False
+    return 10, "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.", False
+
+
+def score_biotech_catalyst(item, as_of):
+    timing_score, timing_rationale, timing_missing = timing_component(item, as_of)
+    components = dict(item["components"])
+    components["catalyst_timing"] = (timing_score, timing_rationale)
+    labels = {
+        "catalyst_importance": "Catalyst Importance", "prior_evidence": "Prior Evidence",
+        "catalyst_timing": "Catalyst Timing", "commercial_impact": "Commercial Impact",
+        "expectation_gap": "Expectation Gap", "positioning": "Positioning / Technical Setup",
+    }
+    breakdown = []
+    for key, weight in CATALYST_WEIGHTS.items():
+        points, rationale = components[key]
+        if not 0 <= points <= weight:
+            raise ValueError(f"{item['ticker']} {key} score {points} exceeds 0-{weight}")
+        missing = timing_missing if key == "catalyst_timing" else points == 0 and rationale.lower().startswith("missing")
+        breakdown.append({
+            "key": key, "label": labels[key], "score": points, "weight": weight,
+            "rationale": rationale, "missing": missing,
+            "evidence": [] if missing else [{"title": entry["title"], "date": entry["date"], "url": entry["url"]}
+                                            for entry in item["sources"]],
+        })
+    score = sum(component["score"] for component in breakdown)
+    result = {key: value for key, value in item.items() if key not in ("components", "window_start", "window_end")}
+    result.update({
+        "catalyst_score": score,
+        "upcoming_catalyst": f"{item['catalyst']} — {item['expected_timing']}",
+        "opportunity_status": catalyst_classification(score),
+        "score_as_of": as_of.isoformat(),
+        "engine_version": "biotech-catalyst-radar-v1",
+        "score_components": breakdown,
+        "missing_data": [component["label"] for component in breakdown if component["missing"]],
+        "data_completeness": sum(component["weight"] for component in breakdown if not component["missing"]),
+    })
+    return result
+
+
+def build_biotech_radar(as_of):
+    horizon = as_of + timedelta(days=183)
+    eligible = []
+    for item in BIOTECH_CATALYSTS:
+        start = datetime.fromisoformat(item["window_start"]).date()
+        end = datetime.fromisoformat(item["window_end"]).date()
+        if end >= as_of and start <= horizon:
+            eligible.append(score_biotech_catalyst(item, as_of))
+    return sorted(eligible, key=lambda item: (-item["catalyst_score"], item["expected_timing"], item["ticker"]))
+
+
+def radar_methodology():
+    return {
+        "engine_version": "biotech-catalyst-radar-v1",
+        "horizon": "Potentially valuation-changing catalysts expected within the next 183 days (approximately six months).",
+        "weights": CATALYST_WEIGHTS,
+        "classifications": {"85-100": "High Priority", "70-84": "Priority Watch", "55-69": "Monitoring", "0-54": "Low Priority"},
+        "missing_data_policy": "Missing evidence is never inferred. A missing component receives zero points and is listed in missing_data.",
+        "timing_rules": {"exact_date_within_90_days": 15, "defined_quarter_or_narrow_window": 12,
+                         "broader_company_guidance_within_six_months": 10, "outside_window_or_missing": 0},
+        "scope_note": "V1 scores a curated, source-backed catalyst set. It does not yet discover catalysts or ingest consensus, options, short-interest, or fund-flow data automatically.",
+    }
 
 
 MONTHLY_PICKS = {
@@ -161,6 +437,64 @@ MONTHLY_PICKS = {
 MARKETS = {"^GSPC": ("^spx", "S&P 500"), "^IXIC": ("^ndq", "Nasdaq"),
            "^DJI": ("^dji", "Dow Jones"), "^RUT": ("^rty", "Russell 2000")}
 
+AI_INDUSTRY_MAP = [
+    ("AI Models/Applications", ("artificial intelligence", " ai ", "model", "inference", "agent", "software", "copilot")),
+    ("Compute", ("gpu", "accelerator", "compute", "chip", "semiconductor", "nvidia", "amd")),
+    ("HBM/Memory", ("hbm", "high-bandwidth memory", "memory", "dram", "micron", "sk hynix")),
+    ("Foundry/Advanced Packaging", ("foundry", "wafer", "packaging", "tsmc", "asml", "fab")),
+    ("Networking/Optical", ("networking", "ethernet", "optical", "interconnect", "broadcom", "arista")),
+    ("Data Centers", ("data center", "datacenter", "ai infrastructure", "ai cloud", "cloud capacity", "server", "hyperscaler")),
+    ("Power/Electrical", ("power infrastructure", "power delivery", "megawatt", "electricity", "electrical", "transformer", "switchgear", "vertiv", "eaton")),
+    ("Cooling", ("cooling", "thermal", "liquid-cooled", "liquid cooling")),
+    ("Grid/Energy/Materials", ("grid", "energy", "nuclear", "natural gas", "copper", "uranium", "materials")),
+]
+
+AI_NEWS_QUERIES = [
+    'artificial intelligence (earnings OR guidance OR investment OR acquisition OR regulation) when:4d',
+    '(semiconductor OR HBM OR foundry OR networking OR data center) (capacity OR investment OR orders OR launch) when:4d',
+    '(AI data center) (power OR cooling OR grid OR energy) investment when:4d',
+    '(AI OR GPU OR data center) (contract OR partnership OR acquisition OR earnings) when:4d',
+    '(AI infrastructure) (supply OR demand OR backlog OR construction OR financing) when:4d',
+]
+
+OFFICIAL_AI_FEEDS = [
+    ("NVIDIA Newsroom", "https://nvidianews.nvidia.com/cats/press_release.xml", "https://nvidianews.nvidia.com/"),
+    ("AMD Investor Relations", "https://ir.amd.com/rss/news-releases.xml", "https://ir.amd.com/"),
+    ("AWS News Blog", "https://aws.amazon.com/blogs/aws/feed/", "https://aws.amazon.com/blogs/aws/"),
+    ("Microsoft Official Blog", "https://blogs.microsoft.com/feed/", "https://blogs.microsoft.com/"),
+]
+
+PRIMARY_SOURCE_TERMS = (
+    "nvidia", "amd", "broadcom", "micron", "tsmc", "asml", "arista", "vertiv", "eaton",
+    "microsoft", "alphabet", "google", "amazon", "aws", "meta", "openai", "anthropic",
+    "oracle", "intel", "qualcomm", "arm", "apple", "dell", "supermicro", "coreweave",
+    "cisco", "infineon", "iren", "marvell", "applied materials", "cbre",
+)
+RELIABLE_FINANCIAL_SOURCES = (
+    "reuters", "bloomberg", "financial times", "the wall street journal", "wall street journal",
+    "wsj", "associated press", "ap news", "cnbc", "marketwatch", "barron's", "fortune",
+    "s&p global", "investor's business daily", "business insider", "nikkei asia",
+)
+RELIABLE_INDUSTRY_SOURCES = (
+    "semiconductor engineering", "ee times", "data center dynamics", "the register",
+    "ieee spectrum", "mit technology review", "techcrunch", "tom's hardware",
+    "data center frontier", "fierce network", "light reading", "utility dive", "cbre",
+)
+PRIMARY_RESEARCH_SOURCES = ("s&p global", "cbre")
+INVESTMENT_EVENT_TERMS = (
+    "earnings", "financial results", "revenue", "guidance", "outlook", "forecast", "capex", "capital expenditure", "investment",
+    "acquisition", "acquires", "merger", "partnership", "funding", "contract", "orders", "capacity",
+    "launch", "unveils", "deploy", "deliver", "expands", "adopts", "export", "sanction", "regulation", "antitrust", "approval", "raises",
+)
+FORWARD_SIGNAL_TERMS = (
+    "guidance", "outlook", "forecast", "expects", "expected", "plans", "will", "capacity", "capex", "investment", "orders",
+    "backlog", "contract", "partnership", "launch", "deploy", "deliver", "roadmap", "export", "regulation", "funding",
+)
+TREND_CHANGE_TERMS = (
+    "acquisition", "acquires", "merger", "export ban", "sanction", "antitrust", "regulation",
+    "breakthrough", "halts", "cancels", "bankruptcy",
+)
+
 
 def fetch(url, timeout=20):
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
@@ -176,10 +510,49 @@ def rss_items(query, limit=5):
     url = "https://news.google.com/rss/search?q=" + urllib.parse.quote(query) + "&hl=en-US&gl=US&ceid=US:en"
     try:
         root = ET.fromstring(fetch(url))
-        return [{"title": item.findtext("title", "Latest coverage"), "url": item.findtext("link", news_url(query)),
-                 "date": item.findtext("pubDate", "")} for item in root.findall(".//item")[:limit]]
+        results = []
+        for item in root.findall(".//item")[:limit]:
+            publisher = item.find("source")
+            results.append({
+                "title": item.findtext("title", "Latest coverage"),
+                "url": item.findtext("link", news_url(query)),
+                "date": item.findtext("pubDate", ""),
+                "source": (publisher.text or "").strip() if publisher is not None else "",
+                "publisher_url": publisher.get("url", "") if publisher is not None else "",
+            })
+        return results
     except Exception as exc:
         print(f"RSS unavailable for {query}: {exc}")
+        return []
+
+
+def plain_text(value):
+    value = re.sub(r"<script\b[^>]*>.*?</script>", " ", value or "", flags=re.IGNORECASE | re.DOTALL)
+    value = re.sub(r"<style\b[^>]*>.*?</style>", " ", value, flags=re.IGNORECASE | re.DOTALL)
+    value = re.sub(r"<[^>]+>", " ", value)
+    return re.sub(r"\s+", " ", html.unescape(value)).strip()
+
+
+def official_feed_items(source_name, url, publisher_url, limit=20):
+    try:
+        root = ET.fromstring(fetch(url))
+        results = []
+        for item in root.findall(".//item")[:limit]:
+            description = item.findtext("description", "")
+            encoded = item.findtext("{http://purl.org/rss/1.0/modules/content/}encoded", "")
+            results.append({
+                "title": item.findtext("title", "Latest company update"),
+                "url": item.findtext("link", publisher_url),
+                "date": item.findtext("pubDate", ""),
+                "source": source_name,
+                "publisher_url": publisher_url,
+                "description": plain_text(description),
+                "feed_content": plain_text(encoded)[:12000],
+                "is_primary": True,
+            })
+        return results
+    except Exception as exc:
+        print(f"Official feed unavailable for {source_name}: {exc}")
         return []
 
 
@@ -217,9 +590,392 @@ def summarize(headlines, label):
     return "Key developments: " + "; ".join(clean) + "."
 
 
+def parse_publication_time(value):
+    if not value:
+        return ""
+    try:
+        parsed = parsedate_to_datetime(value)
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc).isoformat(timespec="minutes")
+    except (TypeError, ValueError, OverflowError):
+        return ""
+
+
+def contains_term(text, term):
+    return re.search(rf"(?<![a-z0-9]){re.escape(term.lower())}(?![a-z0-9])", text.lower()) is not None
+
+
+def source_quality(source_name):
+    lowered = source_name.lower()
+    if any(contains_term(lowered, term) for term in PRIMARY_SOURCE_TERMS):
+        return 20, "Primary/company source"
+    if any(term in lowered for term in PRIMARY_RESEARCH_SOURCES):
+        return 20, "Primary research/industry source"
+    if any(term in lowered for term in RELIABLE_FINANCIAL_SOURCES):
+        return 18, "Reliable financial news source"
+    if any(term in lowered for term in RELIABLE_INDUSTRY_SOURCES):
+        return 15, "Reliable industry news source"
+    return 0, "Source is not in the v1 reliability list"
+
+
+def affected_ai_trends(text):
+    padded = f" {text.lower()} "
+    return [segment for segment, keywords in AI_INDUSTRY_MAP if any(keyword in padded for keyword in keywords)]
+
+
+def clean_news_headline(title, source_name):
+    if source_name:
+        return re.sub(rf"\s+-\s+{re.escape(source_name)}\s*$", "", title, flags=re.IGNORECASE).strip()
+    return title.strip()
+
+
+def news_fingerprint(headline, source_name):
+    normalized = re.sub(r"[^a-z0-9]+", " ", f"{headline} {source_name}".lower()).strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20]
+
+
+def named_ai_companies(text):
+    positions = []
+    for term in PRIMARY_SOURCE_TERMS:
+        match = re.search(rf"(?<![a-z0-9]){re.escape(term)}(?![a-z0-9])", text.lower())
+        if match:
+            positions.append((match.start(), term))
+    return [term for _, term in sorted(positions)]
+
+
+def news_event_family(text):
+    lowered = text.lower()
+    families = [
+        ("financial-results", ("earnings", "financial results", "revenue", "guidance", "outlook")),
+        ("deal", ("acquisition", "acquires", "merger", "partnership", "financing")),
+        ("capacity-contract", ("capacity", "contract", "orders", "backlog", "construction", "deploy", "additional gpu")),
+        ("policy", ("export", "sanction", "regulation", "antitrust", "approval")),
+        ("product", ("launch", "unveils", "roadmap", "platform", "model", "computer", "processor", "gpu", "cpu", "robotics")),
+        ("power-grid", ("power", "electrical", "grid", "energy", "cooling")),
+    ]
+    return next((name for name, terms in families if any(term in lowered for term in terms)), "general")
+
+
+def extract_evidence_facts(text, limit=3):
+    cleaned = plain_text(text)
+    targeted = re.findall(r"Revenue is expected to be\s+\$?[\d.]+\s+(?:billion|million)[^.]{0,260}\.", cleaned, flags=re.IGNORECASE)
+    sentences = targeted + re.split(r"(?<=[.!?])\s+", cleaned)
+    ranked = []
+    evidence_terms = INVESTMENT_EVENT_TERMS + FORWARD_SIGNAL_TERMS + ("data center", "gpu", "hbm", "power", "ai infrastructure")
+    for index, sentence in enumerate(sentences):
+        if 25 <= len(sentence) <= 420 and re.search(r"\d", sentence) and any(term in sentence.lower() for term in evidence_terms):
+            lowered = sentence.lower()
+            relevance = sum(3 for term in ("revenue", "guidance", "outlook", "expected", "capacity", "contract", "gpu", "data center", "investment") if term in lowered)
+            relevance += sum(2 for term in ("up ", "down ", "year ago", "year-over-year", "additional", "deploy", "billion", "trillion") if term in lowered)
+            relevance += 4 if "revenue is expected" in lowered else 0
+            relevance -= sum(5 for term in ("dividend", "share repurchase", "years ago", "birthday", "anniversary") if term in lowered)
+            ranked.append((relevance, -index, sentence.strip()))
+    return [sentence for _, _, sentence in sorted(ranked, reverse=True)[:limit]]
+
+
+def enrich_primary_evidence(item):
+    evidence = extract_evidence_facts(" ".join((item.get("title", ""), item.get("description", ""), item.get("feed_content", ""))))
+    url = item.get("url", "")
+    if len(evidence) < 3 and url.startswith("http") and "news.google.com" not in url:
+        try:
+            page = fetch(url, timeout=12).decode("utf-8", "ignore")
+            evidence = extract_evidence_facts(page, limit=3) or evidence
+        except Exception as exc:
+            print(f"Primary evidence page unavailable for {item.get('source', 'source')}: {exc}")
+    item["primary_evidence"] = evidence
+    return item
+
+
+def cluster_ai_news_items(items):
+    clusters = {}
+    for item in items:
+        source_points, source_label = source_quality(item.get("source", ""))
+        if not source_points:
+            continue
+        text = " ".join((item.get("title", ""), item.get("description", "")))
+        trends = affected_ai_trends(text)
+        if not trends:
+            continue
+        title_companies = named_ai_companies(item.get("title", ""))
+        companies = title_companies or named_ai_companies(text)
+        published = parse_publication_time(item.get("date", ""))
+        week = datetime.fromisoformat(published).strftime("%G-W%V") if published else "undated"
+        family = news_event_family(text)
+        identity = "+".join(sorted(set(companies[:2]))) if companies else re.sub(r"[^a-z0-9]+", "-", clean_news_headline(item.get("title", ""), item.get("source", "")).lower())[:55]
+        if family in ("product", "general"):
+            identity += ":" + news_fingerprint(clean_news_headline(item.get("title", ""), item.get("source", "")), "topic")[:10]
+        key = (identity, family, week)
+        prepared = dict(item, _source_points=source_points, _source_label=source_label)
+        clusters.setdefault(key, []).append(prepared)
+    results = []
+    for (identity, family, week), members in clusters.items():
+        representative = sorted(members, key=lambda item: (not item.get("is_primary", False), -item["_source_points"], item.get("source", "")))[0]
+        sources = []
+        seen_sources = set()
+        for member in members:
+            clean_title = clean_news_headline(member.get("title", ""), member.get("source", ""))
+            source_key = (member.get("source", ""), clean_title)
+            if source_key in seen_sources:
+                continue
+            seen_sources.add(source_key)
+            sources.append({"title": clean_title,
+                            "source": member.get("source", ""), "date": parse_publication_time(member.get("date", "")),
+                            "url": member.get("url", ""), "source_type": member["_source_label"],
+                            "primary": bool(member.get("is_primary") or member["_source_label"].startswith("Primary"))})
+        cluster_text = " ".join(" ".join((member.get("title", ""), member.get("description", ""),
+                                           " ".join(member.get("primary_evidence", []))))
+                                for member in members)
+        results.append(dict(representative, _cluster_identity=identity, _event_family=family, _cluster_week=week,
+                            _cluster_text=cluster_text, evidence_sources=sources,
+                            primary_evidence=[fact for member in members for fact in member.get("primary_evidence", [])]))
+    return results
+
+
+EVENT_TYPE_LABELS = {
+    "financial-results": "Financial Results",
+    "deal": "Partnership / Transaction",
+    "capacity-contract": "Capacity / Contract",
+    "policy": "Policy / Regulation",
+    "product": "Product / Platform",
+    "power-grid": "Power / Grid",
+    "general": "Company Update",
+}
+
+
+def news_new_information(facts, headline):
+    if facts:
+        distinct = []
+        normalized = []
+        for fact in facts:
+            clean = re.sub(r"\s+-\s+[^-]+$", "", fact).strip()
+            key = re.sub(r"[^a-z0-9]+", " ", clean.lower()).strip()
+            if any(key in prior or prior in key for prior in normalized):
+                continue
+            distinct.append(clean); normalized.append(key)
+        return " ".join(f"{fact.rstrip('. ')}." for fact in distinct[:2])
+    return f"The source reports: {headline}."
+
+
+def news_direction(text):
+    lowered = text.lower()
+    positive = any(term in lowered for term in (
+        " up ", "growth", "record", "expand", "additional", "increase", "deploy", "launch",
+        "full production", "accelerat", "investment", "capacity", "raises guidance",
+    ))
+    negative = any(term in lowered for term in (
+        " down ", "decline", "fell", "cut guidance", "delay", "halt", "cancel", "shortage",
+        "ban", "restriction", "sanction",
+    ))
+    if positive and negative:
+        return "Mixed"
+    if positive:
+        return "Expanding"
+    if negative:
+        return "Contracting / Restrictive"
+    return "Unclear / not established"
+
+
+def score_ai_news_item(item, run_at, previous_trends, previous_ids):
+    source_name = item.get("source", "").strip()
+    source_points, source_label = source_quality(source_name)
+    if not source_points:
+        return None
+    headline = clean_news_headline(item.get("title", ""), source_name)
+    combined_text = f" {item.get('_cluster_text') or headline} "
+    combined = combined_text.lower()
+    headline_context = f" {headline} {item.get('description', '')} ".lower()
+    if any(term in headline_context for term in ("birthday", "anniversary", "years ago", "looking back")):
+        return None
+    trends = affected_ai_trends(combined)
+    if not trends:
+        return None
+    event_hits = sorted({term for term in INVESTMENT_EVENT_TERMS if term in combined})
+    named_companies = named_ai_companies(combined)
+    quantified_headline = re.search(r"(?:[$€£]\s?\d|\d[\d,.]*\s*(?:million|billion|trillion|gpus?|megawatts?|gigawatts?|%))", headline, flags=re.IGNORECASE)
+    headline_facts = [headline] if quantified_headline and any(term in headline.lower() for term in INVESTMENT_EVENT_TERMS) else []
+    facts = list(dict.fromkeys(headline_facts + item.get("primary_evidence", []) + extract_evidence_facts(combined_text)))[:3]
+    evidence_sources = item.get("evidence_sources", [])
+    has_primary = bool(item.get("is_primary") or source_label.startswith("Primary") or any(source.get("primary") for source in evidence_sources))
+    published_at = parse_publication_time(item.get("date", ""))
+    recent_points = 0
+    if published_at:
+        age_hours = max(0, (run_at - datetime.fromisoformat(published_at)).total_seconds() / 3600)
+        recent_points = 5 if age_hours <= 72 else 2 if age_hours <= 168 else 0
+    materiality = min(15, len(event_hits) * 5) + (10 if facts else 0)
+    if any(term in combined for term in ("record", "billion", "trillion", "more than doubled", "additional", "shortage", "capacity crunch")):
+        materiality += 5
+    materiality = min(30, materiality)
+    industry_reach = min(15, len(trends) * 5)
+    corroboration = 5 if len(evidence_sources) >= 2 else 0
+    importance = min(100, 5 + source_points + materiality + industry_reach + (10 if has_primary else 0)
+                     + (10 if named_companies else 0) + corroboration + recent_points)
+    map_names = [segment for segment, _ in AI_INDUSTRY_MAP]
+    last_direct = max(map_names.index(trend) for trend in trends)
+    second_order = [segment for segment in map_names[last_direct + 1:last_direct + 3] if segment not in trends]
+    if importance < 70:
+        return None
+    story_id = news_fingerprint(f"{item.get('_cluster_identity', headline)} {item.get('_event_family', '')} {item.get('_cluster_week', '')}", "cluster")
+    if importance >= 85 and any(term in combined for term in TREND_CHANGE_TERMS):
+        status = "TREND-CHANGING"
+    elif story_id in previous_ids:
+        status = "CONFIRMING"
+    else:
+        status = "NEW"
+    impact_chain = f"Direct: {', '.join(trends)}. Second-order: {', '.join(second_order) if second_order else 'Missing / not established'}."
+    missing = []
+    if not facts:
+        missing.append("Quantified primary-source facts")
+    if not has_primary:
+        missing.append("Primary source")
+    if not published_at:
+        missing.append("Publication date/time")
+    if not item.get("url"):
+        missing.append("Source link")
+    return {
+        "id": story_id, "headline": headline, "published_at": published_at, "source": source_name,
+        "source_type": source_label, "news_importance_score": importance,
+        "event_type": EVENT_TYPE_LABELS.get(item.get("_event_family", "general"), "Company Update"),
+        "new_information": news_new_information(facts, headline),
+        "direction": news_direction(combined_text), "status": status,
+        "affected_trends": trends, "direct_effects": trends, "second_order_effects": second_order,
+        "impact_chain": impact_chain,
+        "source_link": item.get("url", ""), "publisher_url": item.get("publisher_url", ""),
+        "evidence_sources": evidence_sources,
+        "score_evidence": {
+            "source_quality": {"points": source_points, "basis": source_label},
+            "materiality": {"points": materiality, "facts": facts},
+            "industry_reach": {"points": industry_reach, "direct_segments": trends, "second_order_segments": second_order},
+            "primary_confirmation": {"points": 10 if has_primary else 0, "available": has_primary},
+            "corroboration": {"points": corroboration, "source_count": len(evidence_sources)},
+            "investment_event_terms": event_hits,
+            "named_companies": named_companies,
+        },
+        "missing_data": missing, "first_seen": run_at.isoformat(timespec="minutes"), "quality_schema_version": 4,
+    }
+
+
+def collect_ai_investment_news(run_at=None):
+    current_time = run_at or datetime.now(timezone.utc)
+    combined = []
+    seen = set()
+    official = []
+    for source_name, url, publisher_url in OFFICIAL_AI_FEEDS:
+        official.extend(official_feed_items(source_name, url, publisher_url, 20))
+    recent_official = []
+    for item in official:
+        text = " ".join((item.get("title", ""), item.get("description", "")))
+        published = parse_publication_time(item.get("date", ""))
+        recent = published and (current_time - datetime.fromisoformat(published)).days <= 7
+        if recent:
+            if affected_ai_trends(text) and any(term in text.lower() for term in INVESTMENT_EVENT_TERMS):
+                enrich_primary_evidence(item)
+            recent_official.append(item)
+    for item in recent_official:
+        key = (item.get("title", ""), item.get("source", ""))
+        if key not in seen:
+            seen.add(key); combined.append(item)
+    for query in AI_NEWS_QUERIES:
+        for item in rss_items(query, 25):
+            key = (item.get("title", ""), item.get("source", ""))
+            if key not in seen:
+                seen.add(key); combined.append(item)
+    return combined
+
+
+def sanitize_news_story(story):
+    clean = dict(story)
+    prior_explanation = clean.pop("why_it_matters", "")
+    clean.pop("future_signal_score", None)
+    clean.pop("potential_beneficiaries", None)
+    clean["quality_schema_version"] = 4
+    if not clean.get("new_information"):
+        match = re.search(r"New information:\s*(.*?)(?:\s+Direct effect:|$)", prior_explanation)
+        clean["new_information"] = match.group(1).strip() if match else f"The source reports: {clean.get('headline', 'Headline missing')}."
+    event_text = " ".join((clean.get("headline", ""), clean.get("new_information", "")))
+    inferred_event_type = EVENT_TYPE_LABELS.get(news_event_family(event_text), "Company Update")
+    inferred_direction = news_direction(event_text)
+    clean["event_type"] = inferred_event_type
+    if not clean.get("direction") or (clean["direction"] == "Unclear / not established" and inferred_direction != "Unclear / not established"):
+        clean["direction"] = inferred_direction
+    clean["missing_data"] = [item for item in clean.get("missing_data", [])
+                             if not str(item).lower().startswith("potential beneficiaries")]
+    return clean
+
+
+def build_news_radar_interface(current_stories, archived_stories):
+    events = []
+    for archived, stories in ((False, current_stories), (True, archived_stories)):
+        for story in stories:
+            events.append({
+                "event_id": story.get("id"),
+                "event_date": story.get("published_at"),
+                "event_type": story.get("event_type"),
+                "direction": story.get("direction"),
+                "confirmation_status": story.get("status"),
+                "news_importance_score": story.get("news_importance_score"),
+                "new_information": story.get("new_information"),
+                "affected_trends": story.get("affected_trends", []),
+                "direct_effects": story.get("direct_effects", []),
+                "second_order_effects": story.get("second_order_effects", []),
+                "evidence_sources": story.get("evidence_sources", []),
+                "source_link": story.get("source_link", ""),
+                "archived": archived,
+            })
+    return {
+        "schema_version": "news-to-radar-evidence-v1",
+        "description": "Source-backed news-event evidence only; contains no Radar scores or opportunity rankings.",
+        "events": events,
+    }
+
+
+def build_ai_news_section(items, previous_section, run_at):
+    previous_current = [sanitize_news_story(item) for item in previous_section.get("stories", [])
+                        if source_quality(item.get("source", ""))[0] and item.get("quality_schema_version") in (3, 4)]
+    previous_archive = [sanitize_news_story(item) for item in previous_section.get("important_news_archive", [])
+                        if source_quality(item.get("source", ""))[0] and item.get("quality_schema_version") in (3, 4)]
+    previous_records = previous_current + previous_archive
+    previous_ids = {item.get("id") for item in previous_records if item.get("id")}
+    previous_trends = {trend for item in previous_records for trend in item.get("affected_trends", [])}
+    scored = [score_ai_news_item(item, run_at, previous_trends, previous_ids) for item in cluster_ai_news_items(items)]
+    selected = sorted((item for item in scored if item),
+                      key=lambda item: (-item["news_importance_score"], item["headline"]))[:5]
+    if not selected:
+        return {"stories": previous_current, "important_news_archive": previous_archive,
+                "radar_evidence_interface": build_news_radar_interface(previous_current, previous_archive),
+                "selection_status": "No qualifying new stories were available; the prior selection was preserved.",
+                "methodology": ai_news_methodology()}
+    selected_ids = {item["id"] for item in selected}
+    selected_evidence_urls = {source.get("url") for item in selected for source in item.get("evidence_sources", []) if source.get("url")}
+    archive_by_id = {item["id"]: item for item in previous_archive if item.get("id") and item["id"] not in selected_ids}
+    for item in previous_current:
+        if item.get("id") and item["id"] not in selected_ids and item.get("source_link") not in selected_evidence_urls:
+            archive_by_id.setdefault(item["id"], item)
+    archive = sorted(archive_by_id.values(), key=lambda item: item.get("published_at") or item.get("first_seen", ""), reverse=True)
+    return {"stories": selected, "important_news_archive": archive,
+            "radar_evidence_interface": build_news_radar_interface(selected, archive),
+            "selection_status": f"Selected {len(selected)} source-qualified, investment-relevant stories.",
+            "methodology": ai_news_methodology()}
+
+
+def ai_news_methodology():
+    return {
+        "engine_version": "ai-technology-news-v1.1",
+        "industry_map": [segment for segment, _ in AI_INDUSTRY_MAP],
+        "minimum_importance_score": 70,
+        "source_policy": "Official company feeds are ingested directly and clustered with configured reliable financial and industry coverage. Unsupported publishers do not qualify.",
+        "archive_policy": "Prior selected stories move to the archive when they leave the current top-news set; records are deduplicated by normalized headline and source.",
+        "scoring_note": "Importance uses source quality, quantified materiality, direct industry reach, primary confirmation, company specificity, corroboration and recency. News does not calculate Radar scores or rank investment opportunities.",
+        "selection_policy": "At most five stories are shown. No quota is filled; only stories scoring at least 70 qualify.",
+    }
+
+
 def build():
     previous = prior_data()
-    ai_news = rss_items("artificial intelligence infrastructure chips data center when:1d", 6)
+    run_at = datetime.now(timezone.utc)
+    score_date = run_at.date()
+    ai_news_candidates = collect_ai_investment_news(run_at)
+    ai_news = ai_news_candidates[:6]
     biotech_news = rss_items("biotechnology rare disease clinical trial when:1d", 6)
     fda_news = rss_items("FDA approval orphan drug fast track rare disease when:7d", 8)
     market_news = rss_items("US stock market Nasdaq S&P 500 today when:1d", 4)
@@ -248,15 +1004,27 @@ def build():
     takeaways = [item["title"] for item in (ai_news[:2] + biotech_news[:2] + fda_news[:2] + market_news[:1])]
     if not takeaways:
         takeaways = previous.get("takeaways", ["Daily source monitoring is active."])
+    previous_ai_news = previous.get("top_investment_news", {}).get("ai_technology", {})
+    ai_news_section = build_ai_news_section(ai_news_candidates, previous_ai_news, run_at)
 
     data = {
-        "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "updated_at": run_at.isoformat(timespec="seconds"),
+        "top_investment_news": {"ai_technology": ai_news_section},
         "summaries": {"ai": summarize(ai_news, "AI"), "biotech": summarize(biotech_news, "biotech"),
                       "market": summarize(market_news, "market"), "market_movers": market_movers},
         "takeaways": takeaways[:8],
         "ai": {"infrastructure_leaders": AI_INFRASTRUCTURE, "platform_leaders": AI_PLATFORMS,
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
+        "radar": {"biotech": build_biotech_radar(score_date), "methodology": radar_methodology()},
+        "radar_validation": {
+            "mrna": {
+                "cutoff_date": "2026-07-31",
+                "future_information_used": False,
+                "result": score_biotech_catalyst(MRNA_VALIDATION_CASE, datetime(2026, 7, 31).date()),
+                "note": "Retrospective validation input is frozen at July 31, 2026; the August 5 FDA outcome is deliberately excluded.",
+            }
+        },
         "watchlists": {"ai": watch_rows(AI_WATCH), "biotech": watch_rows(BIOTECH_WATCH)},
         "monthly_picks": MONTHLY_PICKS, "fda": fda, "markets": markets,
     }
