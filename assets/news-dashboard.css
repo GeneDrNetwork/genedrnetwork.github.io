@@ -32,6 +32,7 @@
 .live-pill { display: inline-flex; align-items: center; gap: 8px; flex: 0 0 auto; padding: 7px 11px; border: 1px solid #bfe2d0; border-radius: 999px; color: #176a45; background: #effaf4; font-size: .7rem; font-weight: 800; }
 .live-pill i { width: 7px; height: 7px; border-radius: 50%; background: #25a767; }
 .top-news-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.news-stream-heading { margin-top: 34px; padding-top: 28px; border-top: 1px solid var(--dash-line); }
 .top-news-card { position: relative; display: flex; flex-direction: column; gap: 13px; min-width: 0; padding: 20px; border: 1px solid #d4dde7; border-radius: 10px; background: #fff; box-shadow: 0 7px 20px rgba(16,33,63,.045); }
 .news-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 12px; color: #6b7b8f; font-size: .62rem; font-weight: 700; }
 .news-card-meta > span + span { padding-left: 12px; border-left: 1px solid #dce2e8; }.news-card-meta .news-status { margin-left: auto; }

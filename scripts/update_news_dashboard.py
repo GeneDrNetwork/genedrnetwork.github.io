@@ -464,6 +464,57 @@ OFFICIAL_AI_FEEDS = [
     ("Microsoft Official Blog", "https://blogs.microsoft.com/feed/", "https://blogs.microsoft.com/"),
 ]
 
+BIOTECH_NEWS_QUERIES = [
+    '(biotech OR biopharma) ("phase 2" OR "phase 3" OR pivotal OR clinical results OR readout) when:4d',
+    '(FDA OR regulatory) (approval OR "complete response letter" OR "clinical hold" OR BLA OR NDA OR PDUFA) biotech when:4d',
+    '(biotech OR biopharma) (acquisition OR merger OR licensing OR partnership) when:4d',
+    '(drug launch OR commercial biotech) (sales OR guidance OR reimbursement OR manufacturing) when:4d',
+    '(gene therapy OR gene editing OR RNA therapy OR cell therapy) (clinical data OR platform OR partnership) when:4d',
+]
+
+OFFICIAL_BIOTECH_FEEDS = [
+    ("Intellia Therapeutics Investor Relations", "https://ir.intelliatx.com/rss/news-releases.xml", "https://ir.intelliatx.com/"),
+    ("Beam Therapeutics Investor Relations", "https://investors.beamtx.com/rss/news-releases.xml", "https://investors.beamtx.com/"),
+]
+
+BIOTECH_COMPANIES = {
+    "moderna": ("Moderna", "MRNA"), "intellia": ("Intellia Therapeutics", "NTLA"),
+    "beam therapeutics": ("Beam Therapeutics", "BEAM"), "alnylam": ("Alnylam Pharmaceuticals", "ALNY"),
+    "cytokinetics": ("Cytokinetics", "CYTK"), "implantica": ("Implantica", "Missing"),
+    "stoke therapeutics": ("Stoke Therapeutics", "STOK"), "maze therapeutics": ("Maze Therapeutics", "MAZE"),
+    "krystal biotech": ("Krystal Biotech", "KRYS"), "vertex": ("Vertex Pharmaceuticals", "VRTX"),
+    "regeneron": ("Regeneron", "REGN"), "biogen": ("Biogen", "BIIB"),
+    "gilead": ("Gilead Sciences", "GILD"), "amgen": ("Amgen", "AMGN"),
+    "eli lilly": ("Eli Lilly", "LLY"), "novo nordisk": ("Novo Nordisk", "NVO"),
+    "roche": ("Roche", "RHHBY"), "genentech": ("Genentech", "RHHBY"),
+    "merck": ("Merck", "MRK"), "pfizer": ("Pfizer", "PFE"),
+    "bristol myers squibb": ("Bristol Myers Squibb", "BMY"), "astrazeneca": ("AstraZeneca", "AZN"),
+    "sanofi": ("Sanofi", "SNY"), "novartis": ("Novartis", "NVS"),
+}
+
+BIOTECH_PROGRAMS = (
+    "mRNA-1083", "mRNA-1010", "mRNA-1403", "mRNA-1647", "mRNA-4157", "intismeran autogene",
+    "lonvoguran ziclumeran", "lonvo-z", "BEAM-302", "MZE829", "zorevunersen", "VYJUVEK",
+    "Casgevy", "Leqvio", "Amvuttra", "Onpattro",
+)
+
+BIOTECH_EVENT_TERMS = (
+    "clinical results", "trial results", "trial win", "topline", "readout", "primary endpoint", "phase 1", "phase 2", "phase 3", "pivotal",
+    "approval", "approved", "complete response letter", "crl", "clinical hold", "bla", "nda", "pdufa", "fast track", "breakthrough therapy",
+    "delayed", "delay", "accelerated", "timeline", "expects", "acquisition", "acquires", "merger", "license", "licensing", "partnership", "deal", "ipo", "financing",
+    "launch", "commercial", "sales", "reimbursement", "manufacturing", "platform", "proof-of-concept", "publication",
+)
+
+BIOTECH_PRIMARY_SOURCE_TERMS = tuple(BIOTECH_COMPANIES) + (
+    "u.s. food and drug administration", "food and drug administration", "fda", "nih", "national institutes of health",
+)
+BIOTECH_SCIENTIFIC_SOURCES = (
+    "new england journal of medicine", "nejm", "the lancet", "jama", "nature", "science", "cell",
+)
+BIOTECH_INDUSTRY_SOURCES = (
+    "stat", "endpoints news", "fierce biotech", "biopharma dive", "biospace", "evaluate vantage", "pink sheet",
+)
+
 PRIMARY_SOURCE_TERMS = (
     "nvidia", "amd", "broadcom", "micron", "tsmc", "asml", "arista", "vertiv", "eaton",
     "microsoft", "alphabet", "google", "amazon", "aws", "meta", "openai", "anthropic",
@@ -970,13 +1021,378 @@ def ai_news_methodology():
     }
 
 
+def biotech_source_quality(source_name):
+    lowered = source_name.lower()
+    if any(contains_term(lowered, term) for term in BIOTECH_PRIMARY_SOURCE_TERMS):
+        return 15, "Primary/company or regulator source"
+    if any(term in lowered for term in BIOTECH_SCIENTIFIC_SOURCES):
+        return 15, "Primary peer-reviewed scientific source"
+    if any(term in lowered for term in RELIABLE_FINANCIAL_SOURCES):
+        return 12, "Reliable financial news source"
+    if any(term in lowered for term in BIOTECH_INDUSTRY_SOURCES):
+        return 10, "Reliable biotech industry source"
+    if re.search(r"(?:therapeutics|pharmaceuticals|biosciences|biopharma|biotech)(?: investor relations)?$", lowered):
+        return 15, "Primary/company source"
+    return 0, "Source is not in the Biotech News V1 reliability list"
+
+
+def named_biotech_company(text):
+    lowered = text.lower()
+    matches = [(lowered.find(term), company, ticker) for term, (company, ticker) in BIOTECH_COMPANIES.items()
+               if contains_term(lowered, term)]
+    if matches:
+        return min(matches)[1:]
+    generic = re.search(r"\b([A-Z][A-Za-z0-9&.' -]{2,55}?(?:Therapeutics|Pharmaceuticals|Biosciences|Biopharma|Biotech))\b", text)
+    if generic:
+        return generic.group(1).strip(), "Missing"
+    headline_company = re.search(r"^([A-Z][A-Za-z0-9&.']{1,30})\s+(?:(?:finally|now)\s+)?(?:reports|announces|details|says|nabs|pens|launches|wins|secures|acquires|halts|delays)\b", text)
+    return (headline_company.group(1).strip(), "Missing") if headline_company else ("Missing / not established", "Missing")
+
+
+def named_biotech_program(text):
+    for program in BIOTECH_PROGRAMS:
+        if contains_term(text, program):
+            return program
+    match = re.search(r"\b(?:[A-Z]{2,8}|mRNA)-?\d{2,5}\b", text)
+    return match.group(0) if match else "Missing / not established"
+
+
+def biotech_indication(text):
+    patterns = (
+        r"(?:for (?:the treatment of )?|in patients with )([A-Za-z][A-Za-z0-9 -]{3,70}?)(?:[.;,]| in a | who | with )",
+        r"(?:treating|treatment for) ([A-Za-z][A-Za-z0-9 -]{3,70}?)(?:[.;,]| in a | who | with )",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            return match.group(1).strip()
+    return "Missing / not established"
+
+
+def biotech_event_type(text):
+    lowered = text.lower()
+    event_types = (
+        ("Regulatory / FDA", ("fda approval", "approved", "complete response letter", " crl", "clinical hold", "bla", "nda", "pdufa", "fast track", "breakthrough therapy")),
+        ("Catalyst Timing Change", ("delayed", "delay", "accelerated", "timeline", "now expects", "rescheduled")),
+        ("Competitor Event", ("competitor", "rival", "head-to-head")),
+        ("Clinical Results", ("clinical results", "trial results", "trial win", "topline", "readout", "primary endpoint", "phase 1", "phase 2", "phase 3", "pivotal")),
+        ("M&A / Licensing / Partnership", ("acquisition", "acquires", "merger", "license", "licensing", "partnership", "deal")),
+        ("Capital Markets / Financing", ("ipo", "financing", "offering", "spac")),
+        ("Commercial Event", ("launch", "commercial", "sales", "reimbursement", "manufacturing")),
+        ("Scientific / Platform", ("platform", "proof-of-concept", "publication", "mechanism", "preclinical")),
+    )
+    return next((label for label, terms in event_types if any(term in lowered for term in terms)), "Biotech Sector Event")
+
+
+def biotech_stage(text, event_type):
+    lowered = text.lower()
+    if "phase 3" in lowered or "pivotal" in lowered:
+        return "Phase 3 / Pivotal"
+    if "phase 2" in lowered:
+        return "Phase 2"
+    if "phase 1" in lowered:
+        return "Phase 1"
+    if "preclinical" in lowered:
+        return "Preclinical"
+    if any(term in lowered for term in ("approved", "fda approval", "launch", "commercial")):
+        return "Regulatory decision / Commercial"
+    if any(term in lowered for term in ("bla", "nda", "pdufa", "clinical hold", "fast track")):
+        return "Regulatory review"
+    if event_type == "M&A / Licensing / Partnership":
+        return "Corporate transaction"
+    if event_type == "Scientific / Platform":
+        return "Scientific / Platform evidence"
+    return "Missing / not established"
+
+
+def biotech_radar_factors(text):
+    lowered = text.lower()
+    factors = []
+    mappings = (
+        ("Clinical Evidence", ("clinical", "trial", "endpoint", "readout", "phase 1", "phase 2", "phase 3", "pivotal")),
+        ("Regulatory Status", ("fda", "approval", "crl", "clinical hold", "bla", "nda", "pdufa", "fast track")),
+        ("Catalyst Timing", ("delay", "timeline", "expects", "scheduled", "accelerated", "pdufa")),
+        ("Competitive Landscape", ("competitor", "rival", "head-to-head")),
+        ("Corporate Strategy", ("acquisition", "merger", "license", "partnership", "deal")),
+        ("Capital / Financing", ("ipo", "financing", "offering", "spac")),
+        ("Commercialization", ("launch", "sales", "commercial", "reimbursement", "manufacturing")),
+        ("Platform Validation", ("platform", "proof-of-concept", "gene editing", "gene therapy", "rna", "cell therapy", "publication")),
+    )
+    for label, terms in mappings:
+        if any(term in lowered for term in terms):
+            factors.append(label)
+    return factors or ["Biotech Sector Context"]
+
+
+def biotech_subsectors(text):
+    lowered = text.lower()
+    mappings = (
+        ("Rare Disease", ("rare disease", "orphan", "dravet", "hae", "alpha-1 antitrypsin")),
+        ("Oncology", ("cancer", "oncology", "tumor", "leukemia", "lymphoma")),
+        ("Vaccines / Infectious Disease", ("vaccine", "covid", "influenza", "rsv", "infectious")),
+        ("Neurology", ("neurology", "neuro", "alzheimer", "parkinson", "epilepsy")),
+        ("Cardiometabolic", ("obesity", "diabetes", "cardio", "metabolic", "kidney")),
+        ("Immunology", ("immunology", "autoimmune", "inflammation")),
+        ("Genetic Medicines", ("gene therapy", "gene editing", "crispr", "rna", "cell therapy", "mrna")),
+    )
+    result = [label for label, terms in mappings if any(term in lowered for term in terms)]
+    return result or ["Biotech Sector"]
+
+
+def biotech_direction(text):
+    lowered = text.lower()
+    positive = any(term in lowered for term in (
+        "positive", "met endpoint", "trial win", "approved", "fda approval", "lifted hold", "accelerated", "earlier", "increase", "growth", "launch", "acquisition", "partnership",
+    ))
+    negative = any(term in lowered for term in (
+        "failed", "missed endpoint", "complete response letter", "clinical hold", "delayed", "discontinued", "terminated", "safety signal", "decline",
+    ))
+    if positive and negative:
+        return "Mixed"
+    if positive:
+        return "Positive / Advancing"
+    if negative:
+        return "Negative / Delaying"
+    return "Neutral / not established"
+
+
+def extract_biotech_facts(text, limit=3):
+    cleaned = plain_text(text)
+    sentences = re.split(r"(?<=[.!?])\s+", cleaned)
+    ranked = []
+    for index, sentence in enumerate(sentences):
+        lowered = sentence.lower()
+        if not 20 <= len(sentence) <= 450 or not any(term in lowered for term in BIOTECH_EVENT_TERMS):
+            continue
+        authority = sum(3 for term in ("primary endpoint", "phase 3", "pivotal", "approved", "complete response letter", "clinical hold", "acquisition") if term in lowered)
+        specificity = 5 if re.search(r"(?:\d|\$|%)", sentence) else 0
+        ranked.append((authority + specificity, -index, sentence.strip()))
+    return [sentence for _, _, sentence in sorted(ranked, reverse=True)[:limit]]
+
+
+def enrich_biotech_primary_evidence(item):
+    evidence = extract_biotech_facts(" ".join((item.get("title", ""), item.get("description", ""), item.get("feed_content", ""))))
+    url = item.get("url", "")
+    if len(evidence) < 3 and url.startswith("http") and "news.google.com" not in url:
+        try:
+            evidence = extract_biotech_facts(fetch(url, timeout=12).decode("utf-8", "ignore"), limit=3) or evidence
+        except Exception as exc:
+            print(f"Biotech primary evidence page unavailable for {item.get('source', 'source')}: {exc}")
+    item["primary_evidence"] = evidence
+    return item
+
+
+def cluster_biotech_news_items(items):
+    clusters = {}
+    for item in items:
+        authority, source_label = biotech_source_quality(item.get("source", ""))
+        if not authority:
+            continue
+        clean_title = clean_news_headline(item.get("title", ""), item.get("source", ""))
+        text = " ".join((clean_title, item.get("description", ""), " ".join(item.get("primary_evidence", []))))
+        if not any(term in text.lower() for term in BIOTECH_EVENT_TERMS):
+            continue
+        company, ticker = named_biotech_company(text)
+        program = named_biotech_program(text)
+        event_type = biotech_event_type(text)
+        published = parse_publication_time(item.get("date", ""))
+        week = datetime.fromisoformat(published).strftime("%G-W%V") if published else "undated"
+        identity = f"{ticker}:{program}:{event_type}" if ticker != "Missing" else news_fingerprint(clean_news_headline(item.get("title", ""), item.get("source", "")), "biotech-topic")
+        key = (identity, week)
+        clusters.setdefault(key, []).append(dict(item, _source_authority=authority, _source_label=source_label,
+                                                  _company=company, _ticker=ticker, _program=program,
+                                                  _event_type=event_type, _cluster_identity=identity,
+                                                  _cluster_week=week))
+    results = []
+    for _cluster_key, members in clusters.items():
+        representative = sorted(members, key=lambda item: (not item.get("is_primary", False), -item["_source_authority"]))[0]
+        sources = []
+        seen = set()
+        for member in members:
+            key = (member.get("source", ""), member.get("url", ""))
+            if key in seen:
+                continue
+            seen.add(key)
+            sources.append({"title": clean_news_headline(member.get("title", ""), member.get("source", "")),
+                            "source": member.get("source", ""), "date": parse_publication_time(member.get("date", "")),
+                            "url": member.get("url", ""), "source_type": member["_source_label"],
+                            "primary": bool(member.get("is_primary") or member["_source_authority"] == 15)})
+        cluster_text = " ".join(" ".join((member.get("title", ""), member.get("description", ""),
+                                           " ".join(member.get("primary_evidence", [])))) for member in members)
+        results.append(dict(representative, _cluster_text=cluster_text, evidence_sources=sources,
+                            primary_evidence=[fact for member in members for fact in member.get("primary_evidence", [])]))
+    return results
+
+
+def biotech_state_change(text, new_information):
+    match = re.search(r"\bfrom ([^.]{3,80}?) to ([^.]{3,80}?)(?:[.;]|$)", text, flags=re.IGNORECASE)
+    if match:
+        return match.group(1).strip(), match.group(2).strip()
+    return "Missing / not established", new_information
+
+
+def score_biotech_news_item(item, run_at, previous_ids):
+    source_name = item.get("source", "").strip()
+    authority, source_label = biotech_source_quality(source_name)
+    if not authority:
+        return None
+    headline = clean_news_headline(item.get("title", ""), source_name)
+    combined_text = item.get("_cluster_text") or " ".join((headline, item.get("description", "")))
+    lowered = combined_text.lower()
+    if not any(term in lowered for term in BIOTECH_EVENT_TERMS):
+        return None
+    event_type = item.get("_event_type") or biotech_event_type(combined_text)
+    company, ticker = (item.get("_company"), item.get("_ticker")) if item.get("_company") else named_biotech_company(combined_text)
+    program = item.get("_program") or named_biotech_program(combined_text)
+    indication = biotech_indication(combined_text)
+    facts = list(dict.fromkeys(item.get("primary_evidence", []) + extract_biotech_facts(combined_text)))[:3]
+    new_information = news_new_information(facts, headline)
+    previous_state, new_state = biotech_state_change(combined_text, new_information)
+    factors = biotech_radar_factors(combined_text)
+    subsectors = biotech_subsectors(combined_text)
+    evidence_sources = item.get("evidence_sources", [])
+    published_at = parse_publication_time(item.get("date", ""))
+    story_id = news_fingerprint(f"{item.get('_cluster_identity', headline)} {item.get('_cluster_week', '')}", "biotech-cluster")
+
+    major = ("fda approval", "approved", "complete response letter", "clinical hold", "phase 3", "pivotal", "primary endpoint", "trial win", "acquisition", "merger")
+    medium = ("phase 2", "bla", "nda", "pdufa", "licensing", "license", "deal", "topline", "readout", "launch", "ipo", "financing")
+    event_significance = 30 if any(term in lowered for term in major) else 24 if any(term in lowered for term in medium) else 18 if event_type != "Biotech Sector Event" else 12
+    company_impact = (8 if not company.startswith("Missing") else 0) + (5 if program != "Missing / not established" else 0)
+    company_impact += 5 if re.search(r"(?:\d|\$|%)", combined_text) else 0
+    company_impact += min(7, len(factors) * 2 + len(subsectors))
+    company_impact = min(25, company_impact)
+    age_hours = None
+    if published_at:
+        age_hours = max(0, (run_at - datetime.fromisoformat(published_at)).total_seconds() / 3600)
+    novelty = 20 if story_id not in previous_ids or (age_hours is not None and age_hours <= 168) else 12
+    immediacy = 10 if age_hours is not None and age_hours <= 72 else 7 if age_hours is not None and age_hours <= 168 else 3 if age_hours is not None and age_hours <= 336 else 0
+    importance = event_significance + company_impact + novelty + authority + immediacy
+    if importance < 65:
+        return None
+    status = "CONFIRMING" if story_id in previous_ids else "NEW"
+    missing = []
+    for label, value in (("Company/ticker", ticker), ("Drug/program", program), ("Indication", indication),
+                         ("Development stage", biotech_stage(combined_text, event_type))):
+        if str(value).startswith("Missing"):
+            missing.append(label)
+    if not facts:
+        missing.append("Detailed source facts")
+    if not published_at:
+        missing.append("Publication date/time")
+    return {
+        "id": story_id, "headline": headline, "company": company, "ticker": ticker,
+        "drug_program": program, "indication": indication, "event_type": event_type,
+        "development_stage": biotech_stage(combined_text, event_type), "new_information": new_information,
+        "previous_state": previous_state, "new_state": new_state, "direction": biotech_direction(combined_text),
+        "news_importance_score": importance, "affected_radar_factors": factors, "subsectors": subsectors,
+        "status": status, "published_at": published_at, "source": source_name, "source_type": source_label,
+        "source_link": item.get("url", ""), "publisher_url": item.get("publisher_url", ""),
+        "evidence_sources": evidence_sources,
+        "score_evidence": {
+            "event_significance": {"score": event_significance, "weight": 30},
+            "company_sector_impact": {"score": company_impact, "weight": 25},
+            "novelty": {"score": novelty, "weight": 20},
+            "evidence_authority": {"score": authority, "weight": 15, "basis": source_label},
+            "immediacy": {"score": immediacy, "weight": 10},
+        },
+        "missing_data": missing, "first_seen": run_at.isoformat(timespec="minutes"), "quality_schema_version": 1,
+    }
+
+
+def collect_biotech_investment_news(run_at=None):
+    current_time = run_at or datetime.now(timezone.utc)
+    combined = []
+    seen = set()
+    official = []
+    for source_name, url, publisher_url in OFFICIAL_BIOTECH_FEEDS:
+        official.extend(official_feed_items(source_name, url, publisher_url, 20))
+    for item in official:
+        text = " ".join((item.get("title", ""), item.get("description", "")))
+        published = parse_publication_time(item.get("date", ""))
+        if published and (current_time - datetime.fromisoformat(published)).days <= 7 and any(term in text.lower() for term in BIOTECH_EVENT_TERMS):
+            enrich_biotech_primary_evidence(item)
+            key = (item.get("title", ""), item.get("source", ""))
+            if key not in seen:
+                seen.add(key); combined.append(item)
+    for query in BIOTECH_NEWS_QUERIES:
+        for item in rss_items(query, 25):
+            key = (item.get("title", ""), item.get("source", ""))
+            if key not in seen:
+                seen.add(key); combined.append(item)
+    return combined
+
+
+def biotech_news_radar_interface(current_stories, archived_stories):
+    events = []
+    for archived, stories in ((False, current_stories), (True, archived_stories)):
+        for story in stories:
+            events.append({key: story.get(key) for key in (
+                "id", "published_at", "company", "ticker", "drug_program", "indication", "event_type",
+                "development_stage", "new_information", "previous_state", "new_state", "direction",
+                "news_importance_score", "affected_radar_factors", "subsectors", "status", "source_link", "evidence_sources",
+            )} | {"archived": archived})
+    return {
+        "schema_version": "biotech-news-to-radar-evidence-v1",
+        "description": "Source-backed biotech news events for future Radar evidence ingestion; contains no Radar-factor or opportunity scores.",
+        "events": events,
+    }
+
+
+def build_biotech_news_section(items, previous_section, run_at):
+    previous_current = [item for item in previous_section.get("stories", []) if item.get("quality_schema_version") == 1]
+    previous_archive = [item for item in previous_section.get("important_news_archive", []) if item.get("quality_schema_version") == 1]
+    previous_ids = {item.get("id") for item in previous_current + previous_archive if item.get("id")}
+    scored = [score_biotech_news_item(item, run_at, previous_ids) for item in cluster_biotech_news_items(items)]
+    scored = [item for item in scored if item]
+    if not items:
+        return {"stories": previous_current, "important_news_archive": previous_archive,
+                "radar_evidence_interface": biotech_news_radar_interface(previous_current, previous_archive),
+                "selection_status": "Biotech feeds were unavailable; the prior selection was preserved.",
+                "methodology": biotech_news_methodology()}
+    current = sorted((item for item in scored if item["news_importance_score"] >= 80),
+                     key=lambda item: (-item["news_importance_score"], item["headline"]))
+    archive_candidates = [item for item in scored if 65 <= item["news_importance_score"] < 80]
+    current_ids = {item["id"] for item in current}
+    current_headlines = {re.sub(r"[^a-z0-9]+", " ", item.get("headline", "").lower()).strip() for item in current}
+    current_links = {item.get("source_link") for item in current if item.get("source_link")}
+    archive_by_id = {
+        item["id"]: item for item in previous_archive
+        if item.get("id") not in current_ids
+        and re.sub(r"[^a-z0-9]+", " ", item.get("headline", "").lower()).strip() not in current_headlines
+        and item.get("source_link") not in current_links
+    }
+    for item in previous_current + archive_candidates:
+        normalized_headline = re.sub(r"[^a-z0-9]+", " ", item.get("headline", "").lower()).strip()
+        if item.get("id") not in current_ids and normalized_headline not in current_headlines and item.get("source_link") not in current_links:
+            archive_by_id[item["id"]] = item
+    archive = sorted(archive_by_id.values(), key=lambda item: item.get("published_at") or item.get("first_seen", ""), reverse=True)
+    return {"stories": current, "important_news_archive": archive,
+            "radar_evidence_interface": biotech_news_radar_interface(current, archive),
+            "selection_status": f"Selected {len(current)} prominent event{'s' if len(current) != 1 else ''}; {len(archive_candidates)} new event{'s' if len(archive_candidates) != 1 else ''} added to Evidence History.",
+            "methodology": biotech_news_methodology()}
+
+
+def biotech_news_methodology():
+    return {
+        "engine_version": "biotech-news-v1",
+        "prominent_threshold": 80, "archive_threshold": 65,
+        "importance_weights": {"event_significance": 30, "company_sector_impact": 25, "novelty": 20,
+                               "evidence_authority": 15, "immediacy": 10},
+        "source_policy": "Official company and regulator feeds are preferred; configured reliable financial, scientific and biotech-industry sources may corroborate or supply events.",
+        "archive_policy": "Events scoring 65-79 and previously prominent events remain in Important News Archive / Evidence History.",
+        "scoring_boundary": "News scores event importance only. Scientific Evidence, Catalyst Impact, Expectation Gap, Sector Trend and Opportunity Score are not calculated here.",
+        "selection_policy": "No quota is filled; only events meeting the configured thresholds are retained.",
+    }
+
+
 def build():
     previous = prior_data()
     run_at = datetime.now(timezone.utc)
     score_date = run_at.date()
     ai_news_candidates = collect_ai_investment_news(run_at)
     ai_news = ai_news_candidates[:6]
-    biotech_news = rss_items("biotechnology rare disease clinical trial when:1d", 6)
+    biotech_news_candidates = collect_biotech_investment_news(run_at)
+    biotech_news = biotech_news_candidates[:6]
     fda_news = rss_items("FDA approval orphan drug fast track rare disease when:7d", 8)
     market_news = rss_items("US stock market Nasdaq S&P 500 today when:1d", 4)
 
@@ -1006,10 +1422,12 @@ def build():
         takeaways = previous.get("takeaways", ["Daily source monitoring is active."])
     previous_ai_news = previous.get("top_investment_news", {}).get("ai_technology", {})
     ai_news_section = build_ai_news_section(ai_news_candidates, previous_ai_news, run_at)
+    previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
+    biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
-        "top_investment_news": {"ai_technology": ai_news_section},
+        "top_investment_news": {"ai_technology": ai_news_section, "biotech_healthcare": biotech_news_section},
         "summaries": {"ai": summarize(ai_news, "AI"), "biotech": summarize(biotech_news, "biotech"),
                       "market": summarize(market_news, "market"), "market_movers": market_movers},
         "takeaways": takeaways[:8],

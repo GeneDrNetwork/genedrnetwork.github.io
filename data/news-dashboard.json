@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-28T20:32:50+00:00",
+  "updated_at": "2026-08-28T20:45:31+00:00",
   "top_investment_news": {
     "ai_technology": {
       "stories": [
@@ -10,6 +10,9 @@
           "source": "NVIDIA Newsroom",
           "source_type": "Primary/company source",
           "news_importance_score": 100,
+          "event_type": "Financial Results",
+          "new_information": "Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago.",
+          "direction": "Expanding",
           "status": "CONFIRMING",
           "affected_trends": [
             "AI Models/Applications",
@@ -84,19 +87,13 @@
               "financial results",
               "revenue"
             ],
-            "forward_signal_terms": [
-              "expected"
-            ],
             "named_companies": [
               "nvidia"
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T15:52+00:00",
-          "quality_schema_version": 4,
-          "event_type": "Financial Results",
-          "direction": "Expanding",
-          "new_information": "Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago."
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 4
         },
         {
           "id": "228d0c0093cf0b1a14fa",
@@ -105,6 +102,9 @@
           "source": "NVIDIA Newsroom",
           "source_type": "Primary/company source",
           "news_importance_score": 90,
+          "event_type": "Capacity / Contract",
+          "new_information": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI. Building on already-rapid customer adoption of NVIDIA-accelerated compute on AWS, the companies plan to deploy 2 million additional NVIDIA GPUs across AWS\u2019s global infrastructure and deepen their work together across AI factories, CPUs, networking, open models, data processing and robotics, delivering co-engineered AI solutions that enable customers to accelerate AI development and deployment at unprecedented scale.",
+          "direction": "Mixed",
           "status": "CONFIRMING",
           "affected_trends": [
             "AI Models/Applications",
@@ -176,11 +176,6 @@
               "deliver",
               "deploy"
             ],
-            "forward_signal_terms": [
-              "deliver",
-              "deploy",
-              "plans"
-            ],
             "named_companies": [
               "aws",
               "nvidia",
@@ -188,11 +183,8 @@
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T15:52+00:00",
-          "quality_schema_version": 4,
-          "event_type": "Capacity / Contract",
-          "direction": "Expanding",
-          "new_information": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI. Building on already-rapid customer adoption of NVIDIA-accelerated compute on AWS, the companies plan to deploy 2 million additional NVIDIA GPUs across AWS\u2019s global infrastructure and deepen their work together across AI factories, CPUs, networking, open models, data processing and robotics, delivering co-engineered AI solutions that enable customers to accelerate AI development and deployment at unprecedented scale."
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 4
         },
         {
           "id": "5f68b2853c80e559f4f9",
@@ -201,6 +193,9 @@
           "source": "NVIDIA Newsroom",
           "source_type": "Primary/company source",
           "news_importance_score": 87,
+          "event_type": "Capacity / Contract",
+          "new_information": "Vera features 88 NVIDIA-designed Olympus cores, NVIDIA Spatial Multithreading technology and high-bandwidth LPDDR5X memory, delivering up to 1.2TB/s of bandwidth. SpaceXAI plans to extend its use of NVIDIA accelerated computing into space, with the first-generation Starmind AI satellite based on an optimized NVIDIA Vera Rubin NVL72 system.",
+          "direction": "Mixed",
           "status": "CONFIRMING",
           "affected_trends": [
             "AI Models/Applications",
@@ -270,22 +265,13 @@
               "deliver",
               "deploy"
             ],
-            "forward_signal_terms": [
-              "deliver",
-              "deploy",
-              "plans",
-              "will"
-            ],
             "named_companies": [
               "nvidia"
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T15:52+00:00",
-          "quality_schema_version": 4,
-          "event_type": "Product / Platform",
-          "direction": "Mixed",
-          "new_information": "Vera features 88 NVIDIA-designed Olympus cores, NVIDIA Spatial Multithreading technology and high-bandwidth LPDDR5X memory, delivering up to 1.2TB/s of bandwidth. SpaceXAI plans to extend its use of NVIDIA accelerated computing into space, with the first-generation Starmind AI satellite based on an optimized NVIDIA Vera Rubin NVL72 system."
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 4
         },
         {
           "id": "4431f55507a3a9109e4c",
@@ -294,7 +280,10 @@
           "source": "NVIDIA Newsroom",
           "source_type": "Primary/company source",
           "news_importance_score": 82,
-          "status": "NEW",
+          "event_type": "Product / Platform",
+          "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems.",
+          "direction": "Expanding",
+          "status": "CONFIRMING",
           "affected_trends": [
             "AI Models/Applications",
             "Compute"
@@ -356,20 +345,13 @@
               "deliver",
               "deploy"
             ],
-            "forward_signal_terms": [
-              "deliver",
-              "deploy"
-            ],
             "named_companies": [
               "nvidia"
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T15:52+00:00",
-          "quality_schema_version": 4,
-          "event_type": "Capacity / Contract",
-          "direction": "Expanding",
-          "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems."
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 4
         },
         {
           "id": "d0520ba8dcdfc8fa1d6d",
@@ -378,7 +360,10 @@
           "source": "S&P Global",
           "source_type": "Primary research/industry source",
           "news_importance_score": 70,
-          "status": "NEW",
+          "event_type": "Company Update",
+          "new_information": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says.",
+          "direction": "Expanding",
+          "status": "CONFIRMING",
           "affected_trends": [
             "AI Models/Applications",
             "Data Centers"
@@ -438,17 +423,11 @@
             "investment_event_terms": [
               "investment"
             ],
-            "forward_signal_terms": [
-              "investment"
-            ],
             "named_companies": []
           },
           "missing_data": [],
-          "first_seen": "2026-08-28T15:52+00:00",
-          "quality_schema_version": 4,
-          "event_type": "Company Update",
-          "direction": "Expanding",
-          "new_information": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says."
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 4
         }
       ],
       "important_news_archive": [
@@ -596,7 +575,7 @@
             "event_id": "228d0c0093cf0b1a14fa",
             "event_date": "2026-08-26T21:05+00:00",
             "event_type": "Capacity / Contract",
-            "direction": "Expanding",
+            "direction": "Mixed",
             "confirmation_status": "CONFIRMING",
             "news_importance_score": 90,
             "new_information": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI. Building on already-rapid customer adoption of NVIDIA-accelerated compute on AWS, the companies plan to deploy 2 million additional NVIDIA GPUs across AWS\u2019s global infrastructure and deepen their work together across AI factories, CPUs, networking, open models, data processing and robotics, delivering co-engineered AI solutions that enable customers to accelerate AI development and deployment at unprecedented scale.",
@@ -634,7 +613,7 @@
           {
             "event_id": "5f68b2853c80e559f4f9",
             "event_date": "2026-08-24T15:00+00:00",
-            "event_type": "Product / Platform",
+            "event_type": "Capacity / Contract",
             "direction": "Mixed",
             "confirmation_status": "CONFIRMING",
             "news_importance_score": 87,
@@ -671,9 +650,9 @@
           {
             "event_id": "4431f55507a3a9109e4c",
             "event_date": "2026-08-24T15:00+00:00",
-            "event_type": "Capacity / Contract",
+            "event_type": "Product / Platform",
             "direction": "Expanding",
-            "confirmation_status": "NEW",
+            "confirmation_status": "CONFIRMING",
             "news_importance_score": 82,
             "new_information": "For providers serving latency-sensitive, high-volume inference workloads, NVIDIA Groq 3 LPX provides a path to deploy differentiated compute in proven rack-scale systems. An extension of the NVIDIA Vera Rubin platform, Groq 3 LPX delivers a major boost in AI inference by enabling ultrafast token generation for highly responsive agentic systems.",
             "affected_trends": [
@@ -706,7 +685,7 @@
             "event_date": "2026-08-27T12:01+00:00",
             "event_type": "Company Update",
             "direction": "Expanding",
-            "confirmation_status": "NEW",
+            "confirmation_status": "CONFIRMING",
             "news_importance_score": 70,
             "new_information": "AI Infrastructure Investment To Exceed $1.3 Trillion By 2027, S&P Global Ratings Says.",
             "affected_trends": [
@@ -777,7 +756,7 @@
           }
         ]
       },
-      "selection_status": "No qualifying new stories were available; the prior selection was preserved.",
+      "selection_status": "Selected 5 source-qualified, investment-relevant stories.",
       "methodology": {
         "engine_version": "ai-technology-news-v1.1",
         "industry_map": [
@@ -797,19 +776,864 @@
         "scoring_note": "Importance uses source quality, quantified materiality, direct industry reach, primary confirmation, company specificity, corroboration and recency. News does not calculate Radar scores or rank investment opportunities.",
         "selection_policy": "At most five stories are shown. No quota is filled; only stories scoring at least 70 qualify."
       }
+    },
+    "biotech_healthcare": {
+      "stories": [
+        {
+          "id": "ddb33bbc4b206c47ced8",
+          "headline": "Cytokinetics details trial win for what could be its next approval",
+          "company": "Cytokinetics",
+          "ticker": "CYTK",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "Clinical Results",
+          "development_stage": "Missing / not established",
+          "new_information": "Cytokinetics details trial win for what could be its next approval.",
+          "previous_state": "Missing / not established",
+          "new_state": "Cytokinetics details trial win for what could be its next approval.",
+          "direction": "Positive / Advancing",
+          "news_importance_score": 83,
+          "affected_radar_factors": [
+            "Clinical Evidence",
+            "Regulatory Status"
+          ],
+          "subsectors": [
+            "Biotech Sector"
+          ],
+          "status": "NEW",
+          "published_at": "2026-08-28T10:17+00:00",
+          "source": "STAT",
+          "source_type": "Reliable biotech industry source",
+          "source_link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNdHFqWFFQZnVkLS1uM1dsRzNRekxrbGpldWFXcS1VeEt5ZXRfT3NaTVdxYTBJX1VPUnlrZUpJdFJXZGpEaHNicjVNbV9VaDNhc045NUppckxrd0p6RmpwSm5pZURaTkktUV9UYXgyZ1dGWldQazhETzM4cnFuZTU4TG5qTkFsblBjSmVFSGRkRlJKZDlBZnhMNA?oc=5",
+          "publisher_url": "https://www.statnews.com",
+          "evidence_sources": [
+            {
+              "title": "Cytokinetics details trial win for what could be its next approval",
+              "source": "STAT",
+              "date": "2026-08-28T10:17+00:00",
+              "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNdHFqWFFQZnVkLS1uM1dsRzNRekxrbGpldWFXcS1VeEt5ZXRfT3NaTVdxYTBJX1VPUnlrZUpJdFJXZGpEaHNicjVNbV9VaDNhc045NUppckxrd0p6RmpwSm5pZURaTkktUV9UYXgyZ1dGWldQazhETzM4cnFuZTU4TG5qTkFsblBjSmVFSGRkRlJKZDlBZnhMNA?oc=5",
+              "source_type": "Reliable biotech industry source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 30,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 13,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 10,
+              "weight": 15,
+              "basis": "Reliable biotech industry source"
+            },
+            "immediacy": {
+              "score": 10,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Drug/program",
+            "Indication",
+            "Development stage"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        },
+        {
+          "id": "c9852a158f80c64a6d47",
+          "headline": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant",
+          "company": "Implantica",
+          "ticker": "Missing",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "Regulatory / FDA",
+          "development_stage": "Regulatory decision / Commercial",
+          "new_information": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant.",
+          "previous_state": "Missing / not established",
+          "new_state": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant.",
+          "direction": "Positive / Advancing",
+          "news_importance_score": 83,
+          "affected_radar_factors": [
+            "Regulatory Status"
+          ],
+          "subsectors": [
+            "Biotech Sector"
+          ],
+          "status": "CONFIRMING",
+          "published_at": "2026-08-25T11:48+00:00",
+          "source": "Fierce Biotech",
+          "source_type": "Reliable biotech industry source",
+          "source_link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOckNYb3RiWHhMWTZPMWZNOEY1S095WV83YWp1OGRfSDVqeDM4MkFjNktFUjdOLU1XOXJoQjdZNU9UcUlnS3M5YUsyMjQtTXF2cDA0bUMxRDU0R2hJRWpYdVRzZUxUNm96OVM0a0tEUURwMUdPZFJWNE8tOXZQMFB6aVl2NDhGbkhCbzZDN2lYNFRIMF9uemhsVk5WTjVoS216ZHdpSmZsV0VpQWdyRkJVUERoakZnNkgweHBDcjl0V0xYUQ?oc=5",
+          "publisher_url": "https://www.fiercebiotech.com",
+          "evidence_sources": [
+            {
+              "title": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant",
+              "source": "Fierce Biotech",
+              "date": "2026-08-25T11:48+00:00",
+              "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOckNYb3RiWHhMWTZPMWZNOEY1S095WV83YWp1OGRfSDVqeDM4MkFjNktFUjdOLU1XOXJoQjdZNU9UcUlnS3M5YUsyMjQtTXF2cDA0bUMxRDU0R2hJRWpYdVRzZUxUNm96OVM0a0tEUURwMUdPZFJWNE8tOXZQMFB6aVl2NDhGbkhCbzZDN2lYNFRIMF9uemhsVk5WTjVoS216ZHdpSmZsV0VpQWdyRkJVUERoakZnNkgweHBDcjl0V0xYUQ?oc=5",
+              "source_type": "Reliable biotech industry source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 30,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 16,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 10,
+              "weight": 15,
+              "basis": "Reliable biotech industry source"
+            },
+            "immediacy": {
+              "score": 7,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Company/ticker",
+            "Drug/program",
+            "Indication"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        },
+        {
+          "id": "6139cb4372b0264acd6a",
+          "headline": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch",
+          "company": "SK Biopharma",
+          "ticker": "Missing",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "M&A / Licensing / Partnership",
+          "development_stage": "Regulatory decision / Commercial",
+          "new_information": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch.",
+          "previous_state": "Missing / not established",
+          "new_state": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch.",
+          "direction": "Positive / Advancing",
+          "news_importance_score": 82,
+          "affected_radar_factors": [
+            "Corporate Strategy",
+            "Commercialization"
+          ],
+          "subsectors": [
+            "Neurology"
+          ],
+          "status": "CONFIRMING",
+          "published_at": "2026-08-26T08:47+00:00",
+          "source": "Fierce Biotech",
+          "source_type": "Reliable biotech industry source",
+          "source_link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQb2x1TFRDMU9aUG82YVRWR3B6TlAxSlBXTEpBa0pMRXdxS0pvQlFickhwSWZDRUMxRU84N1V4VEFZbHRLMmlNNmY1b2tEYllCLURDelJUb3luWkdGZG9uMXpoVGh5RWRpb1d5WGF1cEpxNGgxYU9teFUzWFdnODQzWnV3S0FDSnQ3UkFlTFBLaHIwWkQ4aGF2UXdxcnRRclc0N0t1VXJ3dHQxR0N2a0NF?oc=5",
+          "publisher_url": "https://www.fiercebiotech.com",
+          "evidence_sources": [
+            {
+              "title": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch",
+              "source": "Fierce Biotech",
+              "date": "2026-08-26T08:47+00:00",
+              "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQb2x1TFRDMU9aUG82YVRWR3B6TlAxSlBXTEpBa0pMRXdxS0pvQlFickhwSWZDRUMxRU84N1V4VEFZbHRLMmlNNmY1b2tEYllCLURDelJUb3luWkdGZG9uMXpoVGh5RWRpb1d5WGF1cEpxNGgxYU9teFUzWFdnODQzWnV3S0FDSnQ3UkFlTFBLaHIwWkQ4aGF2UXdxcnRRclc0N0t1VXJ3dHQxR0N2a0NF?oc=5",
+              "source_type": "Reliable biotech industry source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 24,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 18,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 10,
+              "weight": 15,
+              "basis": "Reliable biotech industry source"
+            },
+            "immediacy": {
+              "score": 10,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Company/ticker",
+            "Drug/program",
+            "Indication"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        },
+        {
+          "id": "76ff191373099373d457",
+          "headline": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug",
+          "company": "Roche",
+          "ticker": "RHHBY",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "Regulatory / FDA",
+          "development_stage": "Regulatory decision / Commercial",
+          "new_information": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug.",
+          "previous_state": "Missing / not established",
+          "new_state": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug.",
+          "direction": "Positive / Advancing",
+          "news_importance_score": 81,
+          "affected_radar_factors": [
+            "Regulatory Status"
+          ],
+          "subsectors": [
+            "Oncology"
+          ],
+          "status": "CONFIRMING",
+          "published_at": "2026-08-27T12:00+00:00",
+          "source": "Fierce Biotech",
+          "source_type": "Reliable biotech industry source",
+          "source_link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOM3pCV3htUk9FeUROWDBFMnRiN1M3M2lieHRrTEZ4akUzaVRvamRWRGhIWFk1REc2WFBwbTI5QnViQS1ETFF5RWdnbGxwSjhDWnRxYnRRTExVNGRia19hZmZra0VzeDk1THpJaHJ1b0c1eTJDaGFCSl9NMHJqeWcteGRvUlRENUxJbFZFNjFTa3hJalR2Q0JrN0Q5MkVzUW1OZzBFbTZNdU9TZw?oc=5",
+          "publisher_url": "https://www.fiercebiotech.com",
+          "evidence_sources": [
+            {
+              "title": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug",
+              "source": "Fierce Biotech",
+              "date": "2026-08-27T12:00+00:00",
+              "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOM3pCV3htUk9FeUROWDBFMnRiN1M3M2lieHRrTEZ4akUzaVRvamRWRGhIWFk1REc2WFBwbTI5QnViQS1ETFF5RWdnbGxwSjhDWnRxYnRRTExVNGRia19hZmZra0VzeDk1THpJaHJ1b0c1eTJDaGFCSl9NMHJqeWcteGRvUlRENUxJbFZFNjFTa3hJalR2Q0JrN0Q5MkVzUW1OZzBFbTZNdU9TZw?oc=5",
+              "source_type": "Reliable biotech industry source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 30,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 11,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 10,
+              "weight": 15,
+              "basis": "Reliable biotech industry source"
+            },
+            "immediacy": {
+              "score": 10,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Drug/program",
+            "Indication"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        }
+      ],
+      "important_news_archive": [
+        {
+          "id": "bd0341ac4f69c1bd3460",
+          "headline": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing",
+          "company": "Missing / not established",
+          "ticker": "Missing",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "M&A / Licensing / Partnership",
+          "development_stage": "Corporate transaction",
+          "new_information": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing.",
+          "previous_state": "Missing / not established",
+          "new_state": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing.",
+          "direction": "Neutral / not established",
+          "news_importance_score": 69,
+          "affected_radar_factors": [
+            "Biotech Sector Context"
+          ],
+          "subsectors": [
+            "Biotech Sector"
+          ],
+          "status": "CONFIRMING",
+          "published_at": "2026-08-26T16:48+00:00",
+          "source": "Reuters",
+          "source_type": "Reliable financial news source",
+          "source_link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQNHZYYVJDSHNiMDdKZ1dnNllQQ05WSFhZVnJFYklUNExfVU8ydVd3dEhrRTNJMjBFTTFwV3ZTN1VnSGpvLUhrYm9GVUc4NG0tS09PckpPLTlpU3dvLUlza0hsMUlXN0Y3ckZNZE5CUGlKV1c2ZDF5LTJJMi1mUV9NbzlhTmVlcnotLUlkUl9YaTg5UDdUNlVZUTR4RV9DcmF1d3NWcFY0OGFaeFlEUnNsZXM1Zk9Mejc4N1V6aVktWVpnUDFNWUFKb3VoMA?oc=5",
+          "publisher_url": "https://www.reuters.com",
+          "evidence_sources": [
+            {
+              "title": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing",
+              "source": "Reuters",
+              "date": "2026-08-26T16:48+00:00",
+              "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQNHZYYVJDSHNiMDdKZ1dnNllQQ05WSFhZVnJFYklUNExfVU8ydVd3dEhrRTNJMjBFTTFwV3ZTN1VnSGpvLUhrYm9GVUc4NG0tS09PckpPLTlpU3dvLUlza0hsMUlXN0Y3ckZNZE5CUGlKV1c2ZDF5LTJJMi1mUV9NbzlhTmVlcnotLUlkUl9YaTg5UDdUNlVZUTR4RV9DcmF1d3NWcFY0OGFaeFlEUnNsZXM1Zk9Mejc4N1V6aVktWVpnUDFNWUFKb3VoMA?oc=5",
+              "source_type": "Reliable financial news source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 24,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 3,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 12,
+              "weight": 15,
+              "basis": "Reliable financial news source"
+            },
+            "immediacy": {
+              "score": 10,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Company/ticker",
+            "Drug/program",
+            "Indication"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        },
+        {
+          "id": "4f72ac3237ad72fabd19",
+          "headline": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO",
+          "company": "Missing / not established",
+          "ticker": "Missing",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "Capital Markets / Financing",
+          "development_stage": "Regulatory decision / Commercial",
+          "new_information": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO.",
+          "previous_state": "Missing / not established",
+          "new_state": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO.",
+          "direction": "Positive / Advancing",
+          "news_importance_score": 74,
+          "affected_radar_factors": [
+            "Capital / Financing",
+            "Commercialization"
+          ],
+          "subsectors": [
+            "Biotech Sector"
+          ],
+          "status": "CONFIRMING",
+          "published_at": "2026-08-26T13:45+00:00",
+          "source": "Fierce Biotech",
+          "source_type": "Reliable biotech industry source",
+          "source_link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNdFZrRHFYYnN0MUxPZnI1bEFPSXdKQ1RwTFZfQm1GY2EyQXptM2ljUkplRVFZN3ZhWHQzbm4zMVdfYVMyS2dFVlBIVnZ2Q3hmN2p0aDh1eFI5d1hWX3BPbjF4YU9ZVjc3bXNrSC1lX2pwbUFvdGJSSk5vV3pmSzFhX2JYU2dnbmhoUGk1LXZWWFFTVUxmZDFQWW1sVFdMZk0?oc=5",
+          "publisher_url": "https://www.fiercebiotech.com",
+          "evidence_sources": [
+            {
+              "title": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO",
+              "source": "Fierce Biotech",
+              "date": "2026-08-26T13:45+00:00",
+              "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNdFZrRHFYYnN0MUxPZnI1bEFPSXdKQ1RwTFZfQm1GY2EyQXptM2ljUkplRVFZN3ZhWHQzbm4zMVdfYVMyS2dFVlBIVnZ2Q3hmN2p0aDh1eFI5d1hWX3BPbjF4YU9ZVjc3bXNrSC1lX2pwbUFvdGJSSk5vV3pmSzFhX2JYU2dnbmhoUGk1LXZWWFFTVUxmZDFQWW1sVFdMZk0?oc=5",
+              "source_type": "Reliable biotech industry source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 24,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 10,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 10,
+              "weight": 15,
+              "basis": "Reliable biotech industry source"
+            },
+            "immediacy": {
+              "score": 10,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Company/ticker",
+            "Drug/program",
+            "Indication"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        },
+        {
+          "id": "3bdd5e00727a729f9fd2",
+          "headline": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal",
+          "company": "Missing / not established",
+          "ticker": "Missing",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "M&A / Licensing / Partnership",
+          "development_stage": "Corporate transaction",
+          "new_information": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal.",
+          "previous_state": "Missing / not established",
+          "new_state": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal.",
+          "direction": "Neutral / not established",
+          "news_importance_score": 69,
+          "affected_radar_factors": [
+            "Corporate Strategy"
+          ],
+          "subsectors": [
+            "Biotech Sector"
+          ],
+          "status": "NEW",
+          "published_at": "2026-08-25T13:24+00:00",
+          "source": "Fierce Biotech",
+          "source_type": "Reliable biotech industry source",
+          "source_link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOMkFuZTJFZldUX3pTaEczZDZmdmwzcVQtcUlUSHpha2tRMDdlTGt2TFc5MDg1LUVjU2p3dVdhRTFHeHNsMGwtZjZqbVNFeW5OeDJEZnc2Mjd2dnQ2OGV4VklYbi1uZkRXb2hyYlM5Uzlibm5ZYXVGT0J3d2hOdFlCd0dqaFhOb1IzdzcwM0VfZks3MjlpenlqY1RUaVgxTk1nODhfNkxWcEduU2VnSmc?oc=5",
+          "publisher_url": "https://www.fiercebiotech.com",
+          "evidence_sources": [
+            {
+              "title": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal",
+              "source": "Fierce Biotech",
+              "date": "2026-08-25T13:24+00:00",
+              "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOMkFuZTJFZldUX3pTaEczZDZmdmwzcVQtcUlUSHpha2tRMDdlTGt2TFc5MDg1LUVjU2p3dVdhRTFHeHNsMGwtZjZqbVNFeW5OeDJEZnc2Mjd2dnQ2OGV4VklYbi1uZkRXb2hyYlM5Uzlibm5ZYXVGT0J3d2hOdFlCd0dqaFhOb1IzdzcwM0VfZks3MjlpenlqY1RUaVgxTk1nODhfNkxWcEduU2VnSmc?oc=5",
+              "source_type": "Reliable biotech industry source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 24,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 8,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 10,
+              "weight": 15,
+              "basis": "Reliable biotech industry source"
+            },
+            "immediacy": {
+              "score": 7,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Company/ticker",
+            "Drug/program",
+            "Indication"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        },
+        {
+          "id": "b20b5016afe284675cc2",
+          "headline": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees",
+          "company": "Missing / not established",
+          "ticker": "Missing",
+          "drug_program": "Missing / not established",
+          "indication": "Missing / not established",
+          "event_type": "Commercial Event",
+          "development_stage": "Missing / not established",
+          "new_information": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees.",
+          "previous_state": "Missing / not established",
+          "new_state": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees.",
+          "direction": "Neutral / not established",
+          "news_importance_score": 65,
+          "affected_radar_factors": [
+            "Commercialization",
+            "Platform Validation"
+          ],
+          "subsectors": [
+            "Genetic Medicines"
+          ],
+          "status": "CONFIRMING",
+          "published_at": "2026-08-24T21:26+00:00",
+          "source": "BioPharma Dive",
+          "source_type": "Reliable biotech industry source",
+          "source_link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQRnhmam05azZaN2UzVEtKTUthM3VXeEU3dnZtaVJIVzQ3ekhfNTVfaGhsTHBPQWRQQUh3VmpCV2F0NWhRRzZ4aDIyVFhMSkF5ZWdHMlNGNERXU2ZsMlA1MGJhQ1Z1ekhVN3YzS3k1dmxpRzVCMWR3Z2lUdWxoWC1JZlIxaEhZMFdrNFIyVHNwNA?oc=5",
+          "publisher_url": "https://www.biopharmadive.com",
+          "evidence_sources": [
+            {
+              "title": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees",
+              "source": "BioPharma Dive",
+              "date": "2026-08-24T21:26+00:00",
+              "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQRnhmam05azZaN2UzVEtKTUthM3VXeEU3dnZtaVJIVzQ3ekhfNTVfaGhsTHBPQWRQQUh3VmpCV2F0NWhRRzZ4aDIyVFhMSkF5ZWdHMlNGNERXU2ZsMlA1MGJhQ1Z1ekhVN3YzS3k1dmxpRzVCMWR3Z2lUdWxoWC1JZlIxaEhZMFdrNFIyVHNwNA?oc=5",
+              "source_type": "Reliable biotech industry source",
+              "primary": false
+            }
+          ],
+          "score_evidence": {
+            "event_significance": {
+              "score": 18,
+              "weight": 30
+            },
+            "company_sector_impact": {
+              "score": 10,
+              "weight": 25
+            },
+            "novelty": {
+              "score": 20,
+              "weight": 20
+            },
+            "evidence_authority": {
+              "score": 10,
+              "weight": 15,
+              "basis": "Reliable biotech industry source"
+            },
+            "immediacy": {
+              "score": 7,
+              "weight": 10
+            }
+          },
+          "missing_data": [
+            "Company/ticker",
+            "Drug/program",
+            "Indication",
+            "Development stage"
+          ],
+          "first_seen": "2026-08-28T20:45+00:00",
+          "quality_schema_version": 1
+        }
+      ],
+      "radar_evidence_interface": {
+        "schema_version": "biotech-news-to-radar-evidence-v1",
+        "description": "Source-backed biotech news events for future Radar evidence ingestion; contains no Radar-factor or opportunity scores.",
+        "events": [
+          {
+            "id": "ddb33bbc4b206c47ced8",
+            "published_at": "2026-08-28T10:17+00:00",
+            "company": "Cytokinetics",
+            "ticker": "CYTK",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "Clinical Results",
+            "development_stage": "Missing / not established",
+            "new_information": "Cytokinetics details trial win for what could be its next approval.",
+            "previous_state": "Missing / not established",
+            "new_state": "Cytokinetics details trial win for what could be its next approval.",
+            "direction": "Positive / Advancing",
+            "news_importance_score": 83,
+            "affected_radar_factors": [
+              "Clinical Evidence",
+              "Regulatory Status"
+            ],
+            "subsectors": [
+              "Biotech Sector"
+            ],
+            "status": "NEW",
+            "source_link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNdHFqWFFQZnVkLS1uM1dsRzNRekxrbGpldWFXcS1VeEt5ZXRfT3NaTVdxYTBJX1VPUnlrZUpJdFJXZGpEaHNicjVNbV9VaDNhc045NUppckxrd0p6RmpwSm5pZURaTkktUV9UYXgyZ1dGWldQazhETzM4cnFuZTU4TG5qTkFsblBjSmVFSGRkRlJKZDlBZnhMNA?oc=5",
+            "evidence_sources": [
+              {
+                "title": "Cytokinetics details trial win for what could be its next approval",
+                "source": "STAT",
+                "date": "2026-08-28T10:17+00:00",
+                "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNdHFqWFFQZnVkLS1uM1dsRzNRekxrbGpldWFXcS1VeEt5ZXRfT3NaTVdxYTBJX1VPUnlrZUpJdFJXZGpEaHNicjVNbV9VaDNhc045NUppckxrd0p6RmpwSm5pZURaTkktUV9UYXgyZ1dGWldQazhETzM4cnFuZTU4TG5qTkFsblBjSmVFSGRkRlJKZDlBZnhMNA?oc=5",
+                "source_type": "Reliable biotech industry source",
+                "primary": false
+              }
+            ],
+            "archived": false
+          },
+          {
+            "id": "c9852a158f80c64a6d47",
+            "published_at": "2026-08-25T11:48+00:00",
+            "company": "Implantica",
+            "ticker": "Missing",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "Regulatory / FDA",
+            "development_stage": "Regulatory decision / Commercial",
+            "new_information": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant.",
+            "previous_state": "Missing / not established",
+            "new_state": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant.",
+            "direction": "Positive / Advancing",
+            "news_importance_score": 83,
+            "affected_radar_factors": [
+              "Regulatory Status"
+            ],
+            "subsectors": [
+              "Biotech Sector"
+            ],
+            "status": "CONFIRMING",
+            "source_link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOckNYb3RiWHhMWTZPMWZNOEY1S095WV83YWp1OGRfSDVqeDM4MkFjNktFUjdOLU1XOXJoQjdZNU9UcUlnS3M5YUsyMjQtTXF2cDA0bUMxRDU0R2hJRWpYdVRzZUxUNm96OVM0a0tEUURwMUdPZFJWNE8tOXZQMFB6aVl2NDhGbkhCbzZDN2lYNFRIMF9uemhsVk5WTjVoS216ZHdpSmZsV0VpQWdyRkJVUERoakZnNkgweHBDcjl0V0xYUQ?oc=5",
+            "evidence_sources": [
+              {
+                "title": "Implantica finally nabs FDA approval 8 years after EU green light for reflux implant",
+                "source": "Fierce Biotech",
+                "date": "2026-08-25T11:48+00:00",
+                "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOckNYb3RiWHhMWTZPMWZNOEY1S095WV83YWp1OGRfSDVqeDM4MkFjNktFUjdOLU1XOXJoQjdZNU9UcUlnS3M5YUsyMjQtTXF2cDA0bUMxRDU0R2hJRWpYdVRzZUxUNm96OVM0a0tEUURwMUdPZFJWNE8tOXZQMFB6aVl2NDhGbkhCbzZDN2lYNFRIMF9uemhsVk5WTjVoS216ZHdpSmZsV0VpQWdyRkJVUERoakZnNkgweHBDcjl0V0xYUQ?oc=5",
+                "source_type": "Reliable biotech industry source",
+                "primary": false
+              }
+            ],
+            "archived": false
+          },
+          {
+            "id": "6139cb4372b0264acd6a",
+            "published_at": "2026-08-26T08:47+00:00",
+            "company": "SK Biopharma",
+            "ticker": "Missing",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "M&A / Licensing / Partnership",
+            "development_stage": "Regulatory decision / Commercial",
+            "new_information": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch.",
+            "previous_state": "Missing / not established",
+            "new_state": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch.",
+            "direction": "Positive / Advancing",
+            "news_importance_score": 82,
+            "affected_radar_factors": [
+              "Corporate Strategy",
+              "Commercialization"
+            ],
+            "subsectors": [
+              "Neurology"
+            ],
+            "status": "CONFIRMING",
+            "source_link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQb2x1TFRDMU9aUG82YVRWR3B6TlAxSlBXTEpBa0pMRXdxS0pvQlFickhwSWZDRUMxRU84N1V4VEFZbHRLMmlNNmY1b2tEYllCLURDelJUb3luWkdGZG9uMXpoVGh5RWRpb1d5WGF1cEpxNGgxYU9teFUzWFdnODQzWnV3S0FDSnQ3UkFlTFBLaHIwWkQ4aGF2UXdxcnRRclc0N0t1VXJ3dHQxR0N2a0NF?oc=5",
+            "evidence_sources": [
+              {
+                "title": "SK Biopharma pens $795M deal to usher Biohaven\u2019s epilepsy therapy towards hoped-for 2029 launch",
+                "source": "Fierce Biotech",
+                "date": "2026-08-26T08:47+00:00",
+                "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQb2x1TFRDMU9aUG82YVRWR3B6TlAxSlBXTEpBa0pMRXdxS0pvQlFickhwSWZDRUMxRU84N1V4VEFZbHRLMmlNNmY1b2tEYllCLURDelJUb3luWkdGZG9uMXpoVGh5RWRpb1d5WGF1cEpxNGgxYU9teFUzWFdnODQzWnV3S0FDSnQ3UkFlTFBLaHIwWkQ4aGF2UXdxcnRRclc0N0t1VXJ3dHQxR0N2a0NF?oc=5",
+                "source_type": "Reliable biotech industry source",
+                "primary": false
+              }
+            ],
+            "archived": false
+          },
+          {
+            "id": "76ff191373099373d457",
+            "published_at": "2026-08-27T12:00+00:00",
+            "company": "Roche",
+            "ticker": "RHHBY",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "Regulatory / FDA",
+            "development_stage": "Regulatory decision / Commercial",
+            "new_information": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug.",
+            "previous_state": "Missing / not established",
+            "new_state": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug.",
+            "direction": "Positive / Advancing",
+            "news_importance_score": 81,
+            "affected_radar_factors": [
+              "Regulatory Status"
+            ],
+            "subsectors": [
+              "Oncology"
+            ],
+            "status": "CONFIRMING",
+            "source_link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOM3pCV3htUk9FeUROWDBFMnRiN1M3M2lieHRrTEZ4akUzaVRvamRWRGhIWFk1REc2WFBwbTI5QnViQS1ETFF5RWdnbGxwSjhDWnRxYnRRTExVNGRia19hZmZra0VzeDk1THpJaHJ1b0c1eTJDaGFCSl9NMHJqeWcteGRvUlRENUxJbFZFNjFTa3hJalR2Q0JrN0Q5MkVzUW1OZzBFbTZNdU9TZw?oc=5",
+            "evidence_sources": [
+              {
+                "title": "Roche nabs expanded FDA approval for diagnostic tied to Jazz\u2019s cancer drug",
+                "source": "Fierce Biotech",
+                "date": "2026-08-27T12:00+00:00",
+                "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOM3pCV3htUk9FeUROWDBFMnRiN1M3M2lieHRrTEZ4akUzaVRvamRWRGhIWFk1REc2WFBwbTI5QnViQS1ETFF5RWdnbGxwSjhDWnRxYnRRTExVNGRia19hZmZra0VzeDk1THpJaHJ1b0c1eTJDaGFCSl9NMHJqeWcteGRvUlRENUxJbFZFNjFTa3hJalR2Q0JrN0Q5MkVzUW1OZzBFbTZNdU9TZw?oc=5",
+                "source_type": "Reliable biotech industry source",
+                "primary": false
+              }
+            ],
+            "archived": false
+          },
+          {
+            "id": "bd0341ac4f69c1bd3460",
+            "published_at": "2026-08-26T16:48+00:00",
+            "company": "Missing / not established",
+            "ticker": "Missing",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "M&A / Licensing / Partnership",
+            "development_stage": "Corporate transaction",
+            "new_information": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing.",
+            "previous_state": "Missing / not established",
+            "new_state": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing.",
+            "direction": "Neutral / not established",
+            "news_importance_score": 69,
+            "affected_radar_factors": [
+              "Biotech Sector Context"
+            ],
+            "subsectors": [
+              "Biotech Sector"
+            ],
+            "status": "CONFIRMING",
+            "source_link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQNHZYYVJDSHNiMDdKZ1dnNllQQ05WSFhZVnJFYklUNExfVU8ydVd3dEhrRTNJMjBFTTFwV3ZTN1VnSGpvLUhrYm9GVUc4NG0tS09PckpPLTlpU3dvLUlza0hsMUlXN0Y3ckZNZE5CUGlKV1c2ZDF5LTJJMi1mUV9NbzlhTmVlcnotLUlkUl9YaTg5UDdUNlVZUTR4RV9DcmF1d3NWcFY0OGFaeFlEUnNsZXM1Zk9Mejc4N1V6aVktWVpnUDFNWUFKb3VoMA?oc=5",
+            "evidence_sources": [
+              {
+                "title": "China's Jiangsu says it will support pharmaceutical firms' global M&A, licensing",
+                "source": "Reuters",
+                "date": "2026-08-26T16:48+00:00",
+                "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQNHZYYVJDSHNiMDdKZ1dnNllQQ05WSFhZVnJFYklUNExfVU8ydVd3dEhrRTNJMjBFTTFwV3ZTN1VnSGpvLUhrYm9GVUc4NG0tS09PckpPLTlpU3dvLUlza0hsMUlXN0Y3ckZNZE5CUGlKV1c2ZDF5LTJJMi1mUV9NbzlhTmVlcnotLUlkUl9YaTg5UDdUNlVZUTR4RV9DcmF1d3NWcFY0OGFaeFlEUnNsZXM1Zk9Mejc4N1V6aVktWVpnUDFNWUFKb3VoMA?oc=5",
+                "source_type": "Reliable financial news source",
+                "primary": false
+              }
+            ],
+            "archived": true
+          },
+          {
+            "id": "4f72ac3237ad72fabd19",
+            "published_at": "2026-08-26T13:45+00:00",
+            "company": "Missing / not established",
+            "ticker": "Missing",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "Capital Markets / Financing",
+            "development_stage": "Regulatory decision / Commercial",
+            "new_information": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO.",
+            "previous_state": "Missing / not established",
+            "new_state": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO.",
+            "direction": "Positive / Advancing",
+            "news_importance_score": 74,
+            "affected_radar_factors": [
+              "Capital / Financing",
+              "Commercialization"
+            ],
+            "subsectors": [
+              "Biotech Sector"
+            ],
+            "status": "CONFIRMING",
+            "source_link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNdFZrRHFYYnN0MUxPZnI1bEFPSXdKQ1RwTFZfQm1GY2EyQXptM2ljUkplRVFZN3ZhWHQzbm4zMVdfYVMyS2dFVlBIVnZ2Q3hmN2p0aDh1eFI5d1hWX3BPbjF4YU9ZVjc3bXNrSC1lX2pwbUFvdGJSSk5vV3pmSzFhX2JYU2dnbmhoUGk1LXZWWFFTVUxmZDFQWW1sVFdMZk0?oc=5",
+            "evidence_sources": [
+              {
+                "title": "JATT mastermind launches latest biotech-focused SPAC in $60M IPO",
+                "source": "Fierce Biotech",
+                "date": "2026-08-26T13:45+00:00",
+                "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNdFZrRHFYYnN0MUxPZnI1bEFPSXdKQ1RwTFZfQm1GY2EyQXptM2ljUkplRVFZN3ZhWHQzbm4zMVdfYVMyS2dFVlBIVnZ2Q3hmN2p0aDh1eFI5d1hWX3BPbjF4YU9ZVjc3bXNrSC1lX2pwbUFvdGJSSk5vV3pmSzFhX2JYU2dnbmhoUGk1LXZWWFFTVUxmZDFQWW1sVFdMZk0?oc=5",
+                "source_type": "Reliable biotech industry source",
+                "primary": false
+              }
+            ],
+            "archived": true
+          },
+          {
+            "id": "3bdd5e00727a729f9fd2",
+            "published_at": "2026-08-25T13:24+00:00",
+            "company": "Missing / not established",
+            "ticker": "Missing",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "M&A / Licensing / Partnership",
+            "development_stage": "Corporate transaction",
+            "new_information": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal.",
+            "previous_state": "Missing / not established",
+            "new_state": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal.",
+            "direction": "Neutral / not established",
+            "news_importance_score": 69,
+            "affected_radar_factors": [
+              "Corporate Strategy"
+            ],
+            "subsectors": [
+              "Biotech Sector"
+            ],
+            "status": "NEW",
+            "source_link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOMkFuZTJFZldUX3pTaEczZDZmdmwzcVQtcUlUSHpha2tRMDdlTGt2TFc5MDg1LUVjU2p3dVdhRTFHeHNsMGwtZjZqbVNFeW5OeDJEZnc2Mjd2dnQ2OGV4VklYbi1uZkRXb2hyYlM5Uzlibm5ZYXVGT0J3d2hOdFlCd0dqaFhOb1IzdzcwM0VfZks3MjlpenlqY1RUaVgxTk1nODhfNkxWcEduU2VnSmc?oc=5",
+            "evidence_sources": [
+              {
+                "title": "Founded by Metsera backers, Sentivera emerges with $1.5B inflammatory disease deal",
+                "source": "Fierce Biotech",
+                "date": "2026-08-25T13:24+00:00",
+                "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOMkFuZTJFZldUX3pTaEczZDZmdmwzcVQtcUlUSHpha2tRMDdlTGt2TFc5MDg1LUVjU2p3dVdhRTFHeHNsMGwtZjZqbVNFeW5OeDJEZnc2Mjd2dnQ2OGV4VklYbi1uZkRXb2hyYlM5Uzlibm5ZYXVGT0J3d2hOdFlCd0dqaFhOb1IzdzcwM0VfZks3MjlpenlqY1RUaVgxTk1nODhfNkxWcEduU2VnSmc?oc=5",
+                "source_type": "Reliable biotech industry source",
+                "primary": false
+              }
+            ],
+            "archived": true
+          },
+          {
+            "id": "b20b5016afe284675cc2",
+            "published_at": "2026-08-24T21:26+00:00",
+            "company": "Missing / not established",
+            "ticker": "Missing",
+            "drug_program": "Missing / not established",
+            "indication": "Missing / not established",
+            "event_type": "Commercial Event",
+            "development_stage": "Missing / not established",
+            "new_information": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees.",
+            "previous_state": "Missing / not established",
+            "new_state": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees.",
+            "direction": "Neutral / not established",
+            "news_importance_score": 65,
+            "affected_radar_factors": [
+              "Commercialization",
+              "Platform Validation"
+            ],
+            "subsectors": [
+              "Genetic Medicines"
+            ],
+            "status": "CONFIRMING",
+            "source_link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQRnhmam05azZaN2UzVEtKTUthM3VXeEU3dnZtaVJIVzQ3ekhfNTVfaGhsTHBPQWRQQUh3VmpCV2F0NWhRRzZ4aDIyVFhMSkF5ZWdHMlNGNERXU2ZsMlA1MGJhQ1Z1ekhVN3YzS3k1dmxpRzVCMWR3Z2lUdWxoWC1JZlIxaEhZMFdrNFIyVHNwNA?oc=5",
+            "evidence_sources": [
+              {
+                "title": "Cellares, a cell therapy manufacturing specialist, to lay off 100 employees",
+                "source": "BioPharma Dive",
+                "date": "2026-08-24T21:26+00:00",
+                "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQRnhmam05azZaN2UzVEtKTUthM3VXeEU3dnZtaVJIVzQ3ekhfNTVfaGhsTHBPQWRQQUh3VmpCV2F0NWhRRzZ4aDIyVFhMSkF5ZWdHMlNGNERXU2ZsMlA1MGJhQ1Z1ekhVN3YzS3k1dmxpRzVCMWR3Z2lUdWxoWC1JZlIxaEhZMFdrNFIyVHNwNA?oc=5",
+                "source_type": "Reliable biotech industry source",
+                "primary": false
+              }
+            ],
+            "archived": true
+          }
+        ]
+      },
+      "selection_status": "Selected 4 prominent events; 4 new events added to Evidence History.",
+      "methodology": {
+        "engine_version": "biotech-news-v1",
+        "prominent_threshold": 80,
+        "archive_threshold": 65,
+        "importance_weights": {
+          "event_significance": 30,
+          "company_sector_impact": 25,
+          "novelty": 20,
+          "evidence_authority": 15,
+          "immediacy": 10
+        },
+        "source_policy": "Official company and regulator feeds are preferred; configured reliable financial, scientific and biotech-industry sources may corroborate or supply events.",
+        "archive_policy": "Events scoring 65-79 and previously prominent events remain in Important News Archive / Evidence History.",
+        "scoring_boundary": "News scores event importance only. Scientific Evidence, Catalyst Impact, Expectation Gap, Sector Trend and Opportunity Score are not calculated here.",
+        "selection_policy": "No quota is filled; only events meeting the configured thresholds are retained."
+      }
     }
   },
   "summaries": {
-    "ai": "No new AI headlines were found in today's public feeds. Monitoring continues.",
-    "biotech": "No new biotech headlines were found in today's public feeds. Monitoring continues.",
-    "market": "No new market headlines were found in today's public feeds. Monitoring continues.",
-    "market_movers": "Dow Jones led tracked indexes at +0.14% today; Russell 2000 was weakest at -0.57%. No new market headlines were found in today's public feeds. Monitoring continues."
+    "ai": "Key developments: NVIDIA Announces Upcoming Event for Financial Community; AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI; NVIDIA Announces Financial Results for Second Quarter Fiscal 2027.",
+    "biotech": "Key developments: BioNTech-Genentech cancer vax records more deaths than control in scrapped ph. 2 test; Akeso CEO looks beyond lung cancer with biliary tract win, counters ivonescimab debate; Layoff Tracker: Cellares cuts jobs after losing pharma customer.",
+    "market": "Key developments: US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower; Dow Logs Worst Day Since March, S&P 500 And Nasdaq Snap Win Streak After US-Iran Exchange Fire \u2014 SNDK, TSLA, GOOGL, META, IREN In Focus; Nasdaq, S&P 500 lifted by Nvidia's forecast; investors eye speech by Fed's Warsh.",
+    "market_movers": "Dow Jones led tracked indexes at -0.02% today; Russell 2000 was weakest at -1.39%. Key developments: US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower; Dow Logs Worst Day Since March, S&P 500 And Nasdaq Snap Win Streak After US-Iran Exchange Fire \u2014 SNDK, TSLA, GOOGL, META, IREN In Focus; Nasdaq, S&P 500 lifted by Nvidia's forecast; investors eye speech by Fed's Warsh."
   },
   "takeaways": [
     "NVIDIA Announces Upcoming Event for Financial Community",
     "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
-    "HiRO and Differentia Biotech Forge Strategic Alliance to Redefine Clinical Trial Design Through AI-Powered Simulation - PR Newswire",
-    "FDA approves Roivant therapy for rare autoimmune disease - STAT",
+    "BioNTech-Genentech cancer vax records more deaths than control in scrapped ph. 2 test - Fierce Biotech",
+    "Akeso CEO looks beyond lung cancer with biliary tract win, counters ivonescimab debate - Fierce Pharma",
     "Anavex Life Sciences Reports Third Fiscal Quarter 2026 Financial Results and Business Update - Anavex Life Sciences",
     "Gildeuretinol gains Japan orphan designation for Stargardt disease - Ophthalmology Times",
     "US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower - NDTV Profit"
@@ -2629,31 +3453,31 @@
   "markets": [
     {
       "name": "S&P 500",
-      "value": "7,734.71",
-      "daily": 0.05,
-      "weekly": 0.79,
-      "monthly": 3.99
+      "value": "7,711.76",
+      "daily": -0.25,
+      "weekly": 0.49,
+      "monthly": 3.69
     },
     {
       "name": "Nasdaq",
-      "value": "26,524.09",
-      "daily": -0.07,
-      "weekly": 1.31,
-      "monthly": 5.58
+      "value": "26,402.42",
+      "daily": -0.52,
+      "weekly": 0.85,
+      "monthly": 5.1
     },
     {
       "name": "Dow Jones",
-      "value": "53,642.52",
-      "daily": 0.14,
-      "weekly": 0.69,
-      "monthly": 2.75
+      "value": "53,559.99",
+      "daily": -0.02,
+      "weekly": 0.53,
+      "monthly": 2.59
     },
     {
       "name": "Russell 2000",
-      "value": "2,997.23",
-      "daily": -0.57,
-      "weekly": -0.68,
-      "monthly": 1.74
+      "value": "2,972.37",
+      "daily": -1.39,
+      "weekly": -1.51,
+      "monthly": 0.89
     }
   ]
 }
