@@ -260,9 +260,19 @@ function renderBiotechRadar(rows) {
 }
 
 function renderOpportunities(targetId, rows = []) {
-  document.getElementById(targetId).innerHTML = rows.map((row) => `<article class="opportunity-card"><div class="opportunity-rank">${escapeHtml(row.rank)}</div>
-    <div><div class="opportunity-top"><h4>${escapeHtml(companyTickerLabel(row))}</h4><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></div>
-    <p>${escapeHtml(row.thesis)}</p><dl><div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst)}</dd></div><div><dt>Long-term</dt><dd>${escapeHtml(row.opportunity)}</dd></div><div><dt>Market timing support</dt><dd><strong>${escapeHtml(row.timing_support?.signal || "Insufficient Data")}</strong> · ${escapeHtml(row.timing_support?.rationale || "Market inputs missing.")}</dd></div><div><dt>Market snapshot</dt><dd>${escapeHtml(marketSnapshotText(row.market_data, row.market_data?.domains?.includes("ai") ? "qqq" : "xbi"))}</dd></div></dl></div></article>`).join("") || `<p class="loading-state">No opportunities are available.</p>`;
+  document.getElementById(targetId).innerHTML = rows.map((row) => {
+    const factors = (row.factor_scores || []).map((factor) => `<li class="${factor.missing ? "factor-missing" : ""}"><span>${escapeHtml(factor.label)}</span><strong>${factor.score === null || factor.score === undefined ? "Missing" : `${escapeHtml(factor.score)}/100`}</strong><small>${escapeHtml(factor.available_weight ?? (factor.missing ? 0 : factor.weight))}/${escapeHtml(factor.weight)} weight available</small></li>`).join("");
+    const gates = (row.gates || []).map((gate) => `<li class="gate-${gate.passed === true ? "pass" : gate.passed === false ? "fail" : "missing"}" title="${escapeHtml(gate.rationale)}"><span aria-hidden="true">${gate.passed === true ? "✓" : gate.passed === false ? "×" : "—"}</span>${escapeHtml(gate.label)}</li>`).join("");
+    const technical = row.technical_entry_status || row.timing_support || {};
+    const score = row.final_score === null || row.final_score === undefined ? "Missing" : `${row.final_score}/100`;
+    return `<article class="opportunity-card opportunity-${escapeHtml(row.classification_key || "unclassified")}"><div class="opportunity-rank">${escapeHtml(row.rank)}</div>
+      <div><div class="opportunity-top"><h4>${escapeHtml(companyTickerLabel(row))}</h4><span class="opportunity-classification">${escapeHtml(row.classification || "Classification missing")}</span></div>
+      <div class="opportunity-score-line"><strong>${escapeHtml(score)}</strong><span>${escapeHtml(row.data_completeness ?? "Missing")}% data completeness</span></div>
+      <p class="opportunity-why"><strong>Why selected:</strong> ${escapeHtml(row.why_selected || row.thesis || "Missing")}</p>
+      <ul class="opportunity-factors">${factors || "<li class=\"factor-missing\"><span>Factor scores</span><strong>Missing</strong></li>"}</ul>
+      <dl><div><dt>Expectation state</dt><dd>${escapeHtml(row.expectation_state || row.expectation?.state || "Data Insufficient")}</dd></div><div><dt>Technical / entry status</dt><dd><strong>${escapeHtml(technical.signal || "Insufficient Data")}</strong> · ${escapeHtml(technical.rationale || "Market inputs missing.")}</dd></div><div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst || "Missing")}${row.catalyst_timing ? ` · ${escapeHtml(row.catalyst_timing)}` : ""}</dd></div><div><dt>Action</dt><dd>${escapeHtml(row.action || "Missing")}</dd></div><div class="opportunity-wide"><dt>Thesis invalidation</dt><dd>${escapeHtml(row.thesis_invalidation || "Missing")}</dd></div></dl>
+      <ul class="opportunity-gates" aria-label="High-conviction gates">${gates}</ul></div></article>`;
+  }).join("") || `<p class="loading-state">No opportunities are available.</p>`;
 }
 
 function renderWatchlist(data) {
