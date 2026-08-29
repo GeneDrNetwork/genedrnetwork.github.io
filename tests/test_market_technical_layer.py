@@ -7,6 +7,7 @@ from scripts.update_news_dashboard import (
     build_ai_radar,
     build_market_data_layer,
     calculate_market_technicals,
+    expectation_assessment,
     market_timing_signal,
     score_biotech_catalyst,
 )
@@ -59,7 +60,7 @@ class MarketTechnicalLayerTests(unittest.TestCase):
     def test_shared_layer_has_benchmarks_relative_strength_and_missing_cap(self):
         layer = market_layer()
         nvda = layer["securities"]["NVDA"]
-        self.assertEqual(layer["schema_version"], "shared-market-technical-v1")
+        self.assertEqual(layer["schema_version"], "shared-market-expectation-v1")
         self.assertEqual(nvda["market_cap"], 4_000_000_000_000)
         self.assertIsNotNone(nvda["relative_strength"]["sp500"]["three_month"])
         self.assertIsNotNone(nvda["relative_strength"]["qqq"]["three_month"])

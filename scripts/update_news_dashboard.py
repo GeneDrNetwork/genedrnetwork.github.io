@@ -10,6 +10,7 @@ import io
 import json
 import re
 import ssl
+import subprocess
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -617,12 +618,22 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
     expectation_points, expectation_rationale = item["components"]["expectation_gap"]
     expectation_missing = expectation_points == 0 and expectation_rationale.lower().startswith("missing")
     expectation_score = None if expectation_missing else round(expectation_points / 15 * 20)
+    security_market_record = market_snapshot(market_data, item.get("ticker"))
+    expectation = expectation_assessment(security_market_record, "biotech", 20)
+    if expectation["score"] is not None:
+        expectation_score = expectation["score"]
+        expectation_rationale = expectation["rationale"]
+        expectation_missing = False
     positioning_points, positioning_rationale = item["components"]["positioning"]
-    positioning_missing = positioning_points == 0 and positioning_rationale.lower().startswith("missing")
-    security_market = market_snapshot(market_data, item.get("ticker"))
+    short_record = (security_market_record or {}).get("expectation_data", {}).get("short_interest", {})
+    positioning_missing = short_record.get("days_to_cover") is None
+    if not positioning_missing:
+        positioning_rationale = (f"Nasdaq short interest settled {short_record.get('settlement_date') or 'date missing'}: "
+                                 f"{short_record['days_to_cover']:.2f} days to cover; change from prior period "
+                                 f"{short_record.get('change_from_prior_pct') if short_record.get('change_from_prior_pct') is not None else 'missing'}%.")
     sector_market = (market_data or {}).get("benchmarks", {}).get("xbi")
     sector_trend_score, sector_available, sector_rationale = market_component_score(sector_market, "sp500", 10)
-    stock_technical_score, stock_technical_available, stock_technical_rationale = market_component_score(security_market, "xbi", 5)
+    stock_technical_score, stock_technical_available, stock_technical_rationale = market_component_score(security_market_record, "xbi", 5)
     timing_available = 0 if timing_missing else 5
     technical_available = stock_technical_available
     timing_technicals_score = None if timing_available + technical_available == 0 else (
@@ -636,7 +647,10 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
                               f"{importance_rationale} {commercial_rationale} Verified program-level valuation sensitivity and portfolio dependence are missing.", item["sources"],
                               ["Company valuation sensitivity", "Portfolio dependence"]),
         biotech_radar_factor("expectation_gap", "Expectation Gap", 20, expectation_score, 0 if expectation_missing else 20,
-                              expectation_rationale, item["sources"], ["Verified market expectations"] if expectation_missing else []),
+                              expectation_rationale,
+                              item["sources"] + [{"title": source["name"], "date": source.get("data_date") or source.get("retrieved_at", "")[:10], "url": source["url"]}
+                                                 for source in expectation.get("sources", [])],
+                              ["Verified valuation, analyst, run-up, and positioning inputs"] if expectation_missing else []),
         biotech_radar_factor("sector_trend_capital_flow", "Sector Trend & Capital Flow", 15, sector_trend_score, sector_available,
                               f"{sector_rationale} Advanced capital-flow data is outside this MVP.", item["sources"],
                               (["XBI market trend"] if not sector_available else []) + ["Advanced capital flow"]),
@@ -686,10 +700,14 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
         "scientific_evidence_score": scientific_score,
         "catalyst_impact_score": catalyst_impact,
         "expectation_gap_score": expectation_score,
+        "expectation_state": expectation["state"] if expectation["score"] is not None else ("Data Insufficient" if expectation_missing else "Fairly Priced"),
+        "expectation": expectation,
         "sector_trend_score": sector_trend_score,
         "timing_technicals_score": timing_technicals_score,
-        "market_data": security_market,
+        "market_data": compact_market_snapshot(security_market_record),
         "sector_market_data": sector_market,
+        "market_expectation": expectation_rationale,
+        "positioning": positioning_rationale,
         "upcoming_catalyst": f"{item['catalyst']} — {item['expected_timing']}",
         "opportunity_status": status,
         "binary_risk": binary_risk,
@@ -765,10 +783,10 @@ def radar_methodology():
         "evidence_gate": "Scientific Evidence below 18/30 cannot be High Conviction. High Conviction additionally requires Scientific Evidence of at least 24/30, 75% completeness, and High confidence.",
         "integrity_gate": "Explicit credibility or data-integrity concerns cap evidence confidence at Low.",
         "news_boundary": "Biotech News is retained as dated confirming, mixed, or contradicting evidence. News importance never sets a Radar factor or Opportunity Score.",
-        "market_data_policy": "XBI price trend supplies up to 10 of 15 Sector Trend points; security price/volume technicals supply up to 5 of 10 Timing & Technicals points. Advanced capital flow, short interest, options, and expectations remain excluded.",
+        "market_data_policy": "XBI price trend supplies up to 10 of 15 Sector Trend points; security price/volume technicals supply up to 5 of 10 Timing & Technicals points. Phase 5B supplies Expectation Gap from current valuation, run-up, analyst-revision and short-interest inputs. Options IV and advanced capital-flow data remain excluded.",
         "binary_risk": "Low / Moderate / High / Extreme uses available evidence uncertainty and catalyst magnitude; missing company valuation sensitivity or portfolio dependence prevents a Low classification.",
         "status_policy": ["High Conviction", "Evidence-Supported / High Impact", "Monitoring", "Speculative Binary", "High Downside Risk", "Thesis Broken"],
-        "scope_note": "V1 scores the existing curated Company → Drug/Program → Indication → Catalyst set. It does not fabricate consensus, valuation, technical, short-interest, capital-flow, trial, or portfolio-dependence inputs.",
+        "scope_note": "V1 scores the existing curated Company → Drug/Program → Indication → Catalyst set. Unavailable valuation, analyst, short-interest, trial, portfolio-dependence, options-IV and advanced capital-flow inputs remain missing.",
     }
 
 
@@ -1098,6 +1116,195 @@ def fetch_market_caps(tickers):
         return {}
 
 
+NASDAQ_API_ROOT = "https://api.nasdaq.com/api"
+
+
+def parse_market_number(value):
+    if isinstance(value, (int, float)):
+        return float(value)
+    cleaned = str(value or "").strip().replace("$", "").replace(",", "").replace("%", "")
+    if not cleaned or cleaned.upper() in ("N/A", "NA", "NONE", "NULL", "--"):
+        return None
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
+def fetch_nasdaq_json(url, timeout=12):
+    completed = subprocess.run([
+        "curl", "--location", "--fail", "--silent", "--show-error",
+        "--connect-timeout", "5", "--max-time", str(timeout),
+        "--header", "User-Agent: Mozilla/5.0", "--header", "Accept: application/json", url,
+    ], check=True, capture_output=True, timeout=timeout + 3)
+    payload = json.loads(completed.stdout)
+    return payload.get("data") if payload.get("status", {}).get("rCode") == 200 else None
+
+
+def fetch_nasdaq_expectations(ticker, run_at):
+    paths = {
+        "summary": f"/quote/{ticker}/summary?assetclass=stocks",
+        "ratings": f"/analyst/{ticker}/ratings",
+        "forecast": f"/analyst/{ticker}/earnings-forecast",
+        "short_interest": f"/quote/{ticker}/short-interest?assetclass=stocks",
+    }
+    result = {"ticker": ticker, "retrieved_at": run_at.isoformat(timespec="seconds"), "payloads": {}, "errors": {}}
+    for key, path in paths.items():
+        try:
+            payload = fetch_nasdaq_json(NASDAQ_API_ROOT + path)
+            if payload:
+                result["payloads"][key] = payload
+            else:
+                result["errors"][key] = "No data returned"
+        except Exception as exc:
+            result["errors"][key] = str(exc)
+    return result
+
+
+def fetch_expectation_inputs(tickers, run_at):
+    records = {}
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(fetch_nasdaq_expectations, ticker, run_at): ticker for ticker in sorted(tickers)}
+        for future in as_completed(futures):
+            ticker = futures[future]
+            try:
+                records[ticker] = future.result()
+            except Exception as exc:
+                print(f"Expectation data unavailable for {ticker}: {exc}")
+    return records
+
+
+def build_expectation_record(ticker, raw, market_record, run_at):
+    raw = raw or {}; payloads = raw.get("payloads", {})
+    summary = payloads.get("summary", {}).get("summaryData", {})
+    summary_value = lambda key: summary.get(key, {}).get("value")
+    forecast = payloads.get("forecast", {})
+    quarterly_rows = forecast.get("quarterlyForecast", {}).get("rows") or []
+    yearly_rows = forecast.get("yearlyForecast", {}).get("rows") or []
+    next_quarter = quarterly_rows[0] if quarterly_rows else {}
+    next_year = yearly_rows[0] if yearly_rows else {}
+    ratings = payloads.get("ratings", {})
+    rating_count_match = re.search(r"(\d+)\s+analysts?", ratings.get("ratingsSummary") or "", re.IGNORECASE)
+    short_rows = payloads.get("short_interest", {}).get("shortInterestTable", {}).get("rows") or []
+    latest_short = short_rows[0] if short_rows else {}; prior_short = short_rows[1] if len(short_rows) > 1 else {}
+    current_price = (market_record or {}).get("current_price")
+    target = parse_market_number(summary_value("OneYrTarget"))
+    market_cap = parse_market_number(summary_value("MarketCap"))
+    next_year_eps = parse_market_number(next_year.get("consensusEPSForecast"))
+    target_upside = round((target / current_price - 1) * 100, 2) if target and current_price else None
+    forward_pe = round(current_price / next_year_eps, 2) if current_price and next_year_eps and next_year_eps > 0 else None
+    revisions_up = parse_market_number(next_quarter.get("up")); revisions_down = parse_market_number(next_quarter.get("down"))
+    net_revisions = int(revisions_up - revisions_down) if revisions_up is not None and revisions_down is not None else None
+    latest_short_shares = parse_market_number(latest_short.get("interest")); prior_short_shares = parse_market_number(prior_short.get("interest"))
+    short_change = round((latest_short_shares / prior_short_shares - 1) * 100, 2) if latest_short_shares and prior_short_shares else None
+    returns = (market_record or {}).get("returns", {})
+    sources = []
+    source_specs = {
+        "summary": ("Nasdaq company summary", f"https://www.nasdaq.com/market-activity/stocks/{ticker.lower()}", (market_record or {}).get("price_date")),
+        "ratings": ("Nasdaq analyst ratings", f"https://www.nasdaq.com/market-activity/stocks/{ticker.lower()}/analyst-research", None),
+        "forecast": ("Nasdaq earnings forecast", f"https://www.nasdaq.com/market-activity/stocks/{ticker.lower()}/earnings", next_quarter.get("fiscalEnd")),
+        "short_interest": ("Nasdaq short interest", f"https://www.nasdaq.com/market-activity/stocks/{ticker.lower()}/short-interest", latest_short.get("settlementDate")),
+    }
+    for key, (name, url, data_date) in source_specs.items():
+        if key in payloads:
+            sources.append({"name": name, "url": url, "retrieved_at": raw.get("retrieved_at") or run_at.isoformat(timespec="seconds"), "data_date": data_date})
+    groups = []
+    if any(value is not None for value in (market_cap, target, target_upside, forward_pe)):
+        groups.append("valuation")
+    if any(returns.get(key) is not None for key in ("one_month", "three_month", "six_month")):
+        groups.append("price_run_up")
+    if any(value is not None for value in (ratings.get("meanRatingType"), net_revisions, next_year_eps)):
+        groups.append("analyst_consensus")
+    if any(value is not None for value in (latest_short_shares, parse_market_number(latest_short.get("daysToCover")), short_change)):
+        groups.append("positioning")
+    record = {
+        "ticker": ticker, "data_status": "current" if groups else "missing",
+        "as_of": run_at.isoformat(timespec="seconds"), "available_input_groups": groups,
+        "valuation": {"market_cap": market_cap, "one_year_target": target, "target_upside_pct": target_upside,
+                      "forward_pe": forward_pe, "consensus_eps_next_fy": next_year_eps,
+                      "consensus_eps_fiscal_end": next_year.get("fiscalEnd")},
+        "price_run_up": {"one_month_pct": returns.get("one_month"), "three_month_pct": returns.get("three_month"),
+                         "six_month_pct": returns.get("six_month"), "price_date": (market_record or {}).get("price_date"),
+                         "method": "Recent close-to-close return proxy; event-specific anchor is used only when a verified catalyst date is available."},
+        "analyst_consensus": {"mean_rating": ratings.get("meanRatingType"),
+                              "analyst_count": int(rating_count_match.group(1)) if rating_count_match else None,
+                              "next_quarter_fiscal_end": next_quarter.get("fiscalEnd"),
+                              "next_quarter_consensus_eps": parse_market_number(next_quarter.get("consensusEPSForecast")),
+                              "estimate_count": int(next_quarter["noOfEstimates"]) if isinstance(next_quarter.get("noOfEstimates"), (int, float)) else None,
+                              "revisions_up_4w": int(revisions_up) if revisions_up is not None else None,
+                              "revisions_down_4w": int(revisions_down) if revisions_down is not None else None,
+                              "net_revisions_4w": net_revisions},
+        "short_interest": {"settlement_date": latest_short.get("settlementDate"), "shares_short": latest_short_shares,
+                           "average_daily_volume": parse_market_number(latest_short.get("avgDailyShareVolume")),
+                           "days_to_cover": parse_market_number(latest_short.get("daysToCover")),
+                           "change_from_prior_pct": short_change,
+                           "prior_settlement_date": prior_short.get("settlementDate")},
+        "sources": sources, "source_errors": raw.get("errors", {}),
+    }
+    record["missing_fields"] = [path for path, value in (
+        ("valuation.forward_pe", forward_pe), ("valuation.target_upside_pct", target_upside),
+        ("analyst_consensus.net_revisions_4w", net_revisions),
+        ("short_interest.days_to_cover", record["short_interest"]["days_to_cover"]),
+    ) if value is None]
+    return record
+
+
+def expectation_assessment(snapshot, domain, maximum):
+    record = (snapshot or {}).get("expectation_data") if snapshot else None
+    if not record or record.get("data_status") != "current":
+        return {"state": "Data Insufficient", "score": None, "maximum": maximum, "coverage": 0,
+                "signals": [], "rationale": "No current expectation/valuation record is connected."}
+    groups = record.get("available_input_groups", [])
+    if len(groups) < 2:
+        return {"state": "Data Insufficient", "score": None, "maximum": maximum, "coverage": len(groups),
+                "signals": [], "rationale": "Fewer than two independent expectation input groups are available."}
+    valuation = record.get("valuation", {}); run_up = record.get("price_run_up", {})
+    analysts = record.get("analyst_consensus", {}); short = record.get("short_interest", {})
+    underpriced = 0; crowded = 0; signals = []
+    target_upside = valuation.get("target_upside_pct")
+    if target_upside is not None:
+        if target_upside >= 20:
+            underpriced += 2; signals.append(f"analyst target implies {target_upside:.1f}% upside")
+        elif target_upside >= 10:
+            underpriced += 1; signals.append(f"analyst target implies {target_upside:.1f}% upside")
+        elif target_upside <= 0:
+            crowded += 2; signals.append(f"analyst target implies {target_upside:.1f}% upside")
+    forward_pe = valuation.get("forward_pe")
+    if forward_pe is not None:
+        high_threshold = 50 if domain == "ai" else 40
+        if forward_pe >= high_threshold:
+            crowded += 1; signals.append(f"forward P/E is {forward_pe:.1f}x")
+        elif forward_pe <= 25:
+            underpriced += 1; signals.append(f"forward P/E is {forward_pe:.1f}x")
+    three_month = run_up.get("three_month_pct")
+    if three_month is not None:
+        if three_month >= 30:
+            crowded += 2; signals.append(f"three-month run-up is {three_month:.1f}%")
+        elif three_month >= 15:
+            crowded += 1; signals.append(f"three-month run-up is {three_month:.1f}%")
+        elif three_month <= -20:
+            underpriced += 2; signals.append(f"three-month return is {three_month:.1f}%")
+        elif three_month <= -10:
+            underpriced += 1; signals.append(f"three-month return is {three_month:.1f}%")
+    net_revisions = analysts.get("net_revisions_4w")
+    if net_revisions is not None:
+        if net_revisions >= 2 and (target_upside is None or target_upside >= 0):
+            underpriced += 1; signals.append(f"four-week net EPS revisions are +{net_revisions}")
+        elif net_revisions <= -2 and three_month is not None and three_month > 0:
+            crowded += 1; signals.append(f"four-week net EPS revisions are {net_revisions} despite a positive price return")
+    days_to_cover = short.get("days_to_cover"); short_change = short.get("change_from_prior_pct")
+    if days_to_cover is not None and days_to_cover >= 5 and short_change is not None and short_change >= 10 and target_upside is not None and target_upside > 0:
+        underpriced += 1; signals.append(f"short positioning rose {short_change:.1f}% with {days_to_cover:.1f} days to cover")
+    difference = underpriced - crowded
+    state = "Underpriced" if difference >= 2 else "Crowded / Priced In" if difference <= -2 else "Fairly Priced"
+    score_ratio = 0.85 if state == "Underpriced" else 0.25 if state == "Crowded / Priced In" else 0.55
+    score = round(maximum * score_ratio)
+    rationale = (f"{state}: " + "; ".join(signals)) if signals else f"{state}: available inputs are balanced and provide no strong directional expectation signal."
+    return {"state": state, "score": score, "maximum": maximum, "coverage": len(groups),
+            "available_input_groups": groups, "signals": signals, "rationale": rationale,
+            "sources": record.get("sources", [])}
+
+
 def shared_market_ticker_domains(previous=None):
     domains = {}
 
@@ -1122,11 +1329,12 @@ def shared_market_ticker_domains(previous=None):
     return {ticker: sorted(values) for ticker, values in domains.items()}
 
 
-def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None):
+def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None, expectations_by_ticker=None):
     ticker_domains = shared_market_ticker_domains(previous)
     benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI"}
     dashboard_symbols = set(MARKETS) | set(benchmark_symbols.values())
     requested_symbols = sorted(set(ticker_domains) | dashboard_symbols)
+    supplied_series = series_by_symbol is not None
     if series_by_symbol is None:
         series_by_symbol = {}
         with ThreadPoolExecutor(max_workers=8) as executor:
@@ -1140,6 +1348,8 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
                     series_by_symbol[symbol] = {"symbol": symbol, "rows": [], "source": None, "currency": None}
     if market_caps is None:
         market_caps = fetch_market_caps(set(ticker_domains))
+    if expectations_by_ticker is None:
+        expectations_by_ticker = {} if supplied_series else fetch_expectation_inputs(set(ticker_domains), run_at)
     benchmarks = {
         name: calculate_market_technicals(symbol, series_by_symbol.get(symbol, {"rows": []}))
         for name, symbol in benchmark_symbols.items()
@@ -1158,6 +1368,11 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
         record = calculate_market_technicals(
             ticker, series_by_symbol.get(ticker, {"rows": []}), benchmarks, market_caps.get(ticker))
         if record:
+            expectation = build_expectation_record(ticker, expectations_by_ticker.get(ticker), record, run_at)
+            if record.get("market_cap") is None and expectation.get("valuation", {}).get("market_cap") is not None:
+                record["market_cap"] = expectation["valuation"]["market_cap"]
+                record["missing_fields"] = [field for field in record.get("missing_fields", []) if field != "market_cap"]
+            record["expectation_data"] = expectation
             securities[ticker] = {**record, "domains": domains}
         elif ticker in previous_securities:
             securities[ticker] = {**previous_securities[ticker], "domains": domains, "data_status": "stale"}
@@ -1169,24 +1384,37 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
         elif symbol in previous_layer.get("indexes", {}):
             indexes[symbol] = {**previous_layer["indexes"][symbol], "data_status": "stale"}
     return {
-        "schema_version": "shared-market-technical-v1", "updated_at": run_at.isoformat(timespec="seconds"),
+        "schema_version": "shared-market-expectation-v1", "updated_at": run_at.isoformat(timespec="seconds"),
         "sources": ["Yahoo Finance chart (primary price/volume history)", "Stooq daily data (fallback)",
-                    "Yahoo Finance quote endpoint (market cap when available)"],
+                    "Yahoo Finance quote endpoint (market cap when available)",
+                    "Nasdaq company summary, analyst ratings, earnings forecast, and short-interest endpoints"],
         "methodology": {
             "returns": "Close-to-close over 21, 63, and 126 sessions.",
             "relative_strength": "Stock return minus benchmark return in percentage points for the same horizon.",
             "rsi": "14-session RSI.", "macd": "12/26-session EMA MACD with 9-session signal.",
+            "expectation_state": "Requires at least two input groups. Underpriced, Fairly Priced, and Crowded / Priced In use transparent target-upside, forward-P/E, price-run-up, estimate-revision, and positioning signals; missing inputs remain null.",
+            "price_run_up": "Uses existing 1M/3M/6M close-to-close returns as a recent pre-event proxy unless a verified event-specific anchor is available.",
             "missing_data": "Unavailable fields remain null; prior successful security records may be retained with data_status=stale.",
         },
         "benchmarks": benchmarks, "indexes": indexes, "securities": securities,
         "coverage": {"requested": len(ticker_domains), "current": sum(record.get("data_status") == "current" for record in securities.values()),
                      "stale": sum(record.get("data_status") == "stale" for record in securities.values()),
-                     "missing": len(ticker_domains) - len(securities)},
+                     "missing": len(ticker_domains) - len(securities),
+                     "expectation_current": sum(record.get("expectation_data", {}).get("data_status") == "current" for record in securities.values()),
+                     "valuation": sum("valuation" in record.get("expectation_data", {}).get("available_input_groups", []) for record in securities.values()),
+                     "analyst_consensus": sum("analyst_consensus" in record.get("expectation_data", {}).get("available_input_groups", []) for record in securities.values()),
+                     "short_interest": sum("positioning" in record.get("expectation_data", {}).get("available_input_groups", []) for record in securities.values())},
     }
 
 
 def market_snapshot(market_data, ticker):
     return (market_data or {}).get("securities", {}).get(str(ticker or "").upper())
+
+
+def compact_market_snapshot(snapshot):
+    if not snapshot:
+        return snapshot
+    return {key: value for key, value in snapshot.items() if key != "expectation_data"}
 
 
 def market_timing_signal(snapshot, domain):
@@ -1246,12 +1474,34 @@ def market_component_score(snapshot, benchmark_name, maximum):
     return score, maximum, f"{sum(available)} of {len(available)} available market-confirmation checks are positive."
 
 
-def attach_market_context(rows, market_data, domain):
+def attach_market_context(rows, market_data, domain, rank_opportunities=False):
     enriched = []
     for row in rows:
         normalized = normalize_company_row(row)
         snapshot = market_snapshot(market_data, normalized.get("ticker"))
-        enriched.append({**normalized, "market_data": snapshot, "timing_support": market_timing_signal(snapshot, domain)})
+        timing = market_timing_signal(snapshot, domain)
+        expectation = expectation_assessment(snapshot, domain, 15 if domain == "ai" else 20)
+        if rank_opportunities:
+            timing = {**timing, "expectation_state": expectation["state"], "expectation_score": expectation["score"],
+                      "rationale": f"{timing['rationale']} Expectation state: {expectation['state']}."}
+        enriched.append({**normalized, "market_data": compact_market_snapshot(snapshot), "timing_support": timing,
+                         "expectation": expectation, "source_rank": normalized.get("rank")})
+    if rank_opportunities:
+        for row in enriched:
+            base_score = max(0, 100 - (max(1, int(row.get("source_rank") or 1)) - 1) * 5)
+            inputs = [("existing_research_rank", base_score, 70)]
+            timing_score = row["timing_support"].get("support_score")
+            expectation_score = row["expectation"].get("score")
+            if timing_score is not None:
+                inputs.append(("market_timing", timing_score, 15))
+            if expectation_score is not None:
+                inputs.append(("expectation_gap", round(expectation_score / row["expectation"]["maximum"] * 100), 15))
+            total_weight = sum(weight for _, _, weight in inputs)
+            row["final_ranking_score"] = round(sum(score * weight for _, score, weight in inputs) / total_weight)
+            row["ranking_inputs"] = [{"key": key, "score": score, "weight": weight} for key, score, weight in inputs]
+        enriched.sort(key=lambda item: (-item["final_ranking_score"], item.get("source_rank") or 999))
+        for rank, row in enumerate(enriched, 1):
+            row["rank"] = rank
     return enriched
 
 
@@ -2235,10 +2485,12 @@ def ai_beneficiaries(trend, relevant_events, market_data=None):
         ]
         available = [component for component in components if component["score"] is not None]
         relevance = round(sum(component["score"] for component in available) / sum(component["weight"] for component in available) * 100)
+        security_market = market_snapshot(market_data, item["ticker"])
         results.append({key: item[key] for key in ("company", "ticker", "exchange", "listing_status")} | {
             "category": category, "beneficiary_relevance": relevance, "score_components": components,
             "data_completeness": sum(component["weight"] for component in available), "evidence_ids": item["evidence_ids"],
-            "market_data": market_snapshot(market_data, item["ticker"]),
+            "market_data": compact_market_snapshot(security_market),
+            "expectation": expectation_assessment(security_market, "ai", 15),
         })
     return sorted(results, key=lambda item: (-item["beneficiary_relevance"], item["company"]))[:8]
 
@@ -2255,6 +2507,23 @@ def ai_radar_why_changed(previous, current):
     if previous.get("adoption_stage") != current.get("adoption_stage"):
         changes.append(f"Adoption Stage changed from {previous.get('adoption_stage') or 'Missing'} to {current.get('adoption_stage') or 'Missing'}")
     return "; ".join(changes) + "." if changes else "No material score change; evidence was refreshed and deduplicated."
+
+
+def aggregate_ai_expectation(beneficiaries):
+    assessments = []
+    for beneficiary in beneficiaries:
+        assessment = beneficiary.get("expectation") or {"state": "Data Insufficient", "score": None}
+        if assessment["score"] is not None:
+            assessments.append((beneficiary["ticker"], assessment))
+    if not assessments:
+        return {"state": "Data Insufficient", "score": None, "maximum": 15, "tickers": [],
+                "coverage": 0, "rationale": "No evidence-supported beneficiary has sufficient current expectation inputs.", "assessments": []}
+    score = round(sum(item[1]["score"] for item in assessments) / len(assessments))
+    state = "Underpriced" if score >= 11 else "Crowded / Priced In" if score <= 5 else "Fairly Priced"
+    return {"state": state, "score": score, "maximum": 15,
+            "tickers": [item[0] for item in assessments], "coverage": len(assessments),
+            "rationale": f"{state}: aggregated valuation, run-up, analyst-revision, and positioning evidence across {len(assessments)} evidence-supported public beneficiaries.",
+            "assessments": [{"ticker": ticker, **assessment} for ticker, assessment in assessments]}
 
 
 def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
@@ -2293,10 +2562,9 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
             bottleneck_score = min(20, 8 + min(8, len(relevant) * 2))
         earnings_events = [item for item in relevant if item.get("event_type") == "Financial Results" and item["relation"] == "direct"]
         earnings_score = min(15, 10 + len(earnings_events)) if earnings_events else None
-        expectation_events = [item for item in relevant if any(term in item.get("new_information", "").lower()
-                              for term in ("priced in", "valuation", "market expected", "consensus expectation", "earnings multiple"))]
-        expectation_score = min(15, 8 + len(expectation_events)) if expectation_events else None
         beneficiaries = ai_beneficiaries(trend, relevant, market_data)
+        expectation_context = aggregate_ai_expectation(beneficiaries)
+        expectation_score = expectation_context["score"]
         beneficiary_market_scores = []
         for beneficiary in beneficiaries:
             score, available, _ = market_component_score(beneficiary.get("market_data"), "qqq", 10)
@@ -2311,7 +2579,8 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
             ai_factor("Demand & Adoption", "demand_adoption", demand_score, event_ids, "Dated adoption and demand evidence; missing when no connected event supports the track."),
             ai_factor("Bottleneck / Moat", "bottleneck_moat", bottleneck_score, event_ids if bottleneck_score is not None else [], "Current chain bottleneck and connected event evidence."),
             ai_factor("Fundamental Earnings Impact", "fundamental_earnings_impact", earnings_score, [item["event_id"] for item in earnings_events], "Company financial-results evidence directly associated with the track."),
-            ai_factor("Expectation Gap / Valuation", "expectation_gap_valuation", expectation_score, [item["event_id"] for item in expectation_events], "Explicit valuation or market-expectation evidence only; not inferred from headlines."),
+            ai_factor("Expectation Gap / Valuation", "expectation_gap_valuation", expectation_score,
+                      expectation_context["tickers"], expectation_context["rationale"]),
             ai_factor("Market Confirmation", "market_confirmation", market_score, market_evidence_tickers, market_rationale),
         ]
         trend_strength = normalized_available_score(components, {
@@ -2336,7 +2605,8 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
             "beneficiary_records": beneficiaries,
             "potential_beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) · {item['category']} · {item['beneficiary_relevance']}" for item in beneficiaries[:3]) or "Missing / insufficient evidence",
             "beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) — {item['category']} — relevance {item['beneficiary_relevance']}/100" for item in beneficiaries) or "Missing / insufficient evidence",
-            "market_expectation": "Missing: no explicit valuation/expectation evidence is connected." if expectation_score is None else expectation_events[0]["new_information"],
+            "market_expectation": expectation_context["rationale"],
+            "expectation_state": expectation_context["state"], "expectation": expectation_context,
             "market_confirmation": {"score": market_score, "tickers": market_evidence_tickers, "rationale": market_rationale},
             "risks": "; ".join(item["new_information"] for item in contradicting[:2]) or "Missing: no explicit contradicting or invalidation evidence is connected.",
             "watch_next": f"Watch whether {config['current_bottleneck'].lower()} shifts toward {config['next_bottleneck'].lower()}.",
@@ -2363,7 +2633,8 @@ def ai_radar_methodology():
     return {
         "engine_version": "ai-technology-radar-v1", "factor_weights": AI_RADAR_FACTOR_WEIGHTS,
         "trend_strength_policy": "Trend Strength uses available Structural, Demand, Bottleneck and Earnings factors. Missing factors are excluded, not scored as zero.",
-        "opportunity_score_policy": "Opportunity Score remains missing unless explicit Expectation Gap/Valuation and trend-specific Market Confirmation evidence are both connected.",
+        "opportunity_score_policy": "Opportunity Score requires current Expectation Gap/Valuation and trend-specific Market Confirmation evidence. Missing inputs remain missing rather than becoming zero.",
+        "expectation_gap_policy": "Expectation Gap / Valuation aggregates evidence-supported public beneficiaries using Nasdaq valuation, analyst-consensus, estimate-revision and short-interest inputs plus the shared market layer's recent price run-up. At least two input groups are required.",
         "market_confirmation_policy": "Market Confirmation aggregates price trend and relative strength versus QQQ across evidence-supported public beneficiaries; missing security data remains missing.",
         "adoption_stages": AI_ADOPTION_STAGES,
         "physical_ai_policy": "Demos and pilots cannot establish scaled or mass adoption. A3+ requires real commercial deployment evidence; A4+ requires quantified scale.",
@@ -2486,7 +2757,8 @@ def build():
         score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
     watchlists = {"ai": attach_market_context(watch_rows(AI_WATCH), market_data, "ai"),
                   "biotech": attach_market_context(watch_rows(BIOTECH_WATCH), market_data, "biotech")}
-    monthly_picks = {domain: attach_market_context(rows, market_data, domain) for domain, rows in MONTHLY_PICKS.items()}
+    monthly_picks = {domain: attach_market_context(rows, market_data, domain, rank_opportunities=True)
+                     for domain, rows in MONTHLY_PICKS.items()}
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
