@@ -36,7 +36,8 @@ class BiotechCatalystRadarTests(unittest.TestCase):
         self.assertIsNone(missing["expectation_gap"]["score"])
         self.assertIsNone(missing["sector_trend_capital_flow"]["score"])
         self.assertLess(beam["data_completeness"], 100)
-        self.assertIn("Technical setup / positioning", beam["missing_data"])
+        self.assertIn("Price/volume technical setup", beam["missing_data"])
+        self.assertIn("Short interest / advanced positioning", beam["missing_data"])
 
     def test_evidence_gate_blocks_weak_science_from_high_conviction(self):
         krystal = next(row for row in build_biotech_radar(date(2026, 8, 27)) if row["ticker"] == "KRYS")

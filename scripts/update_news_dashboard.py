@@ -13,6 +13,7 @@ import ssl
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -605,7 +606,7 @@ def biotech_binary_risk(item, scientific_score, catalyst_impact, integrity_conce
     return level, rationale
 
 
-def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None):
+def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None, market_data=None):
     timing_score, timing_rationale, timing_missing = timing_component(item, as_of)
     prior_points, prior_rationale = item["components"]["prior_evidence"]
     prior_missing = prior_points == 0 and prior_rationale.lower().startswith("missing")
@@ -618,11 +619,15 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
     expectation_score = None if expectation_missing else round(expectation_points / 15 * 20)
     positioning_points, positioning_rationale = item["components"]["positioning"]
     positioning_missing = positioning_points == 0 and positioning_rationale.lower().startswith("missing")
+    security_market = market_snapshot(market_data, item.get("ticker"))
+    sector_market = (market_data or {}).get("benchmarks", {}).get("xbi")
+    sector_trend_score, sector_available, sector_rationale = market_component_score(sector_market, "sp500", 10)
+    stock_technical_score, stock_technical_available, stock_technical_rationale = market_component_score(security_market, "xbi", 5)
     timing_available = 0 if timing_missing else 5
-    technical_available = 0 if positioning_missing else 5
+    technical_available = stock_technical_available
     timing_technicals_score = None if timing_available + technical_available == 0 else (
         (round(timing_score / 15 * 5) if timing_available else 0) +
-        (round(positioning_points / 10 * 5) if technical_available else 0)
+        (stock_technical_score if technical_available else 0)
     )
     breakdown = [
         biotech_radar_factor("scientific_evidence", "Scientific Evidence", 30, scientific_score, 0 if prior_missing else 30,
@@ -632,12 +637,13 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
                               ["Company valuation sensitivity", "Portfolio dependence"]),
         biotech_radar_factor("expectation_gap", "Expectation Gap", 20, expectation_score, 0 if expectation_missing else 20,
                               expectation_rationale, item["sources"], ["Verified market expectations"] if expectation_missing else []),
-        biotech_radar_factor("sector_trend_capital_flow", "Sector Trend & Capital Flow", 15, None, 0,
-                              "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.", item["sources"],
-                              ["Sector breadth", "Capital flow"]),
+        biotech_radar_factor("sector_trend_capital_flow", "Sector Trend & Capital Flow", 15, sector_trend_score, sector_available,
+                              f"{sector_rationale} Advanced capital-flow data is outside this MVP.", item["sources"],
+                              (["XBI market trend"] if not sector_available else []) + ["Advanced capital flow"]),
         biotech_radar_factor("timing_technicals", "Timing & Technicals", 10, timing_technicals_score, timing_available + technical_available,
-                              f"{timing_rationale} {positioning_rationale}", item["sources"],
-                              (["Catalyst timing"] if timing_missing else []) + (["Technical setup / positioning"] if positioning_missing else [])),
+                              f"{timing_rationale} {stock_technical_rationale} {positioning_rationale}", item["sources"],
+                              (["Catalyst timing"] if timing_missing else []) + (["Price/volume technical setup"] if not technical_available else []) +
+                              (["Short interest / advanced positioning"] if positioning_missing else [])),
     ]
     available_weight = sum(component["available_weight"] for component in breakdown)
     available_points = sum(component["score"] for component in breakdown if component["score"] is not None)
@@ -680,8 +686,10 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
         "scientific_evidence_score": scientific_score,
         "catalyst_impact_score": catalyst_impact,
         "expectation_gap_score": expectation_score,
-        "sector_trend_score": None,
+        "sector_trend_score": sector_trend_score,
         "timing_technicals_score": timing_technicals_score,
+        "market_data": security_market,
+        "sector_market_data": sector_market,
         "upcoming_catalyst": f"{item['catalyst']} — {item['expected_timing']}",
         "opportunity_status": status,
         "binary_risk": binary_risk,
@@ -731,7 +739,7 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
     return result
 
 
-def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None):
+def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None, market_data=None):
     horizon = as_of + timedelta(days=183)
     previous_by_key = {
         (row.get("ticker"), row.get("program"), row.get("indication"), row.get("catalyst")): row
@@ -744,7 +752,7 @@ def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None):
         if end >= as_of and start <= horizon:
             key = (item.get("ticker"), item.get("program"), item.get("indication"), item.get("catalyst"))
             eligible.append(score_biotech_catalyst(
-                item, as_of, biotech_news_section, previous_by_key.get(key)))
+                item, as_of, biotech_news_section, previous_by_key.get(key), market_data))
     return sorted(eligible, key=lambda item: (-(item["opportunity_score"] or -1), item["expected_timing"], item["ticker"]))
 
 
@@ -757,6 +765,7 @@ def radar_methodology():
         "evidence_gate": "Scientific Evidence below 18/30 cannot be High Conviction. High Conviction additionally requires Scientific Evidence of at least 24/30, 75% completeness, and High confidence.",
         "integrity_gate": "Explicit credibility or data-integrity concerns cap evidence confidence at Low.",
         "news_boundary": "Biotech News is retained as dated confirming, mixed, or contradicting evidence. News importance never sets a Radar factor or Opportunity Score.",
+        "market_data_policy": "XBI price trend supplies up to 10 of 15 Sector Trend points; security price/volume technicals supply up to 5 of 10 Timing & Technicals points. Advanced capital flow, short interest, options, and expectations remain excluded.",
         "binary_risk": "Low / Moderate / High / Extreme uses available evidence uncertainty and catalyst magnitude; missing company valuation sensitivity or portfolio dependence prevents a Low classification.",
         "status_policy": ["High Conviction", "Evidence-Supported / High Impact", "Monitoring", "Speculative Binary", "High Downside Risk", "Thesis Broken"],
         "scope_note": "V1 scores the existing curated Company → Drug/Program → Indication → Catalyst set. It does not fabricate consensus, valuation, technical, short-interest, capital-flow, trial, or portfolio-dependence inputs.",
@@ -945,20 +954,305 @@ def official_feed_items(source_name, url, publisher_url, limit=20):
         return []
 
 
-def market_history(yahoo_symbol, stooq_symbol):
+def stooq_symbol_for(yahoo_symbol):
+    index_map = {"^GSPC": "^spx", "^IXIC": "^ndq", "^DJI": "^dji", "^RUT": "^rty"}
+    if yahoo_symbol in index_map:
+        return index_map[yahoo_symbol]
+    return f"{yahoo_symbol.lower()}.us" if re.fullmatch(r"[A-Z][A-Z0-9.-]*", yahoo_symbol) else None
+
+
+def fetch_market_series(yahoo_symbol, stooq_symbol=None):
     try:
-        url = "https://query1.finance.yahoo.com/v8/finance/chart/" + urllib.parse.quote(yahoo_symbol, safe="") + "?range=1mo&interval=1d"
+        url = "https://query1.finance.yahoo.com/v8/finance/chart/" + urllib.parse.quote(yahoo_symbol, safe="") + "?range=2y&interval=1d"
         payload = json.loads(fetch(url, timeout=12))
-        return [float(v) for v in payload["chart"]["result"][0]["indicators"]["quote"][0]["close"] if v is not None]
+        result = payload["chart"]["result"][0]
+        quote = result["indicators"]["quote"][0]
+        timestamps = result.get("timestamp", [])
+        rows = [
+            {"date": datetime.fromtimestamp(timestamp, timezone.utc).date().isoformat(),
+             "close": float(close), "volume": float(volume) if volume is not None else None}
+            for timestamp, close, volume in zip(timestamps, quote.get("close", []), quote.get("volume", []))
+            if close is not None
+        ]
+        return {"symbol": yahoo_symbol, "rows": rows, "source": "Yahoo Finance chart", "currency": result.get("meta", {}).get("currency")}
     except Exception:
         try:
-            end = datetime.now(timezone.utc).date(); start = end - timedelta(days=50)
+            stooq_symbol = stooq_symbol or stooq_symbol_for(yahoo_symbol)
+            if not stooq_symbol:
+                raise ValueError("No Stooq fallback symbol is configured")
+            end = datetime.now(timezone.utc).date(); start = end - timedelta(days=760)
             url = f"https://stooq.com/q/d/l/?s={urllib.parse.quote(stooq_symbol)}&d1={start:%Y%m%d}&d2={end:%Y%m%d}&i=d"
             rows = csv.DictReader(io.StringIO(fetch(url).decode("utf-8")))
-            return [float(row["Close"]) for row in rows if row.get("Close") not in (None, "", "N/D")]
+            parsed = [
+                {"date": row.get("Date"), "close": float(row["Close"]),
+                 "volume": float(row["Volume"]) if row.get("Volume") not in (None, "", "N/D") else None}
+                for row in rows if row.get("Close") not in (None, "", "N/D")
+            ]
+            return {"symbol": yahoo_symbol, "rows": parsed, "source": "Stooq daily data", "currency": None}
         except Exception as exc:
             print(f"Market data unavailable for {yahoo_symbol}: {exc}")
-            return []
+            return {"symbol": yahoo_symbol, "rows": [], "source": None, "currency": None}
+
+
+def market_history(yahoo_symbol, stooq_symbol):
+    return [row["close"] for row in fetch_market_series(yahoo_symbol, stooq_symbol)["rows"]]
+
+
+def moving_average(values, window):
+    return round(sum(values[-window:]) / window, 4) if len(values) >= window else None
+
+
+def period_return(values, sessions):
+    return round((values[-1] / values[-sessions - 1] - 1) * 100, 2) if len(values) > sessions and values[-sessions - 1] else None
+
+
+def rsi(values, window=14):
+    if len(values) <= window:
+        return None
+    changes = [values[index] - values[index - 1] for index in range(len(values) - window, len(values))]
+    gains = sum(max(change, 0) for change in changes) / window
+    losses = sum(max(-change, 0) for change in changes) / window
+    if losses == 0:
+        return 100.0 if gains > 0 else 50.0
+    return round(100 - 100 / (1 + gains / losses), 2)
+
+
+def ema_series(values, window):
+    if len(values) < window:
+        return []
+    multiplier = 2 / (window + 1)
+    ema = sum(values[:window]) / window
+    result = [None] * (window - 1) + [ema]
+    for value in values[window:]:
+        ema = (value - ema) * multiplier + ema
+        result.append(ema)
+    return result
+
+
+def macd(values):
+    if len(values) < 35:
+        return {"value": None, "signal": None, "histogram": None}
+    fast, slow = ema_series(values, 12), ema_series(values, 26)
+    macd_values = [fast[index] - slow[index] for index in range(25, len(values))]
+    signal_values = ema_series(macd_values, 9)
+    if not signal_values or signal_values[-1] is None:
+        return {"value": None, "signal": None, "histogram": None}
+    value, signal = macd_values[-1], signal_values[-1]
+    return {"value": round(value, 4), "signal": round(signal, 4), "histogram": round(value - signal, 4)}
+
+
+def benchmark_relative_strength(stock_returns, benchmark_returns):
+    return {
+        horizon: round(stock_returns[horizon] - benchmark_returns[horizon], 2)
+        if stock_returns.get(horizon) is not None and benchmark_returns.get(horizon) is not None else None
+        for horizon in ("one_month", "three_month", "six_month")
+    }
+
+
+def calculate_market_technicals(ticker, series, benchmark_records=None, market_cap=None):
+    rows = series.get("rows", [])
+    closes = [row["close"] for row in rows]
+    volumes = [row.get("volume") for row in rows]
+    if not closes:
+        return None
+    returns = {"daily": period_return(closes, 1), "weekly": period_return(closes, 5),
+               "one_month": period_return(closes, 21), "three_month": period_return(closes, 63),
+               "six_month": period_return(closes, 126)}
+    valid_recent_volumes = [value for value in volumes[-20:] if value is not None]
+    volume_average = sum(valid_recent_volumes) / len(valid_recent_volumes) if valid_recent_volumes else None
+    current_volume = volumes[-1] if volumes else None
+    recent_year = closes[-252:]
+    year_low, year_high = (min(recent_year), max(recent_year)) if recent_year else (None, None)
+    year_position = round((closes[-1] - year_low) / (year_high - year_low) * 100, 2) if year_high is not None and year_high != year_low else None
+    benchmark_records = benchmark_records or {}
+    relative_strength = {
+        name: benchmark_relative_strength(returns, record.get("returns", {}))
+        for name, record in benchmark_records.items()
+    }
+    return {
+        "ticker": ticker, "current_price": round(closes[-1], 4), "price_date": rows[-1].get("date"),
+        "currency": series.get("currency"), "market_cap": market_cap,
+        "moving_averages": {"ma20": moving_average(closes, 20), "ma50": moving_average(closes, 50), "ma200": moving_average(closes, 200)},
+        "returns": returns, "rsi_14": rsi(closes), "macd": macd(closes),
+        "volume_vs_20d_average": round(current_volume / volume_average, 2) if current_volume is not None and volume_average else None,
+        "fifty_two_week_position": year_position, "relative_strength": relative_strength,
+        "source": series.get("source"), "data_status": "current",
+        "missing_fields": [name for name, value in (("market_cap", market_cap), ("volume", current_volume),
+                           ("ma200", moving_average(closes, 200)), ("fifty_two_week_position", year_position)) if value is None],
+    }
+
+
+def fetch_market_caps(tickers):
+    if not tickers:
+        return {}
+    try:
+        url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + urllib.parse.quote(",".join(sorted(tickers)), safe=",")
+        payload = json.loads(fetch(url, timeout=12))
+        return {
+            item["symbol"]: item.get("marketCap")
+            for item in payload.get("quoteResponse", {}).get("result", [])
+            if isinstance(item.get("marketCap"), (int, float)) and item.get("marketCap") > 0
+        }
+    except Exception as exc:
+        print(f"Market-cap data unavailable: {exc}")
+        return {}
+
+
+def shared_market_ticker_domains(previous=None):
+    domains = {}
+
+    def add(ticker, domain):
+        ticker = str(ticker or "").strip().upper()
+        if not ticker or ticker in ("PRIVATE", "N/A", "MISSING") or ":" in ticker:
+            return
+        domains.setdefault(ticker, set()).add(domain)
+
+    for row in AI_INFRASTRUCTURE + AI_PLATFORMS:
+        add(row.get("ticker"), "ai")
+    for row in watch_rows(AI_WATCH):
+        add(row.get("ticker"), "ai")
+    for row in BIOTECH_CATALYSTS + watch_rows(BIOTECH_WATCH):
+        add(row.get("ticker"), "biotech")
+    for domain, rows in MONTHLY_PICKS.items():
+        for row in rows:
+            add(company_identity(row.get("company")).get("ticker"), domain)
+    for row in (previous or {}).get("radar", {}).get("ai", []):
+        for beneficiary in row.get("beneficiary_records", []):
+            add(beneficiary.get("ticker"), "ai")
+    return {ticker: sorted(values) for ticker, values in domains.items()}
+
+
+def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None):
+    ticker_domains = shared_market_ticker_domains(previous)
+    benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI"}
+    dashboard_symbols = set(MARKETS) | set(benchmark_symbols.values())
+    requested_symbols = sorted(set(ticker_domains) | dashboard_symbols)
+    if series_by_symbol is None:
+        series_by_symbol = {}
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            futures = {executor.submit(fetch_market_series, symbol, stooq_symbol_for(symbol)): symbol for symbol in requested_symbols}
+            for future in as_completed(futures):
+                symbol = futures[future]
+                try:
+                    series_by_symbol[symbol] = future.result()
+                except Exception as exc:
+                    print(f"Market data unavailable for {symbol}: {exc}")
+                    series_by_symbol[symbol] = {"symbol": symbol, "rows": [], "source": None, "currency": None}
+    if market_caps is None:
+        market_caps = fetch_market_caps(set(ticker_domains))
+    benchmarks = {
+        name: calculate_market_technicals(symbol, series_by_symbol.get(symbol, {"rows": []}))
+        for name, symbol in benchmark_symbols.items()
+    }
+    benchmarks = {name: record for name, record in benchmarks.items() if record}
+    if "sp500" in benchmarks:
+        for name in ("qqq", "xbi"):
+            if name in benchmarks:
+                benchmarks[name]["relative_strength"] = {
+                    "sp500": benchmark_relative_strength(benchmarks[name].get("returns", {}), benchmarks["sp500"].get("returns", {}))
+                }
+    previous_layer = (previous or {}).get("market_data", {})
+    previous_securities = previous_layer.get("securities", {})
+    securities = {}
+    for ticker, domains in ticker_domains.items():
+        record = calculate_market_technicals(
+            ticker, series_by_symbol.get(ticker, {"rows": []}), benchmarks, market_caps.get(ticker))
+        if record:
+            securities[ticker] = {**record, "domains": domains}
+        elif ticker in previous_securities:
+            securities[ticker] = {**previous_securities[ticker], "domains": domains, "data_status": "stale"}
+    indexes = {}
+    for symbol in MARKETS:
+        record = calculate_market_technicals(symbol, series_by_symbol.get(symbol, {"rows": []}))
+        if record:
+            indexes[symbol] = record
+        elif symbol in previous_layer.get("indexes", {}):
+            indexes[symbol] = {**previous_layer["indexes"][symbol], "data_status": "stale"}
+    return {
+        "schema_version": "shared-market-technical-v1", "updated_at": run_at.isoformat(timespec="seconds"),
+        "sources": ["Yahoo Finance chart (primary price/volume history)", "Stooq daily data (fallback)",
+                    "Yahoo Finance quote endpoint (market cap when available)"],
+        "methodology": {
+            "returns": "Close-to-close over 21, 63, and 126 sessions.",
+            "relative_strength": "Stock return minus benchmark return in percentage points for the same horizon.",
+            "rsi": "14-session RSI.", "macd": "12/26-session EMA MACD with 9-session signal.",
+            "missing_data": "Unavailable fields remain null; prior successful security records may be retained with data_status=stale.",
+        },
+        "benchmarks": benchmarks, "indexes": indexes, "securities": securities,
+        "coverage": {"requested": len(ticker_domains), "current": sum(record.get("data_status") == "current" for record in securities.values()),
+                     "stale": sum(record.get("data_status") == "stale" for record in securities.values()),
+                     "missing": len(ticker_domains) - len(securities)},
+    }
+
+
+def market_snapshot(market_data, ticker):
+    return (market_data or {}).get("securities", {}).get(str(ticker or "").upper())
+
+
+def market_timing_signal(snapshot, domain):
+    if not snapshot:
+        return {"signal": "Insufficient Data", "support_score": None, "rationale": "No current or retained market record is available."}
+    if snapshot.get("data_status") != "current":
+        return {"signal": "Insufficient Data", "support_score": None, "rationale": "Only a stale retained market record is available."}
+    price = snapshot.get("current_price")
+    averages = snapshot.get("moving_averages", {})
+    macd_histogram = snapshot.get("macd", {}).get("histogram")
+    rsi_value = snapshot.get("rsi_14")
+    relative = snapshot.get("relative_strength", {}).get("qqq" if domain == "ai" else "xbi", {}).get("three_month")
+    checks = [
+        price is not None and averages.get("ma50") is not None and price > averages["ma50"],
+        price is not None and averages.get("ma200") is not None and price > averages["ma200"],
+        macd_histogram is not None and macd_histogram > 0,
+        relative is not None and relative > 0,
+    ]
+    available_checks = [
+        None if price is None or averages.get("ma50") is None else checks[0],
+        None if price is None or averages.get("ma200") is None else checks[1],
+        None if macd_histogram is None else checks[2], None if relative is None else checks[3]]
+    available = sum(value is not None for value in available_checks)
+    if available == 0:
+        return {"signal": "Insufficient Data", "support_score": None, "rationale": "Required trend and relative-strength inputs are missing."}
+    positives = sum(checks)
+    support_score = round(positives / available * 100)
+    below_ma200 = None if price is None or averages.get("ma200") is None else price < averages["ma200"]
+    severe_weakness = available >= 3 and below_ma200 is True and macd_histogram is not None and macd_histogram < 0 and relative is not None and relative < 0
+    overextended = rsi_value is not None and rsi_value >= 75
+    signal = "Sell" if severe_weakness else "Reduce" if overextended or (support_score < 35 and available >= 3) else "Buy" if support_score >= 75 and not overextended else "Hold"
+    return {"signal": signal, "support_score": support_score,
+            "rationale": f"{positives} of {available} available trend/relative-strength checks are positive; RSI is {rsi_value if rsi_value is not None else 'missing'}."}
+
+
+def market_component_score(snapshot, benchmark_name, maximum):
+    if not snapshot:
+        return None, 0, "Missing: no market record is connected."
+    if snapshot.get("data_status") != "current":
+        return None, 0, "Missing: the connected market record is stale."
+    price = snapshot.get("current_price")
+    averages = snapshot.get("moving_averages", {})
+    macd_histogram = snapshot.get("macd", {}).get("histogram")
+    return_3m = snapshot.get("returns", {}).get("three_month")
+    relative_3m = snapshot.get("relative_strength", {}).get(benchmark_name, {}).get("three_month")
+    raw_checks = [
+        None if price is None or averages.get("ma50") is None else price > averages["ma50"],
+        None if price is None or averages.get("ma200") is None else price > averages["ma200"],
+        None if macd_histogram is None else macd_histogram > 0,
+        None if return_3m is None else return_3m > 0,
+        None if relative_3m is None else relative_3m > 0,
+    ]
+    available = [value for value in raw_checks if value is not None]
+    if not available:
+        return None, 0, "Missing: price-trend and relative-strength inputs are unavailable."
+    score = round(sum(available) / len(available) * maximum)
+    return score, maximum, f"{sum(available)} of {len(available)} available market-confirmation checks are positive."
+
+
+def attach_market_context(rows, market_data, domain):
+    enriched = []
+    for row in rows:
+        normalized = normalize_company_row(row)
+        snapshot = market_snapshot(market_data, normalized.get("ticker"))
+        enriched.append({**normalized, "market_data": snapshot, "timing_support": market_timing_signal(snapshot, domain)})
+    return enriched
 
 
 def percent_change(current, previous):
@@ -1892,7 +2186,7 @@ def normalized_available_score(components, keys):
     return round(sum(component["score"] for component in available) / sum(component["weight"] for component in available) * 100)
 
 
-def ai_beneficiaries(trend, relevant_events):
+def ai_beneficiaries(trend, relevant_events, market_data=None):
     config = AI_RADAR_TRACKS[trend]
     driver = next((item for item in DEMAND_DRIVERS if item["area"] == config.get("demand_area")), None)
     candidates = {}
@@ -1944,6 +2238,7 @@ def ai_beneficiaries(trend, relevant_events):
         results.append({key: item[key] for key in ("company", "ticker", "exchange", "listing_status")} | {
             "category": category, "beneficiary_relevance": relevance, "score_components": components,
             "data_completeness": sum(component["weight"] for component in available), "evidence_ids": item["evidence_ids"],
+            "market_data": market_snapshot(market_data, item["ticker"]),
         })
     return sorted(results, key=lambda item: (-item["beneficiary_relevance"], item["company"]))[:8]
 
@@ -1962,7 +2257,7 @@ def ai_radar_why_changed(previous, current):
     return "; ".join(changes) + "." if changes else "No material score change; evidence was refreshed and deduplicated."
 
 
-def build_ai_radar(ai_news_section, previous_rows, run_at):
+def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
     raw_events = ai_news_section.get("radar_evidence_interface", {}).get("events", [])
     events = deduplicate_ai_radar_evidence(raw_events)
     previous_by_trend = {item.get("trend"): item for item in previous_rows or []}
@@ -2001,14 +2296,23 @@ def build_ai_radar(ai_news_section, previous_rows, run_at):
         expectation_events = [item for item in relevant if any(term in item.get("new_information", "").lower()
                               for term in ("priced in", "valuation", "market expected", "consensus expectation", "earnings multiple"))]
         expectation_score = min(15, 8 + len(expectation_events)) if expectation_events else None
-        market_score = None
+        beneficiaries = ai_beneficiaries(trend, relevant, market_data)
+        beneficiary_market_scores = []
+        for beneficiary in beneficiaries:
+            score, available, _ = market_component_score(beneficiary.get("market_data"), "qqq", 10)
+            if available:
+                beneficiary_market_scores.append(score)
+        market_score = round(sum(beneficiary_market_scores) / len(beneficiary_market_scores)) if beneficiary_market_scores else None
+        market_evidence_tickers = [beneficiary["ticker"] for beneficiary in beneficiaries if beneficiary.get("market_data")]
+        market_rationale = (f"Aggregated price trend and relative strength versus QQQ across {len(beneficiary_market_scores)} evidence-supported beneficiaries."
+                            if market_score is not None else "Missing: no beneficiary price/volume record is connected.")
         components = [
             ai_factor("Structural Trend", "structural_trend", structural_score, ["existing-ai-industry-map", *event_ids], "Existing industry-chain structure plus deduplicated supporting events."),
             ai_factor("Demand & Adoption", "demand_adoption", demand_score, event_ids, "Dated adoption and demand evidence; missing when no connected event supports the track."),
             ai_factor("Bottleneck / Moat", "bottleneck_moat", bottleneck_score, event_ids if bottleneck_score is not None else [], "Current chain bottleneck and connected event evidence."),
             ai_factor("Fundamental Earnings Impact", "fundamental_earnings_impact", earnings_score, [item["event_id"] for item in earnings_events], "Company financial-results evidence directly associated with the track."),
             ai_factor("Expectation Gap / Valuation", "expectation_gap_valuation", expectation_score, [item["event_id"] for item in expectation_events], "Explicit valuation or market-expectation evidence only; not inferred from headlines."),
-            ai_factor("Market Confirmation", "market_confirmation", market_score, [], "Missing: no trend-specific price, volume, or breadth dataset is connected."),
+            ai_factor("Market Confirmation", "market_confirmation", market_score, market_evidence_tickers, market_rationale),
         ]
         trend_strength = normalized_available_score(components, {
             "structural_trend", "demand_adoption", "bottleneck_moat", "fundamental_earnings_impact"})
@@ -2017,7 +2321,6 @@ def build_ai_radar(ai_news_section, previous_rows, run_at):
         confidence = "High" if completeness >= 70 and len(relevant) >= 3 else "Medium" if completeness >= 45 and relevant else "Low"
         direct_evidence = [item for item in relevant if item["relation"] == "direct"]
         adoption_stage, adoption_label = ai_adoption_stage(trend, direct_evidence)
-        beneficiaries = ai_beneficiaries(trend, relevant)
         evidence_summary = confirming[0]["new_information"] if confirming else relevant[0]["new_information"] if relevant else "No dated News evidence is connected; only the existing structural industry map is available."
         direction = "Expanding" if confirming and not contradicting and not mixed_evidence else "Mixed" if mixed_evidence or (confirming and contradicting) else "Contradicting" if contradicting else "Unconfirmed"
         row = {
@@ -2034,6 +2337,7 @@ def build_ai_radar(ai_news_section, previous_rows, run_at):
             "potential_beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) · {item['category']} · {item['beneficiary_relevance']}" for item in beneficiaries[:3]) or "Missing / insufficient evidence",
             "beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) — {item['category']} — relevance {item['beneficiary_relevance']}/100" for item in beneficiaries) or "Missing / insufficient evidence",
             "market_expectation": "Missing: no explicit valuation/expectation evidence is connected." if expectation_score is None else expectation_events[0]["new_information"],
+            "market_confirmation": {"score": market_score, "tickers": market_evidence_tickers, "rationale": market_rationale},
             "risks": "; ".join(item["new_information"] for item in contradicting[:2]) or "Missing: no explicit contradicting or invalidation evidence is connected.",
             "watch_next": f"Watch whether {config['current_bottleneck'].lower()} shifts toward {config['next_bottleneck'].lower()}.",
             "horizons": {"near_term": evidence_summary, "six_to_36_months": config["medium"], "three_to_10_years": config["long"]},
@@ -2060,6 +2364,7 @@ def ai_radar_methodology():
         "engine_version": "ai-technology-radar-v1", "factor_weights": AI_RADAR_FACTOR_WEIGHTS,
         "trend_strength_policy": "Trend Strength uses available Structural, Demand, Bottleneck and Earnings factors. Missing factors are excluded, not scored as zero.",
         "opportunity_score_policy": "Opportunity Score remains missing unless explicit Expectation Gap/Valuation and trend-specific Market Confirmation evidence are both connected.",
+        "market_confirmation_policy": "Market Confirmation aggregates price trend and relative strength versus QQQ across evidence-supported public beneficiaries; missing security data remains missing.",
         "adoption_stages": AI_ADOPTION_STAGES,
         "physical_ai_policy": "Demos and pilots cannot establish scaled or mass adoption. A3+ requires real commercial deployment evidence; A4+ requires quantified scale.",
         "evidence_aging": {"fresh": "0-7 days", "current": "8-30 days", "aging": "31-90 days", "stale": ">90 days"},
@@ -2145,16 +2450,18 @@ def build():
     biotech_news = biotech_news_candidates[:6]
     fda_news = rss_items("FDA approval orphan drug fast track rare disease when:7d", 8)
     market_news = rss_items("US stock market Nasdaq S&P 500 today when:1d", 4)
+    market_data = build_market_data_layer(previous, run_at)
 
     old_markets = {item["name"]: item for item in previous.get("markets", [])}
     markets = []
-    for yahoo_symbol, (stooq_symbol, name) in MARKETS.items():
-        closes = market_history(yahoo_symbol, stooq_symbol)
-        if closes:
-            current = closes[-1]
-            markets.append({"name": name, "value": f"{current:,.2f}", "daily": percent_change(current, closes[-2] if len(closes) > 1 else current),
-                            "weekly": percent_change(current, closes[-6] if len(closes) > 5 else closes[0]),
-                            "monthly": percent_change(current, closes[-22] if len(closes) > 21 else closes[0])})
+    for yahoo_symbol, (_, name) in MARKETS.items():
+        record = market_data.get("indexes", {}).get(yahoo_symbol)
+        if record:
+            returns = record.get("returns", {})
+            markets.append({"name": name, "value": f"{record['current_price']:,.2f}",
+                            "daily": returns.get("daily") if returns.get("daily") is not None else 0,
+                            "weekly": returns.get("weekly") if returns.get("weekly") is not None else 0,
+                            "monthly": returns.get("one_month") if returns.get("one_month") is not None else 0})
         else:
             markets.append(old_markets.get(name, {"name": name, "value": "N/A", "daily": 0, "weekly": 0, "monthly": 0}))
 
@@ -2172,11 +2479,14 @@ def build():
         takeaways = previous.get("takeaways", ["Daily source monitoring is active."])
     previous_ai_news = previous.get("top_investment_news", {}).get("ai_technology", {})
     ai_news_section = build_ai_news_section(ai_news_candidates, previous_ai_news, run_at)
-    ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at)
+    ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at, market_data)
     previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
     biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
     biotech_radar = build_biotech_radar(
-        score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []))
+        score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
+    watchlists = {"ai": attach_market_context(watch_rows(AI_WATCH), market_data, "ai"),
+                  "biotech": attach_market_context(watch_rows(BIOTECH_WATCH), market_data, "biotech")}
+    monthly_picks = {domain: attach_market_context(rows, market_data, domain) for domain, rows in MONTHLY_PICKS.items()}
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
@@ -2197,8 +2507,8 @@ def build():
                 "note": "Retrospective validation input is frozen at July 31, 2026; the August 5 FDA outcome is deliberately excluded.",
             }
         },
-        "watchlists": {"ai": watch_rows(AI_WATCH), "biotech": watch_rows(BIOTECH_WATCH)},
-        "monthly_picks": MONTHLY_PICKS, "fda": fda, "markets": markets,
+        "market_data": market_data, "watchlists": watchlists,
+        "monthly_picks": monthly_picks, "fda": fda, "markets": markets,
     }
     data = normalize_investment_data(data)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

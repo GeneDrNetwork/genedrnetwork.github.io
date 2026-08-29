@@ -40,6 +40,35 @@ function renderScore(score, label) {
   return `<div class="score" aria-label="${escapeHtml(label)} ${safeScore} out of 100"><strong>${safeScore}</strong><span>/100</span><i><b style="width:${safeScore}%"></b></i></div>`;
 }
 
+function formatMarketValue(value, digits = 2) {
+  if (value === null || value === undefined || value === "") return "Missing";
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toLocaleString([], { maximumFractionDigits: digits }) : "Missing";
+}
+
+function formatMarketCap(value) {
+  if (value === null || value === undefined || value === "") return "Missing";
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "Missing";
+  if (number >= 1e12) return `$${(number / 1e12).toFixed(2)}T`;
+  if (number >= 1e9) return `$${(number / 1e9).toFixed(2)}B`;
+  if (number >= 1e6) return `$${(number / 1e6).toFixed(2)}M`;
+  return `$${number.toLocaleString()}`;
+}
+
+function marketSnapshotText(snapshot, benchmark = "sp500") {
+  if (!snapshot) return "Market data missing.";
+  const averages = snapshot.moving_averages || {};
+  const returns = snapshot.returns || {};
+  const macd = snapshot.macd || {};
+  const relative = snapshot.relative_strength?.[benchmark] || {};
+  return `Price ${formatMarketValue(snapshot.current_price)} · Market cap ${formatMarketCap(snapshot.market_cap)} · MA20/50/200 ${formatMarketValue(averages.ma20)}/${formatMarketValue(averages.ma50)}/${formatMarketValue(averages.ma200)} · 1M/3M/6M ${formatChange(returns.one_month)}/${formatChange(returns.three_month)}/${formatChange(returns.six_month)} · RSI ${formatMarketValue(snapshot.rsi_14)} · MACD ${formatMarketValue(macd.value, 4)} (${formatMarketValue(macd.histogram, 4)} histogram) · Volume/20D ${formatMarketValue(snapshot.volume_vs_20d_average)}x · 52W position ${formatMarketValue(snapshot.fifty_two_week_position)}% · 3M RS vs ${benchmark.toUpperCase()} ${formatChange(relative.three_month)} · ${snapshot.data_status || "status missing"}.`;
+}
+
+function renderMarketSnapshot(snapshot, benchmark) {
+  return `<div class="detail-item detail-wide"><dt>Shared Market &amp; Technical Data</dt><dd>${escapeHtml(marketSnapshotText(snapshot, benchmark))}</dd></div>`;
+}
+
 function renderAiFactorBreakdown(row) {
   const factors = (row.score_components || []).map((factor) => `<li class="${factor.missing ? "score-component-missing" : ""}">
     <span>${escapeHtml(factor.label)}</span><strong>${factor.score === null || factor.score === undefined ? "Missing" : `${escapeHtml(factor.score)} / ${escapeHtml(factor.weight)}`}</strong>
@@ -58,7 +87,7 @@ function renderAiEvidence(label, evidence = []) {
 }
 
 function renderAiBeneficiaries(rows = []) {
-  const items = rows.map((item) => `<li><strong>${escapeHtml(companyTickerLabel(item))}</strong> — ${escapeHtml(item.category)} — relevance ${escapeHtml(item.beneficiary_relevance)}/100 · completeness ${escapeHtml(item.data_completeness)}%</li>`).join("");
+  const items = rows.map((item) => `<li><strong>${escapeHtml(companyTickerLabel(item))}</strong> — ${escapeHtml(item.category)} — relevance ${escapeHtml(item.beneficiary_relevance)}/100 · completeness ${escapeHtml(item.data_completeness)}%<br>${escapeHtml(marketSnapshotText(item.market_data, "qqq"))}</li>`).join("");
   return `<div class="detail-item detail-wide radar-sources"><dt>Evidence-Supported Beneficiaries</dt><dd><ul>${items || "<li>Missing / insufficient evidence.</li>"}</ul></dd></div>`;
 }
 
@@ -75,6 +104,7 @@ function renderAiRadar(rows) {
     </summary><dl class="detail-grid">
       ${detailItem("What It Means", row.what_it_means)}${detailItem("Key Intelligence", row.key_intelligence)}${detailItem("Demand Drivers", row.demand_drivers)}${detailItem("Current Bottleneck", row.current_bottleneck)}${detailItem("Next Likely Bottleneck", row.next_likely_bottleneck)}
       ${detailItem("Beneficiaries", row.beneficiaries)}${detailItem("Market Expectation / Priced In", row.market_expectation, true)}
+      ${detailItem("Market Confirmation", row.market_confirmation?.score === null || row.market_confirmation?.score === undefined ? "Missing" : `${row.market_confirmation.score} / 10. ${row.market_confirmation.rationale}`)}
       ${detailItem("Risks / Invalidation", row.risks, true)}${detailItem("What to Watch Next", row.watch_next)}
       ${renderAiFactorBreakdown(row)}${renderAiHorizons(row.horizons)}${renderAiEvidence("Confirming Evidence", row.confirming_evidence)}${renderAiEvidence("Mixed Evidence", row.mixed_evidence)}${renderAiEvidence("Contradicting Evidence", row.contradicting_evidence)}${renderAiBeneficiaries(row.beneficiary_records)}${renderAiHistory(row)}
     </dl></details>`).join("") || `<p class="loading-state">No AI trends are available.</p>`;
@@ -221,6 +251,7 @@ function renderBiotechRadar(rows) {
       ${detailItem("Scientific Evidence", row.scientific_evidence_score === null ? "Missing" : `${row.scientific_evidence_score} / 30`)}${detailItem("Catalyst Impact / Company Sensitivity", `${row.catalyst_impact_score} / 25. ${row.company_sensitivity}`)}${detailItem("Expectation Gap", row.expectation_gap_score === null ? "Missing" : `${row.expectation_gap_score} / 20`)}
       ${detailItem("Binary Risk", `${row.binary_risk}. ${row.binary_risk_rationale}`)}${detailItem("Data Completeness / Confidence", `${row.data_completeness}% / ${row.confidence}`)}${detailItem("Evidence Gate", `${row.evidence_gate.passed ? "Passed" : "Not passed"}. ${row.evidence_gate.rule}`)}
       ${detailItem("Evidence Integrity Gate", `${row.evidence_integrity_gate.concern_identified ? "Concern identified; confidence capped." : "No explicit integrity concern identified in connected evidence."} ${row.evidence_integrity_gate.rule}`)}
+      ${renderMarketSnapshot(row.market_data, "xbi")}${renderMarketSnapshot(row.sector_market_data, "sp500")}
       ${renderScoreBreakdown(row.score_components, row.data_completeness)}${renderSources(row.sources, row.score_as_of)}
       ${renderBiotechEvidenceGroup("Confirming Evidence", row.confirming_evidence)}${renderBiotechEvidenceGroup("Mixed Evidence", row.mixed_evidence)}${renderBiotechEvidenceGroup("Contradicting Evidence", row.contradicting_evidence)}${renderBiotechHistory(row)}
     </dl></details>`).join("") || `<p class="loading-state">No biotech opportunities are available.</p>`;
@@ -229,13 +260,18 @@ function renderBiotechRadar(rows) {
 function renderOpportunities(targetId, rows = []) {
   document.getElementById(targetId).innerHTML = rows.map((row) => `<article class="opportunity-card"><div class="opportunity-rank">${escapeHtml(row.rank)}</div>
     <div><div class="opportunity-top"><h4>${escapeHtml(companyTickerLabel(row))}</h4><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></div>
-    <p>${escapeHtml(row.thesis)}</p><dl><div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst)}</dd></div><div><dt>Long-term</dt><dd>${escapeHtml(row.opportunity)}</dd></div></dl></div></article>`).join("") || `<p class="loading-state">No opportunities are available.</p>`;
+    <p>${escapeHtml(row.thesis)}</p><dl><div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst)}</dd></div><div><dt>Long-term</dt><dd>${escapeHtml(row.opportunity)}</dd></div><div><dt>Market timing support</dt><dd><strong>${escapeHtml(row.timing_support?.signal || "Insufficient Data")}</strong> · ${escapeHtml(row.timing_support?.rationale || "Market inputs missing.")}</dd></div><div><dt>Market snapshot</dt><dd>${escapeHtml(marketSnapshotText(row.market_data, row.market_data?.domains?.includes("ai") ? "qqq" : "xbi"))}</dd></div></dl></div></article>`).join("") || `<p class="loading-state">No opportunities are available.</p>`;
 }
 
 function renderWatchlist(data) {
   const rows = [...(data.watchlists?.ai || []).map((row) => ({ ...row, category: "AI" })), ...(data.watchlists?.biotech || []).map((row) => ({ ...row, category: "Biotech" }))];
   setText("watchlist-count", rows.length);
-  document.getElementById("my-watchlist").innerHTML = rows.map((row) => `<article class="stock-row"><div><span class="stock-category">${escapeHtml(row.category)}</span><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company)}</small></div><p>${escapeHtml(row.why)}</p><div><span>Next catalyst</span><strong>${escapeHtml(row.catalyst)}</strong></div><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></article>`).join("");
+  document.getElementById("my-watchlist").innerHTML = rows.map((row) => `<article class="stock-row"><div><span class="stock-category">${escapeHtml(row.category)}</span><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company)}</small></div><p>${escapeHtml(row.why)} ${escapeHtml(marketSnapshotText(row.market_data, row.category === "AI" ? "qqq" : "xbi"))}</p><div><span>Next catalyst</span><strong>${escapeHtml(row.catalyst)}</strong><span>Timing support</span><strong>${escapeHtml(row.timing_support?.signal || "Insufficient Data")} · ${escapeHtml(row.timing_support?.rationale || "Market inputs missing.")}</strong></div><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></article>`).join("");
+  const signalOrder = ["Buy", "Hold", "Reduce", "Sell", "Insufficient Data"];
+  document.getElementById("stock-signals").innerHTML = signalOrder.map((signal) => {
+    const matches = rows.filter((row) => (row.timing_support?.signal || "Insufficient Data") === signal);
+    return `<div><span class="signal-dot signal-${stageClass(signal)}"></span><strong>${escapeHtml(signal)}</strong><p>${matches.length ? matches.map((row) => `${row.ticker} (${row.category})`).join(", ") : "No watched names"}</p></div>`;
+  }).join("");
 }
 
 function changeClass(value) { const number = Number.parseFloat(value); return number > 0 ? "change-up" : number < 0 ? "change-down" : "change-flat"; }

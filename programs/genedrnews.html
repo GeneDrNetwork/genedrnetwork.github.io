@@ -70,11 +70,11 @@
         </section>
 
         <section class="dashboard-section" id="my-stocks">
-          <div class="section-heading"><div><span class="section-kicker">03 · Personal view</span><h2>My Stocks</h2><p>Your focused workspace for watched names, holdings, and future Radar Engine signals.</p></div><span class="source-note">Watchlist reuses the current automated dataset</span></div>
-          <div class="stock-tabs" role="tablist" aria-label="My Stocks views"><button type="button" role="tab" aria-selected="true" aria-controls="stock-panel-watchlist" id="stock-tab-watchlist" data-stock-tab="watchlist">Watchlist <span id="watchlist-count">0</span></button><button type="button" role="tab" aria-selected="false" aria-controls="stock-panel-holdings" id="stock-tab-holdings" data-stock-tab="holdings">Holdings <span>0</span></button><button type="button" role="tab" aria-selected="false" aria-controls="stock-panel-signals" id="stock-tab-signals" data-stock-tab="signals">Buy / Hold / Sell</button></div>
+          <div class="section-heading"><div><span class="section-kicker">03 · Personal view</span><h2>My Stocks</h2><p>Your focused workspace for watched names, holdings, and market-based timing support.</p></div><span class="source-note">Shared daily price and technical data</span></div>
+          <div class="stock-tabs" role="tablist" aria-label="My Stocks views"><button type="button" role="tab" aria-selected="true" aria-controls="stock-panel-watchlist" id="stock-tab-watchlist" data-stock-tab="watchlist">Watchlist <span id="watchlist-count">0</span></button><button type="button" role="tab" aria-selected="false" aria-controls="stock-panel-holdings" id="stock-tab-holdings" data-stock-tab="holdings">Holdings <span>0</span></button><button type="button" role="tab" aria-selected="false" aria-controls="stock-panel-signals" id="stock-tab-signals" data-stock-tab="signals">Buy / Hold / Reduce / Sell</button></div>
           <div class="stock-panel" role="tabpanel" id="stock-panel-watchlist" aria-labelledby="stock-tab-watchlist"><div id="my-watchlist" class="stock-list"><p class="loading-state">Loading watchlist...</p></div></div>
           <div class="stock-panel" role="tabpanel" id="stock-panel-holdings" aria-labelledby="stock-tab-holdings" hidden><div class="empty-state"><span>H</span><h3>No holdings connected</h3><p>The page structure is ready for portfolio data when the Radar Engine is built.</p></div></div>
-          <div class="stock-panel" role="tabpanel" id="stock-panel-signals" aria-labelledby="stock-tab-signals" hidden><div class="signal-placeholder"><div><span class="signal-dot signal-buy"></span><strong>Buy</strong><p>Awaiting Radar Engine</p></div><div><span class="signal-dot signal-hold"></span><strong>Hold</strong><p>Awaiting Radar Engine</p></div><div><span class="signal-dot signal-sell"></span><strong>Sell</strong><p>Awaiting Radar Engine</p></div></div></div>
+          <div class="stock-panel" role="tabpanel" id="stock-panel-signals" aria-labelledby="stock-tab-signals" hidden><div id="stock-signals" class="signal-placeholder"><p class="loading-state">Loading timing support...</p></div></div>
         </section>
 
         <section class="market-section" id="markets">
@@ -85,6 +85,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. AI and Biotech Radar exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260828-6" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260829-1" defer></script>
   </body>
 </html>
