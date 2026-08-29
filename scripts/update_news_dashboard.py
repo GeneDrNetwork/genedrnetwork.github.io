@@ -598,6 +598,7 @@ MARKETS = {"^GSPC": ("^spx", "S&P 500"), "^IXIC": ("^ndq", "Nasdaq"),
 
 AI_INDUSTRY_MAP = [
     ("AI Models/Applications", ("artificial intelligence", " ai ", "model", "inference", "agent", "software", "copilot")),
+    ("Physical AI / Robotics", ("physical ai", "robotics", "robot", "humanoid", "embodied ai", "autonomous system")),
     ("Compute", ("gpu", "accelerator", "compute", "chip", "semiconductor", "nvidia", "amd")),
     ("HBM/Memory", ("hbm", "high-bandwidth memory", "memory", "dram", "micron", "sk hynix")),
     ("Foundry/Advanced Packaging", ("foundry", "wafer", "packaging", "tsmc", "asml", "fab")),
@@ -1109,6 +1110,7 @@ def build_news_radar_interface(current_stories, archived_stories):
             events.append({
                 "event_id": story.get("id"),
                 "event_date": story.get("published_at"),
+                "headline": story.get("headline"),
                 "company": story.get("company"),
                 "ticker": story.get("ticker"),
                 "exchange": story.get("exchange"),
@@ -1559,6 +1561,326 @@ def biotech_news_methodology():
     }
 
 
+AI_RADAR_FACTOR_WEIGHTS = {
+    "structural_trend": 20, "demand_adoption": 20, "bottleneck_moat": 20,
+    "fundamental_earnings_impact": 15, "expectation_gap_valuation": 15, "market_confirmation": 10,
+}
+
+AI_ADOPTION_STAGES = {
+    "A0": "Research", "A1": "Prototype / enabling platform", "A2": "Pilot / limited deployment",
+    "A3": "Early commercial adoption", "A4": "Scaled adoption", "A5": "Mass adoption / standard infrastructure",
+}
+
+AI_RADAR_TRACKS = {
+    "AI Models/Applications": {
+        "demand_area": None, "current_bottleneck": "Inference economics, reliable deployment, and differentiated application value",
+        "next_bottleneck": "Proprietary data, distribution, and power-efficient inference",
+        "medium": "Watch whether recurring production usage broadens beyond infrastructure providers and early enterprise adopters.",
+        "long": "The 3–10 year outcome depends on durable application economics and widespread workflow integration; current evidence does not establish the end state.",
+    },
+    "Physical AI / Robotics": {
+        "demand_area": "Robotics", "current_bottleneck": "Real-world reliability, unit economics, safety, and repeatable paid deployment",
+        "next_bottleneck": "Scaled manufacturing, service operations, and application-specific distribution",
+        "medium": "Require evidence of repeated paid deployments and production-scale operation, not demos or isolated pilots.",
+        "long": "Mass adoption requires proven economics and operational reliability across many sites; current demos and pilots alone do not establish A4 or A5 adoption.",
+    },
+    "Compute": {
+        "demand_area": "AI Compute", "current_bottleneck": "Accelerator availability, HBM supply, and efficient inference capacity",
+        "next_bottleneck": "Networking, data-center commissioning, and power delivery",
+        "medium": "Watch whether capacity additions convert into sustained utilization and earnings rather than inventory or overbuild.",
+        "long": "Architectural efficiency and workload economics will determine how much compute demand remains structurally durable.",
+    },
+    "HBM/Memory": {
+        "demand_area": "Advanced Semiconductors", "current_bottleneck": "Qualified high-bandwidth-memory supply and yield",
+        "next_bottleneck": "Advanced packaging, interconnect bandwidth, and system-level power",
+        "medium": "Watch qualification, capacity expansion, pricing, and whether supply growth catches demand.",
+        "long": "Memory bandwidth remains strategically important, but supplier economics depend on capacity discipline and architecture changes.",
+    },
+    "Foundry/Advanced Packaging": {
+        "demand_area": "Advanced Semiconductors", "current_bottleneck": "Leading-edge wafer capacity, packaging capacity, and yield",
+        "next_bottleneck": "HBM integration, networking, and facility power",
+        "medium": "Watch capacity commitments, yield, customer concentration, and packaging lead times.",
+        "long": "Durability depends on sustained leading-edge demand and the capital intensity required to maintain process leadership.",
+    },
+    "Networking/Optical": {
+        "demand_area": "AI Networking", "current_bottleneck": "Scale-out bandwidth, latency, and power-efficient interconnect",
+        "next_bottleneck": "Optical integration, switching efficiency, and data-center power",
+        "medium": "Watch deployment evidence as clusters scale and architectures shift between Ethernet, proprietary fabrics, and optical links.",
+        "long": "Network content can rise with distributed compute, but standards shifts and integration may change where value accrues.",
+    },
+    "Data Centers": {
+        "demand_area": "Data Centers", "current_bottleneck": "Commissioned capacity, construction lead times, and usable powered shells",
+        "next_bottleneck": "Grid interconnection, electrical equipment, and cooling density",
+        "medium": "Watch contracted capacity, utilization, delivery timing, and cancellations rather than announced capacity alone.",
+        "long": "Long-run returns depend on utilization, financing costs, location, and whether infrastructure avoids overbuild.",
+    },
+    "Power/Electrical": {
+        "demand_area": "Energy & Power Infrastructure", "current_bottleneck": "Transformers, switchgear, power delivery, and interconnection queues",
+        "next_bottleneck": "Generation availability, transmission, and permitting",
+        "medium": "Watch order conversion, lead times, and completed energization of AI facilities.",
+        "long": "Durable demand depends on grid investment and the realized electricity intensity of AI workloads.",
+    },
+    "Cooling": {
+        "demand_area": "Data Centers", "current_bottleneck": "Thermal density and deployment of liquid-cooling systems",
+        "next_bottleneck": "Water, energy efficiency, maintenance, and facility integration",
+        "medium": "Watch production deployments and service requirements as rack density rises.",
+        "long": "Cooling value depends on sustained high-density compute and whether architectures reduce thermal intensity.",
+    },
+    "Grid/Energy/Materials": {
+        "demand_area": "Energy & Power Infrastructure", "current_bottleneck": "Generation, transmission, permitting, and grid connection",
+        "next_bottleneck": "Fuel, critical materials, project finance, and community acceptance",
+        "medium": "Watch signed supply agreements, permitted projects, construction, and delivered megawatts.",
+        "long": "The 3–10 year opportunity depends on actual load growth, project completion, and competitive generation economics.",
+    },
+}
+
+
+def ai_evidence_age(event_date, run_at):
+    if not event_date:
+        return {"age_days": None, "age_band": "Undated", "freshness_multiplier": 0.5}
+    try:
+        event_time = datetime.fromisoformat(event_date)
+        if event_time.tzinfo is None:
+            event_time = event_time.replace(tzinfo=timezone.utc)
+        age_days = max(0, (run_at - event_time).total_seconds() / 86400)
+    except (TypeError, ValueError):
+        return {"age_days": None, "age_band": "Undated", "freshness_multiplier": 0.5}
+    if age_days <= 7:
+        return {"age_days": round(age_days, 1), "age_band": "Fresh", "freshness_multiplier": 1.0}
+    if age_days <= 30:
+        return {"age_days": round(age_days, 1), "age_band": "Current", "freshness_multiplier": 0.85}
+    if age_days <= 90:
+        return {"age_days": round(age_days, 1), "age_band": "Aging", "freshness_multiplier": 0.6}
+    return {"age_days": round(age_days, 1), "age_band": "Stale", "freshness_multiplier": 0.35}
+
+
+def deduplicate_ai_radar_evidence(events):
+    deduplicated = {}
+    for event in events:
+        key = event.get("event_id") or news_fingerprint(
+            f"{event.get('company', '')} {event.get('event_date', '')} {event.get('new_information', '')}", "ai-radar")
+        existing = deduplicated.get(key)
+        if not existing or event.get("news_importance_score", 0) > existing.get("news_importance_score", 0):
+            deduplicated[key] = dict(event, underlying_event_key=key)
+    return list(deduplicated.values())
+
+
+def ai_adoption_stage(trend, evidence):
+    if not evidence:
+        return None, "Insufficient dated adoption evidence"
+    text = " ".join(item.get("new_information", "") for item in evidence).lower()
+    quantified = bool(re.search(r"(?:\d|%|million|billion)", text))
+    if trend == "Physical AI / Robotics":
+        real_paid = any(term in text for term in ("paid deployment", "commercial fleet", "deployed robots", "production units", "robotics revenue"))
+        scaled = real_paid and quantified and any(term in text for term in ("multiple sites", "thousand", "million", "scaled"))
+        if scaled:
+            return "A4", AI_ADOPTION_STAGES["A4"]
+        if real_paid:
+            return "A3", AI_ADOPTION_STAGES["A3"]
+        if any(term in text for term in ("pilot", "trial deployment", "limited deployment")):
+            return "A2", AI_ADOPTION_STAGES["A2"]
+        if any(term in text for term in ("demo", "prototype", "platform", "physical ai", "robotics")):
+            return "A1", AI_ADOPTION_STAGES["A1"]
+        return "A0", AI_ADOPTION_STAGES["A0"]
+    if quantified and any(term in text for term in ("widely deployed", "industry standard", "mass adoption")):
+        return "A5", AI_ADOPTION_STAGES["A5"]
+    if quantified and any(term in text for term in ("deploy", "full production", "revenue", "million additional", "customer adoption")):
+        return "A4", AI_ADOPTION_STAGES["A4"]
+    if any(term in text for term in ("launch", "production", "commercial", "contract", "revenue")):
+        return "A3", AI_ADOPTION_STAGES["A3"]
+    if any(term in text for term in ("pilot", "limited deployment", "evaluation")):
+        return "A2", AI_ADOPTION_STAGES["A2"]
+    return "A1", AI_ADOPTION_STAGES["A1"]
+
+
+def ai_factor(label, key, score, evidence_ids, rationale):
+    return {"key": key, "label": label, "weight": AI_RADAR_FACTOR_WEIGHTS[key], "score": score,
+            "missing": score is None, "evidence_ids": evidence_ids, "rationale": rationale}
+
+
+def normalized_available_score(components, keys):
+    available = [component for component in components if component["key"] in keys and component["score"] is not None]
+    if not available:
+        return None
+    return round(sum(component["score"] for component in available) / sum(component["weight"] for component in available) * 100)
+
+
+def ai_beneficiaries(trend, relevant_events):
+    config = AI_RADAR_TRACKS[trend]
+    driver = next((item for item in DEMAND_DRIVERS if item["area"] == config.get("demand_area")), None)
+    candidates = {}
+    bottleneck_tracks = {"Compute", "HBM/Memory", "Foundry/Advanced Packaging", "Networking/Optical", "Data Centers", "Power/Electrical", "Cooling", "Grid/Energy/Materials"}
+
+    def add(identity, category, evidence_id=None, importance=None):
+        if not identity or identity.get("ticker") in (None, "Missing", "N/A"):
+            return
+        item = candidates.setdefault(identity["company"], {**identity, "category": category, "evidence_ids": [], "importance": []})
+        category_priority = {"Direct": 4, "Bottleneck/Picks-and-Shovels": 3, "Second-Order": 2, "Emerging": 1}
+        if category_priority[category] > category_priority[item["category"]]:
+            item["category"] = category
+        if evidence_id and evidence_id not in item["evidence_ids"]:
+            item["evidence_ids"].append(evidence_id)
+        if importance is not None:
+            item["importance"].append(importance)
+
+    if trend == "AI Models/Applications":
+        for row in AI_PLATFORMS:
+            add(company_identity(row["company"], row.get("ticker")), "Direct")
+    if driver:
+        public_category = "Bottleneck/Picks-and-Shovels" if trend in bottleneck_tracks else "Direct"
+        for identity in normalize_company_list(driver.get("public_companies", "")):
+            add(identity, public_category)
+        for identity in normalize_company_list(driver.get("emerging_companies", "")):
+            add(identity, "Emerging")
+    for evidence in relevant_events:
+        relation = evidence.get("relation")
+        category = "Bottleneck/Picks-and-Shovels" if relation == "direct" and trend in bottleneck_tracks else "Direct" if relation == "direct" else "Second-Order"
+        for identity in evidence.get("company_identities", []):
+            add(identity, category, evidence.get("event_id"), evidence.get("news_importance_score"))
+
+    leader_names = {item["company"] for item in AI_INFRASTRUCTURE + AI_PLATFORMS}
+    results = []
+    for item in candidates.values():
+        if not item["evidence_ids"]:
+            continue
+        category = item["category"]
+        components = [
+            {"label": "Trend Exposure", "weight": 30, "score": {"Direct": 30, "Bottleneck/Picks-and-Shovels": 26, "Second-Order": 16, "Emerging": 18}[category]},
+            {"label": "Bottleneck Position", "weight": 25, "score": 25 if category == "Bottleneck/Picks-and-Shovels" else None},
+            {"label": "Revenue Sensitivity", "weight": 20, "score": 20 if item["importance"] and any(
+                event.get("event_type") == "Financial Results" and event.get("event_id") in item["evidence_ids"] for event in relevant_events) else None},
+            {"label": "Competitive Moat", "weight": 15, "score": 12 if item["company"] in leader_names else None},
+            {"label": "Evidence Quality", "weight": 10, "score": round(max(item["importance"]) / 10) if item["importance"] else 5},
+        ]
+        available = [component for component in components if component["score"] is not None]
+        relevance = round(sum(component["score"] for component in available) / sum(component["weight"] for component in available) * 100)
+        results.append({key: item[key] for key in ("company", "ticker", "exchange", "listing_status")} | {
+            "category": category, "beneficiary_relevance": relevance, "score_components": components,
+            "data_completeness": sum(component["weight"] for component in available), "evidence_ids": item["evidence_ids"],
+        })
+    return sorted(results, key=lambda item: (-item["beneficiary_relevance"], item["company"]))[:8]
+
+
+def ai_radar_why_changed(previous, current):
+    if not previous:
+        return "Initial AI Radar V1 evidence baseline."
+    changes = []
+    for label, key in (("Trend Strength", "trend_strength"), ("Opportunity Score", "opportunity_score"),
+                       ("Data Completeness", "data_completeness")):
+        old, new = previous.get(key), current.get(key)
+        if old != new:
+            changes.append(f"{label} changed from {old if old is not None else 'Missing'} to {new if new is not None else 'Missing'}")
+    if previous.get("adoption_stage") != current.get("adoption_stage"):
+        changes.append(f"Adoption Stage changed from {previous.get('adoption_stage') or 'Missing'} to {current.get('adoption_stage') or 'Missing'}")
+    return "; ".join(changes) + "." if changes else "No material score change; evidence was refreshed and deduplicated."
+
+
+def build_ai_radar(ai_news_section, previous_rows, run_at):
+    raw_events = ai_news_section.get("radar_evidence_interface", {}).get("events", [])
+    events = deduplicate_ai_radar_evidence(raw_events)
+    previous_by_trend = {item.get("trend"): item for item in previous_rows or []}
+    rows = []
+    for trend, config in AI_RADAR_TRACKS.items():
+        relevant = []
+        for event in events:
+            direct = trend in event.get("direct_effects", []) or trend in event.get("affected_trends", [])
+            second_order = trend in event.get("second_order_effects", []) and not direct
+            if not direct and not second_order:
+                continue
+            aged = ai_evidence_age(event.get("event_date"), run_at)
+            direction = (event.get("direction") or "").lower()
+            signal = "mixed" if "mixed" in direction else "confirming" if any(term in direction for term in ("expand", "positive", "advancing")) else "contradicting" if any(
+                term in direction for term in ("contract", "restrict", "negative", "delay")) else "neutral"
+            relevant.append({**event, **aged, "relation": "direct" if direct else "second-order", "signal": signal})
+        confirming = [item for item in relevant if item["signal"] == "confirming"]
+        contradicting = [item for item in relevant if item["signal"] == "contradicting"]
+        mixed_evidence = [item for item in relevant if item["signal"] == "mixed"]
+        event_ids = [item["event_id"] for item in relevant if item.get("event_id")]
+        structural_score = min(20, 12 + min(8, len(confirming) * 2))
+        demand_score = None
+        if relevant:
+            weighted_importance = sum(item.get("news_importance_score", 0) * item["freshness_multiplier"] *
+                                      (1 if item["relation"] == "direct" else 0.55) for item in relevant) / len(relevant)
+            demand_score = min(20, round(6 + weighted_importance * 0.13 + min(3, len(confirming))))
+        bottleneck_tracks = {"Compute", "HBM/Memory", "Foundry/Advanced Packaging", "Networking/Optical", "Data Centers", "Power/Electrical", "Cooling", "Grid/Energy/Materials"}
+        bottleneck_score = None
+        if trend in bottleneck_tracks:
+            bottleneck_score = min(20, 10 + min(6, len(relevant) * 2))
+        elif relevant and any(term in " ".join(item.get("new_information", "") for item in relevant).lower()
+                              for term in ("bottleneck", "capacity", "shortage", "latency", "power", "bandwidth")):
+            bottleneck_score = min(20, 8 + min(8, len(relevant) * 2))
+        earnings_events = [item for item in relevant if item.get("event_type") == "Financial Results" and item["relation"] == "direct"]
+        earnings_score = min(15, 10 + len(earnings_events)) if earnings_events else None
+        expectation_events = [item for item in relevant if any(term in item.get("new_information", "").lower()
+                              for term in ("priced in", "valuation", "market expected", "consensus expectation", "earnings multiple"))]
+        expectation_score = min(15, 8 + len(expectation_events)) if expectation_events else None
+        market_score = None
+        components = [
+            ai_factor("Structural Trend", "structural_trend", structural_score, ["existing-ai-industry-map", *event_ids], "Existing industry-chain structure plus deduplicated supporting events."),
+            ai_factor("Demand & Adoption", "demand_adoption", demand_score, event_ids, "Dated adoption and demand evidence; missing when no connected event supports the track."),
+            ai_factor("Bottleneck / Moat", "bottleneck_moat", bottleneck_score, event_ids if bottleneck_score is not None else [], "Current chain bottleneck and connected event evidence."),
+            ai_factor("Fundamental Earnings Impact", "fundamental_earnings_impact", earnings_score, [item["event_id"] for item in earnings_events], "Company financial-results evidence directly associated with the track."),
+            ai_factor("Expectation Gap / Valuation", "expectation_gap_valuation", expectation_score, [item["event_id"] for item in expectation_events], "Explicit valuation or market-expectation evidence only; not inferred from headlines."),
+            ai_factor("Market Confirmation", "market_confirmation", market_score, [], "Missing: no trend-specific price, volume, or breadth dataset is connected."),
+        ]
+        trend_strength = normalized_available_score(components, {
+            "structural_trend", "demand_adoption", "bottleneck_moat", "fundamental_earnings_impact"})
+        opportunity_score = normalized_available_score(components, set(AI_RADAR_FACTOR_WEIGHTS)) if expectation_score is not None and market_score is not None else None
+        completeness = sum(component["weight"] for component in components if component["score"] is not None)
+        confidence = "High" if completeness >= 70 and len(relevant) >= 3 else "Medium" if completeness >= 45 and relevant else "Low"
+        direct_evidence = [item for item in relevant if item["relation"] == "direct"]
+        adoption_stage, adoption_label = ai_adoption_stage(trend, direct_evidence)
+        beneficiaries = ai_beneficiaries(trend, relevant)
+        evidence_summary = confirming[0]["new_information"] if confirming else relevant[0]["new_information"] if relevant else "No dated News evidence is connected; only the existing structural industry map is available."
+        direction = "Expanding" if confirming and not contradicting and not mixed_evidence else "Mixed" if mixed_evidence or (confirming and contradicting) else "Contradicting" if contradicting else "Unconfirmed"
+        row = {
+            "trend": trend, "heat_score": trend_strength, "trend_strength": trend_strength,
+            "opportunity_score": opportunity_score, "direction": direction,
+            "stage": f"{adoption_stage} · {adoption_label}" if adoption_stage else "Missing / insufficient evidence",
+            "adoption_stage": adoption_stage, "adoption_stage_label": adoption_label,
+            "why_now": f"{evidence_summary} Data completeness is {completeness}% with {confidence.lower()} confidence.",
+            "what_it_means": f"{len(confirming)} confirming, {len(mixed_evidence)} mixed, and {len(contradicting)} contradicting deduplicated events currently inform this track.",
+            "key_intelligence": evidence_summary, "demand_drivers": config["medium"],
+            "current_bottleneck": config["current_bottleneck"], "next_likely_bottleneck": config["next_bottleneck"],
+            "bottleneck": f"Current: {config['current_bottleneck']}. Next likely: {config['next_bottleneck']}.",
+            "beneficiary_records": beneficiaries,
+            "potential_beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) · {item['category']} · {item['beneficiary_relevance']}" for item in beneficiaries[:3]) or "Missing / insufficient evidence",
+            "beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) — {item['category']} — relevance {item['beneficiary_relevance']}/100" for item in beneficiaries) or "Missing / insufficient evidence",
+            "market_expectation": "Missing: no explicit valuation/expectation evidence is connected." if expectation_score is None else expectation_events[0]["new_information"],
+            "risks": "; ".join(item["new_information"] for item in contradicting[:2]) or "Missing: no explicit contradicting or invalidation evidence is connected.",
+            "watch_next": f"Watch whether {config['current_bottleneck'].lower()} shifts toward {config['next_bottleneck'].lower()}.",
+            "horizons": {"near_term": evidence_summary, "six_to_36_months": config["medium"], "three_to_10_years": config["long"]},
+            "score_components": components, "data_completeness": completeness, "confidence": confidence,
+            "confirming_evidence": confirming, "contradicting_evidence": contradicting, "mixed_evidence": mixed_evidence,
+            "evidence_count": len(relevant), "deduplicated_event_count": len(events), "evidence_as_of": run_at.isoformat(timespec="minutes"),
+            "engine_version": "ai-technology-radar-v1",
+        }
+        previous = previous_by_trend.get(trend)
+        row["why_changed"] = ai_radar_why_changed(previous, row)
+        prior_history = list(previous.get("score_history", [])) if previous else []
+        snapshot = {"as_of": row["evidence_as_of"], "trend_strength": trend_strength, "opportunity_score": opportunity_score,
+                    "data_completeness": completeness, "confidence": confidence, "adoption_stage": adoption_stage,
+                    "evidence_count": len(relevant), "why_changed": row["why_changed"]}
+        snapshot_day = snapshot["as_of"][:10]
+        prior_history = [item for item in prior_history if str(item.get("as_of", ""))[:10] != snapshot_day]
+        row["score_history"] = (prior_history + [snapshot])[-60:]
+        rows.append(row)
+    return sorted(rows, key=lambda item: (-(item["trend_strength"] or -1), item["trend"]))
+
+
+def ai_radar_methodology():
+    return {
+        "engine_version": "ai-technology-radar-v1", "factor_weights": AI_RADAR_FACTOR_WEIGHTS,
+        "trend_strength_policy": "Trend Strength uses available Structural, Demand, Bottleneck and Earnings factors. Missing factors are excluded, not scored as zero.",
+        "opportunity_score_policy": "Opportunity Score remains missing unless explicit Expectation Gap/Valuation and trend-specific Market Confirmation evidence are both connected.",
+        "adoption_stages": AI_ADOPTION_STAGES,
+        "physical_ai_policy": "Demos and pilots cannot establish scaled or mass adoption. A3+ requires real commercial deployment evidence; A4+ requires quantified scale.",
+        "evidence_aging": {"fresh": "0-7 days", "current": "8-30 days", "aging": "31-90 days", "stale": ">90 days"},
+        "beneficiary_weights": {"trend_exposure": 30, "bottleneck_position": 25, "revenue_sensitivity": 20,
+                                "competitive_moat": 15, "evidence_quality": 10},
+    }
+
+
 def normalize_company_row(row):
     normalized = dict(row)
     normalized.update(company_identity(normalized.get("company"), normalized.get("ticker")))
@@ -1663,6 +1985,7 @@ def build():
         takeaways = previous.get("takeaways", ["Daily source monitoring is active."])
     previous_ai_news = previous.get("top_investment_news", {}).get("ai_technology", {})
     ai_news_section = build_ai_news_section(ai_news_candidates, previous_ai_news, run_at)
+    ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at)
     previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
     biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
 
@@ -1675,7 +1998,8 @@ def build():
         "ai": {"infrastructure_leaders": AI_INFRASTRUCTURE, "platform_leaders": AI_PLATFORMS,
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
-        "radar": {"biotech": build_biotech_radar(score_date), "methodology": radar_methodology()},
+        "radar": {"ai": ai_radar, "biotech": build_biotech_radar(score_date),
+                  "methodology": radar_methodology(), "ai_methodology": ai_radar_methodology()},
         "radar_validation": {
             "mrna": {
                 "cutoff_date": "2026-07-31",

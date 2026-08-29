@@ -38,15 +38,43 @@ function renderScore(score, label) {
   return `<div class="score" aria-label="${escapeHtml(label)} ${safeScore} out of 100"><strong>${safeScore}</strong><span>/100</span><i><b style="width:${safeScore}%"></b></i></div>`;
 }
 
+function renderAiFactorBreakdown(row) {
+  const factors = (row.score_components || []).map((factor) => `<li class="${factor.missing ? "score-component-missing" : ""}">
+    <span>${escapeHtml(factor.label)}</span><strong>${factor.score === null || factor.score === undefined ? "Missing" : `${escapeHtml(factor.score)} / ${escapeHtml(factor.weight)}`}</strong>
+    <small>${escapeHtml(factor.rationale)}</small></li>`).join("");
+  const opportunity = row.opportunity_score === null || row.opportunity_score === undefined ? "Missing" : `${row.opportunity_score} / 100`;
+  return `<div class="detail-item detail-wide score-breakdown"><dt>Trend Strength vs Opportunity Score</dt><dd><p>Trend Strength: ${escapeHtml(row.trend_strength)} / 100 · Opportunity Score: ${escapeHtml(opportunity)} · Completeness: ${escapeHtml(row.data_completeness)}% · Confidence: ${escapeHtml(row.confidence)}</p><ul>${factors}</ul></dd></div>`;
+}
+
+function renderAiHorizons(horizons = {}) {
+  return `<div class="detail-item detail-wide"><dt>Three Horizons</dt><dd><strong>Near-term</strong><p>${escapeHtml(horizons.near_term || "Missing")}</p><strong>6–36 months</strong><p>${escapeHtml(horizons.six_to_36_months || "Missing")}</p><strong>3–10 years</strong><p>${escapeHtml(horizons.three_to_10_years || "Missing")}</p></dd></div>`;
+}
+
+function renderAiEvidence(label, evidence = []) {
+  const rows = evidence.map((item) => `<li><strong>${escapeHtml(companyTickerLabel(item))}</strong> · ${escapeHtml(item.age_band || "Age missing")} · ${escapeHtml(formatNewsDate(item.event_date))}<br>${escapeHtml(item.new_information || "Evidence detail missing")}</li>`).join("");
+  return `<div class="detail-item detail-wide radar-sources"><dt>${escapeHtml(label)}</dt><dd><ul>${rows || "<li>Missing / no connected evidence.</li>"}</ul></dd></div>`;
+}
+
+function renderAiBeneficiaries(rows = []) {
+  const items = rows.map((item) => `<li><strong>${escapeHtml(companyTickerLabel(item))}</strong> — ${escapeHtml(item.category)} — relevance ${escapeHtml(item.beneficiary_relevance)}/100 · completeness ${escapeHtml(item.data_completeness)}%</li>`).join("");
+  return `<div class="detail-item detail-wide radar-sources"><dt>Evidence-Supported Beneficiaries</dt><dd><ul>${items || "<li>Missing / insufficient evidence.</li>"}</ul></dd></div>`;
+}
+
+function renderAiHistory(row) {
+  const history = (row.score_history || []).slice(-5).reverse().map((item) => `<li>${escapeHtml(formatNewsDate(item.as_of))}: Trend ${escapeHtml(item.trend_strength ?? "Missing")} · Opportunity ${escapeHtml(item.opportunity_score ?? "Missing")} · Completeness ${escapeHtml(item.data_completeness)}% · ${escapeHtml(item.confidence)}</li>`).join("");
+  return `<div class="detail-item detail-wide radar-sources"><dt>Evidence / Score History</dt><dd><p>${escapeHtml(row.why_changed || "Missing")}</p><ul>${history || "<li>No prior snapshot.</li>"}</ul></dd></div>`;
+}
+
 function renderAiRadar(rows) {
   document.getElementById("ai-radar").innerHTML = rows.map((row) => `<details class="radar-item ai-radar-item"><summary>
-      <span class="radar-name"><strong>${escapeHtml(row.trend)}</strong><small>Technology trend</small></span>${renderScore(row.heat_score, "Heat score")}
-      <span class="direction"><i aria-hidden="true">↗</i>${escapeHtml(row.direction)}</span><span><b class="stage ${stageClass(row.stage)}">${escapeHtml(row.stage)}</b></span>
+      <span class="radar-name"><strong>${escapeHtml(row.trend)}</strong><small>Technology trend</small></span>${renderScore(row.trend_strength, "Trend Strength")}
+      <span class="direction"><i aria-hidden="true">${row.direction === "Contradicting" ? "↘" : row.direction === "Mixed" ? "↔" : "↗"}</i>${escapeHtml(row.direction)}</span><span><b class="stage ${stageClass(row.adoption_stage || "missing")}">${escapeHtml(row.stage)}</b></span>
       <span class="radar-copy">${escapeHtml(row.why_now)}</span><span class="beneficiaries">${escapeHtml(row.potential_beneficiaries)}</span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid">
-      ${detailItem("Key Intelligence", row.key_intelligence)}${detailItem("Demand Drivers", row.demand_drivers)}${detailItem("Bottleneck", row.bottleneck, true)}
+      ${detailItem("What It Means", row.what_it_means)}${detailItem("Key Intelligence", row.key_intelligence)}${detailItem("Demand Drivers", row.demand_drivers)}${detailItem("Current Bottleneck", row.current_bottleneck)}${detailItem("Next Likely Bottleneck", row.next_likely_bottleneck)}
       ${detailItem("Beneficiaries", row.beneficiaries)}${detailItem("Market Expectation / Priced In", row.market_expectation, true)}
       ${detailItem("Risks / Invalidation", row.risks, true)}${detailItem("What to Watch Next", row.watch_next)}
+      ${renderAiFactorBreakdown(row)}${renderAiHorizons(row.horizons)}${renderAiEvidence("Confirming Evidence", row.confirming_evidence)}${renderAiEvidence("Mixed Evidence", row.mixed_evidence)}${renderAiEvidence("Contradicting Evidence", row.contradicting_evidence)}${renderAiBeneficiaries(row.beneficiary_records)}${renderAiHistory(row)}
     </dl></details>`).join("") || `<p class="loading-state">No AI trends are available.</p>`;
 }
 
