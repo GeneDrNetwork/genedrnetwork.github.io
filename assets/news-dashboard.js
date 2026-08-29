@@ -125,7 +125,7 @@ function formatNewsDate(value) {
 
 function newsScore(label, value) {
   const score = Number.isFinite(Number(value)) ? Math.max(0, Math.min(100, Number(value))) : null;
-  return `<span class="news-score"><small>${escapeHtml(label)}</small><strong>${score === null ? "Missing" : escapeHtml(score)}</strong>${score === null ? "" : "<i>/100</i>"}</span>`;
+  return `<span class="news-score"><small>${escapeHtml(label)}</small><strong>${score === null ? "Missing" : `${escapeHtml(score)}<i>/100</i>`}</strong></span>`;
 }
 
 function companyTickerLabel(row = {}) {
@@ -166,10 +166,8 @@ function renderNewsCard(story, kind = "ai", archived = false) {
   const previousToNew = `${story.previous_state || "Missing"} → ${story.new_state || "Missing"}`;
   return `<details class="top-news-card news-item${archived ? " news-item-archived" : ""}">
     <summary class="news-summary">
-      <time>${escapeHtml(formatNewsDate(story.published_at))}</time>
-      <span class="news-headline">${escapeHtml(story.headline || "Headline missing")}</span>
+      <span class="news-summary-copy"><span class="news-summary-meta"><time>${escapeHtml(formatNewsDate(story.published_at))}</time>${category ? `<span class="news-category">${escapeHtml(category)}</span>` : ""}</span><span class="news-headline">${escapeHtml(story.headline || "Headline missing")}</span></span>
       ${newsScore("Importance", story.news_importance_score)}
-      ${category ? `<span class="news-category">${escapeHtml(category)}</span>` : ""}
       <span class="expand-control" aria-hidden="true">+</span>
     </summary>
     <div class="news-detail-panel">
