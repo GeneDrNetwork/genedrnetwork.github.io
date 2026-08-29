@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-29T01:55:49+00:00",
+  "updated_at": "2026-08-29T02:31:03+00:00",
   "top_investment_news": {
     "ai_technology": {
       "stories": [
@@ -106,7 +106,7 @@
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 4
         },
         {
@@ -223,7 +223,7 @@
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 4
         },
         {
@@ -335,7 +335,7 @@
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 4
         },
         {
@@ -440,7 +440,7 @@
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 4
         },
         {
@@ -532,7 +532,7 @@
             ]
           },
           "missing_data": [],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 4
         }
       ],
@@ -1119,7 +1119,7 @@
             "Indication",
             "Development stage"
           ],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 1
         },
         {
@@ -1207,7 +1207,7 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 1
         },
         {
@@ -1296,7 +1296,7 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 1
         },
         {
@@ -1392,7 +1392,7 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 1
         }
       ],
@@ -1472,7 +1472,7 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 1
         },
         {
@@ -1545,7 +1545,7 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 1
         },
         {
@@ -1623,7 +1623,7 @@
             "Drug/program",
             "Indication"
           ],
-          "first_seen": "2026-08-29T01:55+00:00",
+          "first_seen": "2026-08-29T02:31+00:00",
           "quality_schema_version": 1
         },
         {
@@ -2138,8 +2138,8 @@
   "summaries": {
     "ai": "Key developments: NVIDIA Announces Upcoming Event for Financial Community; AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI; NVIDIA Announces Financial Results for Second Quarter Fiscal 2027.",
     "biotech": "Key developments: BioNTech-Genentech cancer vax records more deaths than control in scrapped ph. 2 test; Oncolys BioPharma surges on publication of censavudine trial results in overseas medical journal; Layoff Tracker: Cellares cuts jobs after losing pharma customer.",
-    "market": "Key developments: Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers; Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight; US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower.",
-    "market_movers": "Dow Jones led tracked indexes at -0.02% today; Russell 2000 was weakest at -1.39%. Key developments: Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers; Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight; US Stock Market Today: S&P 500, Dow Up Ahead Of Warsh's Jackson Hole Address; Chips Drag Nasdaq Lower."
+    "market": "Key developments: Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight; Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers; Dow, S&P 500, Nasdaq Futures Gain As Trump Signals Iran Talks Could Resume: Why SNDK, BMNR, ORCL, BE, TVTX Kept Traders On Edge Today.",
+    "market_movers": "Dow Jones led tracked indexes at -0.02% today; Russell 2000 was weakest at -1.39%. Key developments: Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight; Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers; Dow, S&P 500, Nasdaq Futures Gain As Trump Signals Iran Talks Could Resume: Why SNDK, BMNR, ORCL, BE, TVTX Kept Traders On Edge Today."
   },
   "takeaways": [
     "NVIDIA Announces Upcoming Event for Financial Community",
@@ -2148,7 +2148,7 @@
     "Oncolys BioPharma surges on publication of censavudine trial results in overseas medical journal - finance.biggo.com",
     "Anavex Life Sciences Reports Third Fiscal Quarter 2026 Financial Results and Business Update - Anavex Life Sciences",
     "Gildeuretinol gains Japan orphan designation for Stargardt disease - Ophthalmology Times",
-    "Market Braces For Warsh Speech; Marvell, Affirm, PayPal Big Movers - Investor's Business Daily"
+    "Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight - Reuters"
   ],
   "ai": {
     "infrastructure_leaders": [
@@ -3627,7 +3627,7 @@
             "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
             "archived": false,
             "underlying_event_key": "5f8fe4d36353fc328e64",
-            "age_days": 2.2,
+            "age_days": 2.3,
             "age_band": "Fresh",
             "freshness_multiplier": 1.0,
             "relation": "direct",
@@ -3969,12 +3969,12 @@
         ],
         "evidence_count": 6,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 89,
             "opportunity_score": null,
             "data_completeness": 75,
@@ -4312,7 +4312,7 @@
             "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
             "archived": false,
             "underlying_event_key": "5f8fe4d36353fc328e64",
-            "age_days": 2.2,
+            "age_days": 2.3,
             "age_band": "Fresh",
             "freshness_multiplier": 1.0,
             "relation": "direct",
@@ -4600,12 +4600,12 @@
         ],
         "evidence_count": 5,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 87,
             "opportunity_score": null,
             "data_completeness": 75,
@@ -4937,7 +4937,7 @@
             "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
             "archived": false,
             "underlying_event_key": "5f8fe4d36353fc328e64",
-            "age_days": 2.2,
+            "age_days": 2.3,
             "age_band": "Fresh",
             "freshness_multiplier": 1.0,
             "relation": "direct",
@@ -5143,12 +5143,12 @@
         ],
         "evidence_count": 4,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 84,
             "opportunity_score": null,
             "data_completeness": 75,
@@ -5704,12 +5704,12 @@
         ],
         "evidence_count": 4,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 82,
             "opportunity_score": null,
             "data_completeness": 60,
@@ -6039,7 +6039,7 @@
             "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
             "archived": false,
             "underlying_event_key": "5f8fe4d36353fc328e64",
-            "age_days": 2.2,
+            "age_days": 2.3,
             "age_band": "Fresh",
             "freshness_multiplier": 1.0,
             "relation": "second-order",
@@ -6245,12 +6245,12 @@
         ],
         "evidence_count": 4,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 77,
             "opportunity_score": null,
             "data_completeness": 60,
@@ -6580,7 +6580,7 @@
             "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027",
             "archived": false,
             "underlying_event_key": "5f8fe4d36353fc328e64",
-            "age_days": 2.2,
+            "age_days": 2.3,
             "age_band": "Fresh",
             "freshness_multiplier": 1.0,
             "relation": "second-order",
@@ -6786,12 +6786,12 @@
         ],
         "evidence_count": 4,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 77,
             "opportunity_score": null,
             "data_completeness": 60,
@@ -7049,12 +7049,12 @@
         ],
         "evidence_count": 1,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 75,
             "opportunity_score": null,
             "data_completeness": 40,
@@ -7383,12 +7383,12 @@
         "mixed_evidence": [],
         "evidence_count": 2,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 73,
             "opportunity_score": null,
             "data_completeness": 60,
@@ -7648,12 +7648,12 @@
         ],
         "evidence_count": 1,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 70,
             "opportunity_score": null,
             "data_completeness": 60,
@@ -7756,12 +7756,12 @@
         "mixed_evidence": [],
         "evidence_count": 0,
         "deduplicated_event_count": 6,
-        "evidence_as_of": "2026-08-29T01:55+00:00",
+        "evidence_as_of": "2026-08-29T02:31+00:00",
         "engine_version": "ai-technology-radar-v1",
         "why_changed": "No material score change; evidence was refreshed and deduplicated.",
         "score_history": [
           {
-            "as_of": "2026-08-29T01:55+00:00",
+            "as_of": "2026-08-29T02:31+00:00",
             "trend_strength": 55,
             "opportunity_score": null,
             "data_completeness": 40,
@@ -7778,6 +7778,7 @@
         "ticker": "NTLA",
         "company": "Intellia Therapeutics",
         "program": "lonvoguran ziclumeran (lonvo-z)",
+        "indication": "Hereditary angioedema",
         "catalyst": "FDA acceptance of the lonvo-z BLA",
         "expected_timing": "Second half of 2026",
         "stage": "BLA submission / review",
@@ -7802,39 +7803,49 @@
             "date": "2026-02-26"
           }
         ],
-        "catalyst_score": 67,
+        "opportunity_score": 94,
+        "catalyst_score": 94,
+        "scientific_evidence_score": 30,
+        "catalyst_impact_score": 14,
+        "expectation_gap_score": null,
+        "sector_trend_score": null,
+        "timing_technicals_score": 3,
         "upcoming_catalyst": "FDA acceptance of the lonvo-z BLA \u2014 Second half of 2026",
-        "opportunity_status": "Monitoring",
+        "opportunity_status": "Evidence-Supported / High Impact",
+        "binary_risk": "Moderate",
+        "binary_risk_rationale": "Evidence uncertainty is 30/30; catalyst magnitude is 14/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low.",
+        "binary_risk_inputs": {
+          "evidence_uncertainty": 0,
+          "company_sensitivity": null,
+          "catalyst_magnitude": 14,
+          "portfolio_dependence": null
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+          "passed": true,
+          "high_conviction_eligible": false,
+          "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence."
+        },
+        "evidence_integrity_gate": {
+          "concern_identified": false,
+          "confidence_cap": null,
+          "evidence_ids": [],
+          "rule": "Explicit credibility or data-integrity concerns cap confidence at Low."
+        },
         "score_as_of": "2026-08-29",
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "score_components": [
           {
-            "key": "catalyst_importance",
-            "label": "Catalyst Importance",
-            "score": 25,
-            "weight": 25,
-            "rationale": "A pivotal regulatory filing acceptance can materially change approval probability.",
+            "key": "scientific_evidence",
+            "label": "Scientific Evidence",
+            "weight": 30,
+            "score": 30,
+            "available_weight": 30,
             "missing": false,
-            "evidence": [
-              {
-                "title": "Intellia Q2 2026 results",
-                "date": "2026-08-06",
-                "url": "https://ir.intelliatx.com/node/12826"
-              },
-              {
-                "title": "Intellia full-year 2025 results",
-                "date": "2026-02-26",
-                "url": "https://ir.intelliatx.com/node/12501"
-              }
-            ]
-          },
-          {
-            "key": "prior_evidence",
-            "label": "Prior Evidence",
-            "score": 20,
-            "weight": 20,
+            "partial": false,
+            "missing_fields": [],
             "rationale": "Positive Phase 3 results support the filing.",
-            "missing": false,
             "evidence": [
               {
                 "title": "Intellia Q2 2026 results",
@@ -7849,32 +7860,18 @@
             ]
           },
           {
-            "key": "catalyst_timing",
-            "label": "Catalyst Timing",
-            "score": 10,
-            "weight": 15,
-            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.",
+            "key": "catalyst_impact_company_sensitivity",
+            "label": "Catalyst Impact / Company Sensitivity",
+            "weight": 25,
+            "score": 14,
+            "available_weight": 15,
             "missing": false,
-            "evidence": [
-              {
-                "title": "Intellia Q2 2026 results",
-                "date": "2026-08-06",
-                "url": "https://ir.intelliatx.com/node/12826"
-              },
-              {
-                "title": "Intellia full-year 2025 results",
-                "date": "2026-02-26",
-                "url": "https://ir.intelliatx.com/node/12501"
-              }
-            ]
-          },
-          {
-            "key": "commercial_impact",
-            "label": "Commercial Impact",
-            "score": 12,
-            "weight": 15,
-            "rationale": "One-time therapy in HAE has differentiated potential, but v1 lacks an independently verified revenue model.",
-            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Company valuation sensitivity",
+              "Portfolio dependence"
+            ],
+            "rationale": "A pivotal regulatory filing acceptance can materially change approval probability. One-time therapy in HAE has differentiated potential, but v1 lacks an independently verified revenue model. Verified program-level valuation sensitivity and portfolio dependence are missing.",
             "evidence": [
               {
                 "title": "Intellia Q2 2026 results",
@@ -7891,27 +7888,88 @@
           {
             "key": "expectation_gap",
             "label": "Expectation Gap",
-            "score": 0,
-            "weight": 15,
-            "rationale": "Missing verified market-expectation data.",
+            "weight": 20,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Verified market expectations"
+            ],
+            "rationale": "Missing verified market-expectation data.",
             "evidence": []
           },
           {
-            "key": "positioning",
-            "label": "Positioning / Technical Setup",
-            "score": 0,
-            "weight": 10,
-            "rationale": "Missing verified positioning and technical data.",
+            "key": "sector_trend_capital_flow",
+            "label": "Sector Trend & Capital Flow",
+            "weight": 15,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Sector breadth",
+              "Capital flow"
+            ],
+            "rationale": "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.",
             "evidence": []
+          },
+          {
+            "key": "timing_technicals",
+            "label": "Timing & Technicals",
+            "weight": 10,
+            "score": 3,
+            "available_weight": 5,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Technical setup / positioning"
+            ],
+            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date. Missing verified positioning and technical data.",
+            "evidence": [
+              {
+                "title": "Intellia Q2 2026 results",
+                "date": "2026-08-06",
+                "url": "https://ir.intelliatx.com/node/12826"
+              },
+              {
+                "title": "Intellia full-year 2025 results",
+                "date": "2026-02-26",
+                "url": "https://ir.intelliatx.com/node/12501"
+              }
+            ]
           }
         ],
         "missing_data": [
-          "Expectation Gap",
-          "Positioning / Technical Setup"
+          "Company valuation sensitivity",
+          "Portfolio dependence",
+          "Verified market expectations",
+          "Sector breadth",
+          "Capital flow",
+          "Technical setup / positioning"
         ],
-        "data_completeness": 75,
+        "data_completeness": 50,
+        "confidence": "Medium",
+        "confirming_evidence": [],
+        "mixed_evidence": [],
+        "contradicting_evidence": [],
+        "evidence_count": 0,
+        "why_changed": "No material score change; evidence history was refreshed and deduplicated.",
+        "score_history": [
+          {
+            "as_of": "2026-08-29",
+            "opportunity_score": 94,
+            "scientific_evidence_score": 30,
+            "catalyst_impact_score": 14,
+            "expectation_gap_score": null,
+            "binary_risk": "Moderate",
+            "data_completeness": 50,
+            "confidence": "Medium",
+            "opportunity_status": "Evidence-Supported / High Impact",
+            "evidence_count": 0,
+            "why_changed": "No material score change; evidence history was refreshed and deduplicated."
+          }
+        ],
         "exchange": "",
         "listing_status": "Public",
         "related_companies": [],
@@ -7921,6 +7979,7 @@
         "ticker": "BEAM",
         "company": "Beam Therapeutics",
         "program": "BEAM-302",
+        "indication": "Alpha-1 antitrypsin deficiency",
         "catalyst": "Updated Phase 1/2 BEAM-302 data at ERS",
         "expected_timing": "September 8, 2026",
         "stage": "Phase 1/2; pivotal cohort dosing",
@@ -7950,44 +8009,49 @@
             "date": "2026-08-04"
           }
         ],
-        "catalyst_score": 63,
+        "opportunity_score": 82,
+        "catalyst_score": 82,
+        "scientific_evidence_score": 24,
+        "catalyst_impact_score": 12,
+        "expectation_gap_score": null,
+        "sector_trend_score": null,
+        "timing_technicals_score": 5,
         "upcoming_catalyst": "Updated Phase 1/2 BEAM-302 data at ERS \u2014 September 8, 2026",
-        "opportunity_status": "Monitoring",
+        "opportunity_status": "Speculative Binary",
+        "binary_risk": "High",
+        "binary_risk_rationale": "Evidence uncertainty is 24/30; catalyst magnitude is 12/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low.",
+        "binary_risk_inputs": {
+          "evidence_uncertainty": 6,
+          "company_sensitivity": null,
+          "catalyst_magnitude": 12,
+          "portfolio_dependence": null
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+          "passed": true,
+          "high_conviction_eligible": false,
+          "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence."
+        },
+        "evidence_integrity_gate": {
+          "concern_identified": false,
+          "confidence_cap": null,
+          "evidence_ids": [],
+          "rule": "Explicit credibility or data-integrity concerns cap confidence at Low."
+        },
         "score_as_of": "2026-08-29",
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "score_components": [
           {
-            "key": "catalyst_importance",
-            "label": "Catalyst Importance",
-            "score": 20,
-            "weight": 25,
-            "rationale": "Registrational-enabling clinical data can alter program and platform probability.",
+            "key": "scientific_evidence",
+            "label": "Scientific Evidence",
+            "weight": 30,
+            "score": 24,
+            "available_weight": 30,
             "missing": false,
-            "evidence": [
-              {
-                "title": "Beam ERS presentation announcement",
-                "date": "2026-07-23",
-                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302"
-              },
-              {
-                "title": "Beam updated BEAM-302 clinical data",
-                "date": "2026-03-25",
-                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data"
-              },
-              {
-                "title": "Beam Q2 2026 results",
-                "date": "2026-08-04",
-                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results"
-              }
-            ]
-          },
-          {
-            "key": "prior_evidence",
-            "label": "Prior Evidence",
-            "score": 16,
-            "weight": 20,
+            "partial": false,
+            "missing_fields": [],
             "rationale": "Positive human proof-of-concept exists, but evidence remains early-stage and cohort sizes are limited.",
-            "missing": false,
             "evidence": [
               {
                 "title": "Beam ERS presentation announcement",
@@ -8007,37 +8071,18 @@
             ]
           },
           {
-            "key": "catalyst_timing",
-            "label": "Catalyst Timing",
-            "score": 15,
-            "weight": 15,
-            "rationale": "Exact catalyst date is within 90 days.",
-            "missing": false,
-            "evidence": [
-              {
-                "title": "Beam ERS presentation announcement",
-                "date": "2026-07-23",
-                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302"
-              },
-              {
-                "title": "Beam updated BEAM-302 clinical data",
-                "date": "2026-03-25",
-                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data"
-              },
-              {
-                "title": "Beam Q2 2026 results",
-                "date": "2026-08-04",
-                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results"
-              }
-            ]
-          },
-          {
-            "key": "commercial_impact",
-            "label": "Commercial Impact",
+            "key": "catalyst_impact_company_sensitivity",
+            "label": "Catalyst Impact / Company Sensitivity",
+            "weight": 25,
             "score": 12,
-            "weight": 15,
-            "rationale": "Large rare-disease population and differentiated one-time correction are documented; pricing and penetration are not.",
+            "available_weight": 15,
             "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Company valuation sensitivity",
+              "Portfolio dependence"
+            ],
+            "rationale": "Registrational-enabling clinical data can alter program and platform probability. Large rare-disease population and differentiated one-time correction are documented; pricing and penetration are not. Verified program-level valuation sensitivity and portfolio dependence are missing.",
             "evidence": [
               {
                 "title": "Beam ERS presentation announcement",
@@ -8059,27 +8104,271 @@
           {
             "key": "expectation_gap",
             "label": "Expectation Gap",
-            "score": 0,
-            "weight": 15,
-            "rationale": "Missing verified market-expectation data.",
+            "weight": 20,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Verified market expectations"
+            ],
+            "rationale": "Missing verified market-expectation data.",
             "evidence": []
           },
           {
-            "key": "positioning",
-            "label": "Positioning / Technical Setup",
-            "score": 0,
-            "weight": 10,
-            "rationale": "Missing verified positioning and technical data.",
+            "key": "sector_trend_capital_flow",
+            "label": "Sector Trend & Capital Flow",
+            "weight": 15,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Sector breadth",
+              "Capital flow"
+            ],
+            "rationale": "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.",
             "evidence": []
+          },
+          {
+            "key": "timing_technicals",
+            "label": "Timing & Technicals",
+            "weight": 10,
+            "score": 5,
+            "available_weight": 5,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Technical setup / positioning"
+            ],
+            "rationale": "Exact catalyst date is within 90 days. Missing verified positioning and technical data.",
+            "evidence": [
+              {
+                "title": "Beam ERS presentation announcement",
+                "date": "2026-07-23",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-present-updated-data-phase-12-trial-beam-302"
+              },
+              {
+                "title": "Beam updated BEAM-302 clinical data",
+                "date": "2026-03-25",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-announces-compelling-updated-clinical-data"
+              },
+              {
+                "title": "Beam Q2 2026 results",
+                "date": "2026-08-04",
+                "url": "https://investors.beamtx.com/news-releases/news-release-details/beam-therapeutics-reports-second-quarter-2026-financial-results"
+              }
+            ]
           }
         ],
         "missing_data": [
-          "Expectation Gap",
-          "Positioning / Technical Setup"
+          "Company valuation sensitivity",
+          "Portfolio dependence",
+          "Verified market expectations",
+          "Sector breadth",
+          "Capital flow",
+          "Technical setup / positioning"
         ],
-        "data_completeness": 75,
+        "data_completeness": 50,
+        "confidence": "Medium",
+        "confirming_evidence": [],
+        "mixed_evidence": [],
+        "contradicting_evidence": [],
+        "evidence_count": 0,
+        "why_changed": "No material score change; evidence history was refreshed and deduplicated.",
+        "score_history": [
+          {
+            "as_of": "2026-08-29",
+            "opportunity_score": 82,
+            "scientific_evidence_score": 24,
+            "catalyst_impact_score": 12,
+            "expectation_gap_score": null,
+            "binary_risk": "High",
+            "data_completeness": 50,
+            "confidence": "Medium",
+            "opportunity_status": "Speculative Binary",
+            "evidence_count": 0,
+            "why_changed": "No material score change; evidence history was refreshed and deduplicated."
+          }
+        ],
+        "exchange": "",
+        "listing_status": "Public",
+        "related_companies": [],
+        "related_tickers": []
+      },
+      {
+        "ticker": "KRYS",
+        "company": "Krystal Biotech",
+        "program": "KB803",
+        "indication": "Corneal abrasions in dystrophic epidermolysis bullosa",
+        "catalyst": "IOLITE registrational top-line results",
+        "expected_timing": "Fourth quarter 2026",
+        "stage": "Registrational study",
+        "why_important": "A registrational readout could establish a second ophthalmic use of the company's redosable gene-delivery platform in dystrophic epidermolysis bullosa.",
+        "clinical_evidence": "Missing: the cited Q2 source confirms full enrollment but does not provide program-specific clinical efficacy results.",
+        "previous_results": "Missing from the connected source set; no result is assumed.",
+        "regulatory_status": "The IOLITE registrational study is fully enrolled; KB803 is not approved.",
+        "commercial_potential": "Could treat or prevent corneal abrasions in DEB, but v1 lacks verified patient, pricing and penetration inputs.",
+        "market_expectation": "Missing: no verified consensus expectations or event-implied move is connected.",
+        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
+        "risks": "No connected program-specific efficacy evidence; registrational endpoints, safety and regulatory acceptability remain uncertain.",
+        "watch_next": "Top-line efficacy, safety, durability and regulatory next steps.",
+        "sources": [
+          {
+            "title": "Krystal Q2 2026 results",
+            "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and",
+            "date": "2026-08-03"
+          }
+        ],
+        "opportunity_score": 80,
+        "catalyst_score": 80,
+        "scientific_evidence_score": null,
+        "catalyst_impact_score": 12,
+        "expectation_gap_score": null,
+        "sector_trend_score": null,
+        "timing_technicals_score": 4,
+        "upcoming_catalyst": "IOLITE registrational top-line results \u2014 Fourth quarter 2026",
+        "opportunity_status": "High Downside Risk",
+        "binary_risk": "Extreme",
+        "binary_risk_rationale": "Evidence uncertainty is missing; catalyst magnitude is 12/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low.",
+        "binary_risk_inputs": {
+          "evidence_uncertainty": null,
+          "company_sensitivity": null,
+          "catalyst_magnitude": 12,
+          "portfolio_dependence": null
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+          "passed": false,
+          "high_conviction_eligible": false,
+          "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence."
+        },
+        "evidence_integrity_gate": {
+          "concern_identified": false,
+          "confidence_cap": null,
+          "evidence_ids": [],
+          "rule": "Explicit credibility or data-integrity concerns cap confidence at Low."
+        },
+        "score_as_of": "2026-08-29",
+        "engine_version": "biotech-radar-v1",
+        "score_components": [
+          {
+            "key": "scientific_evidence",
+            "label": "Scientific Evidence",
+            "weight": 30,
+            "score": null,
+            "available_weight": 0,
+            "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Program-specific scientific evidence"
+            ],
+            "rationale": "Missing program-specific clinical evidence in the connected source set.",
+            "evidence": []
+          },
+          {
+            "key": "catalyst_impact_company_sensitivity",
+            "label": "Catalyst Impact / Company Sensitivity",
+            "weight": 25,
+            "score": 12,
+            "available_weight": 15,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Company valuation sensitivity",
+              "Portfolio dependence"
+            ],
+            "rationale": "A registrational top-line result can materially change approval probability. A meaningful rare-disease complication is addressed, but commercial inputs are missing. Verified program-level valuation sensitivity and portfolio dependence are missing.",
+            "evidence": [
+              {
+                "title": "Krystal Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
+              }
+            ]
+          },
+          {
+            "key": "expectation_gap",
+            "label": "Expectation Gap",
+            "weight": 20,
+            "score": null,
+            "available_weight": 0,
+            "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Verified market expectations"
+            ],
+            "rationale": "Missing verified market-expectation data.",
+            "evidence": []
+          },
+          {
+            "key": "sector_trend_capital_flow",
+            "label": "Sector Trend & Capital Flow",
+            "weight": 15,
+            "score": null,
+            "available_weight": 0,
+            "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Sector breadth",
+              "Capital flow"
+            ],
+            "rationale": "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.",
+            "evidence": []
+          },
+          {
+            "key": "timing_technicals",
+            "label": "Timing & Technicals",
+            "weight": 10,
+            "score": 4,
+            "available_weight": 5,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Technical setup / positioning"
+            ],
+            "rationale": "A defined quarter or similarly narrow window falls within six months. Missing verified positioning and technical data.",
+            "evidence": [
+              {
+                "title": "Krystal Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
+              }
+            ]
+          }
+        ],
+        "missing_data": [
+          "Program-specific scientific evidence",
+          "Company valuation sensitivity",
+          "Portfolio dependence",
+          "Verified market expectations",
+          "Sector breadth",
+          "Capital flow",
+          "Technical setup / positioning"
+        ],
+        "data_completeness": 20,
+        "confidence": "Low",
+        "confirming_evidence": [],
+        "mixed_evidence": [],
+        "contradicting_evidence": [],
+        "evidence_count": 0,
+        "why_changed": "No material score change; evidence history was refreshed and deduplicated.",
+        "score_history": [
+          {
+            "as_of": "2026-08-29",
+            "opportunity_score": 80,
+            "scientific_evidence_score": null,
+            "catalyst_impact_score": 12,
+            "expectation_gap_score": null,
+            "binary_risk": "Extreme",
+            "data_completeness": 20,
+            "confidence": "Low",
+            "opportunity_status": "High Downside Risk",
+            "evidence_count": 0,
+            "why_changed": "No material score change; evidence history was refreshed and deduplicated."
+          }
+        ],
         "exchange": "",
         "listing_status": "Public",
         "related_companies": [],
@@ -8089,6 +8378,7 @@
         "ticker": "MAZE",
         "company": "Maze Therapeutics",
         "program": "MZE829",
+        "indication": "APOL1-mediated kidney disease",
         "catalyst": "Additional HORIZON Phase 2 cohort data",
         "expected_timing": "Late 2026 / early 2027",
         "stage": "Phase 2",
@@ -8113,39 +8403,49 @@
             "date": "2026-05-12"
           }
         ],
-        "catalyst_score": 58,
+        "opportunity_score": 78,
+        "catalyst_score": 78,
+        "scientific_evidence_score": 24,
+        "catalyst_impact_score": 12,
+        "expectation_gap_score": null,
+        "sector_trend_score": null,
+        "timing_technicals_score": 3,
         "upcoming_catalyst": "Additional HORIZON Phase 2 cohort data \u2014 Late 2026 / early 2027",
-        "opportunity_status": "Monitoring",
+        "opportunity_status": "Evidence-Supported / High Impact",
+        "binary_risk": "Moderate",
+        "binary_risk_rationale": "Evidence uncertainty is 24/30; catalyst magnitude is 12/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low.",
+        "binary_risk_inputs": {
+          "evidence_uncertainty": 6,
+          "company_sensitivity": null,
+          "catalyst_magnitude": 12,
+          "portfolio_dependence": null
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+          "passed": true,
+          "high_conviction_eligible": false,
+          "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence."
+        },
+        "evidence_integrity_gate": {
+          "concern_identified": false,
+          "confidence_cap": null,
+          "evidence_ids": [],
+          "rule": "Explicit credibility or data-integrity concerns cap confidence at Low."
+        },
         "score_as_of": "2026-08-29",
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "score_components": [
           {
-            "key": "catalyst_importance",
-            "label": "Catalyst Importance",
-            "score": 20,
-            "weight": 25,
-            "rationale": "Confirmatory Phase 2 data can enable pivotal development.",
+            "key": "scientific_evidence",
+            "label": "Scientific Evidence",
+            "weight": 30,
+            "score": 24,
+            "available_weight": 30,
             "missing": false,
-            "evidence": [
-              {
-                "title": "Maze Q2 2026 results",
-                "date": "2026-08-11",
-                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results"
-              },
-              {
-                "title": "Maze Q1 2026 results",
-                "date": "2026-05-12",
-                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results"
-              }
-            ]
-          },
-          {
-            "key": "prior_evidence",
-            "label": "Prior Evidence",
-            "score": 16,
-            "weight": 20,
+            "partial": false,
+            "missing_fields": [],
             "rationale": "Positive human proof-of-concept exists, but cohort sizes are still limited.",
-            "missing": false,
             "evidence": [
               {
                 "title": "Maze Q2 2026 results",
@@ -8160,32 +8460,18 @@
             ]
           },
           {
-            "key": "catalyst_timing",
-            "label": "Catalyst Timing",
-            "score": 10,
-            "weight": 15,
-            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.",
-            "missing": false,
-            "evidence": [
-              {
-                "title": "Maze Q2 2026 results",
-                "date": "2026-08-11",
-                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results"
-              },
-              {
-                "title": "Maze Q1 2026 results",
-                "date": "2026-05-12",
-                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results"
-              }
-            ]
-          },
-          {
-            "key": "commercial_impact",
-            "label": "Commercial Impact",
+            "key": "catalyst_impact_company_sensitivity",
+            "label": "Catalyst Impact / Company Sensitivity",
+            "weight": 25,
             "score": 12,
-            "weight": 15,
-            "rationale": "A large genetically defined population is cited, but pricing and penetration are not independently modeled.",
+            "available_weight": 15,
             "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Company valuation sensitivity",
+              "Portfolio dependence"
+            ],
+            "rationale": "Confirmatory Phase 2 data can enable pivotal development. A large genetically defined population is cited, but pricing and penetration are not independently modeled. Verified program-level valuation sensitivity and portfolio dependence are missing.",
             "evidence": [
               {
                 "title": "Maze Q2 2026 results",
@@ -8202,27 +8488,88 @@
           {
             "key": "expectation_gap",
             "label": "Expectation Gap",
-            "score": 0,
-            "weight": 15,
-            "rationale": "Missing verified market-expectation data.",
+            "weight": 20,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Verified market expectations"
+            ],
+            "rationale": "Missing verified market-expectation data.",
             "evidence": []
           },
           {
-            "key": "positioning",
-            "label": "Positioning / Technical Setup",
-            "score": 0,
-            "weight": 10,
-            "rationale": "Missing verified positioning and technical data.",
+            "key": "sector_trend_capital_flow",
+            "label": "Sector Trend & Capital Flow",
+            "weight": 15,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Sector breadth",
+              "Capital flow"
+            ],
+            "rationale": "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.",
             "evidence": []
+          },
+          {
+            "key": "timing_technicals",
+            "label": "Timing & Technicals",
+            "weight": 10,
+            "score": 3,
+            "available_weight": 5,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Technical setup / positioning"
+            ],
+            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date. Missing verified positioning and technical data.",
+            "evidence": [
+              {
+                "title": "Maze Q2 2026 results",
+                "date": "2026-08-11",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-second-quarter-2026-financial-results"
+              },
+              {
+                "title": "Maze Q1 2026 results",
+                "date": "2026-05-12",
+                "url": "https://ir.mazetx.com/news-releases/news-release-details/maze-therapeutics-reports-first-quarter-2026-financial-results"
+              }
+            ]
           }
         ],
         "missing_data": [
-          "Expectation Gap",
-          "Positioning / Technical Setup"
+          "Company valuation sensitivity",
+          "Portfolio dependence",
+          "Verified market expectations",
+          "Sector breadth",
+          "Capital flow",
+          "Technical setup / positioning"
         ],
-        "data_completeness": 75,
+        "data_completeness": 50,
+        "confidence": "Medium",
+        "confirming_evidence": [],
+        "mixed_evidence": [],
+        "contradicting_evidence": [],
+        "evidence_count": 0,
+        "why_changed": "No material score change; evidence history was refreshed and deduplicated.",
+        "score_history": [
+          {
+            "as_of": "2026-08-29",
+            "opportunity_score": 78,
+            "scientific_evidence_score": 24,
+            "catalyst_impact_score": 12,
+            "expectation_gap_score": null,
+            "binary_risk": "Moderate",
+            "data_completeness": 50,
+            "confidence": "Medium",
+            "opportunity_status": "Evidence-Supported / High Impact",
+            "evidence_count": 0,
+            "why_changed": "No material score change; evidence history was refreshed and deduplicated."
+          }
+        ],
         "exchange": "",
         "listing_status": "Public",
         "related_companies": [],
@@ -8232,6 +8579,7 @@
         "ticker": "STOK",
         "company": "Stoke Therapeutics",
         "program": "zorevunersen",
+        "indication": "Dravet syndrome",
         "catalyst": "FDA pre-NDA meeting and regulatory-path update",
         "expected_timing": "Second half of 2026",
         "stage": "Phase 3 / pre-NDA",
@@ -8251,34 +8599,49 @@
             "date": "2026-08-03"
           }
         ],
-        "catalyst_score": 58,
+        "opportunity_score": 78,
+        "catalyst_score": 78,
+        "scientific_evidence_score": 24,
+        "catalyst_impact_score": 12,
+        "expectation_gap_score": null,
+        "sector_trend_score": null,
+        "timing_technicals_score": 3,
         "upcoming_catalyst": "FDA pre-NDA meeting and regulatory-path update \u2014 Second half of 2026",
-        "opportunity_status": "Monitoring",
+        "opportunity_status": "Evidence-Supported / High Impact",
+        "binary_risk": "Moderate",
+        "binary_risk_rationale": "Evidence uncertainty is 24/30; catalyst magnitude is 12/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low.",
+        "binary_risk_inputs": {
+          "evidence_uncertainty": 6,
+          "company_sensitivity": null,
+          "catalyst_magnitude": 12,
+          "portfolio_dependence": null
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+          "passed": true,
+          "high_conviction_eligible": false,
+          "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence."
+        },
+        "evidence_integrity_gate": {
+          "concern_identified": false,
+          "confidence_cap": null,
+          "evidence_ids": [],
+          "rule": "Explicit credibility or data-integrity concerns cap confidence at Low."
+        },
         "score_as_of": "2026-08-29",
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "score_components": [
           {
-            "key": "catalyst_importance",
-            "label": "Catalyst Importance",
-            "score": 20,
-            "weight": 25,
-            "rationale": "Regulatory-path clarification can materially change time-to-filing and approval probability.",
+            "key": "scientific_evidence",
+            "label": "Scientific Evidence",
+            "weight": 30,
+            "score": 24,
+            "available_weight": 30,
             "missing": false,
-            "evidence": [
-              {
-                "title": "Stoke Q2 2026 results",
-                "date": "2026-08-03",
-                "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/"
-              }
-            ]
-          },
-          {
-            "key": "prior_evidence",
-            "label": "Prior Evidence",
-            "score": 16,
-            "weight": 20,
+            "partial": false,
+            "missing_fields": [],
             "rationale": "Multi-year human evidence is supportive, but pivotal confirmation remains pending.",
-            "missing": false,
             "evidence": [
               {
                 "title": "Stoke Q2 2026 results",
@@ -8288,27 +8651,18 @@
             ]
           },
           {
-            "key": "catalyst_timing",
-            "label": "Catalyst Timing",
-            "score": 10,
-            "weight": 15,
-            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.",
-            "missing": false,
-            "evidence": [
-              {
-                "title": "Stoke Q2 2026 results",
-                "date": "2026-08-03",
-                "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/"
-              }
-            ]
-          },
-          {
-            "key": "commercial_impact",
-            "label": "Commercial Impact",
+            "key": "catalyst_impact_company_sensitivity",
+            "label": "Catalyst Impact / Company Sensitivity",
+            "weight": 25,
             "score": 12,
-            "weight": 15,
-            "rationale": "Potential disease modification in a severe rare disease is meaningful; v1 lacks a verified revenue model.",
+            "available_weight": 15,
             "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Company valuation sensitivity",
+              "Portfolio dependence"
+            ],
+            "rationale": "Regulatory-path clarification can materially change time-to-filing and approval probability. Potential disease modification in a severe rare disease is meaningful; v1 lacks a verified revenue model. Verified program-level valuation sensitivity and portfolio dependence are missing.",
             "evidence": [
               {
                 "title": "Stoke Q2 2026 results",
@@ -8320,27 +8674,83 @@
           {
             "key": "expectation_gap",
             "label": "Expectation Gap",
-            "score": 0,
-            "weight": 15,
-            "rationale": "Missing verified market-expectation data.",
+            "weight": 20,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Verified market expectations"
+            ],
+            "rationale": "Missing verified market-expectation data.",
             "evidence": []
           },
           {
-            "key": "positioning",
-            "label": "Positioning / Technical Setup",
-            "score": 0,
-            "weight": 10,
-            "rationale": "Missing verified positioning and technical data.",
+            "key": "sector_trend_capital_flow",
+            "label": "Sector Trend & Capital Flow",
+            "weight": 15,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Sector breadth",
+              "Capital flow"
+            ],
+            "rationale": "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.",
             "evidence": []
+          },
+          {
+            "key": "timing_technicals",
+            "label": "Timing & Technicals",
+            "weight": 10,
+            "score": 3,
+            "available_weight": 5,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Technical setup / positioning"
+            ],
+            "rationale": "Company guidance places the catalyst within the forward six-month window, but not on a narrow date. Missing verified positioning and technical data.",
+            "evidence": [
+              {
+                "title": "Stoke Q2 2026 results",
+                "date": "2026-08-03",
+                "url": "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/"
+              }
+            ]
           }
         ],
         "missing_data": [
-          "Expectation Gap",
-          "Positioning / Technical Setup"
+          "Company valuation sensitivity",
+          "Portfolio dependence",
+          "Verified market expectations",
+          "Sector breadth",
+          "Capital flow",
+          "Technical setup / positioning"
         ],
-        "data_completeness": 75,
+        "data_completeness": 50,
+        "confidence": "Medium",
+        "confirming_evidence": [],
+        "mixed_evidence": [],
+        "contradicting_evidence": [],
+        "evidence_count": 0,
+        "why_changed": "No material score change; evidence history was refreshed and deduplicated.",
+        "score_history": [
+          {
+            "as_of": "2026-08-29",
+            "opportunity_score": 78,
+            "scientific_evidence_score": 24,
+            "catalyst_impact_score": 12,
+            "expectation_gap_score": null,
+            "binary_risk": "Moderate",
+            "data_completeness": 50,
+            "confidence": "Medium",
+            "opportunity_status": "Evidence-Supported / High Impact",
+            "evidence_count": 0,
+            "why_changed": "No material score change; evidence history was refreshed and deduplicated."
+          }
+        ],
         "exchange": "",
         "listing_status": "Public",
         "related_companies": [],
@@ -8350,6 +8760,7 @@
         "ticker": "PRQR",
         "company": "ProQR Therapeutics",
         "program": "AX-0810 / AX-0811",
+        "indication": "Missing: program-level indication is not specified in the connected catalyst record",
         "catalyst": "Full AX-0810 and initial AX-0811 Phase 1 data",
         "expected_timing": "By year-end 2026",
         "stage": "Phase 1",
@@ -8374,39 +8785,49 @@
             "date": "2026-06-25"
           }
         ],
-        "catalyst_score": 47,
+        "opportunity_score": 62,
+        "catalyst_score": 62,
+        "scientific_evidence_score": 18,
+        "catalyst_impact_score": 9,
+        "expectation_gap_score": null,
+        "sector_trend_score": null,
+        "timing_technicals_score": 4,
         "upcoming_catalyst": "Full AX-0810 and initial AX-0811 Phase 1 data \u2014 By year-end 2026",
-        "opportunity_status": "Low Priority",
+        "opportunity_status": "Monitoring",
+        "binary_risk": "Moderate",
+        "binary_risk_rationale": "Evidence uncertainty is 18/30; catalyst magnitude is 9/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low.",
+        "binary_risk_inputs": {
+          "evidence_uncertainty": 12,
+          "company_sensitivity": null,
+          "catalyst_magnitude": 9,
+          "portfolio_dependence": null
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+          "passed": true,
+          "high_conviction_eligible": false,
+          "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence."
+        },
+        "evidence_integrity_gate": {
+          "concern_identified": false,
+          "confidence_cap": null,
+          "evidence_ids": [],
+          "rule": "Explicit credibility or data-integrity concerns cap confidence at Low."
+        },
         "score_as_of": "2026-08-29",
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "score_components": [
           {
-            "key": "catalyst_importance",
-            "label": "Catalyst Importance",
-            "score": 15,
-            "weight": 25,
-            "rationale": "Early clinical platform validation may change valuation but is not registrational.",
+            "key": "scientific_evidence",
+            "label": "Scientific Evidence",
+            "weight": 30,
+            "score": 18,
+            "available_weight": 30,
             "missing": false,
-            "evidence": [
-              {
-                "title": "ProQR Q2 2026 results",
-                "date": "2026-08-13",
-                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
-              },
-              {
-                "title": "ProQR positive AX-0810 data",
-                "date": "2026-06-25",
-                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
-              }
-            ]
-          },
-          {
-            "key": "prior_evidence",
-            "label": "Prior Evidence",
-            "score": 12,
-            "weight": 20,
+            "partial": false,
+            "missing_fields": [],
             "rationale": "Initial human target engagement exists; clinical efficacy is not established.",
-            "missing": false,
             "evidence": [
               {
                 "title": "ProQR Q2 2026 results",
@@ -8421,182 +8842,116 @@
             ]
           },
           {
-            "key": "catalyst_timing",
-            "label": "Catalyst Timing",
-            "score": 12,
-            "weight": 15,
-            "rationale": "A defined quarter or similarly narrow window falls within six months.",
-            "missing": false,
-            "evidence": [
-              {
-                "title": "ProQR Q2 2026 results",
-                "date": "2026-08-13",
-                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
-              },
-              {
-                "title": "ProQR positive AX-0810 data",
-                "date": "2026-06-25",
-                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
-              }
-            ]
-          },
-          {
-            "key": "commercial_impact",
-            "label": "Commercial Impact",
-            "score": 8,
-            "weight": 15,
-            "rationale": "Platform read-through is meaningful, but commercial inputs are largely missing.",
-            "missing": false,
-            "evidence": [
-              {
-                "title": "ProQR Q2 2026 results",
-                "date": "2026-08-13",
-                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
-              },
-              {
-                "title": "ProQR positive AX-0810 data",
-                "date": "2026-06-25",
-                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
-              }
-            ]
-          },
-          {
-            "key": "expectation_gap",
-            "label": "Expectation Gap",
-            "score": 0,
-            "weight": 15,
-            "rationale": "Missing verified market-expectation data.",
-            "missing": true,
-            "evidence": []
-          },
-          {
-            "key": "positioning",
-            "label": "Positioning / Technical Setup",
-            "score": 0,
-            "weight": 10,
-            "rationale": "Missing verified positioning and technical data.",
-            "missing": true,
-            "evidence": []
-          }
-        ],
-        "missing_data": [
-          "Expectation Gap",
-          "Positioning / Technical Setup"
-        ],
-        "data_completeness": 75,
-        "exchange": "",
-        "listing_status": "Public",
-        "related_companies": [],
-        "related_tickers": []
-      },
-      {
-        "ticker": "KRYS",
-        "company": "Krystal Biotech",
-        "program": "KB803",
-        "catalyst": "IOLITE registrational top-line results",
-        "expected_timing": "Fourth quarter 2026",
-        "stage": "Registrational study",
-        "why_important": "A registrational readout could establish a second ophthalmic use of the company's redosable gene-delivery platform in dystrophic epidermolysis bullosa.",
-        "clinical_evidence": "Missing: the cited Q2 source confirms full enrollment but does not provide program-specific clinical efficacy results.",
-        "previous_results": "Missing from the connected source set; no result is assumed.",
-        "regulatory_status": "The IOLITE registrational study is fully enrolled; KB803 is not approved.",
-        "commercial_potential": "Could treat or prevent corneal abrasions in DEB, but v1 lacks verified patient, pricing and penetration inputs.",
-        "market_expectation": "Missing: no verified consensus expectations or event-implied move is connected.",
-        "positioning": "Missing: no dated short-interest, ownership-flow, or technical-setup dataset is connected.",
-        "risks": "No connected program-specific efficacy evidence; registrational endpoints, safety and regulatory acceptability remain uncertain.",
-        "watch_next": "Top-line efficacy, safety, durability and regulatory next steps.",
-        "sources": [
-          {
-            "title": "Krystal Q2 2026 results",
-            "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and",
-            "date": "2026-08-03"
-          }
-        ],
-        "catalyst_score": 45,
-        "upcoming_catalyst": "IOLITE registrational top-line results \u2014 Fourth quarter 2026",
-        "opportunity_status": "Low Priority",
-        "score_as_of": "2026-08-29",
-        "engine_version": "biotech-catalyst-radar-v1",
-        "score_components": [
-          {
-            "key": "catalyst_importance",
-            "label": "Catalyst Importance",
-            "score": 25,
+            "key": "catalyst_impact_company_sensitivity",
+            "label": "Catalyst Impact / Company Sensitivity",
             "weight": 25,
-            "rationale": "A registrational top-line result can materially change approval probability.",
+            "score": 9,
+            "available_weight": 15,
             "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Company valuation sensitivity",
+              "Portfolio dependence"
+            ],
+            "rationale": "Early clinical platform validation may change valuation but is not registrational. Platform read-through is meaningful, but commercial inputs are largely missing. Verified program-level valuation sensitivity and portfolio dependence are missing.",
             "evidence": [
               {
-                "title": "Krystal Q2 2026 results",
-                "date": "2026-08-03",
-                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
-              }
-            ]
-          },
-          {
-            "key": "prior_evidence",
-            "label": "Prior Evidence",
-            "score": 0,
-            "weight": 20,
-            "rationale": "Missing program-specific clinical evidence in the connected source set.",
-            "missing": true,
-            "evidence": []
-          },
-          {
-            "key": "catalyst_timing",
-            "label": "Catalyst Timing",
-            "score": 12,
-            "weight": 15,
-            "rationale": "A defined quarter or similarly narrow window falls within six months.",
-            "missing": false,
-            "evidence": [
+                "title": "ProQR Q2 2026 results",
+                "date": "2026-08-13",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
+              },
               {
-                "title": "Krystal Q2 2026 results",
-                "date": "2026-08-03",
-                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
-              }
-            ]
-          },
-          {
-            "key": "commercial_impact",
-            "label": "Commercial Impact",
-            "score": 8,
-            "weight": 15,
-            "rationale": "A meaningful rare-disease complication is addressed, but commercial inputs are missing.",
-            "missing": false,
-            "evidence": [
-              {
-                "title": "Krystal Q2 2026 results",
-                "date": "2026-08-03",
-                "url": "https://ir.krystalbio.com/news-releases/news-release-details/krystal-biotech-announces-second-quarter-2026-financial-and"
+                "title": "ProQR positive AX-0810 data",
+                "date": "2026-06-25",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
               }
             ]
           },
           {
             "key": "expectation_gap",
             "label": "Expectation Gap",
-            "score": 0,
-            "weight": 15,
-            "rationale": "Missing verified market-expectation data.",
+            "weight": 20,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Verified market expectations"
+            ],
+            "rationale": "Missing verified market-expectation data.",
             "evidence": []
           },
           {
-            "key": "positioning",
-            "label": "Positioning / Technical Setup",
-            "score": 0,
-            "weight": 10,
-            "rationale": "Missing verified positioning and technical data.",
+            "key": "sector_trend_capital_flow",
+            "label": "Sector Trend & Capital Flow",
+            "weight": 15,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Sector breadth",
+              "Capital flow"
+            ],
+            "rationale": "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.",
             "evidence": []
+          },
+          {
+            "key": "timing_technicals",
+            "label": "Timing & Technicals",
+            "weight": 10,
+            "score": 4,
+            "available_weight": 5,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Technical setup / positioning"
+            ],
+            "rationale": "A defined quarter or similarly narrow window falls within six months. Missing verified positioning and technical data.",
+            "evidence": [
+              {
+                "title": "ProQR Q2 2026 results",
+                "date": "2026-08-13",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-second-quarter-2026-operating-and-financial-results"
+              },
+              {
+                "title": "ProQR positive AX-0810 data",
+                "date": "2026-06-25",
+                "url": "https://www.proqr.com/press-releases/proqr-announces-positive-phase-1-target-engagement-data-for-ax-0810-establishing-first-clinical-validation-of-the-axiomer-rna-editing-platform"
+              }
+            ]
           }
         ],
         "missing_data": [
-          "Prior Evidence",
-          "Expectation Gap",
-          "Positioning / Technical Setup"
+          "Company valuation sensitivity",
+          "Portfolio dependence",
+          "Verified market expectations",
+          "Sector breadth",
+          "Capital flow",
+          "Technical setup / positioning"
         ],
-        "data_completeness": 55,
+        "data_completeness": 50,
+        "confidence": "Medium",
+        "confirming_evidence": [],
+        "mixed_evidence": [],
+        "contradicting_evidence": [],
+        "evidence_count": 0,
+        "why_changed": "No material score change; evidence history was refreshed and deduplicated.",
+        "score_history": [
+          {
+            "as_of": "2026-08-29",
+            "opportunity_score": 62,
+            "scientific_evidence_score": 18,
+            "catalyst_impact_score": 9,
+            "expectation_gap_score": null,
+            "binary_risk": "Moderate",
+            "data_completeness": 50,
+            "confidence": "Medium",
+            "opportunity_status": "Monitoring",
+            "evidence_count": 0,
+            "why_changed": "No material score change; evidence history was refreshed and deduplicated."
+          }
+        ],
         "exchange": "",
         "listing_status": "Public",
         "related_companies": [],
@@ -8604,30 +8959,29 @@
       }
     ],
     "methodology": {
-      "engine_version": "biotech-catalyst-radar-v1",
+      "engine_version": "biotech-radar-v1",
       "horizon": "Potentially valuation-changing catalysts expected within the next 183 days (approximately six months).",
       "weights": {
-        "catalyst_importance": 25,
-        "prior_evidence": 20,
-        "catalyst_timing": 15,
-        "commercial_impact": 15,
-        "expectation_gap": 15,
-        "positioning": 10
+        "scientific_evidence": 30,
+        "catalyst_impact_company_sensitivity": 25,
+        "expectation_gap": 20,
+        "sector_trend_capital_flow": 15,
+        "timing_technicals": 10
       },
-      "classifications": {
-        "85-100": "High Priority",
-        "70-84": "Priority Watch",
-        "55-69": "Monitoring",
-        "0-54": "Low Priority"
-      },
-      "missing_data_policy": "Missing evidence is never inferred. A missing component receives zero points and is listed in missing_data.",
-      "timing_rules": {
-        "exact_date_within_90_days": 15,
-        "defined_quarter_or_narrow_window": 12,
-        "broader_company_guidance_within_six_months": 10,
-        "outside_window_or_missing": 0
-      },
-      "scope_note": "V1 scores a curated, source-backed catalyst set. It does not yet discover catalysts or ingest consensus, options, short-interest, or fund-flow data automatically."
+      "opportunity_score_policy": "Opportunity Score is normalized over available weighted inputs. Missing inputs are excluded, never treated as zero, and Data Completeness must be reviewed with the score.",
+      "evidence_gate": "Scientific Evidence below 18/30 cannot be High Conviction. High Conviction additionally requires Scientific Evidence of at least 24/30, 75% completeness, and High confidence.",
+      "integrity_gate": "Explicit credibility or data-integrity concerns cap evidence confidence at Low.",
+      "news_boundary": "Biotech News is retained as dated confirming, mixed, or contradicting evidence. News importance never sets a Radar factor or Opportunity Score.",
+      "binary_risk": "Low / Moderate / High / Extreme uses available evidence uncertainty and catalyst magnitude; missing company valuation sensitivity or portfolio dependence prevents a Low classification.",
+      "status_policy": [
+        "High Conviction",
+        "Evidence-Supported / High Impact",
+        "Monitoring",
+        "Speculative Binary",
+        "High Downside Risk",
+        "Thesis Broken"
+      ],
+      "scope_note": "V1 scores the existing curated Company \u2192 Drug/Program \u2192 Indication \u2192 Catalyst set. It does not fabricate consensus, valuation, technical, short-interest, capital-flow, trial, or portfolio-dependence inputs."
     },
     "ai_methodology": {
       "engine_version": "ai-technology-radar-v1",
@@ -8673,6 +9027,7 @@
         "ticker": "MRNA",
         "company": "Moderna",
         "program": "mRNA-1010 (mFLUSIVA)",
+        "indication": "Seasonal influenza",
         "catalyst": "FDA PDUFA decision for mFLUSIVA",
         "expected_timing": "August 5, 2026",
         "stage": "BLA review",
@@ -8697,39 +9052,49 @@
             "date": "2026-07-31"
           }
         ],
-        "catalyst_score": 70,
+        "opportunity_score": 92,
+        "catalyst_score": 92,
+        "scientific_evidence_score": 27,
+        "catalyst_impact_score": 14,
+        "expectation_gap_score": null,
+        "sector_trend_score": null,
+        "timing_technicals_score": 5,
         "upcoming_catalyst": "FDA PDUFA decision for mFLUSIVA \u2014 August 5, 2026",
-        "opportunity_status": "Priority Watch",
+        "opportunity_status": "Evidence-Supported / High Impact",
+        "binary_risk": "Moderate",
+        "binary_risk_rationale": "Evidence uncertainty is 27/30; catalyst magnitude is 14/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low.",
+        "binary_risk_inputs": {
+          "evidence_uncertainty": 3,
+          "company_sensitivity": null,
+          "catalyst_magnitude": 14,
+          "portfolio_dependence": null
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+          "passed": true,
+          "high_conviction_eligible": false,
+          "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence."
+        },
+        "evidence_integrity_gate": {
+          "concern_identified": false,
+          "confidence_cap": null,
+          "evidence_ids": [],
+          "rule": "Explicit credibility or data-integrity concerns cap confidence at Low."
+        },
         "score_as_of": "2026-07-31",
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "score_components": [
           {
-            "key": "catalyst_importance",
-            "label": "Catalyst Importance",
-            "score": 25,
-            "weight": 25,
-            "rationale": "An FDA approval decision is a maximum-importance valuation catalyst.",
+            "key": "scientific_evidence",
+            "label": "Scientific Evidence",
+            "weight": 30,
+            "score": 27,
+            "available_weight": 30,
             "missing": false,
-            "evidence": [
-              {
-                "title": "Moderna Q2 2026 results",
-                "date": "2026-07-31",
-                "url": "https://investors.modernatx.com/quarterly-results"
-              },
-              {
-                "title": "Moderna June 2026 Form 10-Q",
-                "date": "2026-07-31",
-                "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm"
-              }
-            ]
-          },
-          {
-            "key": "prior_evidence",
-            "label": "Prior Evidence",
-            "score": 18,
-            "weight": 20,
+            "partial": false,
+            "missing_fields": [],
             "rationale": "An accepted BLA backed by Phase 3 evidence is strong, but full endpoint detail is not present in the connected cutoff sources.",
-            "missing": false,
             "evidence": [
               {
                 "title": "Moderna Q2 2026 results",
@@ -8744,32 +9109,18 @@
             ]
           },
           {
-            "key": "catalyst_timing",
-            "label": "Catalyst Timing",
-            "score": 15,
-            "weight": 15,
-            "rationale": "Exact catalyst date is within 90 days.",
+            "key": "catalyst_impact_company_sensitivity",
+            "label": "Catalyst Impact / Company Sensitivity",
+            "weight": 25,
+            "score": 14,
+            "available_weight": 15,
             "missing": false,
-            "evidence": [
-              {
-                "title": "Moderna Q2 2026 results",
-                "date": "2026-07-31",
-                "url": "https://investors.modernatx.com/quarterly-results"
-              },
-              {
-                "title": "Moderna June 2026 Form 10-Q",
-                "date": "2026-07-31",
-                "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm"
-              }
-            ]
-          },
-          {
-            "key": "commercial_impact",
-            "label": "Commercial Impact",
-            "score": 12,
-            "weight": 15,
-            "rationale": "Portfolio expansion is material, but a verified product forecast is missing.",
-            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Company valuation sensitivity",
+              "Portfolio dependence"
+            ],
+            "rationale": "An FDA approval decision is a maximum-importance valuation catalyst. Portfolio expansion is material, but a verified product forecast is missing. Verified program-level valuation sensitivity and portfolio dependence are missing.",
             "evidence": [
               {
                 "title": "Moderna Q2 2026 results",
@@ -8786,27 +9137,88 @@
           {
             "key": "expectation_gap",
             "label": "Expectation Gap",
-            "score": 0,
-            "weight": 15,
-            "rationale": "Missing verified cutoff-date market-expectation data.",
+            "weight": 20,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Verified market expectations"
+            ],
+            "rationale": "Missing verified cutoff-date market-expectation data.",
             "evidence": []
           },
           {
-            "key": "positioning",
-            "label": "Positioning / Technical Setup",
-            "score": 0,
-            "weight": 10,
-            "rationale": "Missing verified cutoff-date positioning and technical data.",
+            "key": "sector_trend_capital_flow",
+            "label": "Sector Trend & Capital Flow",
+            "weight": 15,
+            "score": null,
+            "available_weight": 0,
             "missing": true,
+            "partial": false,
+            "missing_fields": [
+              "Sector breadth",
+              "Capital flow"
+            ],
+            "rationale": "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.",
             "evidence": []
+          },
+          {
+            "key": "timing_technicals",
+            "label": "Timing & Technicals",
+            "weight": 10,
+            "score": 5,
+            "available_weight": 5,
+            "missing": false,
+            "partial": true,
+            "missing_fields": [
+              "Technical setup / positioning"
+            ],
+            "rationale": "Exact catalyst date is within 90 days. Missing verified cutoff-date positioning and technical data.",
+            "evidence": [
+              {
+                "title": "Moderna Q2 2026 results",
+                "date": "2026-07-31",
+                "url": "https://investors.modernatx.com/quarterly-results"
+              },
+              {
+                "title": "Moderna June 2026 Form 10-Q",
+                "date": "2026-07-31",
+                "url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285226000150/mrna-20260630.htm"
+              }
+            ]
           }
         ],
         "missing_data": [
-          "Expectation Gap",
-          "Positioning / Technical Setup"
+          "Company valuation sensitivity",
+          "Portfolio dependence",
+          "Verified market expectations",
+          "Sector breadth",
+          "Capital flow",
+          "Technical setup / positioning"
         ],
-        "data_completeness": 75,
+        "data_completeness": 50,
+        "confidence": "Medium",
+        "confirming_evidence": [],
+        "mixed_evidence": [],
+        "contradicting_evidence": [],
+        "evidence_count": 0,
+        "why_changed": "Initial Biotech Radar V1 evidence baseline.",
+        "score_history": [
+          {
+            "as_of": "2026-07-31",
+            "opportunity_score": 92,
+            "scientific_evidence_score": 27,
+            "catalyst_impact_score": 14,
+            "expectation_gap_score": null,
+            "binary_risk": "Moderate",
+            "data_completeness": 50,
+            "confidence": "Medium",
+            "opportunity_status": "Evidence-Supported / High Impact",
+            "evidence_count": 0,
+            "why_changed": "Initial Biotech Radar V1 evidence baseline."
+          }
+        ],
         "exchange": "",
         "listing_status": "Public",
         "related_companies": [],
@@ -9213,9 +9625,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA grants fast track status to novel inhaled therapy for IPF",
-      "date": "Wed, 26 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQNkY5WnlUdnFKS3Bsa2Vkd1BON0xPVFlKUTZrem1MaVhYalFFcDZGbnNEQ0M3Z2FKNEo1SEYwS3luR1MwMHZGUlJ5MkJObDJncmZwNEhUanNiVk9pU3FiVFV4RGRJQnhORTZPWFVodEpaSldIazNEM3JsSHFDYlJfOHlULWFRUFoyNURpOUpNMFB3UloyVFltYlhjbEpfWVQtUHRMTnh0MDM?oc=5",
+      "event": "FDA Grants Rare Pediatric Disease Designation to Mahzi's AAV9 Gene Therapy MZ-1866 for Pitt Hopkins Syndrome",
+      "date": "Tue, 25 Aug 2026",
+      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOalJNYjFBakVYMHRRYXJEN3g4cC1JeFNtU3k1WmZ3NVNTSXZ3VnhqNkRHY1piUTE4TnllR2k0ODFPcFdwd0tKZEpPQ0tZZHQ1dmd4amFxRk9yRzdYZmpCRF9vWldMZTBUNUlGU05BRFZvMU93YnlXTko2VUNQR21aZFBFeG5ObHdMS3o2Z1N6cUVaNGZSdkZLQW1zX19rU3ZndEhHSzZiWThQcnA3Mjc0ZUxNT3pSU2dUd194WVJuSmNOSkp6THNNRlZoTklQY2lwT0wweU1sRjdQMWRFcmhaUHFPeGdzQQ?oc=5",
       "ticker": "N/A",
       "listing_status": "Non-public",
       "exchange": ""
@@ -9224,9 +9636,9 @@
       "company": "See source",
       "product": "See source",
       "indication": "See source",
-      "event": "FDA Grants Rare Pediatric Disease Designation to Mahzi's AAV9 Gene Therapy MZ-1866 for Pitt Hopkins Syndrome",
+      "event": "Alkermes (ALKS) FDA Approvals, PDUFA Dates & Drug Alerts 2026 $ALKS",
       "date": "Tue, 25 Aug 2026",
-      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOalJNYjFBakVYMHRRYXJEN3g4cC1JeFNtU3k1WmZ3NVNTSXZ3VnhqNkRHY1piUTE4TnllR2k0ODFPcFdwd0tKZEpPQ0tZZHQ1dmd4amFxRk9yRzdYZmpCRF9vWldMZTBUNUlGU05BRFZvMU93YnlXTko2VUNQR21aZFBFeG5ObHdMS3o2Z1N6cUVaNGZSdkZLQW1zX19rU3ZndEhHSzZiWThQcnA3Mjc0ZUxNT3pSU2dUd194WVJuSmNOSkp6THNNRlZoTklQY2lwT0wweU1sRjdQMWRFcmhaUHFPeGdzQQ?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBvWERWdXM0Y0t5a3pjaXB0dF9uWE41X3ZKTU85YW1QakdfZnAxWERLWGlmbHRsR0k3ZlBBRi12ZkJnalNvenBZYV82ZUdfbkF0SEc4SE1YQmgzc2o0X1R1RldQZ1c3MHBm?oc=5",
       "ticker": "N/A",
       "listing_status": "Non-public",
       "exchange": ""

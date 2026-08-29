@@ -76,6 +76,7 @@
 .radar-name small { display: -webkit-box; margin-top: 4px; overflow: hidden; color: var(--dash-muted); font-size: .66rem; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .score { display: grid; grid-template-columns: auto 1fr; align-items: baseline; column-gap: 2px; color: var(--dash-ink); }
 .score strong { font-size: 1.12rem; }.score span { color: #8491a2; font-size: .58rem; }
+.score-missing strong { color: #7b8797; font-size: .68rem; }
 .score i { grid-column: 1 / -1; display: block; width: 64px; height: 3px; margin-top: 5px; border-radius: 9px; background: #e3e8ee; overflow: hidden; }
 .score b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #3b82f6, #16a5a3); }
 .direction { display: flex; align-items: center; gap: 5px; color: var(--dash-green); font-size: .7rem; font-weight: 800; }
@@ -83,6 +84,7 @@
 .stage, .status-badge, .risk { display: inline-block; width: fit-content; padding: 4px 7px; border-radius: 999px; font-size: .59rem; font-weight: 800; white-space: nowrap; text-transform: uppercase; }
 .stage { color: #465970; background: #edf1f5; }
 .biotech-radar-item .stage { max-width: 100%; line-height: 1.25; text-align: center; white-space: normal; }
+.biotech-radar-item .status-badge { max-width: 100%; line-height: 1.25; text-align: center; white-space: normal; }
 .stage.hot { color: #a2303d; background: #fde8eb; }.stage.heating-up { color: #94600b; background: #fff0d2; }.stage.emerging { color: #2259b2; background: #e8f0ff; }.stage.cooling { color: #647184; background: #edf0f3; }
 .radar-copy, .beneficiaries { display: -webkit-box; overflow: hidden; color: #475a71; font-size: .68rem; line-height: 1.42; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 .beneficiaries { color: #315779; font-weight: 700; }.status-badge { color: #176c70; background: #e2f4f3; }

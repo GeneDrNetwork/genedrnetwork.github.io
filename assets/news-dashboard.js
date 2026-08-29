@@ -34,7 +34,9 @@ function biotechRadarRows(data) {
 }
 
 function renderScore(score, label) {
-  const safeScore = Math.max(0, Math.min(100, Number(score) || 0));
+  const missing = score === null || score === undefined || !Number.isFinite(Number(score));
+  const safeScore = missing ? 0 : Math.max(0, Math.min(100, Number(score)));
+  if (missing) return `<div class="score score-missing" aria-label="${escapeHtml(label)} missing"><strong>Missing</strong><i><b style="width:0%"></b></i></div>`;
   return `<div class="score" aria-label="${escapeHtml(label)} ${safeScore} out of 100"><strong>${safeScore}</strong><span>/100</span><i><b style="width:${safeScore}%"></b></i></div>`;
 }
 
@@ -179,10 +181,20 @@ function renderBiotechNews(section = {}) {
 
 function renderScoreBreakdown(components = [], completeness) {
   const rows = components.map((component) => `<li class="${component.missing ? "score-component-missing" : ""}">
-    <span>${escapeHtml(component.label)}</span><strong>${escapeHtml(component.score)} / ${escapeHtml(component.weight)}</strong>
+    <span>${escapeHtml(component.label)}</span><strong>${component.score === null || component.score === undefined ? "Missing" : `${escapeHtml(component.score)} / ${escapeHtml(component.weight)}`}</strong>
     <small>${escapeHtml(component.rationale)}</small></li>`).join("");
   return `<div class="detail-item detail-wide score-breakdown"><dt>Score Breakdown</dt><dd><ul>${rows}</ul>
-    <p>Evidence coverage: ${escapeHtml(completeness)} / 100 weighted points. Missing inputs score zero.</p></dd></div>`;
+    <p>Data completeness: ${escapeHtml(completeness)}%. Opportunity Score is normalized over available weighted inputs; missing inputs are excluded rather than scored as zero.</p></dd></div>`;
+}
+
+function renderBiotechEvidenceGroup(label, events = []) {
+  const items = events.map((event) => `<li><strong>${escapeHtml(event.relation || "Evidence")}</strong> · ${escapeHtml(formatNewsDate(event.published_at))} · ${escapeHtml(event.age_band || "Age missing")}<br>${escapeHtml(event.new_information || "Evidence detail missing")}</li>`).join("");
+  return `<div class="detail-item detail-wide radar-sources"><dt>${escapeHtml(label)}</dt><dd><ul>${items || "<li>Missing / no connected evidence.</li>"}</ul></dd></div>`;
+}
+
+function renderBiotechHistory(row) {
+  const history = (row.score_history || []).slice(-5).reverse().map((item) => `<li>${escapeHtml(formatNewsDate(item.as_of))}: Opportunity ${escapeHtml(item.opportunity_score ?? "Missing")} · Scientific ${escapeHtml(item.scientific_evidence_score ?? "Missing")} · Binary Risk ${escapeHtml(item.binary_risk)} · Completeness ${escapeHtml(item.data_completeness)}%</li>`).join("");
+  return `<div class="detail-item detail-wide radar-sources"><dt>Evidence / Score History</dt><dd><p>${escapeHtml(row.why_changed || "Missing")}</p><ul>${history || "<li>No prior snapshot.</li>"}</ul></dd></div>`;
 }
 
 function renderSources(sources = [], scoreAsOf) {
@@ -197,15 +209,20 @@ function renderSources(sources = [], scoreAsOf) {
 
 function renderBiotechRadar(rows) {
   document.getElementById("biotech-radar").innerHTML = rows.map((row) => `<details class="radar-item biotech-radar-item"><summary>
-      <span class="radar-name"><strong>${escapeHtml(row.company)}</strong><small>${escapeHtml(row.ticker)} · ${escapeHtml(row.catalyst)}</small></span>${renderScore(row.catalyst_score, "Catalyst score")}
+      <span class="radar-name"><strong>${escapeHtml(row.company)}</strong><small>${escapeHtml(row.ticker)} · ${escapeHtml(row.program)} · ${escapeHtml(row.indication)} · ${escapeHtml(row.catalyst)}</small></span>${renderScore(row.opportunity_score, "Opportunity Score")}
       <span class="timing">${escapeHtml(row.expected_timing)}</span><span><b class="stage ${stageClass(row.stage)}">${escapeHtml(row.stage)}</b></span>
       <span class="radar-copy">${escapeHtml(row.why_important)}</span><span class="status-badge ${stageClass(row.opportunity_status)}">${escapeHtml(row.opportunity_status)}</span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid biotech-details">
+      ${detailItem("Company → Program → Indication → Catalyst", `${row.company} (${row.ticker}) → ${row.program} → ${row.indication} → ${row.catalyst}`)}
       ${detailItem("Clinical Evidence", row.clinical_evidence, String(row.clinical_evidence).startsWith("Missing"))}${detailItem("Upcoming Catalyst", row.upcoming_catalyst)}${detailItem("Previous Trial Results", row.previous_results, String(row.previous_results).startsWith("Missing"))}
       ${detailItem("FDA / Regulatory Status", row.regulatory_status)}${detailItem("Commercial Potential", row.commercial_potential)}
       ${detailItem("Market Expectation / Priced In", row.market_expectation, String(row.market_expectation).startsWith("Missing"))}${detailItem("Positioning / Short Interest", row.positioning, String(row.positioning).startsWith("Missing"))}
       ${detailItem("Risks", row.risks)}${detailItem("What to Watch Next", row.watch_next)}
+      ${detailItem("Scientific Evidence", row.scientific_evidence_score === null ? "Missing" : `${row.scientific_evidence_score} / 30`)}${detailItem("Catalyst Impact / Company Sensitivity", `${row.catalyst_impact_score} / 25. ${row.company_sensitivity}`)}${detailItem("Expectation Gap", row.expectation_gap_score === null ? "Missing" : `${row.expectation_gap_score} / 20`)}
+      ${detailItem("Binary Risk", `${row.binary_risk}. ${row.binary_risk_rationale}`)}${detailItem("Data Completeness / Confidence", `${row.data_completeness}% / ${row.confidence}`)}${detailItem("Evidence Gate", `${row.evidence_gate.passed ? "Passed" : "Not passed"}. ${row.evidence_gate.rule}`)}
+      ${detailItem("Evidence Integrity Gate", `${row.evidence_integrity_gate.concern_identified ? "Concern identified; confidence capped." : "No explicit integrity concern identified in connected evidence."} ${row.evidence_integrity_gate.rule}`)}
       ${renderScoreBreakdown(row.score_components, row.data_completeness)}${renderSources(row.sources, row.score_as_of)}
+      ${renderBiotechEvidenceGroup("Confirming Evidence", row.confirming_evidence)}${renderBiotechEvidenceGroup("Mixed Evidence", row.mixed_evidence)}${renderBiotechEvidenceGroup("Contradicting Evidence", row.contradicting_evidence)}${renderBiotechHistory(row)}
     </dl></details>`).join("") || `<p class="loading-state">No biotech opportunities are available.</p>`;
 }
 

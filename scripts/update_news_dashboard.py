@@ -297,14 +297,15 @@ BIOTECH_WATCH = [
     ("ProQR Therapeutics", "PRQR", "RNA Editing", "Programmable RNA editing could offer repeatable, reversible correction.", "First clinical data and partnerships", "Small Cap", "High", "High"),
 ]
 
-CATALYST_WEIGHTS = {
-    "catalyst_importance": 25,
-    "prior_evidence": 20,
-    "catalyst_timing": 15,
-    "commercial_impact": 15,
-    "expectation_gap": 15,
-    "positioning": 10,
+BIOTECH_RADAR_WEIGHTS = {
+    "scientific_evidence": 30,
+    "catalyst_impact_company_sensitivity": 25,
+    "expectation_gap": 20,
+    "sector_trend_capital_flow": 15,
+    "timing_technicals": 10,
 }
+# Retained for compatibility with existing imports while the Radar uses the V1 factor model above.
+CATALYST_WEIGHTS = BIOTECH_RADAR_WEIGHTS
 
 
 def source(title, url, date):
@@ -313,7 +314,7 @@ def source(title, url, date):
 
 BIOTECH_CATALYSTS = [
     {
-        "ticker": "NTLA", "company": "Intellia Therapeutics", "program": "lonvoguran ziclumeran (lonvo-z)",
+        "ticker": "NTLA", "company": "Intellia Therapeutics", "program": "lonvoguran ziclumeran (lonvo-z)", "indication": "Hereditary angioedema",
         "catalyst": "FDA acceptance of the lonvo-z BLA", "expected_timing": "Second half of 2026",
         "window_start": "2026-08-27", "window_end": "2026-12-31", "stage": "BLA submission / review",
         "why_important": "Acceptance would move a potentially first-in-class, one-time in vivo CRISPR therapy for HAE into FDA review.",
@@ -338,7 +339,7 @@ BIOTECH_CATALYSTS = [
         ],
     },
     {
-        "ticker": "BEAM", "company": "Beam Therapeutics", "program": "BEAM-302",
+        "ticker": "BEAM", "company": "Beam Therapeutics", "program": "BEAM-302", "indication": "Alpha-1 antitrypsin deficiency",
         "catalyst": "Updated Phase 1/2 BEAM-302 data at ERS", "expected_timing": "September 8, 2026",
         "window_start": "2026-09-08", "window_end": "2026-09-08", "stage": "Phase 1/2; pivotal cohort dosing",
         "why_important": "The update may further validate in vivo base editing and the accelerated pivotal path in alpha-1 antitrypsin deficiency.",
@@ -364,7 +365,7 @@ BIOTECH_CATALYSTS = [
         ],
     },
     {
-        "ticker": "MAZE", "company": "Maze Therapeutics", "program": "MZE829",
+        "ticker": "MAZE", "company": "Maze Therapeutics", "program": "MZE829", "indication": "APOL1-mediated kidney disease",
         "catalyst": "Additional HORIZON Phase 2 cohort data", "expected_timing": "Late 2026 / early 2027",
         "window_start": "2026-11-01", "window_end": "2027-02-27", "stage": "Phase 2",
         "why_important": "Additional cohorts may confirm a genetically defined response signal and support pivotal development in APOL1-mediated kidney disease.",
@@ -389,7 +390,7 @@ BIOTECH_CATALYSTS = [
         ],
     },
     {
-        "ticker": "STOK", "company": "Stoke Therapeutics", "program": "zorevunersen",
+        "ticker": "STOK", "company": "Stoke Therapeutics", "program": "zorevunersen", "indication": "Dravet syndrome",
         "catalyst": "FDA pre-NDA meeting and regulatory-path update", "expected_timing": "Second half of 2026",
         "window_start": "2026-08-27", "window_end": "2026-12-31", "stage": "Phase 3 / pre-NDA",
         "why_important": "A constructive pre-NDA outcome could clarify the rolling NDA path for a potential disease-modifying Dravet syndrome therapy.",
@@ -411,7 +412,7 @@ BIOTECH_CATALYSTS = [
         "sources": [source("Stoke Q2 2026 results", "https://investor.stoketherapeutics.com/news-releases/news-release-details/stoke-therapeutics-announces-second-quarter-2026-financial/", "2026-08-03")],
     },
     {
-        "ticker": "PRQR", "company": "ProQR Therapeutics", "program": "AX-0810 / AX-0811",
+        "ticker": "PRQR", "company": "ProQR Therapeutics", "program": "AX-0810 / AX-0811", "indication": "Missing: program-level indication is not specified in the connected catalyst record",
         "catalyst": "Full AX-0810 and initial AX-0811 Phase 1 data", "expected_timing": "By year-end 2026",
         "window_start": "2026-10-01", "window_end": "2026-12-31", "stage": "Phase 1",
         "why_important": "The readout could strengthen the first clinical validation of ProQR's Axiomer RNA-editing platform and show next-generation activity.",
@@ -436,7 +437,7 @@ BIOTECH_CATALYSTS = [
         ],
     },
     {
-        "ticker": "KRYS", "company": "Krystal Biotech", "program": "KB803",
+        "ticker": "KRYS", "company": "Krystal Biotech", "program": "KB803", "indication": "Corneal abrasions in dystrophic epidermolysis bullosa",
         "catalyst": "IOLITE registrational top-line results", "expected_timing": "Fourth quarter 2026",
         "window_start": "2026-10-01", "window_end": "2026-12-31", "stage": "Registrational study",
         "why_important": "A registrational readout could establish a second ophthalmic use of the company's redosable gene-delivery platform in dystrophic epidermolysis bullosa.",
@@ -460,7 +461,7 @@ BIOTECH_CATALYSTS = [
 ]
 
 MRNA_VALIDATION_CASE = {
-    "ticker": "MRNA", "company": "Moderna", "program": "mRNA-1010 (mFLUSIVA)",
+    "ticker": "MRNA", "company": "Moderna", "program": "mRNA-1010 (mFLUSIVA)", "indication": "Seasonal influenza",
     "catalyst": "FDA PDUFA decision for mFLUSIVA", "expected_timing": "August 5, 2026",
     "window_start": "2026-08-05", "window_end": "2026-08-05", "stage": "BLA review",
     "why_important": "Approval would represent Moderna's fifth product and expand the commercial respiratory portfolio into seasonal influenza.",
@@ -516,63 +517,249 @@ def timing_component(item, as_of):
     return 10, "Company guidance places the catalyst within the forward six-month window, but not on a narrow date.", False
 
 
-def score_biotech_catalyst(item, as_of):
-    timing_score, timing_rationale, timing_missing = timing_component(item, as_of)
-    components = dict(item["components"])
-    components["catalyst_timing"] = (timing_score, timing_rationale)
-    labels = {
-        "catalyst_importance": "Catalyst Importance", "prior_evidence": "Prior Evidence",
-        "catalyst_timing": "Catalyst Timing", "commercial_impact": "Commercial Impact",
-        "expectation_gap": "Expectation Gap", "positioning": "Positioning / Technical Setup",
+def biotech_radar_factor(key, label, weight, score, available_weight, rationale, sources, missing_fields=None):
+    if score is not None and not 0 <= score <= weight:
+        raise ValueError(f"{label} score {score} exceeds 0-{weight}")
+    return {
+        "key": key, "label": label, "weight": weight, "score": score,
+        "available_weight": available_weight, "missing": available_weight == 0,
+        "partial": 0 < available_weight < weight, "missing_fields": missing_fields or [],
+        "rationale": rationale,
+        "evidence": [] if available_weight == 0 else [
+            {"title": entry["title"], "date": entry["date"], "url": entry["url"]} for entry in sources
+        ],
     }
-    breakdown = []
-    for key, weight in CATALYST_WEIGHTS.items():
-        points, rationale = components[key]
-        if not 0 <= points <= weight:
-            raise ValueError(f"{item['ticker']} {key} score {points} exceeds 0-{weight}")
-        missing = timing_missing if key == "catalyst_timing" else points == 0 and rationale.lower().startswith("missing")
-        breakdown.append({
-            "key": key, "label": labels[key], "score": points, "weight": weight,
-            "rationale": rationale, "missing": missing,
-            "evidence": [] if missing else [{"title": entry["title"], "date": entry["date"], "url": entry["url"]}
-                                            for entry in item["sources"]],
-        })
-    score = sum(component["score"] for component in breakdown)
+
+
+def biotech_event_relation(item, event):
+    if event.get("ticker") != item.get("ticker"):
+        return None
+    event_program = str(event.get("drug_program") or "").lower()
+    event_indication = str(event.get("indication") or "").lower()
+    missing_markers = ("missing", "not established", "unknown")
+    program_terms = [term.strip().lower() for term in re.split(r"[/()]", item.get("program", "")) if len(term.strip()) >= 4]
+    indication_terms = [term.strip().lower() for term in re.split(r"[/()]", item.get("indication", "")) if len(term.strip()) >= 5 and "missing" not in term.lower()]
+    if not any(marker in event_program for marker in missing_markers) and any(term in event_program for term in program_terms):
+        return "program-level"
+    if not any(marker in event_indication for marker in missing_markers) and any(term in event_indication for term in indication_terms):
+        return "indication-level"
+    return "company-level"
+
+
+def biotech_radar_evidence(item, biotech_news_section, as_of):
+    raw_events = (biotech_news_section or {}).get("radar_evidence_interface", {}).get("events", [])
+    deduplicated = {}
+    for event in raw_events:
+        relation = biotech_event_relation(item, event)
+        if not relation:
+            continue
+        event_id = event.get("id") or news_fingerprint(
+            f"{event.get('ticker', '')} {event.get('published_at', '')} {event.get('new_information', '')}", "biotech-radar")
+        if event_id in deduplicated:
+            continue
+        direction = str(event.get("direction") or "").lower()
+        signal = "mixed" if "mixed" in direction else "confirming" if any(
+            term in direction for term in ("positive", "advancing", "expanding")) else "contradicting" if any(
+            term in direction for term in ("negative", "delayed", "contracting", "failed")) else "mixed"
+        try:
+            event_time = datetime.fromisoformat(event.get("published_at")) if event.get("published_at") else None
+        except (TypeError, ValueError):
+            event_time = None
+        if event_time and event_time.tzinfo is None:
+            event_time = event_time.replace(tzinfo=timezone.utc)
+        reference_time = datetime.combine(as_of, datetime.min.time(), tzinfo=timezone.utc)
+        age = ai_evidence_age(event_time.isoformat() if event_time else None, reference_time)
+        deduplicated[event_id] = {**event, **age, "event_id": event_id, "relation": relation, "signal": signal}
+    return list(deduplicated.values())
+
+
+def biotech_radar_why_changed(previous, current):
+    if not previous:
+        return "Initial Biotech Radar V1 evidence baseline."
+    changes = []
+    for label, key in (
+        ("Opportunity Score", "opportunity_score"), ("Scientific Evidence", "scientific_evidence_score"),
+        ("Catalyst Impact", "catalyst_impact_score"), ("Data Completeness", "data_completeness"),
+        ("Binary Risk", "binary_risk"), ("Status", "opportunity_status"),
+    ):
+        old, new = previous.get(key), current.get(key)
+        if old != new:
+            changes.append(f"{label} changed from {old if old is not None else 'Missing'} to {new if new is not None else 'Missing'}")
+    return "; ".join(changes) + "." if changes else "No material score change; evidence history was refreshed and deduplicated."
+
+
+def biotech_binary_risk(item, scientific_score, catalyst_impact, integrity_concern, thesis_broken):
+    stage = item.get("stage", "").lower()
+    if thesis_broken or (scientific_score is None and catalyst_impact >= 12):
+        level = "Extreme"
+    elif integrity_concern or scientific_score is None or (scientific_score < 18 and catalyst_impact >= 11):
+        level = "High"
+    elif "phase 1" in stage and catalyst_impact >= 11:
+        level = "High"
+    else:
+        level = "Moderate"
+    rationale = (
+        f"Evidence uncertainty is {'missing' if scientific_score is None else f'{scientific_score}/30'}; "
+        f"catalyst magnitude is {catalyst_impact}/25. Verified company valuation sensitivity and portfolio dependence are missing, so risk cannot be classified Low."
+    )
+    return level, rationale
+
+
+def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None):
+    timing_score, timing_rationale, timing_missing = timing_component(item, as_of)
+    prior_points, prior_rationale = item["components"]["prior_evidence"]
+    prior_missing = prior_points == 0 and prior_rationale.lower().startswith("missing")
+    scientific_score = None if prior_missing else round(prior_points / 20 * 30)
+    importance_points, importance_rationale = item["components"]["catalyst_importance"]
+    commercial_points, commercial_rationale = item["components"]["commercial_impact"]
+    catalyst_impact = round((importance_points / 25 * 0.6 + commercial_points / 15 * 0.4) * 15)
+    expectation_points, expectation_rationale = item["components"]["expectation_gap"]
+    expectation_missing = expectation_points == 0 and expectation_rationale.lower().startswith("missing")
+    expectation_score = None if expectation_missing else round(expectation_points / 15 * 20)
+    positioning_points, positioning_rationale = item["components"]["positioning"]
+    positioning_missing = positioning_points == 0 and positioning_rationale.lower().startswith("missing")
+    timing_available = 0 if timing_missing else 5
+    technical_available = 0 if positioning_missing else 5
+    timing_technicals_score = None if timing_available + technical_available == 0 else (
+        (round(timing_score / 15 * 5) if timing_available else 0) +
+        (round(positioning_points / 10 * 5) if technical_available else 0)
+    )
+    breakdown = [
+        biotech_radar_factor("scientific_evidence", "Scientific Evidence", 30, scientific_score, 0 if prior_missing else 30,
+                              prior_rationale, item["sources"], ["Program-specific scientific evidence"] if prior_missing else []),
+        biotech_radar_factor("catalyst_impact_company_sensitivity", "Catalyst Impact / Company Sensitivity", 25, catalyst_impact, 15,
+                              f"{importance_rationale} {commercial_rationale} Verified program-level valuation sensitivity and portfolio dependence are missing.", item["sources"],
+                              ["Company valuation sensitivity", "Portfolio dependence"]),
+        biotech_radar_factor("expectation_gap", "Expectation Gap", 20, expectation_score, 0 if expectation_missing else 20,
+                              expectation_rationale, item["sources"], ["Verified market expectations"] if expectation_missing else []),
+        biotech_radar_factor("sector_trend_capital_flow", "Sector Trend & Capital Flow", 15, None, 0,
+                              "Missing: no program-relevant sector breadth, financing-flow, or capital-flow dataset is connected.", item["sources"],
+                              ["Sector breadth", "Capital flow"]),
+        biotech_radar_factor("timing_technicals", "Timing & Technicals", 10, timing_technicals_score, timing_available + technical_available,
+                              f"{timing_rationale} {positioning_rationale}", item["sources"],
+                              (["Catalyst timing"] if timing_missing else []) + (["Technical setup / positioning"] if positioning_missing else [])),
+    ]
+    available_weight = sum(component["available_weight"] for component in breakdown)
+    available_points = sum(component["score"] for component in breakdown if component["score"] is not None)
+    opportunity_score = round(available_points / available_weight * 100) if available_weight else None
+    news_evidence = biotech_radar_evidence(item, biotech_news_section, as_of)
+    confirming = [event for event in news_evidence if event["signal"] == "confirming"]
+    mixed = [event for event in news_evidence if event["signal"] == "mixed"]
+    contradicting = [event for event in news_evidence if event["signal"] == "contradicting"]
+    integrity_terms = ("data integrity", "misconduct", "fraud", "retraction", "fabricated data")
+    integrity_evidence = [event for event in news_evidence if any(
+        term in str(event.get("new_information") or "").lower() for term in integrity_terms)]
+    integrity_concern = bool(integrity_evidence)
+    thesis_terms = ("failed primary endpoint", "trial terminated", "program discontinued", "application withdrawn", "fda rejected")
+    thesis_broken = any(event.get("relation") != "company-level" and any(
+        term in str(event.get("new_information") or "").lower() for term in thesis_terms) for event in contradicting)
+    confidence = "High" if available_weight >= 80 and scientific_score is not None and scientific_score >= 24 else (
+        "Medium" if available_weight >= 50 and scientific_score is not None and scientific_score >= 18 else "Low")
+    if integrity_concern:
+        confidence = "Low"
+    binary_risk, binary_risk_rationale = biotech_binary_risk(
+        item, scientific_score, catalyst_impact, integrity_concern, thesis_broken)
+    evidence_gate_passed = scientific_score is not None and scientific_score >= 18 and not integrity_concern
+    high_conviction_eligible = evidence_gate_passed and scientific_score >= 24 and available_weight >= 75 and confidence == "High"
+    if thesis_broken:
+        status = "Thesis Broken"
+    elif integrity_concern or binary_risk == "Extreme":
+        status = "High Downside Risk"
+    elif not evidence_gate_passed or binary_risk == "High":
+        status = "Speculative Binary"
+    elif high_conviction_eligible and opportunity_score is not None and opportunity_score >= 80:
+        status = "High Conviction"
+    elif scientific_score is not None and scientific_score >= 24 and catalyst_impact >= 12:
+        status = "Evidence-Supported / High Impact"
+    else:
+        status = "Monitoring"
     result = {key: value for key, value in item.items() if key not in ("components", "window_start", "window_end")}
     result.update({
-        "catalyst_score": score,
+        "opportunity_score": opportunity_score,
+        "catalyst_score": opportunity_score,
+        "scientific_evidence_score": scientific_score,
+        "catalyst_impact_score": catalyst_impact,
+        "expectation_gap_score": expectation_score,
+        "sector_trend_score": None,
+        "timing_technicals_score": timing_technicals_score,
         "upcoming_catalyst": f"{item['catalyst']} — {item['expected_timing']}",
-        "opportunity_status": catalyst_classification(score),
+        "opportunity_status": status,
+        "binary_risk": binary_risk,
+        "binary_risk_rationale": binary_risk_rationale,
+        "binary_risk_inputs": {
+            "evidence_uncertainty": None if scientific_score is None else 30 - scientific_score,
+            "company_sensitivity": None,
+            "catalyst_magnitude": catalyst_impact,
+            "portfolio_dependence": None,
+        },
+        "company_sensitivity": "Missing: no verified program-level valuation sensitivity is connected.",
+        "portfolio_dependence": "Missing: no verified portfolio-dependence measure is connected.",
+        "evidence_gate": {
+            "passed": evidence_gate_passed,
+            "high_conviction_eligible": high_conviction_eligible,
+            "rule": "Scientific Evidence below 18/30 cannot be High Conviction; High Conviction also requires at least 75% completeness and High confidence.",
+        },
+        "evidence_integrity_gate": {
+            "concern_identified": integrity_concern,
+            "confidence_cap": "Low" if integrity_concern else None,
+            "evidence_ids": [event["event_id"] for event in integrity_evidence],
+            "rule": "Explicit credibility or data-integrity concerns cap confidence at Low.",
+        },
         "score_as_of": as_of.isoformat(),
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "score_components": breakdown,
-        "missing_data": [component["label"] for component in breakdown if component["missing"]],
-        "data_completeness": sum(component["weight"] for component in breakdown if not component["missing"]),
+        "missing_data": [field for component in breakdown for field in component["missing_fields"]],
+        "data_completeness": available_weight,
+        "confidence": confidence,
+        "confirming_evidence": confirming,
+        "mixed_evidence": mixed,
+        "contradicting_evidence": contradicting,
+        "evidence_count": len(news_evidence),
     })
+    result["why_changed"] = biotech_radar_why_changed(previous, result)
+    prior_history = list(previous.get("score_history", [])) if previous else []
+    snapshot = {
+        "as_of": as_of.isoformat(), "opportunity_score": opportunity_score,
+        "scientific_evidence_score": scientific_score, "catalyst_impact_score": catalyst_impact,
+        "expectation_gap_score": expectation_score, "binary_risk": binary_risk,
+        "data_completeness": available_weight, "confidence": confidence,
+        "opportunity_status": status, "evidence_count": len(news_evidence), "why_changed": result["why_changed"],
+    }
+    snapshot_day = snapshot["as_of"][:10]
+    prior_history = [entry for entry in prior_history if str(entry.get("as_of", ""))[:10] != snapshot_day]
+    result["score_history"] = (prior_history + [snapshot])[-60:]
     return result
 
 
-def build_biotech_radar(as_of):
+def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None):
     horizon = as_of + timedelta(days=183)
+    previous_by_key = {
+        (row.get("ticker"), row.get("program"), row.get("indication"), row.get("catalyst")): row
+        for row in (previous_rows or [])
+    }
     eligible = []
     for item in BIOTECH_CATALYSTS:
         start = datetime.fromisoformat(item["window_start"]).date()
         end = datetime.fromisoformat(item["window_end"]).date()
         if end >= as_of and start <= horizon:
-            eligible.append(score_biotech_catalyst(item, as_of))
-    return sorted(eligible, key=lambda item: (-item["catalyst_score"], item["expected_timing"], item["ticker"]))
+            key = (item.get("ticker"), item.get("program"), item.get("indication"), item.get("catalyst"))
+            eligible.append(score_biotech_catalyst(
+                item, as_of, biotech_news_section, previous_by_key.get(key)))
+    return sorted(eligible, key=lambda item: (-(item["opportunity_score"] or -1), item["expected_timing"], item["ticker"]))
 
 
 def radar_methodology():
     return {
-        "engine_version": "biotech-catalyst-radar-v1",
+        "engine_version": "biotech-radar-v1",
         "horizon": "Potentially valuation-changing catalysts expected within the next 183 days (approximately six months).",
-        "weights": CATALYST_WEIGHTS,
-        "classifications": {"85-100": "High Priority", "70-84": "Priority Watch", "55-69": "Monitoring", "0-54": "Low Priority"},
-        "missing_data_policy": "Missing evidence is never inferred. A missing component receives zero points and is listed in missing_data.",
-        "timing_rules": {"exact_date_within_90_days": 15, "defined_quarter_or_narrow_window": 12,
-                         "broader_company_guidance_within_six_months": 10, "outside_window_or_missing": 0},
-        "scope_note": "V1 scores a curated, source-backed catalyst set. It does not yet discover catalysts or ingest consensus, options, short-interest, or fund-flow data automatically.",
+        "weights": BIOTECH_RADAR_WEIGHTS,
+        "opportunity_score_policy": "Opportunity Score is normalized over available weighted inputs. Missing inputs are excluded, never treated as zero, and Data Completeness must be reviewed with the score.",
+        "evidence_gate": "Scientific Evidence below 18/30 cannot be High Conviction. High Conviction additionally requires Scientific Evidence of at least 24/30, 75% completeness, and High confidence.",
+        "integrity_gate": "Explicit credibility or data-integrity concerns cap evidence confidence at Low.",
+        "news_boundary": "Biotech News is retained as dated confirming, mixed, or contradicting evidence. News importance never sets a Radar factor or Opportunity Score.",
+        "binary_risk": "Low / Moderate / High / Extreme uses available evidence uncertainty and catalyst magnitude; missing company valuation sensitivity or portfolio dependence prevents a Low classification.",
+        "status_policy": ["High Conviction", "Evidence-Supported / High Impact", "Monitoring", "Speculative Binary", "High Downside Risk", "Thesis Broken"],
+        "scope_note": "V1 scores the existing curated Company → Drug/Program → Indication → Catalyst set. It does not fabricate consensus, valuation, technical, short-interest, capital-flow, trial, or portfolio-dependence inputs.",
     }
 
 
@@ -1988,6 +2175,8 @@ def build():
     ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at)
     previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
     biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
+    biotech_radar = build_biotech_radar(
+        score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []))
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
@@ -1998,7 +2187,7 @@ def build():
         "ai": {"infrastructure_leaders": AI_INFRASTRUCTURE, "platform_leaders": AI_PLATFORMS,
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
-        "radar": {"ai": ai_radar, "biotech": build_biotech_radar(score_date),
+        "radar": {"ai": ai_radar, "biotech": biotech_radar,
                   "methodology": radar_methodology(), "ai_methodology": ai_radar_methodology()},
         "radar_validation": {
             "mrna": {
