@@ -138,24 +138,61 @@ function relatedTickerLabel(row = {}) {
   return Array.isArray(row.related_tickers) && row.related_tickers.length ? `Related: ${row.related_tickers.join(", ")}` : "";
 }
 
-function renderNewsCard(story) {
+function newsTags(values = []) {
+  return values.map((value) => `<span>${escapeHtml(value)}</span>`).join("");
+}
+
+function newsCategory(story = {}, kind = "ai") {
+  const values = kind === "biotech" ? story.subsectors : story.affected_trends;
+  if (Array.isArray(values) && values.length) return values[0];
+  return story.subsector || story.category || "";
+}
+
+function newsDetail(label, value) {
+  return `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value || "Missing")}</dd></div>`;
+}
+
+function renderNewsCard(story, kind = "ai", archived = false) {
   const sourceUrl = safeSourceUrl(story.source_link);
-  const trendTags = (story.affected_trends || []).map((trend) => `<span>${escapeHtml(trend)}</span>`).join("");
+  const affectedFactors = Array.isArray(story.affected_radar_factors) && story.affected_radar_factors.length
+    ? story.affected_radar_factors : (story.affected_trends || []);
+  const subsectors = Array.isArray(story.subsectors) ? story.subsectors : [];
+  const category = newsCategory(story, kind);
   const evidenceSources = (story.evidence_sources || []).map((item) => {
     const url = safeSourceUrl(item.url);
     const label = `${item.primary ? "Primary" : "Corroborating"}: ${item.source}${item.date ? ` · ${formatNewsDate(item.date)}` : ""}`;
     return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>` : escapeHtml(label)}</li>`;
   }).join("");
-  return `<article class="top-news-card">
-    <div class="news-card-meta"><span>${escapeHtml(formatNewsDate(story.published_at))}</span><span>${escapeHtml(story.source || "Source missing")}</span><b class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</b></div>
-    <div class="news-card-meta"><span>${escapeHtml(companyTickerLabel(story))}</span>${relatedTickerLabel(story) ? `<span>${escapeHtml(relatedTickerLabel(story))}</span>` : ""}</div>
-    <h3>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h3>
-    <div class="news-score-row">${newsScore("Importance", story.news_importance_score)}</div>
+  const previousToNew = `${story.previous_state || "Missing"} → ${story.new_state || "Missing"}`;
+  return `<details class="top-news-card news-item${archived ? " news-item-archived" : ""}">
+    <summary class="news-summary">
+      <time>${escapeHtml(formatNewsDate(story.published_at))}</time>
+      <span class="news-headline">${escapeHtml(story.headline || "Headline missing")}</span>
+      ${newsScore("Importance", story.news_importance_score)}
+      ${category ? `<span class="news-category">${escapeHtml(category)}</span>` : ""}
+      <span class="expand-control" aria-hidden="true">+</span>
+    </summary>
+    <div class="news-detail-panel">
+      <dl class="news-detail-grid">
+        ${newsDetail("Source", story.source)}
+        ${newsDetail("Company / ticker", companyTickerLabel(story))}
+        ${newsDetail("Confirmation status", story.status)}
+      </dl>
+      ${relatedTickerLabel(story) ? `<p class="news-related-tickers">${escapeHtml(relatedTickerLabel(story))}</p>` : ""}
     <div class="news-why"><strong>What changed</strong><p>${escapeHtml(story.new_information || "Missing")}</p></div>
-    <dl class="news-detail-grid"><div><dt>Event type</dt><dd>${escapeHtml(story.event_type || "Missing")}</dd></div><div><dt>Direction</dt><dd>${escapeHtml(story.direction || "Missing")}</dd></div><div><dt>Affected trends</dt><dd class="news-trend-tags">${trendTags || "Missing"}</dd></div><div><dt>Relevant impacts</dt><dd>${escapeHtml(story.impact_chain || "Missing")}</dd></div></dl>
-    ${evidenceSources ? `<div class="news-evidence-sources"><strong>Sources &amp; evidence</strong><ul>${evidenceSources}</ul></div>` : ""}
+      <dl class="news-detail-grid">
+        ${newsDetail("Event type", story.event_type)}
+        ${newsDetail("Development stage / evidence level", story.development_stage)}
+        ${newsDetail("Indication", story.indication)}
+        ${newsDetail("Previous → new state", previousToNew)}
+        ${newsDetail("Direction", story.direction)}
+        <div><dt>Affected Radar factors</dt><dd class="news-trend-tags">${newsTags(affectedFactors) || "Missing"}</dd></div>
+        <div><dt>Subsector</dt><dd class="news-trend-tags">${newsTags(subsectors) || escapeHtml(story.subsector || "Missing")}</dd></div>
+      </dl>
+      <div class="news-evidence-sources"><strong>Sources &amp; evidence</strong>${evidenceSources ? `<ul>${evidenceSources}</ul>` : `<p class="missing-value">Missing</p>`}</div>
     ${sourceUrl ? `<a class="news-source-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read source <span aria-hidden="true">↗</span></a>` : `<span class="news-source-link missing-value">Source link missing</span>`}
-  </article>`;
+    </div>
+  </details>`;
 }
 
 function renderTopNews(section = {}) {
@@ -163,35 +200,8 @@ function renderTopNews(section = {}) {
   const archive = Array.isArray(section.important_news_archive) ? section.important_news_archive : [];
   setText("ai-news-selection-status", section.selection_status || "AI Technology News V1 active");
   setText("ai-news-archive-count", archive.length);
-  document.getElementById("ai-top-news").innerHTML = stories.map(renderNewsCard).join("") || `<p class="loading-state">No source-qualified AI or technology stories are available yet. The daily updater will preserve prior selections when feeds are unavailable.</p>`;
-  document.getElementById("ai-news-archive").innerHTML = archive.map((story) => {
-    const url = safeSourceUrl(story.source_link);
-    return `<article class="news-archive-item"><div><span>${escapeHtml(formatNewsDate(story.published_at))} · ${escapeHtml(companyTickerLabel(story))} · ${escapeHtml(story.event_type || "Event type missing")} · ${escapeHtml(story.direction || "Direction missing")}</span>
-      <h4>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h4></div>
-      <span class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</span><strong>${escapeHtml(story.news_importance_score)}<small>/100</small></strong></article>`;
-  }).join("") || `<p class="loading-state">The archive will populate as important stories rotate out of Top Investment News.</p>`;
-}
-
-function renderBiotechNewsCard(story) {
-  const sourceUrl = safeSourceUrl(story.source_link);
-  const factorTags = (story.affected_radar_factors || []).map((factor) => `<span>${escapeHtml(factor)}</span>`).join("");
-  const subsectorTags = (story.subsectors || []).map((subsector) => `<span>${escapeHtml(subsector)}</span>`).join("");
-  const evidenceSources = (story.evidence_sources || []).map((item) => {
-    const url = safeSourceUrl(item.url);
-    const label = `${item.primary ? "Primary" : "Corroborating"}: ${item.source}${item.date ? ` · ${formatNewsDate(item.date)}` : ""}`;
-    return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>` : escapeHtml(label)}</li>`;
-  }).join("");
-  const companyLabel = companyTickerLabel(story);
-  return `<article class="top-news-card biotech-news-card">
-    <div class="news-card-meta"><span>${escapeHtml(formatNewsDate(story.published_at))}</span><span>${escapeHtml(story.source || "Source missing")}</span><b class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</b></div>
-    <div class="news-card-meta"><span>${escapeHtml(companyLabel)}</span><span>${escapeHtml(story.drug_program || "Program missing")}</span>${relatedTickerLabel(story) ? `<span>${escapeHtml(relatedTickerLabel(story))}</span>` : ""}</div>
-    <h3>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h3>
-    <div class="news-score-row">${newsScore("Importance", story.news_importance_score)}</div>
-    <div class="news-why"><strong>What changed</strong><p>${escapeHtml(story.new_information || "Missing")}</p></div>
-    <dl class="news-detail-grid"><div><dt>Event type</dt><dd>${escapeHtml(story.event_type || "Missing")}</dd></div><div><dt>Development stage / evidence level</dt><dd>${escapeHtml(story.development_stage || "Missing")}</dd></div><div><dt>Indication</dt><dd>${escapeHtml(story.indication || "Missing")}</dd></div><div><dt>Previous → new state</dt><dd>${escapeHtml(story.previous_state || "Missing")} → ${escapeHtml(story.new_state || "Missing")}</dd></div><div><dt>Direction</dt><dd>${escapeHtml(story.direction || "Missing")}</dd></div><div><dt>Affected Radar factors</dt><dd class="news-trend-tags">${factorTags || "Missing"}</dd></div><div><dt>Subsector</dt><dd class="news-trend-tags">${subsectorTags || "Missing"}</dd></div></dl>
-    ${evidenceSources ? `<div class="news-evidence-sources"><strong>Sources &amp; evidence</strong><ul>${evidenceSources}</ul></div>` : ""}
-    ${sourceUrl ? `<a class="news-source-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read source <span aria-hidden="true">↗</span></a>` : `<span class="news-source-link missing-value">Source link missing</span>`}
-  </article>`;
+  document.getElementById("ai-top-news").innerHTML = stories.map((story) => renderNewsCard(story, "ai")).join("") || `<p class="loading-state">No source-qualified AI or technology stories are available yet. The daily updater will preserve prior selections when feeds are unavailable.</p>`;
+  document.getElementById("ai-news-archive").innerHTML = archive.map((story) => renderNewsCard(story, "ai", true)).join("") || `<p class="loading-state">The archive will populate as important stories rotate out of Top Investment News.</p>`;
 }
 
 function renderBiotechNews(section = {}) {
@@ -199,14 +209,8 @@ function renderBiotechNews(section = {}) {
   const archive = Array.isArray(section.important_news_archive) ? section.important_news_archive : [];
   setText("biotech-news-selection-status", section.selection_status || "Biotech News V1 active");
   setText("biotech-news-archive-count", archive.length);
-  document.getElementById("biotech-top-news").innerHTML = stories.map(renderBiotechNewsCard).join("") || `<p class="loading-state">No biotech events currently meet the prominent-news threshold. Qualified events remain available in Evidence History.</p>`;
-  document.getElementById("biotech-news-archive").innerHTML = archive.map((story) => {
-    const url = safeSourceUrl(story.source_link);
-    const company = companyTickerLabel(story);
-    return `<article class="news-archive-item"><div><span>${escapeHtml(formatNewsDate(story.published_at))} · ${escapeHtml(company)} · ${escapeHtml(story.event_type || "Event type missing")} · ${escapeHtml(story.direction || "Direction missing")}</span>
-      <h4>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a>` : escapeHtml(story.headline)}</h4></div>
-      <span class="news-status ${stageClass(story.status)}">${escapeHtml(story.status || "Status missing")}</span><strong>${escapeHtml(story.news_importance_score)}<small>/100</small></strong></article>`;
-  }).join("") || `<p class="loading-state">Evidence History will populate when events score 65–79 or rotate out of prominent news.</p>`;
+  document.getElementById("biotech-top-news").innerHTML = stories.map((story) => renderNewsCard(story, "biotech")).join("") || `<p class="loading-state">No biotech events currently meet the prominent-news threshold. Qualified events remain available in Evidence History.</p>`;
+  document.getElementById("biotech-news-archive").innerHTML = archive.map((story) => renderNewsCard(story, "biotech", true)).join("") || `<p class="loading-state">Evidence History will populate when events score 65–79 or rotate out of prominent news.</p>`;
 }
 
 function renderScoreBreakdown(components = [], completeness) {
