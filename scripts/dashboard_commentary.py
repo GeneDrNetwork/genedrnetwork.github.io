@@ -22,41 +22,63 @@ def top_counts(values, limit=4):
     return [item for item, _ in Counter(value for value in values if value).most_common(limit)]
 
 
-def build_news_commentary(ai_section, biotech_section):
-    ai = list((ai_section or {}).get("stories", [])); biotech = list((biotech_section or {}).get("stories", []))
-    stories = ranked(ai + biotech, "news_importance_score")
+def build_category_news_commentary(stories, category):
+    stories = ranked(list(stories or []), "news_importance_score")
     event_types = top_counts([row.get("event_type") for row in stories])
-    themes = top_counts([theme for row in ai for theme in row.get("affected_trends", [])] +
-                        [theme for row in biotech for theme in row.get("subsectors", [])])
-    factors = top_counts([factor for row in biotech for factor in row.get("affected_radar_factors", [])])
+    is_ai = category == "AI/technology"
+    themes = top_counts([theme for row in stories for theme in
+                         (row.get("affected_trends", []) if is_ai else row.get("subsectors", []))])
+    factors = top_counts([factor for row in stories for factor in row.get("affected_radar_factors", [])])
     statuses = Counter(row.get("status") for row in stories)
     top = stories[0] if stories else {}
     top_change = shorten(top.get("new_information"), 280)
-    implications = [row.get("impact_chain") for row in ai if row.get("impact_chain")]
+    implications = [row.get("impact_chain") for row in stories if row.get("impact_chain")]
+    category_label = "AI/technology" if is_ai else "biotechnology"
+    next_evidence = ("customer deployments, capacity utilization, product adoption, and financial results"
+                     if is_ai else "trial readouts, regulatory decisions, catalyst timing, and commercial execution")
+    second_order = ("compute, networking, memory, data centers, power, cooling, or emerging applications"
+                    if is_ai else "competitor programs, therapeutic platforms, regulatory pathways, or commercial markets")
+    material_change = ("observable demand, adoption, capacity, or earnings sensitivity"
+                       if is_ai else "clinical evidence, regulatory probability, catalyst timing, or commercial potential")
+    implication_path = ("direct technology beneficiaries and then constrained infrastructure or enabling services"
+                        if is_ai else "the affected company or program and then competitors, platforms, regulatory pathways, or commercial markets")
     reasoning = [
-        {"label": "What is happening?", "text": (f"{len(stories)} prominent events are active across AI/technology and biotechnology. "
+        {"label": "What is happening?", "text": (f"{len(stories)} prominent {category_label} events are active. "
             f"The main event types are {', '.join(event_types) if event_types else 'not yet established'}. The highest-importance new information is: {top_change}")},
         {"label": "Why does it matter?", "text": (f"The strongest event carries an importance score of {top.get('news_importance_score', 'Missing')}/100 and affects "
             f"{', '.join((top.get('affected_trends') or top.get('affected_radar_factors') or ['unspecified Radar factors']))}. "
-            "This matters because it changes observable demand, clinical/regulatory evidence, or the timing of a potential valuation catalyst rather than merely repeating an existing narrative.")},
+            f"This matters because it changes {material_change} rather than merely repeating an existing narrative.")},
         {"label": "What larger trend is forming?", "text": (f"Repeated coverage clusters around {', '.join(themes or factors) if (themes or factors) else 'no single confirmed cluster yet'}. "
             f"{statuses.get('CONFIRMING', 0)} events are confirming and {statuses.get('TREND-CHANGING', 0)} are trend-changing, so the current evidence is best read as "
             f"{'broadening confirmation' if statuses.get('CONFIRMING', 0) >= statuses.get('TREND-CHANGING', 0) else 'a possible change in direction'} rather than a conclusion from one headline.")},
-        {"label": "What could happen next?", "text": ("Watch for follow-through in primary-source financial results, customer deployment, trial readouts, regulatory decisions, and catalyst timing. "
-            "A headline becomes more actionable when subsequent evidence confirms adoption, revenue sensitivity, clinical durability, or a dated regulatory path.")},
-        {"label": "Investment implications", "text": (f"Inference: the news points first to direct beneficiaries and then to constrained infrastructure, services, or follow-on clinical competitors. "
-            f"The currently documented impact path is {shorten(implications[0], 220) if implications else 'not sufficiently specified'}; this is evidence for Radar review, not a News-generated stock ranking.")},
+        {"label": "What could happen next?", "text":
+            f"Watch for follow-through in {next_evidence}. Subsequent primary-source evidence should determine whether the current change is durable."},
+        {"label": "Investment implications", "text": (f"Inference: the news points first to {implication_path}. "
+            f"Potential second-order effects can extend into {second_order}. The currently documented impact path is "
+            f"{shorten(implications[0], 220) if implications else 'not sufficiently specified'}; this is evidence for Radar review, not a News-generated stock ranking.")},
     ]
     takeaways = [
         f"Treat {', '.join(themes[:2]) if themes else 'the leading evidence clusters'} as the main cross-story signal; isolated headlines carry less weight than repeated confirmation.",
         f"The most important change is evidence-based rather than narrative-only: {top_change}",
-        "Separate direct effects from second-order effects; demand can migrate from applications into compute, networking, power, cooling, or competitor programs over time.",
-        "The next decision point is follow-through: verify whether the new information changes adoption, earnings, clinical probability, or catalyst timing.",
+        f"Separate direct effects from second-order effects; the current {category_label} evidence can extend into {second_order} over time.",
+        f"The next decision point is follow-through in {next_evidence}.",
     ]
     if any(row.get("missing_data") for row in stories):
         takeaways.append("Important fields remain missing in some events; use those stories as evidence to monitor, not as complete investment conclusions.")
     return {"reasoning": reasoning, "take_home_messages": takeaways[:5],
-            "evidence_count": len(stories), "engine_version": "dashboard-commentary-v1"}
+            "evidence_count": len(stories), "category": category_label,
+            "engine_version": "dashboard-commentary-v2"}
+
+
+def build_news_commentary(ai_section, biotech_section):
+    return {
+        "ai_technology": build_category_news_commentary(
+            (ai_section or {}).get("stories", []), "AI/technology"),
+        "biotech_healthcare": build_category_news_commentary(
+            (biotech_section or {}).get("stories", []), "biotechnology"),
+        "engine_version": "dashboard-commentary-v2",
+        "separation_policy": "Each category is interpreted only from its own selected news events.",
+    }
 
 
 def build_radar_commentary(ai_rows, biotech_rows):

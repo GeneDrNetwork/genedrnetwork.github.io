@@ -19,14 +19,32 @@ class DashboardCommentaryTests(unittest.TestCase):
         result = build_news_commentary(
             DATA["top_investment_news"]["ai_technology"],
             DATA["top_investment_news"]["biotech_healthcare"])
-        self.assertEqual([item["label"] for item in result["reasoning"]], [
-            "What is happening?", "Why does it matter?", "What larger trend is forming?",
-            "What could happen next?", "Investment implications"])
-        self.assertGreaterEqual(len(result["take_home_messages"]), 3)
-        self.assertLessEqual(len(result["take_home_messages"]), 5)
+        for category in ("ai_technology", "biotech_healthcare"):
+            commentary = result[category]
+            self.assertEqual([item["label"] for item in commentary["reasoning"]], [
+                "What is happening?", "Why does it matter?", "What larger trend is forming?",
+                "What could happen next?", "Investment implications"])
+            self.assertGreaterEqual(len(commentary["take_home_messages"]), 3)
+            self.assertLessEqual(len(commentary["take_home_messages"]), 5)
         headlines = {item["headline"] for section in DATA["top_investment_news"].values()
                      for item in section.get("stories", [])}
-        self.assertFalse(any(message in headlines for message in result["take_home_messages"]))
+        self.assertFalse(any(message in headlines for category in ("ai_technology", "biotech_healthcare")
+                             for message in result[category]["take_home_messages"]))
+
+    def test_news_categories_do_not_share_evidence(self):
+        result = build_news_commentary(
+            {"stories": [{"headline": "AI-only event", "new_information": "AI-only-change",
+                           "event_type": "AI capacity", "news_importance_score": 90,
+                           "affected_trends": ["AI-only-theme"], "status": "NEW"}]},
+            {"stories": [{"headline": "Biotech-only event", "new_information": "Biotech-only-change",
+                           "event_type": "Clinical results", "news_importance_score": 88,
+                           "subsectors": ["Biotech-only-theme"], "status": "NEW"}]})
+        ai_text = json.dumps(result["ai_technology"])
+        biotech_text = json.dumps(result["biotech_healthcare"])
+        self.assertIn("AI-only-change", ai_text)
+        self.assertNotIn("Biotech-only-change", ai_text)
+        self.assertIn("Biotech-only-change", biotech_text)
+        self.assertNotIn("AI-only-change", biotech_text)
 
     def test_radar_commentary_precedes_stock_level_detail(self):
         result = build_radar_commentary(DATA["radar"]["ai"], DATA["radar"]["biotech"])

@@ -42332,37 +42332,75 @@
   },
   "commentary": {
     "news": {
-      "reasoning": [
-        {
-          "label": "What is happening?",
-          "text": "7 prominent events are active across AI/technology and biotechnology. The main event types are Capacity / Contract, Financial Results, Clinical Results, Product / Platform. The highest-importance new information is: Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago."
-        },
-        {
-          "label": "Why does it matter?",
-          "text": "The strongest event carries an importance score of 97/100 and affects AI Models/Applications, Compute, Data Centers. This matters because it changes observable demand, clinical/regulatory evidence, or the timing of a potential valuation catalyst rather than merely repeating an existing narrative."
-        },
-        {
-          "label": "What larger trend is forming?",
-          "text": "Repeated coverage clusters around AI Models/Applications, Compute, Data Centers, HBM/Memory. 6 events are confirming and 0 are trend-changing, so the current evidence is best read as broadening confirmation rather than a conclusion from one headline."
-        },
-        {
-          "label": "What could happen next?",
-          "text": "Watch for follow-through in primary-source financial results, customer deployment, trial readouts, regulatory decisions, and catalyst timing. A headline becomes more actionable when subsequent evidence confirms adoption, revenue sensitivity, clinical durability, or a dated regulatory path."
-        },
-        {
-          "label": "Investment implications",
-          "text": "Inference: the news points first to direct beneficiaries and then to constrained infrastructure, services, or follow-on clinical competitors. The currently documented impact path is Direct: AI Models/Applications, Compute, Data Centers. Second-order: Power/Electrical, Cooling.; this is evidence for Radar review, not a News-generated stock ranking."
-        }
-      ],
-      "take_home_messages": [
-        "Treat AI Models/Applications, Compute as the main cross-story signal; isolated headlines carry less weight than repeated confirmation.",
-        "The most important change is evidence-based rather than narrative-only: Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago.",
-        "Separate direct effects from second-order effects; demand can migrate from applications into compute, networking, power, cooling, or competitor programs over time.",
-        "The next decision point is follow-through: verify whether the new information changes adoption, earnings, clinical probability, or catalyst timing.",
-        "Important fields remain missing in some events; use those stories as evidence to monitor, not as complete investment conclusions."
-      ],
-      "evidence_count": 7,
-      "engine_version": "dashboard-commentary-v1"
+      "ai_technology": {
+        "reasoning": [
+          {
+            "label": "What is happening?",
+            "text": "5 prominent AI/technology events are active. The main event types are Capacity / Contract, Financial Results, Product / Platform, Company Update. The highest-importance new information is: Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago."
+          },
+          {
+            "label": "Why does it matter?",
+            "text": "The strongest event carries an importance score of 97/100 and affects AI Models/Applications, Compute, Data Centers. This matters because it changes observable demand, adoption, capacity, or earnings sensitivity rather than merely repeating an existing narrative."
+          },
+          {
+            "label": "What larger trend is forming?",
+            "text": "Repeated coverage clusters around AI Models/Applications, Compute, Data Centers, HBM/Memory. 5 events are confirming and 0 are trend-changing, so the current evidence is best read as broadening confirmation rather than a conclusion from one headline."
+          },
+          {
+            "label": "What could happen next?",
+            "text": "Watch for follow-through in customer deployments, capacity utilization, product adoption, and financial results. Subsequent primary-source evidence should determine whether the current change is durable."
+          },
+          {
+            "label": "Investment implications",
+            "text": "Inference: the news points first to direct technology beneficiaries and then constrained infrastructure or enabling services. Potential second-order effects can extend into compute, networking, memory, data centers, power, cooling, or emerging applications. The currently documented impact path is Direct: AI Models/Applications, Compute, Data Centers. Second-order: Power/Electrical, Cooling.; this is evidence for Radar review, not a News-generated stock ranking."
+          }
+        ],
+        "take_home_messages": [
+          "Treat AI Models/Applications, Compute as the main cross-story signal; isolated headlines carry less weight than repeated confirmation.",
+          "The most important change is evidence-based rather than narrative-only: Revenue is expected to be $108.0 billion, plus or minus 2%. Highlights Data Center Second-quarter revenue was $89.0 billion, up 18% from the previous quarter and up 117% from a year ago.",
+          "Separate direct effects from second-order effects; the current AI/technology evidence can extend into compute, networking, memory, data centers, power, cooling, or emerging applications over time.",
+          "The next decision point is follow-through in customer deployments, capacity utilization, product adoption, and financial results."
+        ],
+        "evidence_count": 5,
+        "category": "AI/technology",
+        "engine_version": "dashboard-commentary-v2"
+      },
+      "biotech_healthcare": {
+        "reasoning": [
+          {
+            "label": "What is happening?",
+            "text": "2 prominent biotechnology events are active. The main event types are Clinical Results, Regulatory / FDA. The highest-importance new information is: Cytokinetics details trial win for what could be its next approval."
+          },
+          {
+            "label": "Why does it matter?",
+            "text": "The strongest event carries an importance score of 83/100 and affects Clinical Evidence, Regulatory Status. This matters because it changes clinical evidence, regulatory probability, catalyst timing, or commercial potential rather than merely repeating an existing narrative."
+          },
+          {
+            "label": "What larger trend is forming?",
+            "text": "Repeated coverage clusters around Biotech Sector, Oncology. 1 events are confirming and 0 are trend-changing, so the current evidence is best read as broadening confirmation rather than a conclusion from one headline."
+          },
+          {
+            "label": "What could happen next?",
+            "text": "Watch for follow-through in trial readouts, regulatory decisions, catalyst timing, and commercial execution. Subsequent primary-source evidence should determine whether the current change is durable."
+          },
+          {
+            "label": "Investment implications",
+            "text": "Inference: the news points first to the affected company or program and then competitors, platforms, regulatory pathways, or commercial markets. Potential second-order effects can extend into competitor programs, therapeutic platforms, regulatory pathways, or commercial markets. The currently documented impact path is not sufficiently specified; this is evidence for Radar review, not a News-generated stock ranking."
+          }
+        ],
+        "take_home_messages": [
+          "Treat Biotech Sector, Oncology as the main cross-story signal; isolated headlines carry less weight than repeated confirmation.",
+          "The most important change is evidence-based rather than narrative-only: Cytokinetics details trial win for what could be its next approval.",
+          "Separate direct effects from second-order effects; the current biotechnology evidence can extend into competitor programs, therapeutic platforms, regulatory pathways, or commercial markets over time.",
+          "The next decision point is follow-through in trial readouts, regulatory decisions, catalyst timing, and commercial execution.",
+          "Important fields remain missing in some events; use those stories as evidence to monitor, not as complete investment conclusions."
+        ],
+        "evidence_count": 2,
+        "category": "biotechnology",
+        "engine_version": "dashboard-commentary-v2"
+      },
+      "engine_version": "dashboard-commentary-v2",
+      "separation_policy": "Each category is interpreted only from its own selected news events."
     },
     "radar": {
       "reasoning": [

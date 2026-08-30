@@ -28,10 +28,12 @@ function renderNumberedMessages(targetId, rows = []) {
 }
 
 function renderDashboardCommentary(commentary = {}) {
-  renderReasoning("news-reasoning", commentary.news?.reasoning);
-  renderNumberedMessages("news-takeaways", commentary.news?.take_home_messages);
-  renderReasoning("biotech-news-reasoning", commentary.news?.reasoning);
-  renderNumberedMessages("biotech-news-takeaways", commentary.news?.take_home_messages);
+  const aiNews = commentary.news?.ai_technology || commentary.news || {};
+  const biotechNews = commentary.news?.biotech_healthcare || commentary.news || {};
+  renderReasoning("news-reasoning", aiNews.reasoning);
+  renderNumberedMessages("news-takeaways", aiNews.take_home_messages);
+  renderReasoning("biotech-news-reasoning", biotechNews.reasoning);
+  renderNumberedMessages("biotech-news-takeaways", biotechNews.take_home_messages);
   renderReasoning("radar-reasoning", commentary.radar?.reasoning);
   renderNumberedMessages("radar-takeaways", commentary.radar?.take_home_messages);
   renderNumberedMessages("high-conviction-reasons", commentary.high_conviction?.reasons);
