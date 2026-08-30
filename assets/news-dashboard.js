@@ -6,6 +6,7 @@ const DATA_URL = dataUrl.href;
 const escapeHtml = (value = "") => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
   .replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
 const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value ?? "No update available."; };
+let sharedMarketSecurities = {};
 
 const PLACEHOLDER_SCORES = [88, 84, 81, 78, 75, 72, 69, 66, 63, 60];
 const stageFor = (score) => score >= 85 ? "Hot" : score >= 76 ? "Heating Up" : score >= 66 ? "Emerging" : "Cooling";
@@ -56,13 +57,35 @@ function formatMarketCap(value) {
   return `$${number.toLocaleString()}`;
 }
 
+function currentPriceLabel(ticker, snapshot = null) {
+  const normalizedTicker = String(ticker || "").trim();
+  if (!normalizedTicker || ["Private", "N/A", "Missing"].includes(normalizedTicker)) return "";
+  const hasPrice = (market) => market?.current_price !== null && market?.current_price !== undefined && market?.current_price !== "" && Number.isFinite(Number(market.current_price));
+  const market = hasPrice(snapshot) ? snapshot : sharedMarketSecurities[normalizedTicker.toUpperCase()] || snapshot || null;
+  if (!hasPrice(market)) return "Price unavailable";
+  const price = Number(market.current_price);
+  const currency = /^[A-Z]{3}$/.test(String(market?.currency || "")) ? market.currency : "USD";
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(price);
+  } catch (_) {
+    return `$${price.toFixed(2)}`;
+  }
+}
+
+function tickerPriceLabel(ticker, snapshot = null) {
+  const normalizedTicker = String(ticker || "").trim();
+  if (!normalizedTicker || normalizedTicker === "Missing") return "Ticker missing";
+  const price = currentPriceLabel(normalizedTicker, snapshot);
+  return price ? `${normalizedTicker} ${price}` : normalizedTicker;
+}
+
 function marketSnapshotText(snapshot, benchmark = "sp500") {
   if (!snapshot) return "Market data missing.";
   const averages = snapshot.moving_averages || {};
   const returns = snapshot.returns || {};
   const macd = snapshot.macd || {};
   const relative = snapshot.relative_strength?.[benchmark] || {};
-  return `Price ${formatMarketValue(snapshot.current_price)} · Market cap ${formatMarketCap(snapshot.market_cap)} · MA20/50/200 ${formatMarketValue(averages.ma20)}/${formatMarketValue(averages.ma50)}/${formatMarketValue(averages.ma200)} · 1M/3M/6M ${formatChange(returns.one_month)}/${formatChange(returns.three_month)}/${formatChange(returns.six_month)} · RSI ${formatMarketValue(snapshot.rsi_14)} · MACD ${formatMarketValue(macd.value, 4)} (${formatMarketValue(macd.histogram, 4)} histogram) · Volume/20D ${formatMarketValue(snapshot.volume_vs_20d_average)}x · 52W position ${formatMarketValue(snapshot.fifty_two_week_position)}% · 3M RS vs ${benchmark.toUpperCase()} ${formatChange(relative.three_month)} · ${snapshot.data_status || "status missing"}.`;
+  return `Price ${currentPriceLabel(snapshot.ticker, snapshot) || "unavailable"} · Market cap ${formatMarketCap(snapshot.market_cap)} · MA20/50/200 ${formatMarketValue(averages.ma20)}/${formatMarketValue(averages.ma50)}/${formatMarketValue(averages.ma200)} · 1M/3M/6M ${formatChange(returns.one_month)}/${formatChange(returns.three_month)}/${formatChange(returns.six_month)} · RSI ${formatMarketValue(snapshot.rsi_14)} · MACD ${formatMarketValue(macd.value, 4)} (${formatMarketValue(macd.histogram, 4)} histogram) · Volume/20D ${formatMarketValue(snapshot.volume_vs_20d_average)}x · 52W position ${formatMarketValue(snapshot.fifty_two_week_position)}% · 3M RS vs ${benchmark.toUpperCase()} ${formatChange(relative.three_month)} · ${snapshot.data_status || "status missing"}.`;
 }
 
 function renderMarketSnapshot(snapshot, benchmark) {
@@ -96,14 +119,20 @@ function renderAiHistory(row) {
   return `<div class="detail-item detail-wide radar-sources"><dt>Evidence / Score History</dt><dd><p>${escapeHtml(row.why_changed || "Missing")}</p><ul>${history || "<li>No prior snapshot.</li>"}</ul></dd></div>`;
 }
 
+function aiBeneficiaryLabels(row, limit = null) {
+  const records = Array.isArray(row.beneficiary_records) ? row.beneficiary_records : [];
+  if (!records.length) return row.potential_beneficiaries || row.beneficiaries || "Missing / insufficient evidence";
+  return (limit ? records.slice(0, limit) : records).map((item) => companyTickerLabel(item)).join("; ");
+}
+
 function renderAiRadar(rows) {
   document.getElementById("ai-radar").innerHTML = rows.map((row) => `<details class="radar-item ai-radar-item"><summary>
       <span class="radar-name"><strong>${escapeHtml(row.trend)}</strong><small>Technology trend</small></span>${renderScore(row.trend_strength, "Trend Strength")}
       <span class="direction"><i aria-hidden="true">${row.direction === "Contradicting" ? "↘" : row.direction === "Mixed" ? "↔" : "↗"}</i>${escapeHtml(row.direction)}</span><span><b class="stage ${stageClass(row.adoption_stage || "missing")}">${escapeHtml(row.stage)}</b></span>
-      <span class="radar-copy">${escapeHtml(row.why_now)}</span><span class="beneficiaries">${escapeHtml(row.potential_beneficiaries)}</span><span class="expand-control" aria-hidden="true">+</span>
+      <span class="radar-copy">${escapeHtml(row.why_now)}</span><span class="beneficiaries">${escapeHtml(aiBeneficiaryLabels(row, 3))}</span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid">
       ${detailItem("What It Means", row.what_it_means)}${detailItem("Key Intelligence", row.key_intelligence)}${detailItem("Demand Drivers", row.demand_drivers)}${detailItem("Current Bottleneck", row.current_bottleneck)}${detailItem("Next Likely Bottleneck", row.next_likely_bottleneck)}
-      ${detailItem("Beneficiaries", row.beneficiaries)}${detailItem("Market Expectation / Priced In", row.market_expectation, true)}
+      ${detailItem("Beneficiaries", aiBeneficiaryLabels(row))}${detailItem("Market Expectation / Priced In", row.market_expectation, true)}
       ${detailItem("Market Confirmation", row.market_confirmation?.score === null || row.market_confirmation?.score === undefined ? "Missing" : `${row.market_confirmation.score} / 10. ${row.market_confirmation.rationale}`)}
       ${detailItem("Risks / Invalidation", row.risks, true)}${detailItem("What to Watch Next", row.watch_next)}
       ${renderAiFactorBreakdown(row)}${renderAiHorizons(row.horizons)}${renderAiEvidence("Confirming Evidence", row.confirming_evidence)}${renderAiEvidence("Mixed Evidence", row.mixed_evidence)}${renderAiEvidence("Contradicting Evidence", row.contradicting_evidence)}${renderAiBeneficiaries(row.beneficiary_records)}${renderAiHistory(row)}
@@ -130,12 +159,12 @@ function newsScore(label, value) {
 
 function companyTickerLabel(row = {}) {
   const company = row.company || "Company missing";
-  const ticker = row.ticker && row.ticker !== "Missing" ? ` · ${row.ticker}` : "";
+  const ticker = row.ticker && row.ticker !== "Missing" ? ` · ${tickerPriceLabel(row.ticker, row.market_data)}` : "";
   return `${company}${ticker}`;
 }
 
 function relatedTickerLabel(row = {}) {
-  return Array.isArray(row.related_tickers) && row.related_tickers.length ? `Related: ${row.related_tickers.join(", ")}` : "";
+  return Array.isArray(row.related_tickers) && row.related_tickers.length ? `Related: ${row.related_tickers.map((ticker) => tickerPriceLabel(ticker)).join(", ")}` : "";
 }
 
 function newsTags(values = []) {
@@ -241,11 +270,11 @@ function renderSources(sources = [], scoreAsOf) {
 
 function renderBiotechRadar(rows) {
   document.getElementById("biotech-radar").innerHTML = rows.map((row) => `<details class="radar-item biotech-radar-item"><summary>
-      <span class="radar-name"><strong>${escapeHtml(row.company)}</strong><small>${escapeHtml(row.ticker)} · ${escapeHtml(row.program)} · ${escapeHtml(row.indication)} · ${escapeHtml(row.catalyst)}</small></span>${renderScore(row.opportunity_score, "Opportunity Score")}
+      <span class="radar-name"><strong>${escapeHtml(row.company)}</strong><small>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))} · ${escapeHtml(row.program)} · ${escapeHtml(row.indication)} · ${escapeHtml(row.catalyst)}</small></span>${renderScore(row.opportunity_score, "Opportunity Score")}
       <span class="timing">${escapeHtml(row.expected_timing)}</span><span><b class="stage ${stageClass(row.stage)}">${escapeHtml(row.stage)}</b></span>
       <span class="radar-copy">${escapeHtml(row.why_important)}</span><span class="status-badge ${stageClass(row.opportunity_status)}">${escapeHtml(row.opportunity_status)}</span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid biotech-details">
-      ${detailItem("Company → Program → Indication → Catalyst", `${row.company} (${row.ticker}) → ${row.program} → ${row.indication} → ${row.catalyst}`)}
+      ${detailItem("Company → Program → Indication → Catalyst", `${row.company} (${tickerPriceLabel(row.ticker, row.market_data)}) → ${row.program} → ${row.indication} → ${row.catalyst}`)}
       ${detailItem("Clinical Evidence", row.clinical_evidence, String(row.clinical_evidence).startsWith("Missing"))}${detailItem("Upcoming Catalyst", row.upcoming_catalyst)}${detailItem("Previous Trial Results", row.previous_results, String(row.previous_results).startsWith("Missing"))}
       ${detailItem("FDA / Regulatory Status", row.regulatory_status)}${detailItem("Commercial Potential", row.commercial_potential)}
       ${detailItem("Market Expectation / Priced In", row.market_expectation, String(row.market_expectation).startsWith("Missing"))}${detailItem("Positioning / Short Interest", row.positioning, String(row.positioning).startsWith("Missing"))}
@@ -284,11 +313,11 @@ function renderOpportunities(targetId, rows = []) {
 function renderWatchlist(data) {
   const rows = [...(data.watchlists?.ai || []).map((row) => ({ ...row, category: "AI" })), ...(data.watchlists?.biotech || []).map((row) => ({ ...row, category: "Biotech" }))];
   setText("watchlist-count", rows.length);
-  document.getElementById("my-watchlist").innerHTML = rows.map((row) => `<article class="stock-row"><div><span class="stock-category">${escapeHtml(row.category)}</span><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company)}</small></div><p>${escapeHtml(row.why)} ${escapeHtml(marketSnapshotText(row.market_data, row.category === "AI" ? "qqq" : "xbi"))}</p><div><span>Next catalyst</span><strong>${escapeHtml(row.catalyst)}</strong><span>Entry timing</span><strong>${escapeHtml(row.entry_timing?.state || "Entry timing unavailable")} · ${row.entry_timing?.entry_timing_score === null || row.entry_timing?.entry_timing_score === undefined ? "Missing" : `${escapeHtml(row.entry_timing.entry_timing_score)}/100`} · ${escapeHtml(row.entry_timing?.entry_guidance || "Technical inputs missing.")}</strong></div><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></article>`).join("");
+  document.getElementById("my-watchlist").innerHTML = rows.map((row) => `<article class="stock-row"><div><span class="stock-category">${escapeHtml(row.category)}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></div><p>${escapeHtml(row.why)} ${escapeHtml(marketSnapshotText(row.market_data, row.category === "AI" ? "qqq" : "xbi"))}</p><div><span>Next catalyst</span><strong>${escapeHtml(row.catalyst)}</strong><span>Entry timing</span><strong>${escapeHtml(row.entry_timing?.state || "Entry timing unavailable")} · ${row.entry_timing?.entry_timing_score === null || row.entry_timing?.entry_timing_score === undefined ? "Missing" : `${escapeHtml(row.entry_timing.entry_timing_score)}/100`} · ${escapeHtml(row.entry_timing?.entry_guidance || "Technical inputs missing.")}</strong></div><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></article>`).join("");
   const signalOrder = ["Buy", "Hold", "Reduce", "Sell", "Insufficient Data"];
   document.getElementById("stock-signals").innerHTML = signalOrder.map((signal) => {
     const matches = rows.filter((row) => (row.timing_support?.signal || "Insufficient Data") === signal);
-    return `<div><span class="signal-dot signal-${stageClass(signal)}"></span><strong>${escapeHtml(signal)}</strong><p>${matches.length ? matches.map((row) => `${row.ticker} (${row.category})`).join(", ") : "No watched names"}</p></div>`;
+    return `<div><span class="signal-dot signal-${stageClass(signal)}"></span><strong>${escapeHtml(signal)}</strong><p>${matches.length ? matches.map((row) => `${tickerPriceLabel(row.ticker, row.market_data)} (${row.category})`).join(", ") : "No watched names"}</p></div>`;
   }).join("");
 }
 
@@ -318,6 +347,7 @@ function renderSafely(render, fallbackId) {
 
 function renderDashboard(data) {
   if (!data || typeof data !== "object") throw new Error("Dashboard JSON is not an object.");
+  sharedMarketSecurities = data.market_data?.securities || {};
   const updated = new Date(data.updated_at);
   setText("last-updated", Number.isNaN(updated.valueOf()) ? data.updated_at : updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
   setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("market-movers", data.summaries && data.summaries.market_movers);
