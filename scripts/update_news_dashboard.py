@@ -21,8 +21,10 @@ from pathlib import Path
 
 try:
     from .company_quality import build_company_quality_layer
+    from .entry_timing import build_entry_timing_layer, calculate_entry_inputs
 except ImportError:
     from company_quality import build_company_quality_layer
+    from entry_timing import build_entry_timing_layer, calculate_entry_inputs
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "news-dashboard.json"
@@ -1054,14 +1056,23 @@ def ema_series(values, window):
 
 def macd(values):
     if len(values) < 35:
-        return {"value": None, "signal": None, "histogram": None}
+        return {"value": None, "signal": None, "histogram": None,
+                "previous_histogram": None, "improving": None, "crossover": None}
     fast, slow = ema_series(values, 12), ema_series(values, 26)
     macd_values = [fast[index] - slow[index] for index in range(25, len(values))]
     signal_values = ema_series(macd_values, 9)
     if not signal_values or signal_values[-1] is None:
-        return {"value": None, "signal": None, "histogram": None}
+        return {"value": None, "signal": None, "histogram": None,
+                "previous_histogram": None, "improving": None, "crossover": None}
     value, signal = macd_values[-1], signal_values[-1]
-    return {"value": round(value, 4), "signal": round(signal, 4), "histogram": round(value - signal, 4)}
+    histogram = value - signal
+    previous = (macd_values[-2] - signal_values[-2]
+                if len(macd_values) >= 2 and len(signal_values) >= 2 and signal_values[-2] is not None else None)
+    crossover = ("bullish" if previous is not None and previous <= 0 < histogram else
+                 "bearish" if previous is not None and previous >= 0 > histogram else None)
+    return {"value": round(value, 4), "signal": round(signal, 4), "histogram": round(histogram, 4),
+            "previous_histogram": round(previous, 4) if previous is not None else None,
+            "improving": histogram > previous if previous is not None else None, "crossover": crossover}
 
 
 def benchmark_relative_strength(stock_returns, benchmark_returns):
@@ -1073,7 +1084,7 @@ def benchmark_relative_strength(stock_returns, benchmark_returns):
 
 
 def calculate_market_technicals(ticker, series, benchmark_records=None, market_cap=None):
-    rows = series.get("rows", [])
+    rows = sorted(series.get("rows", []), key=lambda row: row.get("date") or "")
     closes = [row["close"] for row in rows]
     volumes = [row.get("volume") for row in rows]
     if not closes:
@@ -1092,13 +1103,18 @@ def calculate_market_technicals(ticker, series, benchmark_records=None, market_c
         name: benchmark_relative_strength(returns, record.get("returns", {}))
         for name, record in benchmark_records.items()
     }
+    moving_averages = {"ma5": moving_average(closes, 5), "ma10": moving_average(closes, 10),
+                       "ma20": moving_average(closes, 20), "ma50": moving_average(closes, 50),
+                       "ma200": moving_average(closes, 200)}
+    macd_record = macd(closes)
     return {
         "ticker": ticker, "current_price": round(closes[-1], 4), "price_date": rows[-1].get("date"),
         "currency": series.get("currency"), "market_cap": market_cap,
-        "moving_averages": {"ma20": moving_average(closes, 20), "ma50": moving_average(closes, 50), "ma200": moving_average(closes, 200)},
-        "returns": returns, "rsi_14": rsi(closes), "macd": macd(closes),
+        "moving_averages": moving_averages,
+        "returns": returns, "rsi_14": rsi(closes), "macd": macd_record,
         "volume_vs_20d_average": round(current_volume / volume_average, 2) if current_volume is not None and volume_average else None,
         "fifty_two_week_position": year_position, "relative_strength": relative_strength,
+        "entry_inputs": calculate_entry_inputs(rows, moving_averages, macd_record),
         "source": series.get("source"), "data_status": "current",
         "missing_fields": [name for name, value in (("market_cap", market_cap), ("volume", current_volume),
                            ("ma200", moving_average(closes, 200)), ("fifty_two_week_position", year_position)) if value is None],
@@ -1526,6 +1542,7 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
             "returns": "Close-to-close over 21, 63, and 126 sessions.",
             "relative_strength": "Stock return minus benchmark return in percentage points for the same horizon.",
             "rsi": "14-session RSI.", "macd": "12/26-session EMA MACD with 9-session signal.",
+            "entry_timing_inputs": "Adds MA5/10, 42/63-session close ranges, MA compression, volume contraction/up-down volume, prior-60-session close resistance, and close-based support. Rules and source dates are retained in each record.",
             "expectation_state": "Requires at least two input groups. Underpriced, Fairly Priced, and Crowded / Priced In use transparent target-upside, forward-P/E, price-run-up, estimate-revision, and positioning signals; missing inputs remain null.",
             "price_run_up": "Uses existing 1M/3M/6M close-to-close returns as a recent pre-event proxy unless a verified event-specific anchor is available.",
             "missing_data": "Unavailable fields remain null; prior successful security records may be retained with data_status=stale.",
@@ -1548,7 +1565,7 @@ def market_snapshot(market_data, ticker):
 def compact_market_snapshot(snapshot):
     if not snapshot:
         return snapshot
-    return {key: value for key, value in snapshot.items() if key != "expectation_data"}
+    return {key: value for key, value in snapshot.items() if key not in ("expectation_data", "entry_inputs")}
 
 
 def market_timing_signal(snapshot, domain):
@@ -1956,10 +1973,12 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
 
 
 def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
-                                 candidate_pool=None, quality_layer=None):
+                                 candidate_pool=None, quality_layer=None, watchlists=None):
     all_ai = build_ai_stock_picks(ai_radar, market_data, MONTHLY_PICKS["ai"], candidate_pool, quality_layer)
     all_biotech = build_biotech_stock_picks(
         biotech_radar, market_data, MONTHLY_PICKS["biotech"], as_of, candidate_pool, quality_layer)
+    entry_timing = build_entry_timing_layer(all_ai, all_biotech, market_data, watchlists)
+    # Phase 7 annotates the already-ranked rows; it never reorders or rescoring stock selection.
     selected = {"ai": all_ai[:5], "biotech": all_biotech[:5]}
     all_rows = all_ai + all_biotech
     counts = {label: sum(row["classification_key"] == key for row in all_rows)
@@ -1977,7 +1996,8 @@ def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
                 "fully_scored": sum(row["data_completeness"] == 100 for row in all_rows),
                 "classification_counts": counts}
     return selected, {"methodology": methodology, "coverage": coverage,
-                      "selected_tickers": {domain: [row["ticker"] for row in rows] for domain, rows in selected.items()}}
+                      "entry_timing_ref": "entry_timing_engine",
+                      "selected_tickers": {domain: [row["ticker"] for row in rows] for domain, rows in selected.items()}}, entry_timing
 
 
 def percent_change(current, previous):
@@ -3238,8 +3258,8 @@ def build():
         previous.get("company_quality"))
     watchlists = {"ai": attach_market_context(watch_rows(AI_WATCH), market_data, "ai"),
                   "biotech": attach_market_context(watch_rows(BIOTECH_WATCH), market_data, "biotech")}
-    monthly_picks, high_conviction_engine = build_high_conviction_engine(
-        ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality)
+    monthly_picks, high_conviction_engine, entry_timing_engine = build_high_conviction_engine(
+        ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality, watchlists)
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
@@ -3263,6 +3283,7 @@ def build():
         "market_data": market_data, "candidate_discovery": candidate_discovery,
         "company_quality": company_quality, "watchlists": watchlists,
         "high_conviction_engine": high_conviction_engine,
+        "entry_timing_engine": entry_timing_engine,
         "monthly_picks": monthly_picks, "fda": fda, "markets": markets,
     }
     data = normalize_investment_data(data)
