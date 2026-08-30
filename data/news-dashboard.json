@@ -3564,6 +3564,11 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -3612,6 +3617,11 @@
             "evidence_ids": [
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -3664,6 +3674,176 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Established Beneficiary",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Edge AI deployment through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Commercial Deployment"
+                ],
+                "basis": "The source reports commercial deployment associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Established Beneficiary: 10 thesis evidence record(s) and 3 commercial confirmation record(s).",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -3802,6 +3982,11 @@
             "evidence_ids": [
               "96123b5a23e0becb5691"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "SPGI",
               "current_price": 442.89,
@@ -3933,6 +4118,11 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -4066,7 +4256,9 @@
               "Expanding"
             ],
             "evidence_importance": 87,
-            "reasoning": "1 source-backed event(s) connect edge ai, robotics computer, jetson to AI Models/Applications, Physical AI / Robotics; related industries include Industrial automation, Automotive, Edge computing."
+            "reasoning": "1 source-backed event(s) connect edge ai, robotics computer, jetson to AI Models/Applications, Physical AI / Robotics; related industries include Industrial automation, Automotive, Edge computing.",
+            "opportunity_stage": "Emerging Trend",
+            "commercial_confirmation_types": []
           },
           {
             "theme": "Agentic AI deployment",
@@ -4100,7 +4292,12 @@
               "Expanding"
             ],
             "evidence_importance": 84,
-            "reasoning": "2 source-backed event(s) connect agentic ai to AI Models/Applications, Compute; related industries include Enterprise software, Cloud infrastructure, Inference services."
+            "reasoning": "2 source-backed event(s) connect agentic ai to AI Models/Applications, Compute; related industries include Enterprise software, Cloud infrastructure, Inference services.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Commercial Deployment",
+              "Named Customers / Contracts"
+            ]
           },
           {
             "theme": "Inference economics and low-latency serving",
@@ -4136,7 +4333,11 @@
               "Expanding"
             ],
             "evidence_importance": 84,
-            "reasoning": "2 source-backed event(s) connect inference, latency-sensitive to AI Models/Applications, Compute, Networking/Optical; related industries include Inference cloud, Data-center networking, Enterprise AI."
+            "reasoning": "2 source-backed event(s) connect inference, latency-sensitive to AI Models/Applications, Compute, Networking/Optical; related industries include Inference cloud, Data-center networking, Enterprise AI.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Commercial Deployment"
+            ]
           }
         ],
         "potential_beneficiaries": "Groq (Private) \u00b7 Direct \u00b7 98; SpaceX (Private) \u00b7 Direct \u00b7 98; NVIDIA (NVDA) \u00b7 Direct \u00b7 96",
@@ -4876,6 +5077,176 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Established Beneficiary",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Edge AI deployment through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Commercial Deployment"
+                ],
+                "basis": "The source reports commercial deployment associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Established Beneficiary: 10 thesis evidence record(s) and 3 commercial confirmation record(s).",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -5016,6 +5387,65 @@
               "6b6ef738fdedc0dd1891",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Commercial Confirmation: 3 thesis evidence record(s) and 1 commercial confirmation record(s).",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -5154,6 +5584,11 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -5202,6 +5637,11 @@
             "evidence_ids": [
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -5248,7 +5688,11 @@
               "Mixed"
             ],
             "evidence_importance": 87,
-            "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure."
+            "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Named Customers / Contracts"
+            ]
           },
           {
             "theme": "Agentic AI deployment",
@@ -5282,7 +5726,12 @@
               "Expanding"
             ],
             "evidence_importance": 84,
-            "reasoning": "2 source-backed event(s) connect agentic ai to AI Models/Applications, Compute; related industries include Enterprise software, Cloud infrastructure, Inference services."
+            "reasoning": "2 source-backed event(s) connect agentic ai to AI Models/Applications, Compute; related industries include Enterprise software, Cloud infrastructure, Inference services.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Commercial Deployment",
+              "Named Customers / Contracts"
+            ]
           },
           {
             "theme": "Inference economics and low-latency serving",
@@ -5318,7 +5767,11 @@
               "Expanding"
             ],
             "evidence_importance": 84,
-            "reasoning": "2 source-backed event(s) connect inference, latency-sensitive to AI Models/Applications, Compute, Networking/Optical; related industries include Inference cloud, Data-center networking, Enterprise AI."
+            "reasoning": "2 source-backed event(s) connect inference, latency-sensitive to AI Models/Applications, Compute, Networking/Optical; related industries include Inference cloud, Data-center networking, Enterprise AI.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Commercial Deployment"
+            ]
           }
         ],
         "potential_beneficiaries": "NVIDIA (NVDA) \u00b7 Direct \u00b7 96; Amazon (AMZN) \u00b7 Direct \u00b7 93; Groq (Private) \u00b7 Bottleneck/Picks-and-Shovels \u00b7 92",
@@ -5957,6 +6410,176 @@
               "74014dea50fbf4f42c49",
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Established Beneficiary",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Edge AI deployment through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Commercial Deployment"
+                ],
+                "basis": "The source reports commercial deployment associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Established Beneficiary: 10 thesis evidence record(s) and 3 commercial confirmation record(s).",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -6096,6 +6719,65 @@
               "74014dea50fbf4f42c49",
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Commercial Confirmation: 3 thesis evidence record(s) and 1 commercial confirmation record(s).",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -6233,6 +6915,11 @@
             "evidence_ids": [
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -6281,6 +6968,11 @@
             "evidence_ids": [
               "96123b5a23e0becb5691"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "SPGI",
               "current_price": 442.89,
@@ -6410,7 +7102,11 @@
               "Mixed"
             ],
             "evidence_importance": 87,
-            "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure."
+            "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Named Customers / Contracts"
+            ]
           },
           {
             "theme": "Optical and scale-out AI networking",
@@ -6442,7 +7138,11 @@
               "Mixed"
             ],
             "evidence_importance": 87,
-            "reasoning": "1 source-backed event(s) connect networking to Networking/Optical, Data Centers; related industries include Optical components, Network switching, Data centers."
+            "reasoning": "1 source-backed event(s) connect networking to Networking/Optical, Data Centers; related industries include Optical components, Network switching, Data centers.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Named Customers / Contracts"
+            ]
           }
         ],
         "potential_beneficiaries": "NVIDIA (NVDA) \u00b7 Direct \u00b7 96; Amazon (AMZN) \u00b7 Direct \u00b7 93; SpaceX (Private) \u00b7 Bottleneck/Picks-and-Shovels \u00b7 92",
@@ -7036,6 +7736,11 @@
             "evidence_ids": [
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -7084,6 +7789,11 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -7224,6 +7934,11 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -7363,6 +8078,11 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -7942,6 +8662,11 @@
               "74014dea50fbf4f42c49",
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -8080,6 +8805,11 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -8217,6 +8947,11 @@
             "evidence_ids": [
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -8265,6 +9000,11 @@
             "evidence_ids": [
               "96123b5a23e0becb5691"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "SPGI",
               "current_price": 442.89,
@@ -8951,6 +9691,11 @@
               "74014dea50fbf4f42c49",
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -9089,6 +9834,11 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -9226,6 +9976,11 @@
             "evidence_ids": [
               "6b6ef738fdedc0dd1891"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -9274,6 +10029,11 @@
             "evidence_ids": [
               "96123b5a23e0becb5691"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "SPGI",
               "current_price": 442.89,
@@ -9959,6 +10719,11 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -10098,6 +10863,11 @@
               "3f1d530448241fa4be3d",
               "2e5bf4fcda9170846987"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [],
+            "confirmation_evidence": [],
+            "confirmation_missing": true,
+            "classification_reason": "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable.",
             "market_data": null,
             "expectation": {
               "state": "Data Insufficient",
@@ -10480,6 +11250,65 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Commercial Confirmation: 3 thesis evidence record(s) and 1 commercial confirmation record(s).",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -10617,6 +11446,176 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Established Beneficiary",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Edge AI deployment through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Commercial Deployment"
+                ],
+                "basis": "The source reports commercial deployment associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Established Beneficiary: 10 thesis evidence record(s) and 3 commercial confirmation record(s).",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -10753,7 +11752,11 @@
               "Expanding"
             ],
             "evidence_importance": 87,
-            "reasoning": "2 source-backed event(s) connect physical ai, robotics to Physical AI / Robotics, Edge AI; related industries include Industrial automation, Robotics, Autonomous systems."
+            "reasoning": "2 source-backed event(s) connect physical ai, robotics to Physical AI / Robotics, Edge AI; related industries include Industrial automation, Robotics, Autonomous systems.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Named Customers / Contracts"
+            ]
           }
         ],
         "potential_beneficiaries": "Amazon (AMZN) \u00b7 Direct \u00b7 93; NVIDIA (NVDA) \u00b7 Direct \u00b7 93",
@@ -11105,6 +12108,65 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Commercial Confirmation",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects Amazon to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Commercial Confirmation: 3 thesis evidence record(s) and 1 commercial confirmation record(s).",
             "market_data": {
               "ticker": "AMZN",
               "current_price": 266.43,
@@ -11242,6 +12304,176 @@
             "evidence_ids": [
               "74014dea50fbf4f42c49"
             ],
+            "opportunity_stage": "Established Beneficiary",
+            "thesis_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Edge AI deployment through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              },
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Capability",
+                  "Customer Exposure",
+                  "Supply-Chain Position",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Product / Technology",
+                  "Capability",
+                  "Supply-Chain Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Capacity",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              },
+              {
+                "event_id": "2e5bf4fcda9170846987",
+                "date": "2026-08-25T15:00+00:00",
+                "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+                "evidence_types": [
+                  "Industry Position",
+                  "Product / Technology",
+                  "Competitive Position",
+                  "Logical Connection"
+                ],
+                "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+              }
+            ],
+            "confirmation_evidence": [
+              {
+                "event_id": "74014dea50fbf4f42c49",
+                "date": "2026-08-26T21:05+00:00",
+                "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+              },
+              {
+                "event_id": "6b6ef738fdedc0dd1891",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+                "evidence_types": [
+                  "Named Customers / Contracts"
+                ],
+                "basis": "The source reports named customers / contracts associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+              },
+              {
+                "event_id": "3f1d530448241fa4be3d",
+                "date": "2026-08-24T15:00+00:00",
+                "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+                "evidence_types": [
+                  "Commercial Deployment"
+                ],
+                "basis": "The source reports commercial deployment associated with the thesis.",
+                "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+              }
+            ],
+            "confirmation_missing": false,
+            "classification_reason": "Established Beneficiary: 10 thesis evidence record(s) and 3 commercial confirmation record(s).",
             "market_data": {
               "ticker": "NVDA",
               "current_price": 217.55,
@@ -11378,7 +12610,11 @@
               "Mixed"
             ],
             "evidence_importance": 87,
-            "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure."
+            "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Named Customers / Contracts"
+            ]
           },
           {
             "theme": "Optical and scale-out AI networking",
@@ -11410,7 +12646,11 @@
               "Mixed"
             ],
             "evidence_importance": 87,
-            "reasoning": "1 source-backed event(s) connect networking to Networking/Optical, Data Centers; related industries include Optical components, Network switching, Data centers."
+            "reasoning": "1 source-backed event(s) connect networking to Networking/Optical, Data Centers; related industries include Optical components, Network switching, Data centers.",
+            "opportunity_stage": "Commercial Confirmation",
+            "commercial_confirmation_types": [
+              "Named Customers / Contracts"
+            ]
           }
         ],
         "potential_beneficiaries": "Amazon (AMZN) \u00b7 Direct \u00b7 93; NVIDIA (NVDA) \u00b7 Direct \u00b7 93",
@@ -22022,7 +23262,7 @@
     }
   },
   "ai_reasoning_discovery": {
-    "schema_version": "ai-reasoning-discovery-v1",
+    "schema_version": "ai-reasoning-discovery-v2",
     "flow": "Evidence / News / Industry Data \u2192 Reasoning \u2192 Theme Discovery \u2192 Beneficiary Discovery \u2192 Stock Discovery \u2192 Radar",
     "theme_signals": [
       {
@@ -22059,7 +23299,11 @@
           "Mixed"
         ],
         "evidence_importance": 87,
-        "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure."
+        "reasoning": "2 source-backed event(s) connect ai factories, additional gpus, accelerated computing to Compute, Data Centers, Networking/Optical; related industries include Semiconductors, Data centers, Network infrastructure.",
+        "opportunity_stage": "Commercial Confirmation",
+        "commercial_confirmation_types": [
+          "Named Customers / Contracts"
+        ]
       },
       {
         "theme": "Physical AI and production robotics",
@@ -22095,7 +23339,11 @@
           "Expanding"
         ],
         "evidence_importance": 87,
-        "reasoning": "2 source-backed event(s) connect physical ai, robotics to Physical AI / Robotics, Edge AI; related industries include Industrial automation, Robotics, Autonomous systems."
+        "reasoning": "2 source-backed event(s) connect physical ai, robotics to Physical AI / Robotics, Edge AI; related industries include Industrial automation, Robotics, Autonomous systems.",
+        "opportunity_stage": "Commercial Confirmation",
+        "commercial_confirmation_types": [
+          "Named Customers / Contracts"
+        ]
       },
       {
         "theme": "Edge AI deployment",
@@ -22129,7 +23377,9 @@
           "Expanding"
         ],
         "evidence_importance": 87,
-        "reasoning": "1 source-backed event(s) connect edge ai, robotics computer, jetson to AI Models/Applications, Physical AI / Robotics; related industries include Industrial automation, Automotive, Edge computing."
+        "reasoning": "1 source-backed event(s) connect edge ai, robotics computer, jetson to AI Models/Applications, Physical AI / Robotics; related industries include Industrial automation, Automotive, Edge computing.",
+        "opportunity_stage": "Emerging Trend",
+        "commercial_confirmation_types": []
       },
       {
         "theme": "Optical and scale-out AI networking",
@@ -22161,7 +23411,11 @@
           "Mixed"
         ],
         "evidence_importance": 87,
-        "reasoning": "1 source-backed event(s) connect networking to Networking/Optical, Data Centers; related industries include Optical components, Network switching, Data centers."
+        "reasoning": "1 source-backed event(s) connect networking to Networking/Optical, Data Centers; related industries include Optical components, Network switching, Data centers.",
+        "opportunity_stage": "Commercial Confirmation",
+        "commercial_confirmation_types": [
+          "Named Customers / Contracts"
+        ]
       },
       {
         "theme": "Agentic AI deployment",
@@ -22195,7 +23449,12 @@
           "Expanding"
         ],
         "evidence_importance": 84,
-        "reasoning": "2 source-backed event(s) connect agentic ai to AI Models/Applications, Compute; related industries include Enterprise software, Cloud infrastructure, Inference services."
+        "reasoning": "2 source-backed event(s) connect agentic ai to AI Models/Applications, Compute; related industries include Enterprise software, Cloud infrastructure, Inference services.",
+        "opportunity_stage": "Commercial Confirmation",
+        "commercial_confirmation_types": [
+          "Commercial Deployment",
+          "Named Customers / Contracts"
+        ]
       },
       {
         "theme": "Inference economics and low-latency serving",
@@ -22231,7 +23490,11 @@
           "Expanding"
         ],
         "evidence_importance": 84,
-        "reasoning": "2 source-backed event(s) connect inference, latency-sensitive to AI Models/Applications, Compute, Networking/Optical; related industries include Inference cloud, Data-center networking, Enterprise AI."
+        "reasoning": "2 source-backed event(s) connect inference, latency-sensitive to AI Models/Applications, Compute, Networking/Optical; related industries include Inference cloud, Data-center networking, Enterprise AI.",
+        "opportunity_stage": "Commercial Confirmation",
+        "commercial_confirmation_types": [
+          "Commercial Deployment"
+        ]
       }
     ],
     "stock_candidates": [
@@ -22312,7 +23575,177 @@
           "Reasoning-derived first-order beneficiary of Optical and scale-out AI networking",
           "Reasoning-derived first-order beneficiary of Agentic AI deployment",
           "Reasoning-derived first-order beneficiary of Inference economics and low-latency serving"
-        ]
+        ],
+        "thesis_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "6b6ef738fdedc0dd1891",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+            "evidence_types": [
+              "Product / Technology",
+              "Capability",
+              "Supply-Chain Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "2e5bf4fcda9170846987",
+            "date": "2026-08-25T15:00+00:00",
+            "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+            "evidence_types": [
+              "Industry Position",
+              "Product / Technology",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+          },
+          {
+            "event_id": "2e5bf4fcda9170846987",
+            "date": "2026-08-25T15:00+00:00",
+            "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+            "evidence_types": [
+              "Industry Position",
+              "Product / Technology",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Edge AI deployment through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "6b6ef738fdedc0dd1891",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+            "evidence_types": [
+              "Product / Technology",
+              "Capability",
+              "Supply-Chain Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+          },
+          {
+            "event_id": "3f1d530448241fa4be3d",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+            "evidence_types": [
+              "Industry Position",
+              "Capacity",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+          },
+          {
+            "event_id": "3f1d530448241fa4be3d",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+            "evidence_types": [
+              "Industry Position",
+              "Capacity",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+          },
+          {
+            "event_id": "2e5bf4fcda9170846987",
+            "date": "2026-08-25T15:00+00:00",
+            "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+            "evidence_types": [
+              "Industry Position",
+              "Product / Technology",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+          }
+        ],
+        "confirmation_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Named Customers / Contracts"
+            ],
+            "basis": "The source reports named customers / contracts associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "6b6ef738fdedc0dd1891",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+            "evidence_types": [
+              "Named Customers / Contracts"
+            ],
+            "basis": "The source reports named customers / contracts associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+          },
+          {
+            "event_id": "3f1d530448241fa4be3d",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+            "evidence_types": [
+              "Commercial Deployment"
+            ],
+            "basis": "The source reports commercial deployment associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+          }
+        ],
+        "opportunity_stage": "Established Beneficiary",
+        "classification_reason": "Established Beneficiary: 10 thesis evidence record(s) and 3 commercial confirmation record(s).",
+        "confirmation_missing": false
       },
       {
         "company": "Amazon",
@@ -22365,7 +23798,66 @@
           "Reasoning-derived first-order beneficiary of AI factories and accelerated data centers",
           "Reasoning-derived first-order beneficiary of Physical AI and production robotics",
           "Reasoning-derived first-order beneficiary of Optical and scale-out AI networking"
-        ]
+        ],
+        "thesis_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects Amazon to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects Amazon to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects Amazon to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          }
+        ],
+        "confirmation_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Named Customers / Contracts"
+            ],
+            "basis": "The source reports named customers / contracts associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          }
+        ],
+        "opportunity_stage": "Commercial Confirmation",
+        "classification_reason": "Commercial Confirmation: 3 thesis evidence record(s) and 1 commercial confirmation record(s).",
+        "confirmation_missing": false
       }
     ],
     "coverage": {
@@ -22373,7 +23865,13 @@
       "themes": 6,
       "public_stocks": 2,
       "first_order": 2,
-      "second_order": 0
+      "second_order": 0,
+      "by_opportunity_stage": {
+        "Emerging Trend": 0,
+        "Early Beneficiary": 0,
+        "Commercial Confirmation": 1,
+        "Established Beneficiary": 1
+      }
     },
     "listed_company_source": {
       "status": "available",
@@ -22384,6 +23882,8 @@
     "policy": {
       "no_manual_ticker_insertion": "Stock discovery uses evidence identities and a general listed-company universe, not a theme-specific ticker list.",
       "discovery_not_scoring": "Reasoning signals create research candidates only; existing Radar scoring remains unchanged.",
+      "early_entry_policy": "Orders, backlog, guidance, customers, and revenue are not required for Radar entry when source-backed thesis evidence establishes a logical beneficiary connection.",
+      "evidence_separation": "Thesis Evidence explains why a company may benefit; Confirmation Evidence records commercial proof without replacing the thesis.",
       "missing_data": "Unresolved company identity remains unresolved and is not converted into a ticker."
     }
   },
@@ -22532,7 +24032,8 @@
               "2e5bf4fcda9170846987",
               "3f1d530448241fa4be3d"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Established Beneficiary"
           },
           {
             "trend": "Compute",
@@ -22546,7 +24047,8 @@
               "2e5bf4fcda9170846987",
               "3f1d530448241fa4be3d"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Established Beneficiary"
           },
           {
             "trend": "Compute",
@@ -22560,7 +24062,8 @@
               "2e5bf4fcda9170846987",
               "3f1d530448241fa4be3d"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Established Beneficiary"
           },
           {
             "trend": "Compute",
@@ -22574,7 +24077,8 @@
               "2e5bf4fcda9170846987",
               "3f1d530448241fa4be3d"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Established Beneficiary"
           },
           {
             "trend": "Compute",
@@ -22588,7 +24092,8 @@
               "2e5bf4fcda9170846987",
               "3f1d530448241fa4be3d"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Established Beneficiary"
           },
           {
             "trend": "Compute",
@@ -22602,11 +24107,181 @@
               "2e5bf4fcda9170846987",
               "3f1d530448241fa4be3d"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Established Beneficiary"
           }
         ],
         "programs": [],
-        "therapeutic_trends": []
+        "therapeutic_trends": [],
+        "opportunity_stage": "Established Beneficiary",
+        "thesis_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "6b6ef738fdedc0dd1891",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+            "evidence_types": [
+              "Product / Technology",
+              "Capability",
+              "Supply-Chain Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to AI factories and accelerated data centers through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "2e5bf4fcda9170846987",
+            "date": "2026-08-25T15:00+00:00",
+            "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+            "evidence_types": [
+              "Industry Position",
+              "Product / Technology",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Physical AI and production robotics through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+          },
+          {
+            "event_id": "2e5bf4fcda9170846987",
+            "date": "2026-08-25T15:00+00:00",
+            "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+            "evidence_types": [
+              "Industry Position",
+              "Product / Technology",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Edge AI deployment through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "6b6ef738fdedc0dd1891",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+            "evidence_types": [
+              "Product / Technology",
+              "Capability",
+              "Supply-Chain Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through product / technology, capability, supply-chain position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+          },
+          {
+            "event_id": "3f1d530448241fa4be3d",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+            "evidence_types": [
+              "Industry Position",
+              "Capacity",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Agentic AI deployment through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+          },
+          {
+            "event_id": "3f1d530448241fa4be3d",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+            "evidence_types": [
+              "Industry Position",
+              "Capacity",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, capacity, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+          },
+          {
+            "event_id": "2e5bf4fcda9170846987",
+            "date": "2026-08-25T15:00+00:00",
+            "headline": "NVIDIA Announces Jetson Orin Nano 2 Robotics Computer to Redefine Entry-Level Edge AI",
+            "evidence_types": [
+              "Industry Position",
+              "Product / Technology",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects NVIDIA to Inference economics and low-latency serving through industry position, product / technology, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-announces-jetson-orin-nano-2-robotics-computer-to-redefine-entry-level-edge-ai"
+          }
+        ],
+        "confirmation_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Named Customers / Contracts"
+            ],
+            "basis": "The source reports named customers / contracts associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "6b6ef738fdedc0dd1891",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "SpaceXAI Adopts NVIDIA Vera CPU to Accelerate Agentic AI at Massive Scale",
+            "evidence_types": [
+              "Named Customers / Contracts"
+            ],
+            "basis": "The source reports named customers / contracts associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/spacexai-adopts-nvidia-vera-cpu-to-accelerate-agentic-ai-at-massive-scale"
+          },
+          {
+            "event_id": "3f1d530448241fa4be3d",
+            "date": "2026-08-24T15:00+00:00",
+            "headline": "NVIDIA Groq 3 LPX Now in Full Production With World-Class Speed for Agentic AI",
+            "evidence_types": [
+              "Commercial Deployment"
+            ],
+            "basis": "The source reports commercial deployment associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai"
+          }
+        ],
+        "confirmation_missing": false
       },
       {
         "company": "Amazon",
@@ -22720,7 +24395,8 @@
               "6b6ef738fdedc0dd1891",
               "2e5bf4fcda9170846987"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Commercial Confirmation"
           },
           {
             "trend": "Compute",
@@ -22733,7 +24409,8 @@
               "6b6ef738fdedc0dd1891",
               "2e5bf4fcda9170846987"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Commercial Confirmation"
           },
           {
             "trend": "Compute",
@@ -22746,11 +24423,70 @@
               "6b6ef738fdedc0dd1891",
               "2e5bf4fcda9170846987"
             ],
-            "reasoning_discovery": true
+            "reasoning_discovery": true,
+            "opportunity_stage": "Commercial Confirmation"
           }
         ],
         "programs": [],
-        "therapeutic_trends": []
+        "therapeutic_trends": [],
+        "opportunity_stage": "Commercial Confirmation",
+        "thesis_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects Amazon to AI factories and accelerated data centers through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects Amazon to Physical AI and production robotics through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          },
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Capability",
+              "Customer Exposure",
+              "Supply-Chain Position",
+              "Competitive Position",
+              "Logical Connection"
+            ],
+            "basis": "The source explicitly connects Amazon to Optical and scale-out AI networking through capability, customer exposure, supply-chain position, competitive position, logical connection evidence; commercial proof is evaluated separately.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          }
+        ],
+        "confirmation_evidence": [
+          {
+            "event_id": "74014dea50fbf4f42c49",
+            "date": "2026-08-26T21:05+00:00",
+            "headline": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+            "evidence_types": [
+              "Named Customers / Contracts"
+            ],
+            "basis": "The source reports named customers / contracts associated with the thesis.",
+            "source_link": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+          }
+        ],
+        "confirmation_missing": false
       },
       {
         "company": "S&P Global",

@@ -77,6 +77,26 @@ THEME_PATTERNS = (
 )
 
 
+THESIS_SIGNAL_TERMS = (
+    ("Industry Position", ("leader", "leading", "dominant", "ecosystem", "platform")),
+    ("Product / Technology", ("product", "technology", "system", "chip", "accelerator", "interconnect", "model", "computer")),
+    ("Capability", ("capability", "capabilities", "enable", "enables", "delivering", "supports", "performance")),
+    ("Capacity", ("capacity", "manufacturing", "fab", "production", "availability")),
+    ("Customer Exposure", ("hyperscaler", "cloud provider", "enterprise", "data center", "customer")),
+    ("Supply-Chain Position", ("supplier", "supply", "foundry", "memory", "networking", "optical", "cooling", "power")),
+    ("Competitive Position", ("faster", "lower latency", "low-latency", "world-class", "next-generation", "differentiated")),
+)
+
+
+CONFIRMATION_SIGNAL_TERMS = (
+    ("Orders / Backlog", ("order", "orders", "backlog", "bookings")),
+    ("Named Customers / Contracts", ("customer", "customers", "contract", "agreement", "selected by", "adopts", "adopted")),
+    ("Guidance", ("guidance", "forecast", "expects revenue", "revenue is expected")),
+    ("Revenue / Sales", ("revenue", "sales grew", "sales increased")),
+    ("Commercial Deployment", ("paid deployment", "commercial deployment", "full production", "shipping", "production units")),
+)
+
+
 LEGAL_SUFFIXES = re.compile(
     r"\b(?:incorporated|inc|corporation|corp|company|co|limited|ltd|plc|holdings|holding|group|"
     r"common stock|ordinary shares?|common shares?|american depositary shares?|ads|class [a-z])\b\.?,?",
@@ -104,6 +124,32 @@ def company_name_mentioned(text, variant):
     if len(variant.split()) == 1:
         return re.search(rf"(?<![A-Za-z0-9]){re.escape(variant)}(?![A-Za-z0-9])", text) is not None
     return _contains_term(text, variant)
+
+
+def matching_signal_types(text, signal_terms):
+    return [label for label, terms in signal_terms if any(_contains_term(text, term) for term in terms)]
+
+
+def evidence_record(event, evidence_types, basis):
+    return {
+        "event_id": event.get("event_id"), "date": event.get("event_date"),
+        "headline": event.get("headline"), "evidence_types": evidence_types,
+        "basis": basis, "source_link": event.get("source_link", ""),
+    }
+
+
+def opportunity_stage(roles, thesis_evidence, confirmation_evidence):
+    """Classify discovery maturity without turning the stages into scores."""
+    confirmed_events = {item.get("event_id") for item in confirmation_evidence if item.get("event_id")}
+    confirmation_types = {kind for item in confirmation_evidence for kind in item.get("evidence_types", [])}
+    if len(confirmed_events) >= 2 and len(confirmation_types) >= 2:
+        return "Established Beneficiary"
+    if confirmation_evidence:
+        return "Commercial Confirmation"
+    substantive_thesis = {kind for item in thesis_evidence for kind in item.get("evidence_types", [])} - {"Logical Connection"}
+    if substantive_thesis and any(role in roles for role in ("First-Order", "Second-Order")):
+        return "Early Beneficiary"
+    return "Emerging Trend"
 
 
 def discover_ai_themes(events):
@@ -144,6 +190,13 @@ def discover_ai_themes(events):
             f"to {', '.join(record['parent_tracks'])}; related industries include "
             f"{', '.join(record['related_industries'])}."
         )
+        commercial_types = set()
+        for evidence_id in record["evidence_ids"]:
+            event = next((item for item in events if item.get("event_id") == evidence_id), {})
+            text = " ".join(str(event.get(key) or "") for key in ("headline", "new_information"))
+            commercial_types.update(matching_signal_types(text, CONFIRMATION_SIGNAL_TERMS))
+        record["opportunity_stage"] = "Commercial Confirmation" if commercial_types else "Emerging Trend"
+        record["commercial_confirmation_types"] = sorted(commercial_types)
         result.append(record)
     return sorted(result, key=lambda item: (-(item["evidence_importance"] or -1), -item["event_count"], item["theme"]))
 
@@ -196,7 +249,7 @@ def discover_ai_stocks(events, themes, listed_companies=None):
                 row = results.setdefault(key, {
                     **identity, "beneficiary_roles": [], "themes": [], "parent_tracks": [],
                     "related_industries": [], "technologies": [], "evidence_ids": [],
-                    "discovery_sources": [],
+                    "discovery_sources": [], "thesis_evidence": [], "confirmation_evidence": [],
                 })
                 if relation not in row["beneficiary_roles"]:
                     row["beneficiary_roles"].append(relation)
@@ -209,6 +262,33 @@ def discover_ai_stocks(events, themes, listed_companies=None):
                 source = f"Reasoning-derived {relation.lower()} beneficiary of {theme['theme']}"
                 if source not in row["discovery_sources"]:
                     row["discovery_sources"].append(source)
+                text = " ".join(str(event.get(field) or "") for field in ("headline", "new_information"))
+                thesis_types = matching_signal_types(text, THESIS_SIGNAL_TERMS)
+                if "Logical Connection" not in thesis_types:
+                    thesis_types.append("Logical Connection")
+                thesis = evidence_record(
+                    event, thesis_types,
+                    f"The source explicitly connects {identity['company']} to {theme['theme']} through "
+                    f"{', '.join(thesis_types).lower()} evidence; commercial proof is evaluated separately.",
+                )
+                if thesis not in row["thesis_evidence"]:
+                    row["thesis_evidence"].append(thesis)
+                confirmation_types = matching_signal_types(text, CONFIRMATION_SIGNAL_TERMS)
+                if confirmation_types:
+                    confirmation = evidence_record(
+                        event, confirmation_types,
+                        f"The source reports {', '.join(confirmation_types).lower()} associated with the thesis.",
+                    )
+                    if confirmation not in row["confirmation_evidence"]:
+                        row["confirmation_evidence"].append(confirmation)
+    for row in results.values():
+        row["opportunity_stage"] = opportunity_stage(
+            row["beneficiary_roles"], row["thesis_evidence"], row["confirmation_evidence"])
+        row["classification_reason"] = (
+            f"{row['opportunity_stage']}: {len(row['thesis_evidence'])} thesis evidence record(s) and "
+            f"{len(row['confirmation_evidence'])} commercial confirmation record(s)."
+        )
+        row["confirmation_missing"] = not bool(row["confirmation_evidence"])
     priority = {"First-Order": 3, "Second-Order": 2, "Related": 1}
     return sorted(results.values(), key=lambda item: (
         -max((priority.get(role, 0) for role in item["beneficiary_roles"]), default=0),
@@ -221,7 +301,7 @@ def build_ai_reasoning_discovery(news_section, listed_companies=None, source_sta
     themes = discover_ai_themes(events)
     stocks = discover_ai_stocks(events, themes, listed_companies)
     return {
-        "schema_version": "ai-reasoning-discovery-v1",
+        "schema_version": "ai-reasoning-discovery-v2",
         "flow": "Evidence / News / Industry Data → Reasoning → Theme Discovery → Beneficiary Discovery → Stock Discovery → Radar",
         "theme_signals": themes,
         "stock_candidates": stocks,
@@ -229,11 +309,16 @@ def build_ai_reasoning_discovery(news_section, listed_companies=None, source_sta
             "evidence_events": len(events), "themes": len(themes), "public_stocks": len(stocks),
             "first_order": sum("First-Order" in row["beneficiary_roles"] for row in stocks),
             "second_order": sum("Second-Order" in row["beneficiary_roles"] for row in stocks),
+            "by_opportunity_stage": {stage: sum(row["opportunity_stage"] == stage for row in stocks)
+                                     for stage in ("Emerging Trend", "Early Beneficiary",
+                                                   "Commercial Confirmation", "Established Beneficiary")},
         },
         "listed_company_source": source_status or {"status": "not supplied"},
         "policy": {
             "no_manual_ticker_insertion": "Stock discovery uses evidence identities and a general listed-company universe, not a theme-specific ticker list.",
             "discovery_not_scoring": "Reasoning signals create research candidates only; existing Radar scoring remains unchanged.",
+            "early_entry_policy": "Orders, backlog, guidance, customers, and revenue are not required for Radar entry when source-backed thesis evidence establishes a logical beneficiary connection.",
+            "evidence_separation": "Thesis Evidence explains why a company may benefit; Confirmation Evidence records commercial proof without replacing the thesis.",
             "missing_data": "Unresolved company identity remains unresolved and is not converted into a ticker.",
         },
     }

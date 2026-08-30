@@ -1449,9 +1449,16 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None, ai_reasoning_disc
             link = {"trend": next((track for track in parent_tracks if track in AI_RADAR_TRACKS), None),
                     "discovered_theme": theme, "category": category,
                     "beneficiary_relevance": None, "exposure_score": None,
-                    "evidence_ids": evidence_ids, "reasoning_discovery": True}
+                    "evidence_ids": evidence_ids, "reasoning_discovery": True,
+                    "opportunity_stage": discovered.get("opportunity_stage")}
             add(company_identity(discovered.get("company"), discovered.get("ticker")), "ai",
                 f"Reasoning-driven stock discovery: {theme}", category, link)
+        candidate = candidates.get(f"ai:{str(discovered.get('ticker') or '').upper()}")
+        if candidate is not None:
+            candidate["opportunity_stage"] = discovered.get("opportunity_stage")
+            candidate["thesis_evidence"] = discovered.get("thesis_evidence", [])
+            candidate["confirmation_evidence"] = discovered.get("confirmation_evidence", [])
+            candidate["confirmation_missing"] = discovered.get("confirmation_missing", True)
 
     catalog = BIOTECH_LEADERS + BIOTECH_EMERGING
     active_biotech_trends = set()
@@ -3028,6 +3035,13 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
         identity = company_identity(discovered.get("company"), discovered.get("ticker"))
         for event_id in evidence_ids:
             add(identity, category, event_id, importance_by_id.get(event_id))
+        candidate = candidates.get(identity["company"])
+        if candidate is not None:
+            candidate["opportunity_stage"] = discovered.get("opportunity_stage")
+            candidate["thesis_evidence"] = discovered.get("thesis_evidence", [])
+            candidate["confirmation_evidence"] = discovered.get("confirmation_evidence", [])
+            candidate["confirmation_missing"] = discovered.get("confirmation_missing", True)
+            candidate["classification_reason"] = discovered.get("classification_reason")
 
     leader_names = {item["company"] for item in AI_INFRASTRUCTURE + AI_PLATFORMS}
     results = []
@@ -3049,6 +3063,11 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
         results.append({key: item[key] for key in ("company", "ticker", "exchange", "listing_status")} | {
             "category": category, "beneficiary_relevance": relevance, "score_components": components,
             "data_completeness": sum(component["weight"] for component in available), "evidence_ids": item["evidence_ids"],
+            "opportunity_stage": item.get("opportunity_stage", "Commercial Confirmation" if item["importance"] else "Emerging Trend"),
+            "thesis_evidence": item.get("thesis_evidence", []),
+            "confirmation_evidence": item.get("confirmation_evidence", []),
+            "confirmation_missing": item.get("confirmation_missing", not bool(item.get("confirmation_evidence"))),
+            "classification_reason": item.get("classification_reason", "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable."),
             "market_data": compact_market_snapshot(security_market),
             "expectation": expectation_assessment(security_market, "ai", 15),
         })

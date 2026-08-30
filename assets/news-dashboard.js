@@ -131,8 +131,20 @@ function renderAiEvidence(label, evidence = []) {
   return `<div class="detail-item detail-wide radar-sources"><dt>${escapeHtml(label)}</dt><dd><ul>${rows || "<li>Missing / no connected evidence.</li>"}</ul></dd></div>`;
 }
 
+function renderDiscoveryEvidence(label, evidence = [], missingCopy) {
+  if (!evidence.length) return `<p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(missingCopy)}</p>`;
+  const rows = evidence.slice(0, 3).map((item) => {
+    const types = (item.evidence_types || []).join(", ") || "Evidence type missing";
+    return `<li><strong>${escapeHtml(types)}</strong> — ${escapeHtml(item.basis || item.headline || "Evidence detail missing")}</li>`;
+  }).join("");
+  return `<p><strong>${escapeHtml(label)}</strong></p><ul>${rows}</ul>`;
+}
+
 function renderAiBeneficiaries(rows = []) {
-  const items = rows.map((item) => `<li><strong>${escapeHtml(companyTickerLabel(item))}</strong> — ${escapeHtml(item.category)} — relevance ${escapeHtml(item.beneficiary_relevance)}/100 · completeness ${escapeHtml(item.data_completeness)}%<br>${escapeHtml(marketSnapshotText(item.market_data, "qqq"))}</li>`).join("");
+  const items = rows.map((item) => `<li><strong>${escapeHtml(companyTickerLabel(item))}</strong> — ${escapeHtml(item.opportunity_stage || "Stage unavailable")} · ${escapeHtml(item.category)} — relevance ${escapeHtml(item.beneficiary_relevance)}/100 · completeness ${escapeHtml(item.data_completeness)}%
+    ${renderDiscoveryEvidence("Thesis Evidence", item.thesis_evidence || [], "Missing / logical beneficiary thesis has not been structured.")}
+    ${renderDiscoveryEvidence("Confirmation Evidence", item.confirmation_evidence || [], "Not yet commercially confirmed; orders, backlog, customers, guidance, and revenue are not required for early Radar entry.")}
+    <p>${escapeHtml(marketSnapshotText(item.market_data, "qqq"))}</p></li>`).join("");
   return `<div class="detail-item detail-wide radar-sources"><dt>Evidence-Supported Beneficiaries</dt><dd><ul>${items || "<li>Missing / insufficient evidence.</li>"}</ul></dd></div>`;
 }
 
