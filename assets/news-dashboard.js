@@ -30,6 +30,8 @@ function renderNumberedMessages(targetId, rows = []) {
 function renderDashboardCommentary(commentary = {}) {
   renderReasoning("news-reasoning", commentary.news?.reasoning);
   renderNumberedMessages("news-takeaways", commentary.news?.take_home_messages);
+  renderReasoning("biotech-news-reasoning", commentary.news?.reasoning);
+  renderNumberedMessages("biotech-news-takeaways", commentary.news?.take_home_messages);
   renderReasoning("radar-reasoning", commentary.radar?.reasoning);
   renderNumberedMessages("radar-takeaways", commentary.radar?.take_home_messages);
   renderNumberedMessages("high-conviction-reasons", commentary.high_conviction?.reasons);
@@ -459,6 +461,8 @@ function renderDashboard(data) {
   sharedMarketSecurities = data.market_data?.securities || {};
   const updated = new Date(data.updated_at);
   setText("last-updated", Number.isNaN(updated.valueOf()) ? data.updated_at : updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
+  setText("ai-news-summary-copy", data.summaries && data.summaries.ai);
+  setText("biotech-news-summary-copy", data.summaries && data.summaries.biotech);
   setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("market-movers", data.summaries && data.summaries.market_movers);
   renderDashboardCommentary(data.commentary);
   renderSafely(() => renderTopNews(data.top_investment_news && data.top_investment_news.ai_technology), "ai-top-news");
