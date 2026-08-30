@@ -39175,7 +39175,9 @@
       ],
       "missing_policy": "Missing factors are excluded and available weights renormalize; missing inputs are never zero.",
       "selection_boundary": "Entry Timing does not alter candidate discovery, High-Conviction scores, rankings, or fundamental/Radar gates.",
-      "price_basis": "Daily provider close and volume history from the existing shared market layer; no adjusted-close or intraday series is claimed."
+      "price_basis": "Daily provider close and volume history from the existing shared market layer; no adjusted-close or intraday series is claimed.",
+      "buy_decision": "WAIT, APPROACHING ENTRY, IN ENTRY ZONE, READY TO BUY, and EXTENDED / TOO LATE are direct mappings of the existing thesis and Entry Timing gates; they do not rescore or rerank candidates.",
+      "biotech_swing_plan": "Biotech entry zones use a +/-1% band around the actionable current close or the existing calculated resistance planning reference. +10%/+15%/+20% levels are mechanical swing levels from that reference, not valuation targets."
     },
     "records": {
       "ai:NVDA": {
@@ -47286,6 +47288,17 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "approaching-entry",
+          "status": "APPROACHING ENTRY",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. The thesis gate has passed, but the entry setup still needs confirmation.",
+          "missing_condition": "Watch for a close through calculated resistance with confirming volume, or a controlled pullback that holds MA20/MA50.",
+          "timing_state": "\ud83d\udfe1 Near Buy Zone",
+          "entry_timing_score": 66,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
         }
       },
       {
@@ -47792,6 +47805,17 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. The stock remains selected, but the technical entry setup is incomplete.",
+          "missing_condition": "Continue monitoring the base/range; no rules-based entry confirmation is present.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 51,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
         }
       },
       {
@@ -48250,6 +48274,17 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Expectation Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 76,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
         }
       },
       {
@@ -48662,6 +48697,17 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Evidence Gate, Beneficiary Proof Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 55,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
         }
       },
       {
@@ -49081,6 +49127,17 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Evidence Gate, Beneficiary Proof Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 59,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
         }
       }
     ],
@@ -49540,6 +49597,36 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Expectation Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 50,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
+        },
+        "swing_trade": {
+          "current_price": 12.87,
+          "currency": "USD",
+          "price_date": "2026-08-28",
+          "entry_zone": {
+            "low": 17.66,
+            "high": 18.02,
+            "reference": 17.84,
+            "active": false,
+            "basis": "Planned entry reference is the existing calculated resistance level; the zone is inactive until all thesis gates pass and the Entry Timing engine confirms the setup."
+          },
+          "targets": {
+            "plus_10": 19.62,
+            "plus_15": 20.52,
+            "plus_20": 21.41,
+            "basis": "Mechanical swing levels measured from the entry-zone reference; not analyst or valuation targets."
+          },
+          "engine_version": "biotech-swing-plan-v1"
         }
       },
       {
@@ -49990,6 +50077,36 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Expectation Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 61,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
+        },
+        "swing_trade": {
+          "current_price": 31.62,
+          "currency": "USD",
+          "price_date": "2026-08-28",
+          "entry_zone": {
+            "low": 32.7,
+            "high": 33.36,
+            "reference": 33.03,
+            "active": false,
+            "basis": "Planned entry reference is the existing calculated resistance level; the zone is inactive until all thesis gates pass and the Entry Timing engine confirms the setup."
+          },
+          "targets": {
+            "plus_10": 36.33,
+            "plus_15": 37.98,
+            "plus_20": 39.64,
+            "basis": "Mechanical swing levels measured from the entry-zone reference; not analyst or valuation targets."
+          },
+          "engine_version": "biotech-swing-plan-v1"
         }
       },
       {
@@ -50421,6 +50538,36 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Evidence Gate, Beneficiary Proof Gate, Biotech Binary Risk / Evidence Integrity Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 52,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
+        },
+        "swing_trade": {
+          "current_price": 3.61,
+          "currency": "USD",
+          "price_date": "2026-08-28",
+          "entry_zone": {
+            "low": 4.57,
+            "high": 4.67,
+            "reference": 4.62,
+            "active": false,
+            "basis": "Planned entry reference is the existing calculated resistance level; the zone is inactive until all thesis gates pass and the Entry Timing engine confirms the setup."
+          },
+          "targets": {
+            "plus_10": 5.08,
+            "plus_15": 5.31,
+            "plus_20": 5.54,
+            "basis": "Mechanical swing levels measured from the entry-zone reference; not analyst or valuation targets."
+          },
+          "engine_version": "biotech-swing-plan-v1"
         }
       },
       {
@@ -50848,6 +50995,36 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Evidence Gate, Beneficiary Proof Gate, Expectation Gate, Biotech Binary Risk / Evidence Integrity Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 74,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
+        },
+        "swing_trade": {
+          "current_price": 541.69,
+          "currency": "USD",
+          "price_date": "2026-08-28",
+          "entry_zone": {
+            "low": 546.54,
+            "high": 557.58,
+            "reference": 552.06,
+            "active": false,
+            "basis": "Planned entry reference is the existing calculated resistance level; the zone is inactive until all thesis gates pass and the Entry Timing engine confirms the setup."
+          },
+          "targets": {
+            "plus_10": 607.27,
+            "plus_15": 634.87,
+            "plus_20": 662.47,
+            "basis": "Mechanical swing levels measured from the entry-zone reference; not analyst or valuation targets."
+          },
+          "engine_version": "biotech-swing-plan-v1"
         }
       },
       {
@@ -51282,6 +51459,36 @@
             }
           },
           "engine_version": "entry-timing-v1"
+        },
+        "buy_decision": {
+          "status_key": "wait",
+          "status": "WAIT",
+          "ready_now": false,
+          "why_buy_now": "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis.",
+          "missing_condition": "Not passed: Evidence Gate, Beneficiary Proof Gate, Expectation Gate, Biotech Binary Risk / Evidence Integrity Gate.",
+          "timing_state": "\ud83d\udc40 Base Building",
+          "entry_timing_score": 67,
+          "as_of": "2026-08-28",
+          "engine_version": "high-conviction-buy-decision-v1"
+        },
+        "swing_trade": {
+          "current_price": 3.86,
+          "currency": "USD",
+          "price_date": "2026-08-28",
+          "entry_zone": {
+            "low": 4.2,
+            "high": 4.28,
+            "reference": 4.24,
+            "active": false,
+            "basis": "Planned entry reference is the existing calculated resistance level; the zone is inactive until all thesis gates pass and the Entry Timing engine confirms the setup."
+          },
+          "targets": {
+            "plus_10": 4.66,
+            "plus_15": 4.88,
+            "plus_20": 5.09,
+            "basis": "Mechanical swing levels measured from the entry-zone reference; not analyst or valuation targets."
+          },
+          "engine_version": "biotech-swing-plan-v1"
         }
       }
     ]

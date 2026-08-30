@@ -2,6 +2,8 @@ import unittest
 
 from scripts.entry_timing import (
     ENTRY_WEIGHTS,
+    build_biotech_swing_plan,
+    build_buy_decision,
     build_entry_timing_layer,
     calculate_entry_inputs,
     score_entry_timing,
@@ -95,6 +97,43 @@ class EntryTimingEngineTests(unittest.TestCase):
         self.assertEqual([row["ticker"] for row in ai_rows], ["A", "B"])
         self.assertEqual(watchlists["ai"][0]["entry_timing"]["state"], layer["records"]["ai:A"]["state"])
         self.assertNotIn("factors", watchlists["ai"][0]["entry_timing"])
+
+    def test_buy_decision_maps_existing_timing_without_rescoring(self):
+        buy_zone = score_entry_timing(snapshot(), "ai", THESIS_PASS)
+        decision = build_buy_decision(buy_zone)
+        self.assertEqual(decision["status"], "IN ENTRY ZONE")
+        self.assertTrue(decision["ready_now"])
+        self.assertEqual(decision["entry_timing_score"], buy_zone["entry_timing_score"])
+
+        waiting = score_entry_timing(snapshot(), "biotech", {"passed": False, "rationale": "Evidence Gate failed."})
+        decision = build_buy_decision(waiting)
+        self.assertEqual(decision["status"], "WAIT")
+        self.assertFalse(decision["ready_now"])
+        self.assertIn("Evidence Gate failed", decision["missing_condition"])
+
+    def test_biotech_swing_targets_use_entry_reference_only(self):
+        timing = score_entry_timing(snapshot(), "biotech", THESIS_PASS)
+        decision = build_buy_decision(timing)
+        plan = build_biotech_swing_plan(snapshot(), timing, decision)
+        self.assertEqual(plan["current_price"], 100)
+        self.assertEqual(plan["entry_zone"], {"low": 99.0, "high": 101.0, "reference": 100,
+                                               "active": True,
+                                               "basis": "Current daily close is the reference because the existing Entry Timing engine is actionable now."})
+        self.assertEqual(plan["targets"]["plus_10"], 110.0)
+        self.assertEqual(plan["targets"]["plus_15"], 115.0)
+        self.assertEqual(plan["targets"]["plus_20"], 120.0)
+
+    def test_biotech_wait_plan_is_inactive_and_missing_stays_missing(self):
+        timing = score_entry_timing(snapshot(), "biotech", {"passed": False, "rationale": "Expectation Gate failed."})
+        decision = build_buy_decision(timing)
+        plan = build_biotech_swing_plan(snapshot(), timing, decision)
+        self.assertFalse(plan["entry_zone"]["active"])
+        self.assertEqual(plan["entry_zone"]["reference"], 102)
+        self.assertEqual(plan["targets"]["plus_10"], 112.2)
+
+        missing = build_biotech_swing_plan({}, {}, build_buy_decision({}))
+        self.assertIsNone(missing["entry_zone"]["reference"])
+        self.assertIsNone(missing["targets"]["plus_20"])
 
 
 if __name__ == "__main__":

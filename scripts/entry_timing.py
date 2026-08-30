@@ -25,6 +25,14 @@ TIMING_STATES = {
     "deterioration": "🔴 Technical Deterioration",
 }
 
+BUY_STATUSES = {
+    "wait": "WAIT",
+    "approaching-entry": "APPROACHING ENTRY",
+    "in-entry-zone": "IN ENTRY ZONE",
+    "ready-to-buy": "READY TO BUY",
+    "extended": "EXTENDED / TOO LATE",
+}
+
 
 def average(values, minimum=1):
     valid = [value for value in values if value is not None]
@@ -279,14 +287,102 @@ def compact_entry_timing(record):
     return {key: record.get(key) for key in keys}
 
 
+def build_buy_decision(timing):
+    """Translate existing thesis/timing outputs into an explicit buy-now decision."""
+    timing = timing or {}
+    state_key = timing.get("state_key")
+    if state_key == "extended":
+        status_key = "extended"
+    elif state_key == "breakout-confirmed" and timing.get("actionable"):
+        status_key = "ready-to-buy"
+    elif state_key == "buy-zone" and timing.get("actionable"):
+        status_key = "in-entry-zone"
+    elif state_key == "near-buy-zone" and timing.get("actionable"):
+        status_key = "approaching-entry"
+    else:
+        status_key = "wait"
+
+    thesis_gate = next((gate for gate in timing.get("gates", []) if gate.get("key") == "thesis"), {})
+    if status_key in ("ready-to-buy", "in-entry-zone"):
+        missing_condition = "None under the current rules; continue monitoring the extension, breakdown, and thesis-invalidation conditions."
+        why_buy_now = ("The fundamental/Radar thesis gate has passed and the existing Entry Timing engine identifies an actionable "
+                       f"{timing.get('state', 'technical setup')}. {timing.get('entry_guidance', '')}").strip()
+    elif status_key == "approaching-entry":
+        missing_condition = timing.get("entry_guidance") or "A rules-based entry confirmation is still required."
+        why_buy_now = "Not ready now. The thesis gate has passed, but the entry setup still needs confirmation."
+    elif status_key == "extended":
+        missing_condition = timing.get("entry_guidance") or "Price must reset below the extension threshold or form a new base."
+        why_buy_now = "Not ready now. The existing Extension / Do-Not-Chase Gate blocks a new entry."
+    elif thesis_gate.get("passed") is not True:
+        missing_condition = thesis_gate.get("rationale") or "The fundamental/Radar thesis gate has not passed."
+        why_buy_now = "Not ready now. Technical conditions cannot override an incomplete fundamental/Radar thesis."
+    else:
+        missing_condition = timing.get("entry_guidance") or "A complete, rules-based technical entry setup is still missing."
+        why_buy_now = "Not ready now. The stock remains selected, but the technical entry setup is incomplete."
+
+    return {"status_key": status_key, "status": BUY_STATUSES[status_key],
+            "ready_now": status_key in ("ready-to-buy", "in-entry-zone"),
+            "why_buy_now": why_buy_now, "missing_condition": missing_condition,
+            "timing_state": timing.get("state"), "entry_timing_score": timing.get("entry_timing_score"),
+            "as_of": timing.get("price_date"), "engine_version": "high-conviction-buy-decision-v1"}
+
+
+def _rounded_price(value):
+    if value is None or value <= 0:
+        return None
+    return round(value, 4 if value < 1 else 2)
+
+
+def build_biotech_swing_plan(snapshot, timing, buy_decision):
+    """Create transparent swing-planning levels; these are not valuation price targets."""
+    snapshot, timing = snapshot or {}, timing or {}
+    current = snapshot.get("current_price")
+    resistance = timing.get("resistance_level")
+    state_key = timing.get("state_key")
+    current = current if isinstance(current, (int, float)) and current > 0 else None
+    resistance = resistance if isinstance(resistance, (int, float)) and resistance > 0 else None
+
+    if state_key in ("extended", "deterioration"):
+        anchor = None
+        basis = "No active entry zone while the setup is extended or technically deteriorating."
+    elif buy_decision.get("ready_now") and current is not None:
+        anchor = current
+        basis = "Current daily close is the reference because the existing Entry Timing engine is actionable now."
+    elif resistance is not None:
+        anchor = resistance
+        basis = ("Planned entry reference is the existing calculated resistance level; the zone is inactive until all thesis gates "
+                 "pass and the Entry Timing engine confirms the setup.")
+    else:
+        anchor = None
+        basis = "Missing: no reliable current-price or calculated-resistance entry reference is available."
+
+    if anchor is None:
+        entry_zone = {"low": None, "high": None, "reference": None, "active": False, "basis": basis}
+        targets = {"plus_10": None, "plus_15": None, "plus_20": None,
+                   "basis": "Missing: targets require a reliable entry reference."}
+    else:
+        entry_zone = {"low": _rounded_price(anchor * .99), "high": _rounded_price(anchor * 1.01),
+                      "reference": _rounded_price(anchor), "active": bool(buy_decision.get("ready_now")), "basis": basis}
+        targets = {"plus_10": _rounded_price(anchor * 1.10), "plus_15": _rounded_price(anchor * 1.15),
+                   "plus_20": _rounded_price(anchor * 1.20),
+                   "basis": "Mechanical swing levels measured from the entry-zone reference; not analyst or valuation targets."}
+    return {"current_price": _rounded_price(current), "currency": snapshot.get("currency"),
+            "price_date": snapshot.get("price_date"), "entry_zone": entry_zone, "targets": targets,
+            "engine_version": "biotech-swing-plan-v1"}
+
+
 def build_entry_timing_layer(ai_rows, biotech_rows, market_data, watchlists=None):
     records = {}
     for domain, rows in (("ai", ai_rows), ("biotech", biotech_rows)):
         for row in rows:
             ticker = row.get("ticker")
-            timing = score_entry_timing((market_data or {}).get("securities", {}).get(ticker), domain,
+            snapshot = (market_data or {}).get("securities", {}).get(ticker)
+            timing = score_entry_timing(snapshot, domain,
                                         thesis_gate_for_pick(row, domain))
             row["entry_timing"] = timing
+            row["buy_decision"] = build_buy_decision(timing)
+            if domain == "biotech":
+                row["swing_trade"] = build_biotech_swing_plan(snapshot, timing, row["buy_decision"])
             records[f"{domain}:{ticker}"] = timing
     for domain, rows in (watchlists or {}).items():
         for row in rows:
@@ -300,6 +396,8 @@ def build_entry_timing_layer(ai_rows, biotech_rows, market_data, watchlists=None
     return {"schema_version": "entry-timing-v1", "methodology": {"weights": ENTRY_WEIGHTS,
         "states": list(TIMING_STATES.values()), "missing_policy": "Missing factors are excluded and available weights renormalize; missing inputs are never zero.",
         "selection_boundary": "Entry Timing does not alter candidate discovery, High-Conviction scores, rankings, or fundamental/Radar gates.",
+        "buy_decision": "WAIT, APPROACHING ENTRY, IN ENTRY ZONE, READY TO BUY, and EXTENDED / TOO LATE are direct mappings of the existing thesis and Entry Timing gates; they do not rescore or rerank candidates.",
+        "biotech_swing_plan": "Biotech entry zones use a +/-1% band around the actionable current close or the existing calculated resistance planning reference. +10%/+15%/+20% levels are mechanical swing levels from that reference, not valuation targets.",
         "price_basis": "Daily provider close and volume history from the existing shared market layer; no adjusted-close or intraday series is claimed."},
         "records": records, "coverage": {"requested": len(records),
             "scored": sum(item["entry_timing_score"] is not None for item in records.values()),

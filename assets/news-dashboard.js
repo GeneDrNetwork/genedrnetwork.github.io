@@ -288,7 +288,53 @@ function renderBiotechRadar(rows) {
     </dl></details>`).join("") || `<p class="loading-state">No biotech opportunities are available.</p>`;
 }
 
+function buyDecisionFor(row = {}) {
+  if (row.buy_decision?.status) return row.buy_decision;
+  const entry = row.entry_timing || {};
+  const mapping = {
+    "breakout-confirmed": ["ready-to-buy", "READY TO BUY"],
+    "buy-zone": ["in-entry-zone", "IN ENTRY ZONE"],
+    "near-buy-zone": ["approaching-entry", "APPROACHING ENTRY"],
+    extended: ["extended", "EXTENDED / TOO LATE"],
+  };
+  const mapped = mapping[entry.state_key] || ["wait", "WAIT"];
+  const ready = entry.actionable && ["ready-to-buy", "in-entry-zone"].includes(mapped[0]);
+  return { status_key: mapped[0], status: mapped[1], ready_now: ready,
+    why_buy_now: ready ? entry.entry_guidance : "Not ready now under the existing thesis and Entry Timing rules.",
+    missing_condition: ready ? "None under the current rules; continue monitoring the documented gates." : (entry.entry_guidance || "A complete buy setup is still missing."),
+    timing_state: entry.state, entry_timing_score: entry.entry_timing_score };
+}
+
+function decisionPrice(value, currency = "USD") {
+  return value === null || value === undefined ? "Unavailable" : currentPriceLabel("VALUE", { current_price: value, currency });
+}
+
+function renderBuyDecision(row, isBiotech, decision) {
+  const swing = row.swing_trade || {};
+  const currency = swing.currency || row.market_data?.currency || "USD";
+  const zone = swing.entry_zone || {};
+  const targets = swing.targets || {};
+  const zoneText = zone.low === null || zone.low === undefined || zone.high === null || zone.high === undefined
+    ? "Unavailable" : `${decisionPrice(zone.low, currency)} – ${decisionPrice(zone.high, currency)}${zone.active ? " · Active" : " · Planning reference only"}`;
+  const biotechFields = isBiotech ? `<dl class="biotech-buy-grid">
+      <div><dt>Current Price</dt><dd>${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Unavailable")}</dd></div>
+      <div><dt>Entry Zone</dt><dd>${escapeHtml(zoneText)}</dd></div>
+      <div><dt>Buy Status</dt><dd>${escapeHtml(decision.status || "WAIT")}</dd></div>
+      <div><dt>+10% Target</dt><dd>${escapeHtml(decisionPrice(targets.plus_10, currency))}</dd></div>
+      <div><dt>+15% Target</dt><dd>${escapeHtml(decisionPrice(targets.plus_15, currency))}</dd></div>
+      <div><dt>+20% Target</dt><dd>${escapeHtml(decisionPrice(targets.plus_20, currency))}</dd></div>
+      <div><dt>Binary Risk</dt><dd>${escapeHtml(row.binary_risk || "Missing")}</dd></div>
+      <div class="opportunity-wide"><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst || "Missing")}${row.catalyst_timing ? ` · ${escapeHtml(row.catalyst_timing)}` : ""}</dd></div>
+    </dl><p class="buy-plan-note">${escapeHtml(zone.basis || "Entry-zone methodology unavailable.")} ${escapeHtml(targets.basis || "")}</p>` : "";
+  return `<section class="buy-decision-panel buy-decision-${stageClass(decision.status_key)}">
+    <div class="buy-decision-heading"><span>Buy decision</span><strong>${escapeHtml(decision.status || "WAIT")}</strong><small>${escapeHtml(decision.timing_state || "Timing state unavailable")}${decision.entry_timing_score === null || decision.entry_timing_score === undefined ? "" : ` · ${escapeHtml(decision.entry_timing_score)}/100`}</small></div>
+    ${biotechFields}
+    <dl class="buy-decision-reasons"><div><dt>Why Buy Now</dt><dd>${escapeHtml(decision.why_buy_now || "Missing")}</dd></div><div><dt>What Condition Is Still Missing?</dt><dd>${escapeHtml(decision.missing_condition || "Missing")}</dd></div></dl>
+  </section>`;
+}
+
 function renderOpportunities(targetId, rows = []) {
+  const isBiotech = targetId.includes("biotech");
   document.getElementById(targetId).innerHTML = rows.map((row) => {
     const factors = (row.factor_scores || []).map((factor) => `<li class="${factor.missing ? "factor-missing" : ""}"><span>${escapeHtml(factor.label)}</span><strong>${factor.score === null || factor.score === undefined ? "Missing" : `${escapeHtml(factor.score)}/100`}</strong><small>${escapeHtml(factor.available_weight ?? (factor.missing ? 0 : factor.weight))}/${escapeHtml(factor.weight)} weight available</small></li>`).join("");
     const gates = (row.gates || []).map((gate) => `<li class="gate-${gate.passed === true ? "pass" : gate.passed === false ? "fail" : "missing"}" title="${escapeHtml(gate.rationale)}"><span aria-hidden="true">${gate.passed === true ? "✓" : gate.passed === false ? "×" : "—"}</span>${escapeHtml(gate.label)}</li>`).join("");
@@ -297,14 +343,16 @@ function renderOpportunities(targetId, rows = []) {
     const entry = row.entry_timing || {};
     const entryFactors = (entry.factors || []).map((factor) => `<li class="${factor.missing ? "factor-missing" : ""}"><span>${escapeHtml(factor.label)}</span><strong>${factor.score === null || factor.score === undefined ? "Missing" : `${escapeHtml(factor.score)}/100`}</strong><small>${escapeHtml(factor.rationale)}</small></li>`).join("");
     const entryGates = (entry.gates || []).map((gate) => `<li class="gate-${gate.passed === true ? "pass" : gate.passed === false ? "fail" : "missing"}" title="${escapeHtml(gate.rationale)}"><span aria-hidden="true">${gate.passed === true ? "✓" : gate.passed === false ? "×" : "—"}</span>${escapeHtml(gate.label)}</li>`).join("");
+    const decision = buyDecisionFor(row);
     const score = row.final_score === null || row.final_score === undefined ? "Missing" : `${row.final_score}/100`;
     return `<details class="opportunity-card opportunity-${escapeHtml(row.classification_key || "unclassified")}"><summary class="opportunity-summary"><span class="opportunity-rank">${escapeHtml(row.rank)}</span>
       <div><div class="opportunity-top"><h4>${escapeHtml(companyTickerLabel(row))}</h4><span class="opportunity-classification">${escapeHtml(row.classification || "Classification missing")}</span></div>
-      <div class="opportunity-score-line"><strong>${escapeHtml(score)}</strong><span>${escapeHtml(row.data_completeness ?? "Missing")}% complete</span>${entry.state ? `<span class="opportunity-timing-pill">${escapeHtml(entry.state)}</span>` : ""}</div></div><span class="opportunity-expand" aria-hidden="true"></span></summary>
+      <div class="opportunity-score-line"><strong>${escapeHtml(score)}</strong><span>${escapeHtml(row.data_completeness ?? "Missing")}% complete</span><span class="opportunity-timing-pill buy-status-${stageClass(decision.status_key)}">${escapeHtml(decision.status || "WAIT")}</span></div></div><span class="opportunity-expand" aria-hidden="true"></span></summary>
       <div class="opportunity-detail">
+      ${renderBuyDecision(row, isBiotech, decision)}
       <p class="opportunity-why"><strong>Why selected:</strong> ${escapeHtml(row.why_selected || row.thesis || "Missing")}</p>
       <ul class="opportunity-factors">${factors || "<li class=\"factor-missing\"><span>Factor scores</span><strong>Missing</strong></li>"}</ul>
-      <dl><div><dt>Company Quality</dt><dd><strong>${quality.company_quality_score === null || quality.company_quality_score === undefined ? "Missing" : `${escapeHtml(quality.company_quality_score)}/100`}</strong> · ${escapeHtml(quality.data_completeness ?? 0)}% complete · ${escapeHtml(quality.confidence || "Low")} confidence${quality.latest_period_end ? ` · period ${escapeHtml(quality.latest_period_end)}` : ""}</dd></div><div><dt>Expectation state</dt><dd>${escapeHtml(row.expectation_state || row.expectation?.state || "Data Insufficient")}</dd></div><div><dt>Technical / entry status</dt><dd><strong>${escapeHtml(technical.signal || "Insufficient Data")}</strong> · ${escapeHtml(technical.rationale || "Market inputs missing.")}</dd></div><div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst || "Missing")}${row.catalyst_timing ? ` · ${escapeHtml(row.catalyst_timing)}` : ""}</dd></div><div><dt>Action</dt><dd>${escapeHtml(row.action || "Missing")}</dd></div><div class="opportunity-wide"><dt>Thesis invalidation</dt><dd>${escapeHtml(row.thesis_invalidation || "Missing")}</dd></div></dl>
+      <dl><div><dt>Company Quality</dt><dd><strong>${quality.company_quality_score === null || quality.company_quality_score === undefined ? "Missing" : `${escapeHtml(quality.company_quality_score)}/100`}</strong> · ${escapeHtml(quality.data_completeness ?? 0)}% complete · ${escapeHtml(quality.confidence || "Low")} confidence${quality.latest_period_end ? ` · period ${escapeHtml(quality.latest_period_end)}` : ""}</dd></div><div><dt>Expectation state</dt><dd>${escapeHtml(row.expectation_state || row.expectation?.state || "Data Insufficient")}</dd></div><div><dt>Technical / entry status</dt><dd><strong>${escapeHtml(technical.signal || "Insufficient Data")}</strong> · ${escapeHtml(technical.rationale || "Market inputs missing.")}</dd></div>${isBiotech ? "" : `<div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst || "Missing")}${row.catalyst_timing ? ` · ${escapeHtml(row.catalyst_timing)}` : ""}</dd></div>`}<div><dt>Action</dt><dd>${escapeHtml(row.action || "Missing")}</dd></div><div class="opportunity-wide"><dt>Thesis invalidation</dt><dd>${escapeHtml(row.thesis_invalidation || "Missing")}</dd></div></dl>
       <ul class="opportunity-gates" aria-label="High-conviction gates">${gates}</ul>
       <details class="entry-timing-details"><summary><span><small>Entry Timing Score</small>${escapeHtml(entry.state || "Entry timing unavailable")}</span><strong>${entry.entry_timing_score === null || entry.entry_timing_score === undefined ? "Missing" : `${escapeHtml(entry.entry_timing_score)}/100`}</strong><small>${escapeHtml(entry.data_completeness ?? 0)}% complete</small></summary><div class="entry-timing-body"><p>${escapeHtml(entry.entry_guidance || "Entry guidance unavailable because technical inputs are missing.")}</p><dl><div><dt>Resistance / breakout</dt><dd>${entry.resistance_level === null || entry.resistance_level === undefined ? "Missing" : formatMarketValue(entry.resistance_level)}${entry.price_date ? ` · as of ${escapeHtml(entry.price_date)}` : ""}</dd></div><div><dt>Technical invalidation</dt><dd>${entry.invalidation_level === null || entry.invalidation_level === undefined ? "Missing" : formatMarketValue(entry.invalidation_level)}</dd></div></dl><ul class="entry-factor-list">${entryFactors}</ul><ul class="opportunity-gates" aria-label="Entry timing gates">${entryGates}</ul></div></details></div></details>`;
   }).join("") || `<p class="loading-state">No opportunities are available.</p>`;
