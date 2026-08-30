@@ -32,6 +32,13 @@ def market_layer(ticker, crowded=False):
     return {"securities": {ticker: market_record(ticker, crowded)}}
 
 
+def quality_layer(domain, ticker):
+    return {"records": {f"{domain}:{ticker}": {
+        "company_quality_score": 90, "data_completeness": 100,
+        "confidence": "High", "qualified": True, "sources": [],
+    }}}
+
+
 def ai_radar(ticker="NVDA"):
     event = {"event_id": "event-1", "event_date": "2026-08-28T12:00:00+00:00", "age_band": "fresh",
              "news_importance_score": 95, "new_information": "Company raised current AI infrastructure guidance.",
@@ -61,22 +68,31 @@ def biotech_radar(binary_risk="High", status="Speculative Binary", integrity=Fal
 
 class HighConvictionStockPickEngineTests(unittest.TestCase):
     def test_ai_pick_passes_all_gates_for_high_conviction(self):
-        row = build_ai_stock_picks(ai_radar(), market_layer("NVDA"), [])[0]
+        row = build_ai_stock_picks(ai_radar(), market_layer("NVDA"), [],
+                                   quality_layer=quality_layer("ai", "NVDA"))[0]
         self.assertEqual(row["classification_key"], "high-conviction")
         self.assertGreaterEqual(row["final_score"], 80)
         self.assertEqual(row["data_completeness"], 100)
         self.assertTrue(all(gate["passed"] for gate in row["gates"]))
 
     def test_total_score_cannot_override_expectation_gate(self):
-        row = build_ai_stock_picks(ai_radar(), market_layer("NVDA", crowded=True), [])[0]
+        row = build_ai_stock_picks(ai_radar(), market_layer("NVDA", crowded=True), [],
+                                   quality_layer=quality_layer("ai", "NVDA"))[0]
         self.assertGreaterEqual(row["final_score"], 70)
         self.assertFalse(next(gate for gate in row["gates"] if gate["key"] == "expectation")["passed"])
         self.assertEqual(row["classification_key"], "priced-in")
 
+    def test_discovery_and_radar_proof_cannot_replace_company_quality_gate(self):
+        row = build_ai_stock_picks(ai_radar(), market_layer("NVDA"), [])[0]
+        gate = next(gate for gate in row["gates"] if gate["key"] == "beneficiary_proof")
+        self.assertFalse(gate["passed"])
+        self.assertEqual(row["classification_key"], "too-early")
+
     def test_news_importance_does_not_directly_set_catalyst_score(self):
         radar = ai_radar()
         radar[0]["confirming_evidence"][0]["news_importance_score"] = 1
-        row = build_ai_stock_picks(radar, market_layer("NVDA"), [])[0]
+        row = build_ai_stock_picks(radar, market_layer("NVDA"), [],
+                                   quality_layer=quality_layer("ai", "NVDA"))[0]
         self.assertEqual(row["catalyst_evidence"]["score"], 95)
         self.assertIn("News Importance is not used", row["catalyst_evidence"]["score_basis"])
 

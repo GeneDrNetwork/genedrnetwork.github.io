@@ -19,6 +19,11 @@ from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
+try:
+    from .company_quality import build_company_quality_layer
+except ImportError:
+    from company_quality import build_company_quality_layer
+
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "news-dashboard.json"
 USER_AGENT = "GeneDrNetwork-Daily-Dashboard/2.0 (+https://genedrnetwork.github.io/)"
@@ -1305,7 +1310,133 @@ def expectation_assessment(snapshot, domain, maximum):
             "sources": record.get("sources", [])}
 
 
-def shared_market_ticker_domains(previous=None):
+AI_CANDIDATE_LIMIT = 30
+BIOTECH_CANDIDATE_LIMIT = 20
+
+
+def biotech_therapeutic_trends(text):
+    """Broad modality tags used only for discovery, never as scientific evidence."""
+    lowered = str(text or "").lower()
+    trends = []
+    for label, terms in (
+        ("RNA medicines", ("rna", "splicing")),
+        ("Gene editing", ("crispr", "editing", "base edit", "prime edit")),
+        ("Gene therapy", ("gene therapy", "aav", "redosable")),
+        ("Precision medicine", ("human genetics", "precision medicine", "genetically validated")),
+    ):
+        if any(term in lowered for term in terms):
+            trends.append(label)
+    return trends
+
+
+def discover_candidate_pool(ai_radar=None, biotech_radar=None):
+    """Build a bounded Radar-linked research pool; this is not an eligibility gate."""
+    ai_radar = ai_radar or []
+    biotech_radar = biotech_radar or []
+    candidates = {}
+    category_priority = {"Direct": 4, "Bottleneck/Picks-and-Shovels": 3,
+                         "Second-Order": 2, "Emerging": 1}
+
+    def add(identity, domain, discovery_source, category=None, radar_link=None,
+            therapeutic_trend=None, program=None, indication=None, catalyst=None):
+        if not identity or identity.get("listing_status") != "Public":
+            return
+        ticker = identity.get("ticker")
+        if not ticker or ticker in ("Private", "N/A", "Missing") or ":" in ticker:
+            return
+        key = f"{domain}:{ticker}"
+        row = candidates.setdefault(key, {**identity, "domain": domain, "categories": [],
+                                           "discovery_sources": [], "radar_links": [],
+                                           "programs": [], "therapeutic_trends": []})
+        if discovery_source not in row["discovery_sources"]:
+            row["discovery_sources"].append(discovery_source)
+        if category and category not in row["categories"]:
+            row["categories"].append(category)
+        if therapeutic_trend and therapeutic_trend not in row["therapeutic_trends"]:
+            row["therapeutic_trends"].append(therapeutic_trend)
+        program_record = {"program": program, "indication": indication, "catalyst": catalyst}
+        if program and program_record not in row["programs"]:
+            row["programs"].append(program_record)
+        if radar_link and radar_link not in row["radar_links"]:
+            row["radar_links"].append(radar_link)
+
+    bottlenecks = {"Compute", "HBM/Memory", "Foundry/Advanced Packaging", "Networking/Optical",
+                   "Data Centers", "Power/Electrical", "Cooling", "Grid/Energy/Materials"}
+    for trend, config in AI_RADAR_TRACKS.items():
+        if trend == "AI Models/Applications":
+            for row in AI_PLATFORMS:
+                add(company_identity(row["company"], row["ticker"]), "ai",
+                    "Existing AI Radar track: AI Models/Applications", "Direct")
+        driver = next((item for item in DEMAND_DRIVERS if item["area"] == config.get("demand_area")), None)
+        if not driver:
+            continue
+        public_category = "Bottleneck/Picks-and-Shovels" if trend in bottlenecks else "Direct"
+        for identity in normalize_company_list(driver.get("public_companies", "")):
+            add(identity, "ai", f"Existing AI Radar demand map: {trend}", public_category)
+        for identity in normalize_company_list(driver.get("emerging_companies", "")):
+            add(identity, "ai", f"Existing AI Radar emerging map: {trend}", "Emerging")
+    for radar in ai_radar:
+        for beneficiary in radar.get("beneficiary_records", []):
+            component = next((item for item in beneficiary.get("score_components", [])
+                              if item.get("label") == "Trend Exposure"), {})
+            exposure = round(component["score"] / component["weight"] * 100) if component.get("score") is not None and component.get("weight") else None
+            link = {"trend": radar.get("trend"), "category": beneficiary.get("category"),
+                    "beneficiary_relevance": beneficiary.get("beneficiary_relevance"),
+                    "exposure_score": exposure, "evidence_ids": beneficiary.get("evidence_ids", [])}
+            add(company_identity(beneficiary.get("company"), beneficiary.get("ticker")), "ai",
+                f"Evidence-linked AI Radar beneficiary: {radar.get('trend')}",
+                beneficiary.get("category"), link)
+
+    catalog = BIOTECH_LEADERS + BIOTECH_EMERGING
+    active_biotech_trends = set()
+    for radar in biotech_radar:
+        catalog_row = next((row for row in catalog
+                            if company_identity(row.get("company"), row.get("ticker")).get("ticker") == radar.get("ticker")), {})
+        text = " ".join(str(radar.get(key, "")) for key in
+                        ("program", "indication", "catalyst", "clinical_evidence", "commercial_potential"))
+        text += " " + " ".join(str(catalog_row.get(key, "")) for key in
+                                ("sector", "technology", "proven_therapy", "pipeline", "lead_programs"))
+        trends = biotech_therapeutic_trends(text) or ["Program-specific catalyst"]
+        active_biotech_trends.update(trends)
+        identity = company_identity(radar.get("company"), radar.get("ticker"))
+        for trend in trends:
+            link = {"therapeutic_trend": trend, "program": radar.get("program"),
+                    "indication": radar.get("indication"), "catalyst": radar.get("catalyst"),
+                    "evidence_gate_passed": radar.get("evidence_gate", {}).get("passed"),
+                    "evidence_count": radar.get("evidence_count", 0)}
+            add(identity, "biotech", f"Company → program → catalyst from Biotech Radar: {radar.get('program')}",
+                radar_link=link, therapeutic_trend=trend, program=radar.get("program"),
+                indication=radar.get("indication"), catalyst=radar.get("catalyst"))
+    for row in catalog:
+        text = " ".join(str(row.get(key, "")) for key in
+                        ("sector", "technology", "proven_therapy", "pipeline", "lead_programs", "catalysts"))
+        trends = active_biotech_trends.intersection(biotech_therapeutic_trends(text))
+        for trend in trends:
+            add(company_identity(row.get("company"), row.get("ticker")), "biotech",
+                f"Existing biotech company map matched active Radar modality: {trend}",
+                therapeutic_trend=trend, program=row.get("lead_programs") or row.get("pipeline"),
+                catalyst=row.get("catalysts"))
+
+    ai = [item for item in candidates.values() if item["domain"] == "ai"]
+    biotech = [item for item in candidates.values() if item["domain"] == "biotech"]
+    def rank(row):
+        linked = sum(bool(link.get("evidence_ids") or link.get("evidence_count")) for link in row["radar_links"])
+        category = max((category_priority.get(item, 0) for item in row["categories"]), default=0)
+        return (-linked, -category, -len(row["radar_links"]), row["company"])
+    ai = sorted(ai, key=rank)[:AI_CANDIDATE_LIMIT]
+    biotech = sorted(biotech, key=rank)[:BIOTECH_CANDIDATE_LIMIT]
+    result = ai + biotech
+    return {"schema_version": "candidate-discovery-v1", "target_size": "30-50", "candidates": result,
+            "coverage": {"total": len(result), "ai": len(ai), "biotech": len(biotech),
+                         "evidence_linked": sum(bool(row["radar_links"]) for row in result),
+                         "by_ai_category": {category: sum(category in row["categories"] for row in ai)
+                                            for category in category_priority}},
+            "methodology": {"scope": "Focused beneficiaries of existing Radar tracks; no broad market screen.",
+                            "candidate_is_not_conviction": "Discovery is research coverage only and cannot pass any High-Conviction gate.",
+                            "biotech_path": "Therapeutic trend → program → company → catalyst when a current Radar record exists; related modality matches remain unverified discovery candidates."}}
+
+
+def shared_market_ticker_domains(previous=None, candidate_pool=None):
     domains = {}
 
     def add(ticker, domain):
@@ -1326,11 +1457,14 @@ def shared_market_ticker_domains(previous=None):
     for row in (previous or {}).get("radar", {}).get("ai", []):
         for beneficiary in row.get("beneficiary_records", []):
             add(beneficiary.get("ticker"), "ai")
+    for row in (candidate_pool or {}).get("candidates", []):
+        add(row.get("ticker"), row.get("domain"))
     return {ticker: sorted(values) for ticker, values in domains.items()}
 
 
-def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None, expectations_by_ticker=None):
-    ticker_domains = shared_market_ticker_domains(previous)
+def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None, expectations_by_ticker=None,
+                            candidate_pool=None):
+    ticker_domains = shared_market_ticker_domains(previous, candidate_pool)
     benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI"}
     dashboard_symbols = set(MARKETS) | set(benchmark_symbols.values())
     requested_symbols = sorted(set(ticker_domains) | dashboard_symbols)
@@ -1542,7 +1676,7 @@ def weighted_stock_pick_score(factors):
     if not available_weight:
         return None, 0
     score = round(sum(factor["score"] * factor["available_weight"] for factor in available) / available_weight)
-    return score, available_weight
+    return score, round(available_weight, 2)
 
 
 def stock_pick_gate(key, label, passed, rationale):
@@ -1608,8 +1742,37 @@ def ai_company_catalyst(linked_rows, ticker, fallback=None):
             "score_basis": "Missing: no current company-specific News catalyst is connected."}
 
 
-def build_ai_stock_picks(ai_radar, market_data, curated_rows):
-    curated = {normalize_company_row(row).get("ticker"): normalize_company_row(row) for row in curated_rows}
+def company_quality_record(quality_layer, domain, ticker):
+    return (quality_layer or {}).get("records", {}).get(f"{domain}:{ticker}")
+
+
+def compact_company_quality(record):
+    if not record:
+        return None
+    keys = ("company_quality_score", "data_completeness", "confidence", "data_status", "qualified",
+            "as_of", "latest_period_end", "statement_age_days", "score_cap", "sources",
+            "missing_fields", "qualification_rule")
+    return {key: record.get(key) for key in keys}
+
+
+def combined_quality_factor(beneficiary_score, beneficiary_completeness, company_quality):
+    """Blend proof of beneficiary relevance and reported company quality inside the existing 25%."""
+    company_score = (company_quality or {}).get("company_quality_score")
+    company_completeness = (company_quality or {}).get("data_completeness", 0)
+    parts = []
+    if beneficiary_score is not None:
+        parts.append((beneficiary_score, 12.5 * beneficiary_completeness / 100, "beneficiary proof"))
+    if company_score is not None:
+        parts.append((company_score, 12.5 * company_completeness / 100, "reported company quality"))
+    available = sum(weight for _, weight, _ in parts)
+    score = round(sum(score * weight for score, weight, _ in parts) / available) if available else None
+    return score, available
+
+
+def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=None, quality_layer=None):
+    source_rows = ([row for row in candidate_pool.get("candidates", []) if row.get("domain") == "ai"]
+                   if candidate_pool else curated_rows)
+    curated = {normalize_company_row(row).get("ticker"): normalize_company_row(row) for row in source_rows}
     candidates = {ticker: {**row, "linked_rows": []} for ticker, row in curated.items() if ticker not in (None, "Private", "N/A", "Missing")}
     for radar in ai_radar:
         for beneficiary in radar.get("beneficiary_records", []):
@@ -1628,7 +1791,11 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows):
         technical = market_timing_signal(snapshot, "ai")
         catalyst = ai_company_catalyst(links, ticker, candidate.get("catalyst"))
         radar_score = radar.get("trend_strength") if radar else None
-        quality_score = beneficiary.get("beneficiary_relevance") if beneficiary else None
+        beneficiary_score = beneficiary.get("beneficiary_relevance") if beneficiary else None
+        beneficiary_completeness = beneficiary.get("data_completeness", 0) if beneficiary else 0
+        company_quality = company_quality_record(quality_layer, "ai", ticker)
+        quality_score, quality_available = combined_quality_factor(
+            beneficiary_score, beneficiary_completeness, company_quality)
         expectation_score = round(expectation["score"] / expectation["maximum"] * 100) if expectation.get("score") is not None else None
         technical_score = technical.get("support_score")
         catalyst_score = catalyst.get("score")
@@ -1638,9 +1805,12 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows):
                               [radar.get("trend")] if radar else [],
                               35 * radar.get("data_completeness", 0) / 100 if radar else 0),
             stock_pick_factor("beneficiary_company_quality", quality_score,
-                              f"{beneficiary.get('category')} beneficiary relevance is {quality_score}/100." if beneficiary else "Missing: no evidence-supported beneficiary record is linked.",
-                              beneficiary.get("evidence_ids", []) if beneficiary else [],
-                              25 * beneficiary.get("data_completeness", 0) / 100 if beneficiary else 0),
+                              (f"Evidence-linked beneficiary relevance is {beneficiary_score}/100; reported Company Quality is "
+                               f"{company_quality.get('company_quality_score') if company_quality else 'Missing'}/100 "
+                               f"with {(company_quality or {}).get('data_completeness', 0)}% completeness."),
+                              (beneficiary.get("evidence_ids", []) if beneficiary else []) +
+                              [source.get("url") for source in (company_quality or {}).get("sources", [])],
+                              quality_available),
             stock_pick_factor("expectation_gap", expectation_score, expectation.get("rationale", "Missing."),
                               [source.get("url") for source in expectation.get("sources", [])],
                               20 * min(1, expectation.get("coverage", 0) / 4)),
@@ -1651,14 +1821,15 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows):
         ]
         total_score, completeness = weighted_stock_pick_score(factors)
         evidence_pass = bool(radar and beneficiary and beneficiary.get("evidence_ids") and radar.get("confidence") in ("Medium", "High") and (radar_score or 0) >= 65)
-        beneficiary_pass = bool(beneficiary and (quality_score or 0) >= 70 and beneficiary.get("evidence_ids"))
+        beneficiary_pass = bool(beneficiary and (beneficiary_score or 0) >= 70 and beneficiary.get("evidence_ids") and
+                                company_quality and company_quality.get("qualified"))
         expectation_pass = expectation.get("state") == "Underpriced"
         technical_pass = technical_score is not None and technical_score >= 60 and technical.get("signal") in ("Buy", "Hold")
         gates = [
             stock_pick_gate("evidence", "Evidence Gate", evidence_pass,
                             "Requires a linked Medium/High-confidence Radar track, Trend Strength ≥65, and company-specific evidence."),
             stock_pick_gate("beneficiary_proof", "Beneficiary Proof Gate", beneficiary_pass,
-                            "Requires evidence-linked beneficiary relevance ≥70."),
+                            "Requires evidence-linked beneficiary relevance ≥70 plus qualified reported Company Quality; discovery alone cannot pass."),
             stock_pick_gate("expectation", "Expectation Gate", expectation_pass,
                             f"Requires Underpriced; current state is {expectation.get('state')}."),
             stock_pick_gate("technical_entry", "Technical / Entry Gate", technical_pass,
@@ -1666,7 +1837,8 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows):
         ]
         classification_key = classify_stock_pick("ai", total_score, completeness, gates, expectation.get("state"), technical, radar)
         invalidation = radar.get("risks") if radar and not str(radar.get("risks", "")).startswith("Missing") else "Missing: no company-specific thesis invalidation is connected in current Radar evidence."
-        why_selected = (f"Linked to {radar.get('trend')} with Radar Conviction {radar_score}/100 and beneficiary relevance {quality_score}/100; "
+        why_selected = (f"Linked to {radar.get('trend')} with Radar Conviction {radar_score}/100, beneficiary relevance {beneficiary_score}/100, "
+                        f"and Company Quality {(company_quality or {}).get('company_quality_score', 'Missing')}/100; "
                         f"expectation is {expectation.get('state')} and technical entry is {technical.get('signal')}." if radar and beneficiary
                         else "Candidate retained from the existing research list, but current Radar or beneficiary proof is missing.")
         results.append({**{key: value for key, value in candidate.items() if key != "linked_rows"},
@@ -1676,6 +1848,8 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows):
                         "classification": HIGH_CONVICTION_CLASSIFICATIONS[classification_key],
                         "why_selected": why_selected, "expectation_state": expectation.get("state"), "expectation": expectation,
                         "technical_entry_status": technical, "catalyst": catalyst["description"], "catalyst_evidence": catalyst,
+                        "company_quality": compact_company_quality(company_quality),
+                        "company_quality_ref": f"ai:{ticker}",
                         "action": stock_pick_action(classification_key), "thesis_invalidation": invalidation,
                         "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-stock-pick-v1"})
     priority = {key: index for index, key in enumerate(("high-conviction", "watch-setup", "too-early", "priced-in", "speculative-binary", "avoid"))}
@@ -1694,8 +1868,11 @@ def biotech_timing_score(radar_row, as_of):
     return (None, rationale) if missing else (round(score / 15 * 100), rationale)
 
 
-def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of):
-    curated = {normalize_company_row(row).get("ticker"): normalize_company_row(row) for row in curated_rows}
+def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
+                              candidate_pool=None, quality_layer=None):
+    source_rows = ([row for row in candidate_pool.get("candidates", []) if row.get("domain") == "biotech"]
+                   if candidate_pool else curated_rows)
+    curated = {normalize_company_row(row).get("ticker"): normalize_company_row(row) for row in source_rows}
     radar_by_ticker = {}
     for row in biotech_radar:
         current = radar_by_ticker.get(row.get("ticker"))
@@ -1710,7 +1887,11 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of):
         technical = market_timing_signal(snapshot, "biotech")
         radar_score = round(radar["scientific_evidence_score"] / 30 * 100) if radar and radar.get("scientific_evidence_score") is not None else None
         quality_component = next((item for item in radar.get("score_components", []) if item.get("key") == "catalyst_impact_company_sensitivity"), {}) if radar else {}
-        quality_score = round(quality_component["score"] / quality_component["available_weight"] * 100) if quality_component.get("score") is not None and quality_component.get("available_weight") else None
+        beneficiary_score = round(quality_component["score"] / quality_component["available_weight"] * 100) if quality_component.get("score") is not None and quality_component.get("available_weight") else None
+        beneficiary_completeness = quality_component.get("available_weight", 0) / 25 * 100
+        company_quality = company_quality_record(quality_layer, "biotech", ticker)
+        quality_score, quality_available = combined_quality_factor(
+            beneficiary_score, beneficiary_completeness, company_quality)
         expectation_score = round(expectation["score"] / expectation["maximum"] * 100) if expectation.get("score") is not None else None
         technical_score = technical.get("support_score")
         catalyst_score, catalyst_rationale = biotech_timing_score(radar, as_of) if radar else (None, "Missing: no Biotech Radar catalyst is linked.")
@@ -1719,9 +1900,12 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of):
                               f"Scientific Evidence is {radar.get('scientific_evidence_score')}/30 with {radar.get('confidence')} confidence." if radar else "Missing: no Biotech Radar record is linked.",
                               [item.get("event_id") for item in radar.get("confirming_evidence", [])] if radar else []),
             stock_pick_factor("beneficiary_company_quality", quality_score,
-                              f"Available Catalyst Impact / Company Sensitivity evidence scores {quality_component.get('score')}/{quality_component.get('available_weight')} available points; missing company-sensitivity inputs remain excluded." if quality_score is not None else "Missing: no company-quality or direct program-sensitivity input is available.",
-                              [ticker] if quality_score is not None else [],
-                              quality_component.get("available_weight", 0)),
+                              (f"Program/company sensitivity evidence is {beneficiary_score if beneficiary_score is not None else 'Missing'}/100; "
+                               f"reported Company Quality is {company_quality.get('company_quality_score') if company_quality else 'Missing'}/100 "
+                               f"with {(company_quality or {}).get('data_completeness', 0)}% completeness."),
+                              ([ticker] if beneficiary_score is not None else []) +
+                              [source.get("url") for source in (company_quality or {}).get("sources", [])],
+                              quality_available),
             stock_pick_factor("expectation_gap", expectation_score, expectation.get("rationale", "Missing."),
                               [source.get("url") for source in expectation.get("sources", [])],
                               20 * min(1, expectation.get("coverage", 0) / 4)),
@@ -1731,14 +1915,16 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of):
         ]
         total_score, completeness = weighted_stock_pick_score(factors)
         evidence_pass = bool(radar and radar.get("evidence_gate", {}).get("passed") and (radar.get("scientific_evidence_score") or 0) >= 18)
-        beneficiary_pass = bool(radar and quality_component.get("available_weight", 0) >= 15 and quality_score is not None and quality_score >= 60)
+        beneficiary_pass = bool(radar and quality_component.get("available_weight", 0) >= 15 and
+                                beneficiary_score is not None and beneficiary_score >= 60 and
+                                company_quality and company_quality.get("qualified"))
         expectation_pass = expectation.get("state") == "Underpriced"
         technical_pass = technical_score is not None and technical_score >= 60 and technical.get("signal") in ("Buy", "Hold")
         binary_pass = bool(radar and radar.get("binary_risk") in ("Low", "Moderate") and
                            not radar.get("evidence_integrity_gate", {}).get("concern_identified") and radar.get("opportunity_status") != "Thesis Broken")
         gates = [
             stock_pick_gate("evidence", "Evidence Gate", evidence_pass, "Requires the Biotech Radar Evidence Gate and Scientific Evidence ≥18/30."),
-            stock_pick_gate("beneficiary_proof", "Beneficiary Proof Gate", beneficiary_pass, "Requires direct company/program exposure and at least 15 available Catalyst Impact / Company Sensitivity points."),
+            stock_pick_gate("beneficiary_proof", "Beneficiary Proof Gate", beneficiary_pass, "Requires direct company/program exposure, at least 15 Catalyst Impact / Company Sensitivity points, and qualified reported Company Quality; discovery alone cannot pass."),
             stock_pick_gate("expectation", "Expectation Gate", expectation_pass, f"Requires Underpriced; current state is {expectation.get('state')}."),
             stock_pick_gate("technical_entry", "Technical / Entry Gate", technical_pass, f"Requires Buy/Hold with technical support ≥60; current signal is {technical.get('signal')} at {technical_score if technical_score is not None else 'Missing'}."),
             stock_pick_gate("binary_integrity", "Biotech Binary Risk / Evidence Integrity Gate", binary_pass,
@@ -1746,7 +1932,8 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of):
         ]
         classification_key = classify_stock_pick("biotech", total_score, completeness, gates, expectation.get("state"), technical, radar)
         invalidation = radar.get("risks") if radar and radar.get("risks") else "Missing: no program-specific thesis invalidation is connected."
-        why_selected = (f"{radar.get('program')} in {radar.get('indication')} has Scientific Evidence {radar.get('scientific_evidence_score') if radar.get('scientific_evidence_score') is not None else 'Missing'}/30, "
+        why_selected = (f"{radar.get('program')} in {radar.get('indication')} has Scientific Evidence {radar.get('scientific_evidence_score') if radar.get('scientific_evidence_score') is not None else 'Missing'}/30 "
+                        f"and Company Quality {(company_quality or {}).get('company_quality_score', 'Missing')}/100; "
                         f"expectation is {expectation.get('state')}, and technical entry is {technical.get('signal')}." if radar
                         else "Candidate retained from the existing research list, but no current Company → Program → Indication → Catalyst Radar record is linked.")
         results.append({**candidate, "ticker": ticker, "company": candidate.get("company") or (radar or {}).get("company"),
@@ -1756,6 +1943,8 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of):
                         "expectation_state": expectation.get("state"), "expectation": expectation,
                         "technical_entry_status": technical, "catalyst": radar.get("catalyst") if radar else candidate.get("catalyst", "Missing"),
                         "catalyst_timing": radar.get("expected_timing") if radar else "Missing",
+                        "company_quality": compact_company_quality(company_quality),
+                        "company_quality_ref": f"biotech:{ticker}",
                         "action": stock_pick_action(classification_key), "thesis_invalidation": invalidation,
                         "binary_risk": radar.get("binary_risk") if radar else "Missing", "radar_status": radar.get("opportunity_status") if radar else "Missing",
                         "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-stock-pick-v1"})
@@ -1766,15 +1955,18 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of):
     return results
 
 
-def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of):
-    all_ai = build_ai_stock_picks(ai_radar, market_data, MONTHLY_PICKS["ai"])
-    all_biotech = build_biotech_stock_picks(biotech_radar, market_data, MONTHLY_PICKS["biotech"], as_of)
+def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
+                                 candidate_pool=None, quality_layer=None):
+    all_ai = build_ai_stock_picks(ai_radar, market_data, MONTHLY_PICKS["ai"], candidate_pool, quality_layer)
+    all_biotech = build_biotech_stock_picks(
+        biotech_radar, market_data, MONTHLY_PICKS["biotech"], as_of, candidate_pool, quality_layer)
     selected = {"ai": all_ai[:5], "biotech": all_biotech[:5]}
     all_rows = all_ai + all_biotech
     counts = {label: sum(row["classification_key"] == key for row in all_rows)
               for key, label in HIGH_CONVICTION_CLASSIFICATIONS.items()}
     methodology = {
         "engine_version": "high-conviction-stock-pick-v1", "factor_weights": HIGH_CONVICTION_FACTOR_WEIGHTS,
+        "phase_6_integration": "The 25% Beneficiary / Company Quality factor blends evidence-linked beneficiary relevance with reported Company Quality. Qualification is also required by the Beneficiary Proof Gate.",
         "missing_data_policy": "Missing factor scores are excluded and weights are renormalized; missing inputs never become zero.",
         "high_conviction_rule": "A total score of at least 80 and at least 80% data completeness are necessary but not sufficient; every applicable gate must pass.",
         "gates": ["Evidence Gate", "Beneficiary Proof Gate", "Expectation Gate", "Technical / Entry Gate", "Biotech Binary Risk / Evidence Integrity Gate"],
@@ -3004,7 +3196,9 @@ def build():
     biotech_news = biotech_news_candidates[:6]
     fda_news = rss_items("FDA approval orphan drug fast track rare disease when:7d", 8)
     market_news = rss_items("US stock market Nasdaq S&P 500 today when:1d", 4)
-    market_data = build_market_data_layer(previous, run_at)
+    preliminary_candidates = discover_candidate_pool(
+        previous.get("radar", {}).get("ai", []), previous.get("radar", {}).get("biotech", []))
+    market_data = build_market_data_layer(previous, run_at, candidate_pool=preliminary_candidates)
 
     old_markets = {item["name"]: item for item in previous.get("markets", [])}
     markets = []
@@ -3038,10 +3232,14 @@ def build():
     biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
     biotech_radar = build_biotech_radar(
         score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
+    candidate_discovery = discover_candidate_pool(ai_radar, biotech_radar)
+    company_quality = build_company_quality_layer(
+        candidate_discovery["candidates"], run_at, fetch_nasdaq_json,
+        previous.get("company_quality"))
     watchlists = {"ai": attach_market_context(watch_rows(AI_WATCH), market_data, "ai"),
                   "biotech": attach_market_context(watch_rows(BIOTECH_WATCH), market_data, "biotech")}
     monthly_picks, high_conviction_engine = build_high_conviction_engine(
-        ai_radar, biotech_radar, market_data, score_date)
+        ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality)
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
@@ -3062,7 +3260,8 @@ def build():
                 "note": "Retrospective validation input is frozen at July 31, 2026; the August 5 FDA outcome is deliberately excluded.",
             }
         },
-        "market_data": market_data, "watchlists": watchlists,
+        "market_data": market_data, "candidate_discovery": candidate_discovery,
+        "company_quality": company_quality, "watchlists": watchlists,
         "high_conviction_engine": high_conviction_engine,
         "monthly_picks": monthly_picks, "fda": fda, "markets": markets,
     }
