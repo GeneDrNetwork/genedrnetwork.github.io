@@ -20,10 +20,16 @@ from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 try:
+    from .ai_reasoning_discovery import build_ai_reasoning_discovery
     from .company_quality import build_company_quality_layer
+    from .dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
+                                       build_news_commentary, build_radar_commentary)
     from .entry_timing import build_entry_timing_layer, calculate_entry_inputs
 except ImportError:
+    from ai_reasoning_discovery import build_ai_reasoning_discovery
     from company_quality import build_company_quality_layer
+    from dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
+                                      build_news_commentary, build_radar_commentary)
     from entry_timing import build_entry_timing_layer, calculate_entry_inputs
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1138,6 +1144,7 @@ def fetch_market_caps(tickers):
 
 
 NASDAQ_API_ROOT = "https://api.nasdaq.com/api"
+NASDAQ_LISTED_COMPANY_URL = f"{NASDAQ_API_ROOT}/screener/stocks?tableonly=true&limit=10000"
 
 
 def parse_market_number(value):
@@ -1160,6 +1167,37 @@ def fetch_nasdaq_json(url, timeout=12):
     ], check=True, capture_output=True, timeout=timeout + 3)
     payload = json.loads(completed.stdout)
     return payload.get("data") if payload.get("status", {}).get("rCode") == 200 else None
+
+
+def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
+    """Load a general U.S.-listed company universe for evidence entity resolution.
+
+    The universe is not a stock recommendation list and is never shipped to the
+    frontend. Only evidence-matched identities are retained in discovery output.
+    """
+    try:
+        data = fetcher(NASDAQ_LISTED_COMPANY_URL, timeout=20) or {}
+        rows = data.get("table", {}).get("rows", [])
+        companies = []
+        seen = set()
+        for row in rows:
+            ticker = str(row.get("symbol") or "").strip().upper()
+            company = html.unescape(str(row.get("name") or "")).strip()
+            if not ticker or not company or ticker in seen or not re.fullmatch(r"[A-Z][A-Z0-9.-]{0,9}", ticker):
+                continue
+            seen.add(ticker)
+            companies.append({"company": company, "ticker": ticker, "exchange": "",
+                              "listing_status": "Public", "resolution": "Nasdaq listed-company universe"})
+        return companies, {
+            "status": "available" if companies else "empty",
+            "source": NASDAQ_LISTED_COMPANY_URL,
+            "retrieved_at": run_at.isoformat(timespec="seconds"),
+            "records_loaded": len(companies),
+        }
+    except Exception as exc:
+        print(f"Listed-company discovery universe unavailable: {exc}")
+        return [], {"status": "unavailable", "source": NASDAQ_LISTED_COMPANY_URL,
+                    "retrieved_at": run_at.isoformat(timespec="seconds"), "error": str(exc)}
 
 
 def fetch_nasdaq_expectations(ticker, run_at):
@@ -1345,7 +1383,7 @@ def biotech_therapeutic_trends(text):
     return trends
 
 
-def discover_candidate_pool(ai_radar=None, biotech_radar=None):
+def discover_candidate_pool(ai_radar=None, biotech_radar=None, ai_reasoning_discovery=None):
     """Build a bounded Radar-linked research pool; this is not an eligibility gate."""
     ai_radar = ai_radar or []
     biotech_radar = biotech_radar or []
@@ -1402,6 +1440,18 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None):
             add(company_identity(beneficiary.get("company"), beneficiary.get("ticker")), "ai",
                 f"Evidence-linked AI Radar beneficiary: {radar.get('trend')}",
                 beneficiary.get("category"), link)
+    for discovered in (ai_reasoning_discovery or {}).get("stock_candidates", []):
+        roles = discovered.get("beneficiary_roles", [])
+        category = "Direct" if "First-Order" in roles else "Second-Order" if "Second-Order" in roles else "Emerging"
+        evidence_ids = discovered.get("evidence_ids", [])
+        for theme in discovered.get("themes", []) or ["Unclassified reasoning signal"]:
+            parent_tracks = discovered.get("parent_tracks", [])
+            link = {"trend": next((track for track in parent_tracks if track in AI_RADAR_TRACKS), None),
+                    "discovered_theme": theme, "category": category,
+                    "beneficiary_relevance": None, "exposure_score": None,
+                    "evidence_ids": evidence_ids, "reasoning_discovery": True}
+            add(company_identity(discovered.get("company"), discovered.get("ticker")), "ai",
+                f"Reasoning-driven stock discovery: {theme}", category, link)
 
     catalog = BIOTECH_LEADERS + BIOTECH_EMERGING
     active_biotech_trends = set()
@@ -1442,12 +1492,14 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None):
     ai = sorted(ai, key=rank)[:AI_CANDIDATE_LIMIT]
     biotech = sorted(biotech, key=rank)[:BIOTECH_CANDIDATE_LIMIT]
     result = ai + biotech
-    return {"schema_version": "candidate-discovery-v1", "target_size": "30-50", "candidates": result,
+    return {"schema_version": "candidate-discovery-v2", "target_size": "30-50", "candidates": result,
             "coverage": {"total": len(result), "ai": len(ai), "biotech": len(biotech),
                          "evidence_linked": sum(bool(row["radar_links"]) for row in result),
                          "by_ai_category": {category: sum(category in row["categories"] for row in ai)
                                             for category in category_priority}},
-            "methodology": {"scope": "Focused beneficiaries of existing Radar tracks; no broad market screen.",
+            "methodology": {"scope": "Focused beneficiaries of evidence-derived AI themes and existing Radar tracks; no broad market screen.",
+                            "ai_flow": "Evidence → structured reasoning → theme discovery → beneficiary discovery → stock discovery → Radar.",
+                            "no_manual_ticker_insertion": "Reasoning-driven stocks come from evidence identities and a general listed-company universe, not manually added theme tickers.",
                             "candidate_is_not_conviction": "Discovery is research coverage only and cannot pass any High-Conviction gate.",
                             "biotech_path": "Therapeutic trend → program → company → catalyst when a current Radar record exists; related modality matches remain unverified discovery candidates."}}
 
@@ -2931,7 +2983,7 @@ def normalized_available_score(components, keys):
     return round(sum(component["score"] for component in available) / sum(component["weight"] for component in available) * 100)
 
 
-def ai_beneficiaries(trend, relevant_events, market_data=None):
+def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_discovery=None):
     config = AI_RADAR_TRACKS[trend]
     driver = next((item for item in DEMAND_DRIVERS if item["area"] == config.get("demand_area")), None)
     candidates = {}
@@ -2963,6 +3015,19 @@ def ai_beneficiaries(trend, relevant_events, market_data=None):
         category = "Bottleneck/Picks-and-Shovels" if relation == "direct" and trend in bottleneck_tracks else "Direct" if relation == "direct" else "Second-Order"
         for identity in evidence.get("company_identities", []):
             add(identity, category, evidence.get("event_id"), evidence.get("news_importance_score"))
+    relevant_ids = {event.get("event_id") for event in relevant_events}
+    importance_by_id = {event.get("event_id"): event.get("news_importance_score") for event in relevant_events}
+    for discovered in (ai_reasoning_discovery or {}).get("stock_candidates", []):
+        if trend not in discovered.get("parent_tracks", []):
+            continue
+        evidence_ids = [event_id for event_id in discovered.get("evidence_ids", []) if event_id in relevant_ids]
+        if not evidence_ids:
+            continue
+        roles = discovered.get("beneficiary_roles", [])
+        category = "Direct" if "First-Order" in roles else "Second-Order" if "Second-Order" in roles else "Emerging"
+        identity = company_identity(discovered.get("company"), discovered.get("ticker"))
+        for event_id in evidence_ids:
+            add(identity, category, event_id, importance_by_id.get(event_id))
 
     leader_names = {item["company"] for item in AI_INFRASTRUCTURE + AI_PLATFORMS}
     results = []
@@ -3021,7 +3086,7 @@ def aggregate_ai_expectation(beneficiaries):
             "assessments": [{"ticker": ticker, **assessment} for ticker, assessment in assessments]}
 
 
-def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
+def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_reasoning_discovery=None):
     raw_events = ai_news_section.get("radar_evidence_interface", {}).get("events", [])
     events = deduplicate_ai_radar_evidence(raw_events)
     previous_by_trend = {item.get("trend"): item for item in previous_rows or []}
@@ -3057,7 +3122,7 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
             bottleneck_score = min(20, 8 + min(8, len(relevant) * 2))
         earnings_events = [item for item in relevant if item.get("event_type") == "Financial Results" and item["relation"] == "direct"]
         earnings_score = min(15, 10 + len(earnings_events)) if earnings_events else None
-        beneficiaries = ai_beneficiaries(trend, relevant, market_data)
+        beneficiaries = ai_beneficiaries(trend, relevant, market_data, ai_reasoning_discovery)
         expectation_context = aggregate_ai_expectation(beneficiaries)
         expectation_score = expectation_context["score"]
         beneficiary_market_scores = []
@@ -3098,6 +3163,9 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None):
             "current_bottleneck": config["current_bottleneck"], "next_likely_bottleneck": config["next_bottleneck"],
             "bottleneck": f"Current: {config['current_bottleneck']}. Next likely: {config['next_bottleneck']}.",
             "beneficiary_records": beneficiaries,
+            "discovered_themes": [item for item in (ai_reasoning_discovery or {}).get("theme_signals", [])
+                                  if trend in item.get("parent_tracks", []) and
+                                  set(item.get("evidence_ids", [])).intersection(event_ids)],
             "potential_beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) · {item['category']} · {item['beneficiary_relevance']}" for item in beneficiaries[:3]) or "Missing / insufficient evidence",
             "beneficiaries": "; ".join(f"{item['company']} ({item['ticker']}) — {item['category']} — relevance {item['beneficiary_relevance']}/100" for item in beneficiaries) or "Missing / insufficient evidence",
             "market_expectation": expectation_context["rationale"],
@@ -3214,10 +3282,18 @@ def build():
     ai_news = ai_news_candidates[:6]
     biotech_news_candidates = collect_biotech_investment_news(run_at)
     biotech_news = biotech_news_candidates[:6]
+    previous_ai_news = previous.get("top_investment_news", {}).get("ai_technology", {})
+    ai_news_section = build_ai_news_section(ai_news_candidates, previous_ai_news, run_at)
+    previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
+    biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
+    listed_companies, listed_company_status = fetch_listed_company_universe(run_at)
+    ai_reasoning_discovery = build_ai_reasoning_discovery(
+        ai_news_section, listed_companies, listed_company_status)
     fda_news = rss_items("FDA approval orphan drug fast track rare disease when:7d", 8)
     market_news = rss_items("US stock market Nasdaq S&P 500 today when:1d", 4)
     preliminary_candidates = discover_candidate_pool(
-        previous.get("radar", {}).get("ai", []), previous.get("radar", {}).get("biotech", []))
+        previous.get("radar", {}).get("ai", []), previous.get("radar", {}).get("biotech", []),
+        ai_reasoning_discovery)
     market_data = build_market_data_layer(previous, run_at, candidate_pool=preliminary_candidates)
 
     old_markets = {item["name"]: item for item in previous.get("markets", [])}
@@ -3245,14 +3321,11 @@ def build():
     takeaways = [item["title"] for item in (ai_news[:2] + biotech_news[:2] + fda_news[:2] + market_news[:1])]
     if not takeaways:
         takeaways = previous.get("takeaways", ["Daily source monitoring is active."])
-    previous_ai_news = previous.get("top_investment_news", {}).get("ai_technology", {})
-    ai_news_section = build_ai_news_section(ai_news_candidates, previous_ai_news, run_at)
-    ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at, market_data)
-    previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
-    biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
+    ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at,
+                              market_data, ai_reasoning_discovery)
     biotech_radar = build_biotech_radar(
         score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
-    candidate_discovery = discover_candidate_pool(ai_radar, biotech_radar)
+    candidate_discovery = discover_candidate_pool(ai_radar, biotech_radar, ai_reasoning_discovery)
     company_quality = build_company_quality_layer(
         candidate_discovery["candidates"], run_at, fetch_nasdaq_json,
         previous.get("company_quality"))
@@ -3260,6 +3333,13 @@ def build():
                   "biotech": attach_market_context(watch_rows(BIOTECH_WATCH), market_data, "biotech")}
     monthly_picks, high_conviction_engine, entry_timing_engine = build_high_conviction_engine(
         ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality, watchlists)
+    high_conviction_commentary = annotate_high_conviction(monthly_picks)
+    watchlists = annotate_watchlists(watchlists, biotech_radar)
+    dashboard_commentary = {
+        "news": build_news_commentary(ai_news_section, biotech_news_section),
+        "radar": build_radar_commentary(ai_radar, biotech_radar),
+        "high_conviction": high_conviction_commentary,
+    }
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
@@ -3280,8 +3360,10 @@ def build():
                 "note": "Retrospective validation input is frozen at July 31, 2026; the August 5 FDA outcome is deliberately excluded.",
             }
         },
-        "market_data": market_data, "candidate_discovery": candidate_discovery,
+        "market_data": market_data, "ai_reasoning_discovery": ai_reasoning_discovery,
+        "candidate_discovery": candidate_discovery,
         "company_quality": company_quality, "watchlists": watchlists,
+        "commentary": dashboard_commentary,
         "high_conviction_engine": high_conviction_engine,
         "entry_timing_engine": entry_timing_engine,
         "monthly_picks": monthly_picks, "fda": fda, "markets": markets,

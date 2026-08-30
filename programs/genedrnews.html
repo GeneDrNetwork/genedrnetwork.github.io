@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260829-2" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260830-1" />
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
@@ -35,11 +35,12 @@
       </section>
 
       <nav class="dashboard-nav" aria-label="Dashboard sections">
-        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#my-stocks">My Stocks</a><a href="#markets">Market Pulse</a>
+        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#my-stocks">My Stocks / Watchlist</a><a href="#markets">Market Pulse</a>
       </nav>
 
       <div class="dashboard-shell">
         <section class="dashboard-section top-news-section" id="top-news">
+          <div class="interpretation-grid"><section class="interpretation-card"><h3>News Reasoning</h3><div id="news-reasoning"><p class="loading-state">Interpreting today’s evidence...</p></div></section><section class="interpretation-card takeaways-card"><h3>Take-Home Messages</h3><ol id="news-takeaways"><li>Loading conclusions...</li></ol></section></div>
           <div class="section-heading"><div><span class="section-kicker">Top Investment News</span><h2>AI &amp; Technology News</h2><p>Source-qualified changes across the AI industry value chain.</p></div><span class="source-note" id="ai-news-selection-status">Loading selected news...</span></div>
           <div id="ai-top-news" class="top-news-list"><p class="loading-state">Loading AI and technology investment news...</p></div>
           <details class="news-archive"><summary><span>Important News Archive</span><strong id="ai-news-archive-count">0</strong></summary><div id="ai-news-archive" class="news-archive-list"><p class="loading-state">Loading archived news...</p></div></details>
@@ -50,6 +51,7 @@
 
         <section class="radar-section" id="radar">
           <div class="section-heading radar-heading"><div><span class="section-kicker">01 · Primary intelligence surface</span><h2>Future Trend &amp; Investment Radar</h2><p>AI Technology Radar V1 analyzes trends across three horizons; Biotech Catalyst Radar V1 tracks source-backed catalysts.</p></div><span class="live-pill"><i aria-hidden="true"></i> Daily data live</span></div>
+          <div class="interpretation-grid"><section class="interpretation-card"><h3>Radar Reasoning</h3><div id="radar-reasoning"><p class="loading-state">Interpreting Radar evidence...</p></div></section><section class="interpretation-card takeaways-card"><h3>Radar Take-Home Messages</h3><ol id="radar-takeaways"><li>Loading conclusions...</li></ol></section></div>
 
           <div class="radar-group" aria-labelledby="ai-radar-title">
             <div class="radar-group-heading"><div><span class="radar-icon" aria-hidden="true">AI</span><div><h3 id="ai-radar-title">AI &amp; Technology Radar</h3><p id="ai-summary">Loading daily AI intelligence...</p></div></div><span class="source-note">Expand any trend for the full intelligence brief</span></div>
@@ -66,15 +68,13 @@
 
         <section class="dashboard-section" id="opportunities">
           <div class="section-heading"><div><span class="section-kicker">02 · Radar shortlist</span><h2>High-Conviction Opportunities</h2><p>The strongest existing research ideas, consolidated into one comparison view.</p></div><span class="source-note">Current monthly research · not investment advice</span></div>
+          <section class="interpretation-card high-conviction-reasoning"><h3>Why These Stocks Were Selected</h3><ol id="high-conviction-reasons"><li>Loading selection reasoning...</li></ol></section>
           <div class="opportunity-columns"><div><div class="subsection-title"><span class="radar-icon" aria-hidden="true">AI</span><h3>AI opportunities</h3></div><div id="ai-opportunities" class="opportunity-list"></div></div><div><div class="subsection-title"><span class="radar-icon radar-icon-bio" aria-hidden="true">BIO</span><h3>Biotech opportunities</h3></div><div id="biotech-opportunities" class="opportunity-list"></div></div></div>
         </section>
 
         <section class="dashboard-section" id="my-stocks">
-          <div class="section-heading"><div><span class="section-kicker">03 · Personal view</span><h2>My Stocks</h2><p>Your focused workspace for watched names, holdings, and market-based timing support.</p></div><span class="source-note">Shared daily price and technical data</span></div>
-          <div class="stock-tabs" role="tablist" aria-label="My Stocks views"><button type="button" role="tab" aria-selected="true" aria-controls="stock-panel-watchlist" id="stock-tab-watchlist" data-stock-tab="watchlist">Watchlist <span id="watchlist-count">0</span></button><button type="button" role="tab" aria-selected="false" aria-controls="stock-panel-holdings" id="stock-tab-holdings" data-stock-tab="holdings">Holdings <span>0</span></button><button type="button" role="tab" aria-selected="false" aria-controls="stock-panel-signals" id="stock-tab-signals" data-stock-tab="signals">Buy / Hold / Reduce / Sell</button></div>
-          <div class="stock-panel" role="tabpanel" id="stock-panel-watchlist" aria-labelledby="stock-tab-watchlist"><div id="my-watchlist" class="stock-list"><p class="loading-state">Loading watchlist...</p></div></div>
-          <div class="stock-panel" role="tabpanel" id="stock-panel-holdings" aria-labelledby="stock-tab-holdings" hidden><div class="empty-state"><span>H</span><h3>No holdings connected</h3><p>The page structure is ready for portfolio data when the Radar Engine is built.</p></div></div>
-          <div class="stock-panel" role="tabpanel" id="stock-panel-signals" aria-labelledby="stock-tab-signals" hidden><div id="stock-signals" class="signal-placeholder"><p class="loading-state">Loading timing support...</p></div></div>
+          <div class="section-heading"><div><span class="section-kicker">03 · Active trade preparation</span><h2>My Stocks / Watchlist</h2><p>The final list selected for active monitoring before a trade is placed in the brokerage account.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
+          <div id="my-watchlist" class="watchlist-cards"><p class="loading-state">Loading watchlist commentary...</p></div>
         </section>
 
         <section class="market-section" id="markets">
@@ -85,6 +85,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. AI and Biotech Radar exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260829-3" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260830-1" defer></script>
   </body>
 </html>

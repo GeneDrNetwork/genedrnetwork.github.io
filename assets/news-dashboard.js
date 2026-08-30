@@ -11,7 +11,29 @@ let sharedMarketSecurities = {};
 const PLACEHOLDER_SCORES = [88, 84, 81, 78, 75, 72, 69, 66, 63, 60];
 const stageFor = (score) => score >= 85 ? "Hot" : score >= 76 ? "Heating Up" : score >= 66 ? "Emerging" : "Cooling";
 const stageClass = (stage = "") => String(stage).toLowerCase().replace(/\s+/g, "-");
+const classKey = (value = "") => String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const detailItem = (label, value, placeholder = false) => `<div class="detail-item${placeholder ? " detail-placeholder" : ""}"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`;
+
+function renderReasoning(targetId, rows = []) {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+  target.innerHTML = rows.map((row) => `<article class="reasoning-point"><h4>${escapeHtml(row.label || "Interpretation")}</h4><p>${escapeHtml(row.text || "Evidence is currently insufficient for interpretation.")}</p></article>`).join("")
+    || `<p class="loading-state">Reasoning is unavailable because the connected evidence is incomplete.</p>`;
+}
+
+function renderNumberedMessages(targetId, rows = []) {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+  target.innerHTML = rows.map((row) => `<li>${escapeHtml(row)}</li>`).join("") || `<li>No evidence-supported conclusion is available.</li>`;
+}
+
+function renderDashboardCommentary(commentary = {}) {
+  renderReasoning("news-reasoning", commentary.news?.reasoning);
+  renderNumberedMessages("news-takeaways", commentary.news?.take_home_messages);
+  renderReasoning("radar-reasoning", commentary.radar?.reasoning);
+  renderNumberedMessages("radar-takeaways", commentary.radar?.take_home_messages);
+  renderNumberedMessages("high-conviction-reasons", commentary.high_conviction?.reasons);
+}
 
 function aiRadarRows(data) {
   if (Array.isArray(data.radar?.ai)) return data.radar.ai;
@@ -333,6 +355,16 @@ function renderBuyDecision(row, isBiotech, decision) {
   </section>`;
 }
 
+function renderWhyThisStock(row) {
+  const why = row.why_this_stock || {};
+  return `<section class="why-this-stock"><h4>Why This Stock</h4><p>${escapeHtml(why.summary || row.why_selected || "Selection reasoning is unavailable.")}</p>
+    <dl><div><dt>Trend / Catalyst</dt><dd>${escapeHtml(why.trend_or_catalyst || row.catalyst || "Missing")}</dd></div>
+    <div><dt>Evidence Supporting the Thesis</dt><dd>${escapeHtml(why.supporting_evidence || "Missing")}</dd></div>
+    <div><dt>Why It Ranks Here</dt><dd>${escapeHtml(why.relative_strength || "Missing")}</dd></div>
+    <div><dt>Main Risk / Missing Condition</dt><dd>${escapeHtml(why.main_risk_or_missing || row.thesis_invalidation || "Missing")}</dd></div>
+    <div class="opportunity-wide"><dt>Current Buy / Entry Status</dt><dd>${escapeHtml(why.buy_status || row.buy_decision?.status || "WAIT")}</dd></div></dl></section>`;
+}
+
 function renderOpportunities(targetId, rows = []) {
   const isBiotech = targetId.includes("biotech");
   document.getElementById(targetId).innerHTML = rows.map((row) => {
@@ -349,6 +381,7 @@ function renderOpportunities(targetId, rows = []) {
       <div><div class="opportunity-top"><h4>${escapeHtml(companyTickerLabel(row))}</h4><span class="opportunity-classification">${escapeHtml(row.classification || "Classification missing")}</span></div>
       <div class="opportunity-score-line"><strong>${escapeHtml(score)}</strong><span>${escapeHtml(row.data_completeness ?? "Missing")}% complete</span><span class="opportunity-timing-pill buy-status-${stageClass(decision.status_key)}">${escapeHtml(decision.status || "WAIT")}</span></div></div><span class="opportunity-expand" aria-hidden="true"></span></summary>
       <div class="opportunity-detail">
+      ${renderWhyThisStock(row)}
       ${renderBuyDecision(row, isBiotech, decision)}
       <p class="opportunity-why"><strong>Why selected:</strong> ${escapeHtml(row.why_selected || row.thesis || "Missing")}</p>
       <ul class="opportunity-factors">${factors || "<li class=\"factor-missing\"><span>Factor scores</span><strong>Missing</strong></li>"}</ul>
@@ -360,13 +393,29 @@ function renderOpportunities(targetId, rows = []) {
 
 function renderWatchlist(data) {
   const rows = [...(data.watchlists?.ai || []).map((row) => ({ ...row, category: "AI" })), ...(data.watchlists?.biotech || []).map((row) => ({ ...row, category: "Biotech" }))];
-  setText("watchlist-count", rows.length);
-  document.getElementById("my-watchlist").innerHTML = rows.map((row) => `<article class="stock-row"><div><span class="stock-category">${escapeHtml(row.category)}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></div><p>${escapeHtml(row.why)} ${escapeHtml(marketSnapshotText(row.market_data, row.category === "AI" ? "qqq" : "xbi"))}</p><div><span>Next catalyst</span><strong>${escapeHtml(row.catalyst)}</strong><span>Entry timing</span><strong>${escapeHtml(row.entry_timing?.state || "Entry timing unavailable")} · ${row.entry_timing?.entry_timing_score === null || row.entry_timing?.entry_timing_score === undefined ? "Missing" : `${escapeHtml(row.entry_timing.entry_timing_score)}/100`} · ${escapeHtml(row.entry_timing?.entry_guidance || "Technical inputs missing.")}</strong></div><span class="risk risk-${String(row.risk).toLowerCase()}">${escapeHtml(row.risk)} risk</span></article>`).join("");
-  const signalOrder = ["Buy", "Hold", "Reduce", "Sell", "Insufficient Data"];
-  document.getElementById("stock-signals").innerHTML = signalOrder.map((signal) => {
-    const matches = rows.filter((row) => (row.timing_support?.signal || "Insufficient Data") === signal);
-    return `<div><span class="signal-dot signal-${stageClass(signal)}"></span><strong>${escapeHtml(signal)}</strong><p>${matches.length ? matches.map((row) => `${tickerPriceLabel(row.ticker, row.market_data)} (${row.category})`).join(", ") : "No watched names"}</p></div>`;
-  }).join("");
+  document.getElementById("my-watchlist").innerHTML = rows.map((row) => {
+    const commentary = row.watchlist_commentary || {};
+    const technical = row.watchlist_technical || {};
+    const currency = row.market_data?.currency || "USD";
+    const zone = technical.entry_zone || {};
+    const targets = technical.targets || {};
+    const isBiotech = row.category === "Biotech";
+    const formatTechnicalPrice = (value) => decisionPrice(value, currency);
+    const zoneText = zone.low === null || zone.low === undefined || zone.high === null || zone.high === undefined
+      ? "Unavailable" : `${formatTechnicalPrice(zone.low)} – ${formatTechnicalPrice(zone.high)}`;
+    const biotechFields = isBiotech ? `<div><dt>+10% Level</dt><dd>${escapeHtml(formatTechnicalPrice(targets.plus_10))}</dd></div>
+      <div><dt>+15% Level</dt><dd>${escapeHtml(formatTechnicalPrice(targets.plus_15))}</dd></div><div><dt>+20% Level</dt><dd>${escapeHtml(formatTechnicalPrice(targets.plus_20))}</dd></div>
+      <div><dt>Catalyst</dt><dd>${escapeHtml(technical.catalyst || row.catalyst || "Missing")}${technical.catalyst_timing && technical.catalyst_timing !== "Missing" ? ` · ${escapeHtml(technical.catalyst_timing)}` : ""}</dd></div>
+      <div><dt>Binary Risk</dt><dd>${escapeHtml(technical.binary_risk || "Missing")}</dd></div>` : "";
+    return `<details class="watchlist-card"><summary class="watchlist-summary"><span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></span>
+      <span><small>Trend</small><strong>${escapeHtml(technical.trend || "Data unavailable")}</strong></span><span><small>Buy Status</small><strong class="watch-buy-status watch-buy-${classKey(technical.buy_status || "wait")}">${escapeHtml(technical.buy_status || "WAIT")}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+      <div class="watchlist-detail"><section class="watchlist-commentary"><h4>Watchlist Commentary</h4><p><strong>Why it is here:</strong> ${escapeHtml(commentary.why_on_watchlist || row.why || "Missing")}</p><p><strong>What the chart is doing:</strong> ${escapeHtml(commentary.chart || "Technical interpretation unavailable.")}</p><p><strong>Entry situation:</strong> ${escapeHtml(commentary.entry || "Entry interpretation unavailable.")}</p><p><strong>Setup strengthens if:</strong> ${escapeHtml(commentary.stronger || "Missing")}</p><p><strong>Setup weakens if:</strong> ${escapeHtml(commentary.weaker || "Missing")}</p></section>
+      <dl class="watchlist-technical-grid"><div><dt>Current Price</dt><dd>${escapeHtml(formatTechnicalPrice(technical.current_price))}</dd></div><div><dt>MA20</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma20))}</dd></div><div><dt>MA50</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma50))}</dd></div>
+      <div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(formatTechnicalPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatTechnicalPrice(technical.resistance))}</dd></div>
+      <div><dt>Volume vs 20D Average</dt><dd>${technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${escapeHtml(formatMarketValue(technical.volume_vs_20d_average))}x`}</dd></div><div><dt>Trend</dt><dd>${escapeHtml(technical.trend || "Missing")}</dd></div><div><dt>Bottom Formation</dt><dd>${escapeHtml(technical.bottom_formation || "Missing")}</dd></div>
+      <div><dt>Reversal Status</dt><dd>${escapeHtml(technical.reversal_status || "Missing")}</dd></div><div><dt>Entry Zone</dt><dd>${escapeHtml(zoneText)}</dd></div><div><dt>Buy Status</dt><dd>${escapeHtml(technical.buy_status || "WAIT")}</dd></div><div><dt>Invalidation Level</dt><dd>${escapeHtml(formatTechnicalPrice(technical.invalidation_level))}</dd></div>${biotechFields}</dl>
+      ${isBiotech && technical.target_basis ? `<p class="watchlist-basis-note">${escapeHtml(technical.target_basis)}; these are planning levels before a brokerage trade, not actual-position P/L targets.</p>` : ""}</div></details>`;
+  }).join("") || `<p class="loading-state">No stocks are currently selected for active monitoring.</p>`;
 }
 
 function changeClass(value) { const number = Number.parseFloat(value); return number > 0 ? "change-up" : number < 0 ? "change-down" : "change-flat"; }
@@ -399,6 +448,7 @@ function renderDashboard(data) {
   const updated = new Date(data.updated_at);
   setText("last-updated", Number.isNaN(updated.valueOf()) ? data.updated_at : updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
   setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("market-movers", data.summaries && data.summaries.market_movers);
+  renderDashboardCommentary(data.commentary);
   renderSafely(() => renderTopNews(data.top_investment_news && data.top_investment_news.ai_technology), "ai-top-news");
   renderSafely(() => renderBiotechNews(data.top_investment_news && data.top_investment_news.biotech_healthcare), "biotech-top-news");
   renderSafely(() => renderAiRadar(aiRadarRows(data)), "ai-radar");
