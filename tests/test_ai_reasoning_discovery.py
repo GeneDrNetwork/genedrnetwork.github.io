@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from scripts.ai_reasoning_discovery import build_ai_reasoning_discovery
+from scripts.ai_reasoning_discovery import build_ai_reasoning_discovery, credible_profile_match
 from scripts.update_news_dashboard import (
     COMPANY_TICKER_INDEX,
     build_ai_radar,
@@ -49,6 +49,24 @@ class AiReasoningDiscoveryTests(unittest.TestCase):
                         "listing_status": "Public", "resolution": "test listed-company universe"},
                        {"company": "Bandwidth Inc.", "ticker": "BAND", "exchange": "",
                         "listing_status": "Public", "resolution": "test listed-company universe"}]
+
+    def test_generic_digital_infrastructure_does_not_imply_data_center_relevance(self):
+        wireless = {
+            "company": "Example Wireless Infrastructure",
+            "ticker": "EXWI",
+            "listing_status": "Public",
+            "industry": "Telecommunications Equipment",
+            "description": "Owns and operates shared wireless communications infrastructure and cell towers.",
+        }
+        data_center = {
+            "company": "Example Compute Facilities",
+            "ticker": "EXCF",
+            "listing_status": "Public",
+            "industry": "EDP Services",
+            "description": "Develops and operates data centers for high-performance computing workloads.",
+        }
+        self.assertFalse(credible_profile_match(wireless, "Data Centers")["credible"])
+        self.assertTrue(credible_profile_match(data_center, "Data Centers")["credible"])
 
     def test_discovers_theme_and_stock_without_manual_ticker_map(self):
         self.assertNotIn("LITE", COMPANY_TICKER_INDEX)
@@ -166,18 +184,56 @@ class AiReasoningDiscoveryTests(unittest.TestCase):
     def test_general_listed_universe_retains_discovery_metadata(self):
         def fetcher(_url, timeout):
             self.assertEqual(timeout, 20)
-            return {"table": {"rows": [{
-                "symbol": "EMRG", "name": "Emerging Automation Inc.", "exchange": "NASDAQ",
+            return {"rows": [{
+                "symbol": "EMRG", "name": "Emerging Automation Inc. Common Stock", "exchange": "NASDAQ",
                 "sector": "Industrials", "industry": "Industrial automation",
                 "country": "United States", "marketCap": "$750,000,000",
-            }]}}
+            }, {"symbol": "EMRGW", "name": "Emerging Automation Inc. Warrant", "marketCap": "100"},
+               {"symbol": "AIF", "name": "Artificial Intelligence Opportunity Fund", "marketCap": "100"}]}
 
         companies, status = fetch_listed_company_universe(RUN_AT, fetcher)
+        self.assertEqual([row["ticker"] for row in companies], ["EMRG"])
         self.assertEqual(companies[0]["industry"], "Industrial automation")
         self.assertEqual(companies[0]["market_cap"], 750_000_000)
         self.assertTrue(companies[0]["source_link"].endswith("/emrg"))
         self.assertEqual(status["records_with_industry"], 1)
         self.assertEqual(status["records_with_market_cap"], 1)
+        self.assertEqual(status["non_company_securities_excluded"], 2)
+
+    def test_category_specific_validation_blocks_news_identity_leakage(self):
+        event = {
+            "event_id": "infra-1", "event_date": "2026-08-29T12:00+00:00",
+            "headline": "Market Analytics publishes AI infrastructure forecast",
+            "company": "Market Analytics", "ticker": "RATE", "listing_status": "Public",
+            "company_identities": [{"company": "Market Analytics", "ticker": "RATE",
+                                    "listing_status": "Public", "exchange": ""}],
+            "event_type": "Industry Research", "direction": "Expanding", "confirmation_status": "NEW",
+            "news_importance_score": 85,
+            "new_information": "AI power demand is increasing requirements for power distribution and liquid cooling.",
+            "affected_trends": ["Data Centers"], "direct_effects": ["Data Centers"],
+            "second_order_effects": ["Power/Electrical", "Cooling"], "evidence_sources": [],
+        }
+        section = {"radar_evidence_interface": {"events": [event]}}
+        profiles = [
+            {"company": "Market Analytics", "ticker": "RATE", "listing_status": "Public",
+             "industry": "Business Services", "description": "Provides ratings, benchmarks and market research."},
+            {"company": "Critical Infrastructure Systems", "ticker": "CISX", "listing_status": "Public",
+             "industry": "Electrical Products",
+             "description": "Supplies data center power distribution equipment and liquid cooling solutions.",
+             "market_cap": 1_200_000_000},
+        ]
+        discovery = build_ai_reasoning_discovery(section, profiles)
+        candidates = {row["ticker"]: row for row in discovery["stock_candidates"]}
+        self.assertNotIn("RATE", candidates)
+        self.assertIn("CISX", candidates)
+        self.assertIn("Power/Electrical", candidates["CISX"]["parent_tracks"])
+        self.assertIn("Cooling", candidates["CISX"]["parent_tracks"])
+
+        radar = build_ai_radar(section, [], RUN_AT, ai_reasoning_discovery=discovery)
+        power = next(row for row in radar if row["trend"] == "Power/Electrical")
+        cooling = next(row for row in radar if row["trend"] == "Cooling")
+        self.assertEqual({row["ticker"] for row in power["beneficiary_records"]}, {"CISX"})
+        self.assertEqual({row["ticker"] for row in cooling["beneficiary_records"]}, {"CISX"})
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import unittest
 from datetime import date, datetime, timedelta, timezone
 
+from scripts.ai_reasoning_discovery import build_ai_reasoning_discovery
 from scripts.update_news_dashboard import (
     BIOTECH_CATALYSTS,
     attach_market_context,
@@ -90,7 +91,12 @@ class ExpectationValuationLayerTests(unittest.TestCase):
                  "event_type": "Financial Results", "direction": "Expanding", "news_importance_score": 95,
                  "new_information": "Revenue increased as customers deployed additional AI compute.",
                  "affected_trends": ["Compute"], "direct_effects": ["Compute"], "second_order_effects": []}
-        rows = build_ai_radar({"radar_evidence_interface": {"events": [event]}}, [], RUN_AT, expectation_layer())
+        section = {"radar_evidence_interface": {"events": [event]}}
+        discovery = build_ai_reasoning_discovery(section, [{
+            "company": "NVIDIA", "ticker": "NVDA", "listing_status": "Public",
+            "industry": "Semiconductors", "description": "Designs GPU accelerators and accelerated computing platforms.",
+        }])
+        rows = build_ai_radar(section, [], RUN_AT, expectation_layer(), discovery)
         compute = next(row for row in rows if row["trend"] == "Compute")
         self.assertEqual(compute["expectation_state"], "Underpriced")
         self.assertIsNotNone(compute["opportunity_score"])

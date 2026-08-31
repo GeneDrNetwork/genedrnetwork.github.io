@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime, timedelta, timezone
 
+from scripts.ai_reasoning_discovery import build_ai_reasoning_discovery
 from scripts.update_news_dashboard import (
     AI_RADAR_FACTOR_WEIGHTS,
     ai_adoption_stage,
@@ -25,6 +26,11 @@ def evidence(event_id="compute-1", trend="Compute", second_order=None, informati
         "affected_trends": [trend], "direct_effects": [trend], "second_order_effects": second_order or [],
         "evidence_sources": [], "source_link": "https://example.com/evidence", "archived": False,
     }
+
+
+def build_with_discovery(section, previous=None, run_at=RUN_AT):
+    discovery = build_ai_reasoning_discovery(section, [])
+    return build_ai_radar(section, previous or [], run_at, ai_reasoning_discovery=discovery)
 
 
 class AiTechnologyRadarTests(unittest.TestCase):
@@ -63,17 +69,16 @@ class AiTechnologyRadarTests(unittest.TestCase):
 
     def test_beneficiary_categories_and_history_are_preserved(self):
         section = {"radar_evidence_interface": {"events": [evidence(second_order=["Data Centers"])]}}
-        first = build_ai_radar(section, [], RUN_AT)
+        first = build_with_discovery(section)
         compute = next(row for row in first if row["trend"] == "Compute")
-        self.assertTrue(any(item["category"] == "Bottleneck/Picks-and-Shovels" for item in compute["beneficiary_records"]))
+        self.assertTrue(any(item["category"] == "Direct" for item in compute["beneficiary_records"]))
         data_centers = next(row for row in first if row["trend"] == "Data Centers")
-        self.assertTrue(any(item["category"] == "Second-Order" for item in data_centers["beneficiary_records"]))
-        self.assertIsNone(data_centers["adoption_stage"])
+        self.assertNotIn("NVDA", {item["ticker"] for item in data_centers["beneficiary_records"]})
         self.assertTrue(all(item["evidence_ids"] for item in compute["beneficiary_records"]))
-        same_day = build_ai_radar(section, first, RUN_AT)
+        same_day = build_with_discovery(section, first)
         same_day_compute = next(row for row in same_day if row["trend"] == "Compute")
         self.assertEqual(len(same_day_compute["score_history"]), 1)
-        second = build_ai_radar(section, same_day, RUN_AT + timedelta(days=1))
+        second = build_with_discovery(section, same_day, RUN_AT + timedelta(days=1))
         second_compute = next(row for row in second if row["trend"] == "Compute")
         self.assertEqual(len(second_compute["score_history"]), 2)
         self.assertIn("evidence", second_compute["why_changed"].lower())

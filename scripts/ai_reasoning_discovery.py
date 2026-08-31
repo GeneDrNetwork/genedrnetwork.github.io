@@ -27,7 +27,7 @@ THEME_PATTERNS = (
     },
     {
         "theme": "AI factories and accelerated data centers",
-        "terms": ("ai factory", "ai factories", "accelerated computing", "gpu cloud", "additional gpus"),
+        "terms": ("ai factory", "ai factories", "accelerated computing", "gpu cloud", "additional gpus", "gpu", "gpus"),
         "parent_tracks": ("Compute", "Data Centers", "Networking/Optical"),
         "related_industries": ("Semiconductors", "Data centers", "Network infrastructure"),
         "technologies": ("Accelerated computing", "Rack-scale systems", "AI networking"),
@@ -106,49 +106,54 @@ PROFILE_DISCOVERY_RULES = {
     },
     "Compute": {
         "role": "First-Order",
-        "terms": ("semiconductor", "semiconductors", "accelerator", "processor", "gpu", "computer hardware", "quantum computing",
-                  "quantum processor", "electronic components"),
+        "terms": ("semiconductor", "semiconductors", "accelerator", "processor", "processors", "gpu", "gpus", "chip",
+                  "integrated circuit", "computer hardware", "quantum computing", "quantum processor",
+                  "electronic components"),
     },
     "HBM/Memory": {
         "role": "Bottleneck/Picks-and-Shovels",
-        "terms": ("memory semiconductor", "dram", "high bandwidth memory", "hbm", "memory device",
-                  "semiconductor equipment"),
+        "terms": ("memory semiconductor", "dram", "high bandwidth memory", "high-bandwidth memory", "hbm",
+                  "memory device", "memory products", "semiconductor equipment"),
     },
     "Foundry/Advanced Packaging": {
         "role": "Bottleneck/Picks-and-Shovels",
-        "terms": ("semiconductor manufacturing", "foundry", "wafer fabrication", "advanced packaging",
-                  "semiconductor equipment", "test equipment"),
+        "terms": ("semiconductor manufacturing", "foundry", "wafer fabrication", "wafer processing",
+                  "advanced packaging", "semiconductor equipment", "test equipment", "lithography"),
     },
     "Networking/Optical": {
         "role": "Bottleneck/Picks-and-Shovels",
-        "terms": ("optical", "photonics", "fiber optic", "networking equipment", "telecommunications equipment",
-                  "communications equipment", "network switch", "interconnect", "satellite communications",
+        "terms": ("optical", "photonics", "fiber optic", "networking equipment", "networking solutions",
+                  "network infrastructure", "telecommunications equipment", "communications equipment",
+                  "network switch", "ethernet", "interconnect", "satellite communications",
                   "quantum networking"),
     },
     "Data Centers": {
         "role": "Second-Order",
-        "terms": ("data center", "datacenter", "digital infrastructure", "colocation", "server infrastructure",
-                  "data storage", "cloud infrastructure"),
+        "terms": ("data center", "data centers", "datacenter", "colocation",
+                  "server infrastructure", "data storage", "cloud infrastructure", "cloud computing infrastructure"),
     },
     "Power/Electrical": {
         "role": "Bottleneck/Picks-and-Shovels",
         "terms": ("electrical equipment", "electrical products", "switchgear", "transformer", "power distribution",
-                  "power management", "backup power", "uninterruptible power", "generator", "microgrid"),
+                  "power management", "power devices", "power solutions", "backup power", "uninterruptible power",
+                  "generator", "microgrid"),
     },
     "Cooling": {
         "role": "Bottleneck/Picks-and-Shovels",
-        "terms": ("liquid cooling", "thermal management", "heat exchanger", "cooling equipment", "hvac",
-                  "refrigeration equipment", "data center cooling"),
+        "terms": ("liquid cooling", "thermal management", "heat exchanger", "cooling equipment", "cooling solutions",
+                  "hvac", "refrigeration equipment", "data center cooling"),
     },
     "Grid/Energy/Materials": {
         "role": "Second-Order",
-        "terms": ("grid infrastructure", "power generation", "electric utility", "transmission", "energy storage",
+        "terms": ("grid infrastructure", "power generation", "electric utility", "electric utilities", "transmission",
+                  "grid modernization", "energy storage",
                   "nuclear energy", "battery materials", "critical materials", "renewable energy equipment"),
     },
     "Physical AI / Robotics": {
         "role": "First-Order",
-        "terms": ("robotics", "industrial automation", "factory automation", "machine vision", "motion control",
-                  "industrial sensor", "autonomous system", "embedded vision", "lidar", "space systems",
+        "terms": ("robotics", "robotic", "industrial automation", "factory automation", "automation systems",
+                  "machine vision", "motion control", "industrial sensor", "advanced sensing", "radar solutions",
+                  "autonomous system", "embedded vision", "lidar", "space systems",
                   "satellite systems"),
     },
     "Edge AI": {
@@ -267,6 +272,30 @@ def profile_match_details(company, track):
     return {"terms": terms, "fields": sorted(matches_by_field), "strength": strength}
 
 
+def credible_profile_match(company, track):
+    """Require category evidence from a business profile, not a name alone."""
+    validation = profile_match_details(company, track)
+    evidence_fields = set(validation["fields"]) - {"company", "sector"}
+    validation["credible"] = bool(validation["terms"] and evidence_fields)
+    validation["reason"] = ("category-specific business profile evidence" if validation["credible"] else
+                            "no category-specific industry, product, capability, or business-description evidence")
+    return validation
+
+
+def event_company_track_match(event, identity, track):
+    """Accept direct event evidence only when both company and category are explicit."""
+    if track not in event.get("direct_effects", []) and track not in event.get("affected_trends", []):
+        return {"credible": False, "terms": [], "reason": "category is not a direct event effect"}
+    text = " ".join(str(event.get(field) or "") for field in ("headline", "new_information"))
+    variants = company_name_variants(identity.get("company"))
+    company_explicit = any(company_name_mentioned(text, variant) for variant in variants)
+    terms = [term for term in PROFILE_DISCOVERY_RULES.get(track, {}).get("terms", ()) if _contains_term(text, term)]
+    credible = bool(company_explicit and terms)
+    return {"credible": credible, "terms": terms,
+            "reason": ("company and category are explicit in direct event evidence" if credible else
+                       "event does not explicitly connect this company to the category")}
+
+
 def _profile_evidence(company, theme, track, matched_terms, matched_fields):
     source_date = company.get("source_date") or company.get("retrieved_at")
     return {
@@ -344,6 +373,27 @@ def discover_ai_themes(events):
                 record["confirmation_statuses"].append(event.get("confirmation_status"))
             if event.get("direction") not in record["directions"]:
                 record["directions"].append(event.get("direction"))
+        structured_tracks = {
+            track for field in ("direct_effects", "affected_trends", "second_order_effects")
+            for track in event.get(field, []) if track in PROFILE_DISCOVERY_RULES
+        }
+        for track in structured_tracks:
+            theme_name = f"{track} evidence-linked demand"
+            record = records.setdefault(theme_name, {
+                "theme": theme_name, "parent_tracks": [track],
+                "related_industries": [], "technologies": [],
+                "matched_terms": ["structured News→Radar effect"],
+                "evidence_ids": [], "event_count": 0, "importance_values": [],
+                "confirmation_statuses": [], "directions": [],
+            })
+            record["event_count"] += 1
+            if event.get("event_id") and event["event_id"] not in record["evidence_ids"]:
+                record["evidence_ids"].append(event["event_id"])
+            record["importance_values"].append(event.get("news_importance_score"))
+            if event.get("confirmation_status") not in record["confirmation_statuses"]:
+                record["confirmation_statuses"].append(event.get("confirmation_status"))
+            if event.get("direction") not in record["directions"]:
+                record["directions"].append(event.get("direction"))
     result = []
     for record in records.values():
         values = [value for value in record.pop("importance_values") if isinstance(value, (int, float))]
@@ -368,14 +418,21 @@ def _identity_key(identity):
     return str(identity.get("ticker") or "").upper(), str(identity.get("company") or "").lower()
 
 
-def discover_ai_stocks(events, themes, listed_companies=None):
+def discover_ai_stocks(events, themes, listed_companies=None, diagnostics=None):
     """Discover named and profile-validated public beneficiaries of inferred themes.
 
     ``listed_companies`` is a general listed-company universe with whatever
     source-backed industry/product metadata is available. No ticker is selected
     by a hand-maintained beneficiary list in this function.
     """
+    diagnostics = diagnostics if diagnostics is not None else {}
+    diagnostics.setdefault("named_company_rejections", [])
+    diagnostics.setdefault("profile_rejections", {})
+    diagnostics.setdefault("profile_top_n_removed", {})
+    diagnostics.setdefault("accepted_by_track", {})
     event_by_id = {event.get("event_id"): event for event in events or [] if event.get("event_id")}
+    company_by_ticker = {str(company.get("ticker") or "").upper(): company for company in listed_companies or []
+                         if company.get("ticker")}
     identities_by_event = defaultdict(list)
     for event in events or []:
         seen = set()
@@ -400,62 +457,81 @@ def discover_ai_stocks(events, themes, listed_companies=None):
 
     results = {}
     for theme in themes or []:
-        parent_tracks = set(theme.get("parent_tracks", []))
         for evidence_id in theme.get("evidence_ids", []):
             event = event_by_id.get(evidence_id, {})
-            direct = parent_tracks.intersection(event.get("direct_effects", []))
-            second_order = parent_tracks.intersection(event.get("second_order_effects", []))
-            relation = "First-Order" if direct else "Second-Order" if second_order else "Related"
             for identity in identities_by_event.get(evidence_id, []):
                 if identity.get("listing_status") != "Public" or identity.get("ticker") in (None, "", "Missing", "Private", "N/A"):
                     continue
-                key = identity["ticker"].upper()
-                row = results.setdefault(key, {
-                    **identity, "beneficiary_roles": [], "themes": [], "parent_tracks": [],
-                    "related_industries": [], "technologies": [], "evidence_ids": [],
-                    "discovery_sources": [], "thesis_evidence": [], "confirmation_evidence": [],
-                })
-                if relation not in row["beneficiary_roles"]:
-                    row["beneficiary_roles"].append(relation)
-                if theme["theme"] not in row["themes"]:
-                    row["themes"].append(theme["theme"])
-                for field in ("parent_tracks", "related_industries", "technologies", "evidence_ids"):
-                    for value in theme.get(field, []):
-                        if value not in row[field]:
-                            row[field].append(value)
-                source = f"Reasoning-derived {relation.lower()} beneficiary of {theme['theme']}"
-                if source not in row["discovery_sources"]:
-                    row["discovery_sources"].append(source)
-                text = " ".join(str(event.get(field) or "") for field in ("headline", "new_information"))
-                thesis_types = matching_signal_types(text, THESIS_SIGNAL_TERMS)
-                if "Logical Connection" not in thesis_types:
-                    thesis_types.append("Logical Connection")
-                thesis = evidence_record(
-                    event, thesis_types,
-                    f"The source explicitly connects {identity['company']} to {theme['theme']} through "
-                    f"{', '.join(thesis_types).lower()} evidence; commercial proof is evaluated separately.",
-                )
-                if thesis not in row["thesis_evidence"]:
-                    row["thesis_evidence"].append(thesis)
-                confirmation_types = matching_signal_types(text, CONFIRMATION_SIGNAL_TERMS)
-                if confirmation_types:
-                    confirmation = evidence_record(
-                        event, confirmation_types,
-                        f"The source reports {', '.join(confirmation_types).lower()} associated with the thesis.",
-                    )
-                    if confirmation not in row["confirmation_evidence"]:
-                        row["confirmation_evidence"].append(confirmation)
+                key = str(identity["ticker"]).upper()
+                company = company_by_ticker.get(key, identity)
+                for track in theme.get("parent_tracks", []):
+                    profile_validation = credible_profile_match(company, track)
+                    event_validation = event_company_track_match(event, identity, track)
+                    if not profile_validation["credible"] and not event_validation["credible"]:
+                        diagnostics["named_company_rejections"].append({
+                            "ticker": key, "company": identity.get("company"), "track": track,
+                            "event_id": evidence_id, "reason": event_validation["reason"],
+                        })
+                        continue
+                    relation = (PROFILE_DISCOVERY_RULES.get(track, {}).get("role")
+                                if profile_validation["credible"] else "First-Order")
+                    row = results.setdefault(key, {
+                        "company": company.get("company") or identity.get("company"), "ticker": key,
+                        "exchange": company.get("exchange", identity.get("exchange", "")),
+                        "listing_status": "Public", "resolution": company.get("resolution", "news_identity"),
+                        "beneficiary_roles": [], "themes": [], "parent_tracks": [],
+                        "related_industries": [], "technologies": [], "evidence_ids": [],
+                        "discovery_sources": [], "thesis_evidence": [], "confirmation_evidence": [],
+                    })
+                    if relation not in row["beneficiary_roles"]:
+                        row["beneficiary_roles"].append(relation)
+                    if theme["theme"] not in row["themes"]:
+                        row["themes"].append(theme["theme"])
+                    if track not in row["parent_tracks"]:
+                        row["parent_tracks"].append(track)
+                    for field in ("related_industries", "technologies"):
+                        for value in theme.get(field, []):
+                            if value not in row[field]:
+                                row[field].append(value)
+                    if evidence_id and evidence_id not in row["evidence_ids"]:
+                        row["evidence_ids"].append(evidence_id)
+                    source = f"Category-validated news identity: {track}"
+                    if source not in row["discovery_sources"]:
+                        row["discovery_sources"].append(source)
+                    text = " ".join(str(event.get(field) or "") for field in ("headline", "new_information"))
+                    thesis_types = matching_signal_types(text, THESIS_SIGNAL_TERMS) or ["Logical Connection"]
+                    basis = (f"The company profile and event evidence connect {row['company']} to {track}."
+                             if profile_validation["credible"] else
+                             f"The event explicitly connects {row['company']} to {track} through {', '.join(event_validation['terms'])}.")
+                    thesis = evidence_record(event, thesis_types, basis)
+                    if thesis not in row["thesis_evidence"]:
+                        row["thesis_evidence"].append(thesis)
+                    confirmation_types = matching_signal_types(text, CONFIRMATION_SIGNAL_TERMS)
+                    if confirmation_types:
+                        confirmation = evidence_record(
+                            event, confirmation_types,
+                            f"The source reports {', '.join(confirmation_types).lower()} associated with the thesis.",
+                        )
+                        if confirmation not in row["confirmation_evidence"]:
+                            row["confirmation_evidence"].append(confirmation)
+                    row["discovery_method"] = "news_identity_category_validation"
+                    row["profile_matches"] = sorted(set(row.get("profile_matches", []) + profile_validation["terms"]))
+                    row["profile_match_fields"] = sorted(set(row.get("profile_match_fields", []) + profile_validation["fields"]))
+                    row["market_cap"] = company.get("market_cap")
+                    row["market_cap_bucket"] = market_cap_bucket(company.get("market_cap"))
 
         # Broad discovery deliberately starts from the active theme and scans the
         # general public-company universe.  It does not require a company mention,
         # order, backlog, revenue, or prior membership in the focused universe.
         for track in theme.get("parent_tracks", []):
             profile_rows = []
+            rejected = []
             for company in listed_companies or []:
                 if company.get("listing_status") != "Public" or not company.get("ticker"):
                     continue
-                validation = profile_match_details(company, track)
-                if not validation["terms"]:
+                validation = credible_profile_match(company, track)
+                if not validation["credible"]:
+                    rejected.append(str(company.get("ticker")))
                     continue
                 variants = company_name_variants(company.get("company"))
                 profile_rows.append({
@@ -466,7 +542,13 @@ def discover_ai_stocks(events, themes, listed_companies=None):
                     "profile_validation_strength": validation["strength"],
                     "market_cap_bucket": market_cap_bucket(company.get("market_cap")),
                 })
-            for company in _diverse_profile_selection(profile_rows):
+            selected_profiles = _diverse_profile_selection(profile_rows)
+            selected_tickers = {str(company.get("ticker")) for company in selected_profiles}
+            diagnostics["profile_rejections"].setdefault(track, []).extend(rejected)
+            diagnostics["profile_top_n_removed"].setdefault(track, []).extend(
+                str(company.get("ticker")) for company in profile_rows
+                if str(company.get("ticker")) not in selected_tickers)
+            for company in selected_profiles:
                 key = str(company["ticker"]).upper()
                 role = PROFILE_DISCOVERY_RULES[track]["role"]
                 row = results.setdefault(key, {
@@ -500,6 +582,9 @@ def discover_ai_stocks(events, themes, listed_companies=None):
                     row.get("profile_validation_strength", 0), company["profile_validation_strength"])
                 row["market_cap"] = company.get("market_cap")
                 row["market_cap_bucket"] = company["market_cap_bucket"]
+                diagnostics["accepted_by_track"].setdefault(track, [])
+                if key not in diagnostics["accepted_by_track"][track]:
+                    diagnostics["accepted_by_track"][track].append(key)
     for row in results.values():
         row["opportunity_stage"] = opportunity_stage(
             row["beneficiary_roles"], row["thesis_evidence"], row["confirmation_evidence"])
@@ -518,9 +603,10 @@ def discover_ai_stocks(events, themes, listed_companies=None):
 def build_ai_reasoning_discovery(news_section, listed_companies=None, source_status=None):
     events = news_section.get("radar_evidence_interface", {}).get("events", [])
     themes = discover_ai_themes(events)
-    stocks = discover_ai_stocks(events, themes, listed_companies)
+    discovery_trace = {}
+    stocks = discover_ai_stocks(events, themes, listed_companies, discovery_trace)
     return {
-        "schema_version": "ai-reasoning-discovery-v3",
+        "schema_version": "ai-reasoning-discovery-v4",
         "flow": "Evidence / News / Industry Data → Reasoning → Theme Discovery → Beneficiary Discovery → Stock Discovery → Radar",
         "theme_signals": themes,
         "stock_candidates": stocks,
@@ -538,6 +624,7 @@ def build_ai_reasoning_discovery(news_section, listed_companies=None, source_sta
                                                    "Commercial Confirmation", "Established Beneficiary")},
         },
         "listed_company_source": source_status or {"status": "not supplied"},
+        "production_trace": discovery_trace,
         "diagnostics": {
             "primary_bottleneck_fixed": "Company discovery previously required an explicit company mention in a current news event; active themes now scan and validate a general listed-company profile universe.",
             "focused_universe_entry_gate": False,

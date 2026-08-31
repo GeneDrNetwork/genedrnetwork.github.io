@@ -14,20 +14,23 @@ import subprocess
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 try:
-    from .ai_reasoning_discovery import build_ai_reasoning_discovery
+    from .ai_reasoning_discovery import (PROFILE_DISCOVERY_RULES, build_ai_reasoning_discovery,
+                                         discover_ai_themes, market_cap_bucket, profile_match_details)
     from .company_quality import build_company_quality_layer
     from .dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                        build_news_commentary, build_radar_commentary)
     from .entry_timing import build_entry_timing_layer, calculate_entry_inputs
     from .swing_trade import build_swing_trade_engine
 except ImportError:
-    from ai_reasoning_discovery import build_ai_reasoning_discovery
+    from ai_reasoning_discovery import (PROFILE_DISCOVERY_RULES, build_ai_reasoning_discovery,
+                                        discover_ai_themes, market_cap_bucket, profile_match_details)
     from company_quality import build_company_quality_layer
     from dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                       build_news_commentary, build_radar_commentary)
@@ -1205,7 +1208,32 @@ def fetch_market_caps(tickers):
 
 
 NASDAQ_API_ROOT = "https://api.nasdaq.com/api"
-NASDAQ_LISTED_COMPANY_URL = f"{NASDAQ_API_ROOT}/screener/stocks?tableonly=true&limit=10000"
+NASDAQ_LISTED_COMPANY_URL = f"{NASDAQ_API_ROOT}/screener/stocks?download=true"
+NASDAQ_COMPANY_PROFILE_URL = f"{NASDAQ_API_ROOT}/company/{{ticker}}/company-profile"
+
+NON_COMPANY_SECURITY_TERMS = (
+    " warrant", " warrants", " unit", " units", " rights", " etf", " etn", " fund",
+    " preferred stock", " preferred shares", " depositary share representing preferred",
+)
+
+AI_PROFILE_PREFILTER_INDUSTRIES = {
+    "AI Models/Applications": ("computer software", "edp services"),
+    "Compute": ("semiconductors", "computer manufacturing", "computer peripheral equipment"),
+    "HBM/Memory": ("semiconductors", "computer peripheral equipment"),
+    "Foundry/Advanced Packaging": ("semiconductors", "industrial machinery/components"),
+    "Networking/Optical": ("computer communications equipment", "telecommunications equipment", "semiconductors"),
+    "Data Centers": ("computer communications equipment", "computer manufacturing", "real estate investment trusts", "edp services"),
+    "Power/Electrical": ("electrical products", "industrial machinery/components", "power generation", "power line construction"),
+    "Cooling": ("industrial machinery/components", "industrial specialties", "electrical products"),
+    "Grid/Energy/Materials": ("power generation", "electric utilities", "energy", "metal mining"),
+    "Physical AI / Robotics": ("industrial machinery/components", "industrial specialties", "edp services", "auto manufacturing"),
+    "Edge AI": ("semiconductors", "industrial machinery/components", "edp services"),
+}
+
+
+def is_operating_company_security(name):
+    lowered = f" {str(name or '').lower()}"
+    return not any(term in lowered for term in NON_COMPANY_SECURITY_TERMS)
 
 
 def parse_market_number(value):
@@ -1238,13 +1266,15 @@ def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
     """
     try:
         data = fetcher(NASDAQ_LISTED_COMPANY_URL, timeout=20) or {}
-        rows = data.get("table", {}).get("rows", [])
+        rows = data.get("rows") or data.get("table", {}).get("rows", [])
         companies = []
         seen = set()
         for row in rows:
             ticker = str(row.get("symbol") or "").strip().upper()
             company = html.unescape(str(row.get("name") or "")).strip()
-            if not ticker or not company or ticker in seen or not re.fullmatch(r"[A-Z][A-Z0-9.-]{0,9}", ticker):
+            if (not ticker or not company or ticker in seen or
+                    not re.fullmatch(r"[A-Z][A-Z0-9.-]{0,9}", ticker) or
+                    not is_operating_company_security(company)):
                 continue
             seen.add(ticker)
             market_cap = parse_market_number(row.get("marketCap"))
@@ -1264,11 +1294,106 @@ def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
             "records_loaded": len(companies),
             "records_with_industry": sum(bool(item.get("industry")) for item in companies),
             "records_with_market_cap": sum(item.get("market_cap") is not None for item in companies),
+            "non_company_securities_excluded": len(rows) - len(companies),
         }
     except Exception as exc:
         print(f"Listed-company discovery universe unavailable: {exc}")
         return [], {"status": "unavailable", "source": NASDAQ_LISTED_COMPANY_URL,
                     "retrieved_at": run_at.isoformat(timespec="seconds"), "error": str(exc)}
+
+
+def _profile_size_group(company):
+    bucket = market_cap_bucket(company.get("market_cap"))
+    return "Established" if bucket in ("Mega", "Large") else bucket
+
+
+def select_ai_profile_enrichment_universe(news_section, listed_companies, per_size=8):
+    """Select a bounded, category-balanced subset for source profile enrichment."""
+    events = news_section.get("radar_evidence_interface", {}).get("events", [])
+    themes = discover_ai_themes(events)
+    active_tracks = sorted({track for theme in themes for track in theme.get("parent_tracks", [])
+                            if track in PROFILE_DISCOVERY_RULES})
+    by_ticker = {row["ticker"]: row for row in listed_companies}
+    news_tickers = {str(identity.get("ticker") or "").upper() for event in events
+                    for identity in event.get("company_identities", [])
+                    if identity.get("listing_status") == "Public"}
+    selected = {}
+    diagnostics = {"active_tracks": active_tracks, "per_size_limit": per_size,
+                   "eligible_by_track": {}, "selected_by_track": {}, "removed_by_capacity": {}}
+
+    for track in active_tracks:
+        industry_terms = AI_PROFILE_PREFILTER_INDUSTRIES.get(track, ())
+        eligible = []
+        for company in listed_companies:
+            industry = str(company.get("industry") or "").lower()
+            initial = profile_match_details(company, track)
+            industry_prefilter = any(term in industry for term in industry_terms)
+            if not initial["terms"] and not industry_prefilter:
+                continue
+            eligible.append({**company, "_prefilter_strength": initial["strength"],
+                             "_industry_prefilter": industry_prefilter})
+        diagnostics["eligible_by_track"][track] = len(eligible)
+        track_selected = []
+        for size_group in ("Established", "Mid", "Small/Emerging", "Unknown"):
+            group = [row for row in eligible if _profile_size_group(row) == size_group]
+            group.sort(key=lambda row: (-row["_prefilter_strength"],
+                                        -(row.get("market_cap") or 0), row["company"]))
+            track_selected.extend(group[:per_size])
+        selected_tickers = {row["ticker"] for row in track_selected}
+        diagnostics["selected_by_track"][track] = sorted(selected_tickers)
+        diagnostics["removed_by_capacity"][track] = sorted(
+            row["ticker"] for row in eligible if row["ticker"] not in selected_tickers)
+        for row in track_selected:
+            item = selected.setdefault(row["ticker"], dict(row, _prefilter_tracks=[]))
+            if track not in item["_prefilter_tracks"]:
+                item["_prefilter_tracks"].append(track)
+
+    for ticker in news_tickers:
+        if ticker in by_ticker:
+            item = selected.setdefault(ticker, dict(by_ticker[ticker], _prefilter_tracks=[]))
+            item["_news_identity"] = True
+    diagnostics["news_identity_profiles"] = sorted(ticker for ticker in news_tickers if ticker in by_ticker)
+    diagnostics["unique_selected"] = len(selected)
+    return list(selected.values()), diagnostics
+
+
+def fetch_ai_company_profiles(news_section, listed_companies, run_at, fetcher=fetch_nasdaq_json):
+    selected, diagnostics = select_ai_profile_enrichment_universe(news_section, listed_companies)
+    enriched = []
+    failures = []
+
+    def load(company):
+        ticker = company["ticker"]
+        data = fetcher(NASDAQ_COMPANY_PROFILE_URL.format(ticker=ticker), timeout=15) or {}
+        value = lambda key: (data.get(key) or {}).get("value") if isinstance(data.get(key), dict) else data.get(key)
+        profile_name = value("CompanyName") or company["company"]
+        description = value("CompanyDescription")
+        if not description:
+            raise ValueError("Company description unavailable")
+        lowered_description = description.lower()
+        if (not is_operating_company_security(profile_name) or
+                any(term in lowered_description for term in
+                    ("blank check company", "special purpose acquisition company", "has no commercial operations"))):
+            raise ValueError("Non-operating company or non-common security")
+        return {**company, "company": profile_name,
+                "sector": value("Sector") or company.get("sector", ""),
+                "industry": value("Industry") or company.get("industry", ""),
+                "description": description, "company_url": value("CompanyUrl"),
+                "profile_source": "Nasdaq company profile",
+                "source_link": f"https://www.nasdaq.com/market-activity/stocks/{ticker.lower()}/company-profile",
+                "source_date": run_at.isoformat(timespec="seconds")}
+
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        futures = {executor.submit(load, company): company for company in selected}
+        for future in as_completed(futures):
+            company = futures[future]
+            try:
+                enriched.append(future.result())
+            except Exception as exc:
+                failures.append({"ticker": company["ticker"], "reason": str(exc)})
+    diagnostics.update({"profiles_requested": len(selected), "profiles_loaded": len(enriched),
+                        "profile_failures": failures})
+    return enriched, diagnostics
 
 
 def fetch_nasdaq_expectations(ticker, run_at):
@@ -1306,16 +1431,18 @@ def fetch_expectation_inputs(tickers, run_at):
 
 def build_expectation_record(ticker, raw, market_record, run_at):
     raw = raw or {}; payloads = raw.get("payloads", {})
-    summary = payloads.get("summary", {}).get("summaryData", {})
+    summary_payload = payloads.get("summary") or {}
+    summary = summary_payload.get("summaryData") or {}
     summary_value = lambda key: summary.get(key, {}).get("value")
-    forecast = payloads.get("forecast", {})
-    quarterly_rows = forecast.get("quarterlyForecast", {}).get("rows") or []
-    yearly_rows = forecast.get("yearlyForecast", {}).get("rows") or []
+    forecast = payloads.get("forecast") or {}
+    quarterly_rows = (forecast.get("quarterlyForecast") or {}).get("rows") or []
+    yearly_rows = (forecast.get("yearlyForecast") or {}).get("rows") or []
     next_quarter = quarterly_rows[0] if quarterly_rows else {}
     next_year = yearly_rows[0] if yearly_rows else {}
-    ratings = payloads.get("ratings", {})
+    ratings = payloads.get("ratings") or {}
     rating_count_match = re.search(r"(\d+)\s+analysts?", ratings.get("ratingsSummary") or "", re.IGNORECASE)
-    short_rows = payloads.get("short_interest", {}).get("shortInterestTable", {}).get("rows") or []
+    short_payload = payloads.get("short_interest") or {}
+    short_rows = (short_payload.get("shortInterestTable") or {}).get("rows") or []
     latest_short = short_rows[0] if short_rows else {}; prior_short = short_rows[1] if len(short_rows) > 1 else {}
     current_price = (market_record or {}).get("current_price")
     target = parse_market_number(summary_value("OneYrTarget"))
@@ -3150,10 +3277,10 @@ def normalized_available_score(components, keys):
 
 def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_discovery=None):
     candidates = {}
-    bottleneck_tracks = {"Compute", "HBM/Memory", "Foundry/Advanced Packaging", "Networking/Optical", "Data Centers", "Power/Electrical", "Cooling", "Grid/Energy/Materials"}
 
     def add(identity, category, evidence_id=None, importance=None):
-        if not identity or identity.get("ticker") in (None, "Missing", "N/A"):
+        if (not identity or identity.get("listing_status") != "Public" or
+                identity.get("ticker") in (None, "Missing", "N/A", "Private")):
             return
         item = candidates.setdefault(identity["company"], {**identity, "category": category, "evidence_ids": [], "importance": []})
         category_priority = {"Direct": 4, "Bottleneck/Picks-and-Shovels": 3, "Second-Order": 2, "Emerging": 1}
@@ -3164,14 +3291,8 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
         if importance is not None:
             item["importance"].append(importance)
 
-    # Radar population begins with current evidence identities and broad,
-    # profile-validated discovery below. Legacy focused lists are not an entry
-    # source here; they remain available to unchanged downstream systems.
-    for evidence in relevant_events:
-        relation = evidence.get("relation")
-        category = "Bottleneck/Picks-and-Shovels" if relation == "direct" and trend in bottleneck_tracks else "Direct" if relation == "direct" else "Second-Order"
-        for identity in evidence.get("company_identities", []):
-            add(identity, category, evidence.get("event_id"), evidence.get("news_importance_score"))
+    # Only category-validated discovery records can populate Radar. News company
+    # identities are evidence inputs, not an independent beneficiary shortcut.
     relevant_ids = {event.get("event_id") for event in relevant_events}
     importance_by_id = {event.get("event_id"): event.get("news_importance_score") for event in relevant_events}
     for discovered in (ai_reasoning_discovery or {}).get("stock_candidates", []):
@@ -3241,6 +3362,16 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
                          if item.get("market_cap_bucket") in ("Mid", "Small/Emerging")), None)
         if emerging and emerging not in selected:
             selected[-1] = emerging
+    trace = (ai_reasoning_discovery or {}).setdefault("production_trace", {})
+    radar_trace = trace.setdefault("radar_selection", {})
+    selected_tickers = {item["ticker"] for item in selected}
+    radar_trace[trend] = {
+        "eligible": [item["ticker"] for item in ordered],
+        "selected": [item["ticker"] for item in selected],
+        "removed": [{"ticker": item["ticker"], "reason": "per-category top-N limit"}
+                    for item in ordered if item["ticker"] not in selected_tickers],
+        "market_data_required": False,
+    }
     return selected
 
 
@@ -3279,11 +3410,16 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
     raw_events = ai_news_section.get("radar_evidence_interface", {}).get("events", [])
     events = deduplicate_ai_radar_evidence(raw_events)
     previous_by_trend = {item.get("trend"): item for item in previous_rows or []}
+    reasoning_event_ids = defaultdict(set)
+    for theme in (ai_reasoning_discovery or {}).get("theme_signals", []):
+        for track in theme.get("parent_tracks", []):
+            reasoning_event_ids[track].update(theme.get("evidence_ids", []))
     rows = []
     for trend, config in AI_RADAR_TRACKS.items():
         relevant = []
         for event in events:
-            direct = trend in event.get("direct_effects", []) or trend in event.get("affected_trends", [])
+            direct = (trend in event.get("direct_effects", []) or trend in event.get("affected_trends", []) or
+                      event.get("event_id") in reasoning_event_ids.get(trend, set()))
             second_order = trend in event.get("second_order_effects", []) and not direct
             if not direct and not second_order:
                 continue
@@ -3479,8 +3615,11 @@ def build():
     previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
     biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
     listed_companies, listed_company_status = fetch_listed_company_universe(run_at)
+    profiled_companies, profile_discovery_status = fetch_ai_company_profiles(
+        ai_news_section, listed_companies, run_at)
+    listed_company_status["profile_enrichment"] = profile_discovery_status
     ai_reasoning_discovery = build_ai_reasoning_discovery(
-        ai_news_section, listed_companies, listed_company_status)
+        ai_news_section, profiled_companies, listed_company_status)
     fda_news = rss_items("FDA approval orphan drug fast track rare disease when:7d", 8)
     market_news = rss_items("US stock market Nasdaq S&P 500 today when:1d", 4)
     preliminary_candidates = discover_candidate_pool(
