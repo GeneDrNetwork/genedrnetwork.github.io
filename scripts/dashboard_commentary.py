@@ -122,8 +122,11 @@ def annotate_high_conviction(rows_by_domain):
         domain_rows = rows_by_domain.get(domain, [])
         for row in domain_rows:
             factors = {factor.get("key"): factor for factor in row.get("factor_scores", [])}
-            radar = factors.get("radar_conviction", {})
-            quality = factors.get("beneficiary_company_quality", {})
+            business = factors.get("business_quality", {})
+            growth = factors.get("sustained_growth", {})
+            profit = factors.get("profitability_cash_flow", {})
+            moat = factors.get("competitive_advantage", {})
+            valuation = factors.get("valuation", {})
             missing = failed_gate(row)
             trend = (", ".join(link.get("trend", "") if isinstance(link, dict) else str(link)
                                for link in row.get("radar_links", [])[:2]) if row.get("radar_links") else
@@ -133,8 +136,10 @@ def annotate_high_conviction(rows_by_domain):
             row["why_this_stock"] = {
                 "summary": shorten(row.get("why_selected"), 330),
                 "trend_or_catalyst": f"The thesis is linked to {clean(trend)}.",
-                "supporting_evidence": f"Radar evidence: {shorten(radar.get('rationale'), 220)} Company/beneficiary evidence: {shorten(quality.get('rationale'), 220)}",
-                "relative_strength": f"{relative}. Ranking reflects the existing factor weights and gates, not commentary-generated scoring.",
+                "supporting_evidence": (f"Business quality: {shorten(business.get('rationale'), 150)} Growth: {shorten(growth.get('rationale'), 150)} "
+                                        f"Profitability/cash flow: {shorten(profit.get('rationale'), 150)} Competitive position: {shorten(moat.get('rationale'), 150)} "
+                                        f"Valuation: {shorten(valuation.get('rationale'), 150)}"),
+                "relative_strength": f"{relative}. Ranking reflects proven-quality factors and gates; Radar is context only and commentary does not score stocks.",
                 "main_risk_or_missing": (f"The main unresolved condition is {missing.get('label')}: {missing.get('rationale')}" if missing else
                                          f"All current selection gates pass; the main documented invalidation is {clean(row.get('thesis_invalidation')).rstrip('.')}."),
                 "buy_status": f"Current buy status is {row.get('buy_decision', {}).get('status', 'WAIT')}. {row.get('buy_decision', {}).get('missing_condition', 'Entry condition unavailable')}",
@@ -142,13 +147,13 @@ def annotate_high_conviction(rows_by_domain):
     classification_counts = Counter(row.get("classification") for row in all_rows)
     buy_counts = Counter(row.get("buy_decision", {}).get("status") for row in all_rows)
     reasons = [
-        "Each stock is linked to an existing Radar trend or biotech catalyst; discovery alone is not enough for selection.",
-        "The ranking combines Radar conviction, beneficiary/company quality, expectation gap, technical setup, and a near-term catalyst using the existing weights.",
-        "Evidence, beneficiary proof, expectation, technical-entry, and biotech binary/integrity gates can block High Conviction even when a total score is high.",
+        "High Conviction is a proven-quality, long-term Buy-and-Hold review; Radar discovery and Radar rank do not grant eligibility.",
+        "The ranking emphasizes reported business quality, sustained growth, profitability/free cash flow, financial strength, competitive position, and valuation. Radar contributes only limited long-term context.",
+        "Proven-business, profitability, growth-durability, financial-strength, competitive-position, valuation, and biotech binary/integrity gates can block High Conviction even when a total score is high.",
         f"The current shortlist contains {classification_counts.get('🔥 High Conviction', 0)} fully High-Conviction names; lower classifications remain visible as serious candidates with unresolved conditions.",
-        f"Buy readiness remains separate from selection: {', '.join(f'{count} {status}' for status, count in buy_counts.items() if status) or 'no status coverage'}.",
+        f"Entry timing remains separate from company selection: {', '.join(f'{count} {status}' for status, count in buy_counts.items() if status) or 'no status coverage'}.",
     ]
-    return {"reasons": reasons, "engine_version": "dashboard-commentary-v1"}
+    return {"reasons": reasons, "engine_version": "dashboard-commentary-v2"}
 
 
 def price_distance(price, reference):

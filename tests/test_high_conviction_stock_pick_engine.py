@@ -35,7 +35,22 @@ def market_layer(ticker, crowded=False):
 def quality_layer(domain, ticker):
     return {"records": {f"{domain}:{ticker}": {
         "company_quality_score": 90, "data_completeness": 100,
-        "confidence": "High", "qualified": True, "sources": [],
+        "confidence": "High", "data_status": "current", "qualified": True, "sources": [],
+        "metrics": {
+            "revenue_growth": {"value": 20, "observations": [{"value": 120}, {"value": 100}]},
+            "earnings_growth": {"value": 15, "observations": [{"value": 23}, {"value": 20}]},
+            "margin_trend": {"value": 2, "observations": []},
+            "net_income": {"value": 23, "observations": [{"value": 23}]},
+            "free_cash_flow": {"value": 25, "observations": [{"value": 25}]},
+        },
+        "components": [
+            {"key": "revenue_growth", "weight": 15, "available_weight": 15, "score": 90},
+            {"key": "earnings_growth", "weight": 15, "available_weight": 15, "score": 85},
+            {"key": "margin_trend", "weight": 15, "available_weight": 15, "score": 80},
+            {"key": "free_cash_flow", "weight": 15, "available_weight": 15, "score": 90},
+            {"key": "balance_sheet", "weight": 20, "available_weight": 20, "score": 90,
+             "rationale": "Strong reported liquidity and net-cash position."},
+        ],
     }}}
 
 
@@ -49,7 +64,8 @@ def ai_radar(ticker="NVDA"):
              "confirming_evidence": [event], "mixed_evidence": [],
              "beneficiary_records": [{"company": "NVIDIA", "ticker": ticker, "exchange": "",
                  "listing_status": "Public", "category": "Bottleneck/Picks-and-Shovels",
-                 "beneficiary_relevance": 90, "data_completeness": 100, "evidence_ids": ["event-1"]}]}]
+                 "beneficiary_relevance": 90, "data_completeness": 100, "evidence_ids": ["event-1"],
+                 "score_components": [{"label": "Competitive Moat", "weight": 15, "score": 12}]}]}]
 
 
 def biotech_radar(binary_risk="High", status="Speculative Binary", integrity=False):
@@ -79,14 +95,34 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         row = build_ai_stock_picks(ai_radar(), market_layer("NVDA", crowded=True), [],
                                    quality_layer=quality_layer("ai", "NVDA"))[0]
         self.assertGreaterEqual(row["final_score"], 70)
-        self.assertFalse(next(gate for gate in row["gates"] if gate["key"] == "expectation")["passed"])
+        self.assertFalse(next(gate for gate in row["gates"] if gate["key"] == "valuation")["passed"])
         self.assertEqual(row["classification_key"], "priced-in")
 
     def test_discovery_and_radar_proof_cannot_replace_company_quality_gate(self):
         row = build_ai_stock_picks(ai_radar(), market_layer("NVDA"), [])[0]
-        gate = next(gate for gate in row["gates"] if gate["key"] == "beneficiary_proof")
+        gate = next(gate for gate in row["gates"] if gate["key"] == "proven_business")
         self.assertFalse(gate["passed"])
         self.assertEqual(row["classification_key"], "too-early")
+
+    def test_radar_strength_does_not_replace_profitability(self):
+        weak = quality_layer("ai", "NVDA")
+        weak["records"]["ai:NVDA"]["metrics"]["net_income"]["value"] = -10
+        weak["records"]["ai:NVDA"]["metrics"]["free_cash_flow"]["value"] = -5
+        row = build_ai_stock_picks(ai_radar(), market_layer("NVDA"), [], quality_layer=weak)[0]
+        self.assertEqual(ai_radar()[0]["trend_strength"], 90)
+        self.assertFalse(next(gate for gate in row["gates"] if gate["key"] == "profitability")["passed"])
+        self.assertEqual(row["classification_key"], "too-early")
+
+    def test_radar_is_context_only_and_curated_companies_remain_independent_candidates(self):
+        pool = {"candidates": [{"domain": "ai", "company": "NVIDIA", "ticker": "NVDA"}]}
+        rows = build_ai_stock_picks(
+            ai_radar(), market_layer("NVDA"), [{"company": "Broadcom"}],
+            candidate_pool=pool, quality_layer=quality_layer("ai", "NVDA"))
+        nvda = next(row for row in rows if row["ticker"] == "NVDA")
+        self.assertEqual(next(factor for factor in nvda["factor_scores"]
+                              if factor["key"] == "long_term_outlook")["weight"], 5)
+        self.assertNotIn("radar_conviction", {factor["key"] for factor in nvda["factor_scores"]})
+        self.assertIn("AVGO", {row["ticker"] for row in rows})
 
     def test_news_importance_does_not_directly_set_catalyst_score(self):
         radar = ai_radar()
@@ -109,11 +145,13 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
 
     def test_missing_factor_is_excluded_not_scored_as_zero(self):
         factors = [
-            stock_pick_factor("radar_conviction", 80, "available"),
-            stock_pick_factor("beneficiary_company_quality", 80, "available"),
-            stock_pick_factor("expectation_gap", 80, "available"),
-            stock_pick_factor("technical_setup", 80, "available"),
-            stock_pick_factor("near_term_catalyst", None, "missing"),
+            stock_pick_factor("business_quality", 80, "available"),
+            stock_pick_factor("sustained_growth", 80, "available"),
+            stock_pick_factor("profitability_cash_flow", 80, "available"),
+            stock_pick_factor("financial_strength", 80, "available"),
+            stock_pick_factor("competitive_advantage", 80, "available"),
+            stock_pick_factor("long_term_outlook", 80, "available"),
+            stock_pick_factor("valuation", None, "missing"),
         ]
         score, completeness = weighted_stock_pick_score(factors)
         self.assertEqual(score, 80)

@@ -272,7 +272,10 @@ def score_entry_timing(snapshot, domain, thesis_gate):
 
 def thesis_gate_for_pick(row, domain):
     gates = {gate.get("key"): gate for gate in row.get("gates", [])}
-    required = ["evidence", "beneficiary_proof", "expectation"]
+    required = (["proven_business", "profitability", "growth_durability",
+                 "financial_strength", "competitive_position", "valuation"]
+                if "proven_business" in gates else
+                ["evidence", "beneficiary_proof", "expectation"])
     if domain == "biotech":
         required.append("binary_integrity")
     passed = all(gates.get(key, {}).get("passed") is True for key in required)
