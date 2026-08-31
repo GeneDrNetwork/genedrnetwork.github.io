@@ -248,8 +248,8 @@ function aiStockRadarRows(trends = []) {
 function renderAiRadar(rows) {
   const stockRows = aiStockRadarRows(rows);
   document.getElementById("ai-radar").innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, strength, stage, why_selected, risk_unproven }) => `<details class="radar-item ai-stock-radar-item"><summary>
-      <span class="ai-stock-identity"><strong>${escapeHtml(ticker)} / ${escapeHtml(beneficiary.company)}</strong><small>${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
-      <span class="ai-stock-category">${escapeHtml(category)}</span>${renderScore(strength, "Radar Strength")}
+      <span class="ai-stock-category">${escapeHtml(category)}</span>
+      <span class="ai-stock-identity"><strong>${escapeHtml(beneficiary.company)} · ${escapeHtml(ticker)}</strong><small>${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>${renderScore(strength, "Radar Strength")}
       <span><b class="ai-stock-stage">${escapeHtml(stage)}</b></span><span class="ai-stock-why">${escapeHtml(why_selected)}</span><span class="ai-stock-risk">${escapeHtml(risk_unproven)}</span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid ai-stock-details">
       ${detailItem("Why Selected", why_selected)}${detailItem("Risk / What Remains Unproven", risk_unproven)}

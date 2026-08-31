@@ -1231,10 +1231,10 @@ def fetch_nasdaq_json(url, timeout=12):
 
 
 def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
-    """Load a general U.S.-listed company universe for evidence entity resolution.
+    """Load a general U.S.-listed universe for identity and profile discovery.
 
     The universe is not a stock recommendation list and is never shipped to the
-    frontend. Only evidence-matched identities are retained in discovery output.
+    frontend. Only evidence-matched or category-validated identities are retained.
     """
     try:
         data = fetcher(NASDAQ_LISTED_COMPANY_URL, timeout=20) or {}
@@ -1247,13 +1247,23 @@ def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
             if not ticker or not company or ticker in seen or not re.fullmatch(r"[A-Z][A-Z0-9.-]{0,9}", ticker):
                 continue
             seen.add(ticker)
-            companies.append({"company": company, "ticker": ticker, "exchange": "",
-                              "listing_status": "Public", "resolution": "Nasdaq listed-company universe"})
+            market_cap = parse_market_number(row.get("marketCap"))
+            companies.append({
+                "company": company, "ticker": ticker, "exchange": str(row.get("exchange") or ""),
+                "listing_status": "Public", "resolution": "Nasdaq listed-company universe",
+                "sector": str(row.get("sector") or ""), "industry": str(row.get("industry") or ""),
+                "country": str(row.get("country") or ""), "market_cap": market_cap,
+                "profile_source": "Nasdaq listed-company screener",
+                "source_link": f"https://www.nasdaq.com/market-activity/stocks/{ticker.lower()}",
+                "source_date": run_at.isoformat(timespec="seconds"),
+            })
         return companies, {
             "status": "available" if companies else "empty",
             "source": NASDAQ_LISTED_COMPANY_URL,
             "retrieved_at": run_at.isoformat(timespec="seconds"),
             "records_loaded": len(companies),
+            "records_with_industry": sum(bool(item.get("industry")) for item in companies),
+            "records_with_market_cap": sum(item.get("market_cap") is not None for item in companies),
         }
     except Exception as exc:
         print(f"Listed-company discovery universe unavailable: {exc}")
@@ -1427,6 +1437,7 @@ def expectation_assessment(snapshot, domain, maximum):
 
 AI_CANDIDATE_LIMIT = 30
 BIOTECH_CANDIDATE_LIMIT = 20
+AI_BENEFICIARIES_PER_TRACK = 5
 
 
 def biotech_therapeutic_trends(text):
@@ -1503,7 +1514,9 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None, ai_reasoning_disc
                 beneficiary.get("category"), link)
     for discovered in (ai_reasoning_discovery or {}).get("stock_candidates", []):
         roles = discovered.get("beneficiary_roles", [])
-        category = "Direct" if "First-Order" in roles else "Second-Order" if "Second-Order" in roles else "Emerging"
+        category = ("Bottleneck/Picks-and-Shovels" if "Bottleneck/Picks-and-Shovels" in roles else
+                    "Direct" if "First-Order" in roles else
+                    "Second-Order" if "Second-Order" in roles else "Emerging")
         evidence_ids = discovered.get("evidence_ids", [])
         for theme in discovered.get("themes", []) or ["Unclassified reasoning signal"]:
             parent_tracks = discovered.get("parent_tracks", [])
@@ -1520,6 +1533,12 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None, ai_reasoning_disc
             candidate["thesis_evidence"] = discovered.get("thesis_evidence", [])
             candidate["confirmation_evidence"] = discovered.get("confirmation_evidence", [])
             candidate["confirmation_missing"] = discovered.get("confirmation_missing", True)
+            candidate["discovery_method"] = discovered.get("discovery_method")
+            candidate["profile_matches"] = discovered.get("profile_matches", [])
+            candidate["profile_match_fields"] = discovered.get("profile_match_fields", [])
+            candidate["profile_validation_strength"] = discovered.get("profile_validation_strength")
+            candidate["market_cap"] = discovered.get("market_cap")
+            candidate["market_cap_bucket"] = discovered.get("market_cap_bucket", "Unknown")
 
     catalog = BIOTECH_LEADERS + BIOTECH_EMERGING
     active_biotech_trends = set()
@@ -1560,14 +1579,14 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None, ai_reasoning_disc
     ai = sorted(ai, key=rank)[:AI_CANDIDATE_LIMIT]
     biotech = sorted(biotech, key=rank)[:BIOTECH_CANDIDATE_LIMIT]
     result = ai + biotech
-    return {"schema_version": "candidate-discovery-v2", "target_size": "30-50", "candidates": result,
+    return {"schema_version": "candidate-discovery-v3", "target_size": "30-50", "candidates": result,
             "coverage": {"total": len(result), "ai": len(ai), "biotech": len(biotech),
                          "evidence_linked": sum(bool(row["radar_links"]) for row in result),
                          "by_ai_category": {category: sum(category in row["categories"] for row in ai)
                                             for category in category_priority}},
-            "methodology": {"scope": "Focused beneficiaries of evidence-derived AI themes and existing Radar tracks; no broad market screen.",
+            "methodology": {"scope": "Focused output from broad public-company profile discovery and evidence-derived AI themes; this is not a generic stock screener.",
                             "ai_flow": "Evidence → structured reasoning → theme discovery → beneficiary discovery → stock discovery → Radar.",
-                            "no_manual_ticker_insertion": "Reasoning-driven stocks come from evidence identities and a general listed-company universe, not manually added theme tickers.",
+                            "no_manual_ticker_insertion": "Reasoning-driven stocks come from evidence identities or category-validated profiles in a general listed-company universe, not manually added theme tickers.",
                             "candidate_is_not_conviction": "Discovery is research coverage only and cannot pass any High-Conviction gate.",
                             "biotech_path": "Therapeutic trend → program → company → catalyst when a current Radar record exists; related modality matches remain unverified discovery candidates."}}
 
@@ -3130,8 +3149,6 @@ def normalized_available_score(components, keys):
 
 
 def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_discovery=None):
-    config = AI_RADAR_TRACKS[trend]
-    driver = next((item for item in DEMAND_DRIVERS if item["area"] == config.get("demand_area")), None)
     candidates = {}
     bottleneck_tracks = {"Compute", "HBM/Memory", "Foundry/Advanced Packaging", "Networking/Optical", "Data Centers", "Power/Electrical", "Cooling", "Grid/Energy/Materials"}
 
@@ -3147,15 +3164,9 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
         if importance is not None:
             item["importance"].append(importance)
 
-    if trend == "AI Models/Applications":
-        for row in AI_PLATFORMS:
-            add(company_identity(row["company"], row.get("ticker")), "Direct")
-    if driver:
-        public_category = "Bottleneck/Picks-and-Shovels" if trend in bottleneck_tracks else "Direct"
-        for identity in normalize_company_list(driver.get("public_companies", "")):
-            add(identity, public_category)
-        for identity in normalize_company_list(driver.get("emerging_companies", "")):
-            add(identity, "Emerging")
+    # Radar population begins with current evidence identities and broad,
+    # profile-validated discovery below. Legacy focused lists are not an entry
+    # source here; they remain available to unchanged downstream systems.
     for evidence in relevant_events:
         relation = evidence.get("relation")
         category = "Bottleneck/Picks-and-Shovels" if relation == "direct" and trend in bottleneck_tracks else "Direct" if relation == "direct" else "Second-Order"
@@ -3170,7 +3181,9 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
         if not evidence_ids:
             continue
         roles = discovered.get("beneficiary_roles", [])
-        category = "Direct" if "First-Order" in roles else "Second-Order" if "Second-Order" in roles else "Emerging"
+        category = ("Bottleneck/Picks-and-Shovels" if "Bottleneck/Picks-and-Shovels" in roles else
+                    "Direct" if "First-Order" in roles else
+                    "Second-Order" if "Second-Order" in roles else "Emerging")
         identity = company_identity(discovered.get("company"), discovered.get("ticker"))
         for event_id in evidence_ids:
             add(identity, category, event_id, importance_by_id.get(event_id))
@@ -3181,8 +3194,13 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
             candidate["confirmation_evidence"] = discovered.get("confirmation_evidence", [])
             candidate["confirmation_missing"] = discovered.get("confirmation_missing", True)
             candidate["classification_reason"] = discovered.get("classification_reason")
+            candidate["discovery_method"] = discovered.get("discovery_method")
+            candidate["profile_matches"] = discovered.get("profile_matches", [])
+            candidate["profile_match_fields"] = discovered.get("profile_match_fields", [])
+            candidate["profile_validation_strength"] = discovered.get("profile_validation_strength")
+            candidate["market_cap"] = discovered.get("market_cap")
+            candidate["market_cap_bucket"] = discovered.get("market_cap_bucket", "Unknown")
 
-    leader_names = {item["company"] for item in AI_INFRASTRUCTURE + AI_PLATFORMS}
     results = []
     for item in candidates.values():
         if not item["evidence_ids"]:
@@ -3193,7 +3211,7 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
             {"label": "Bottleneck Position", "weight": 25, "score": 25 if category == "Bottleneck/Picks-and-Shovels" else None},
             {"label": "Revenue Sensitivity", "weight": 20, "score": 20 if item["importance"] and any(
                 event.get("event_type") == "Financial Results" and event.get("event_id") in item["evidence_ids"] for event in relevant_events) else None},
-            {"label": "Competitive Moat", "weight": 15, "score": 12 if item["company"] in leader_names else None},
+            {"label": "Competitive Moat", "weight": 15, "score": None},
             {"label": "Evidence Quality", "weight": 10, "score": round(max(item["importance"]) / 10) if item["importance"] else 5},
         ]
         available = [component for component in components if component["score"] is not None]
@@ -3207,10 +3225,23 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
             "confirmation_evidence": item.get("confirmation_evidence", []),
             "confirmation_missing": item.get("confirmation_missing", not bool(item.get("confirmation_evidence"))),
             "classification_reason": item.get("classification_reason", "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable."),
+            "discovery_method": item.get("discovery_method", "news_identity"),
+            "profile_matches": item.get("profile_matches", []),
+            "profile_match_fields": item.get("profile_match_fields", []),
+            "market_cap_bucket": item.get("market_cap_bucket", "Unknown"),
             "market_data": compact_market_snapshot(security_market),
             "expectation": expectation_assessment(security_market, "ai", 15),
         })
-    return sorted(results, key=lambda item: (-item["beneficiary_relevance"], item["company"]))[:8]
+    ordered = sorted(results, key=lambda item: (-item["beneficiary_relevance"], item["company"]))
+    selected = ordered[:AI_BENEFICIARIES_PER_TRACK]
+    has_smaller = any(item.get("market_cap_bucket") in ("Mid", "Small/Emerging") for item in selected)
+    mega_dominated = sum(item.get("market_cap_bucket") == "Mega" for item in selected) >= max(3, len(selected) - 1)
+    if selected and mega_dominated and not has_smaller:
+        emerging = next((item for item in ordered
+                         if item.get("market_cap_bucket") in ("Mid", "Small/Emerging")), None)
+        if emerging and emerging not in selected:
+            selected[-1] = emerging
+    return selected
 
 
 def ai_radar_why_changed(previous, current):

@@ -6,6 +6,7 @@ from scripts.update_news_dashboard import (
     COMPANY_TICKER_INDEX,
     build_ai_radar,
     discover_candidate_pool,
+    fetch_listed_company_universe,
 )
 
 
@@ -24,6 +25,20 @@ def news_section():
         "new_information": "Lumentum Holdings is increasing optical interconnect capacity for scale-out AI networking.",
         "affected_trends": ["Networking/Optical"], "direct_effects": ["Networking/Optical"],
         "second_order_effects": ["Data Centers"], "evidence_sources": [], "archived": False,
+    }
+    return {"radar_evidence_interface": {"events": [event]}}
+
+
+def physical_ai_section():
+    event = {
+        "event_id": "robotics-1", "event_date": "2026-08-29T12:00+00:00",
+        "headline": "Machine vision and industrial automation move into early production deployment",
+        "company": "Industry research", "ticker": "N/A", "exchange": "", "listing_status": "Non-public",
+        "company_identities": [], "event_type": "Industry Adoption", "direction": "Expanding",
+        "confirmation_status": "NEW", "news_importance_score": 84,
+        "new_information": "Industrial automation suppliers are integrating machine vision sensors into robotics systems.",
+        "affected_trends": ["Physical AI / Robotics"], "direct_effects": ["Physical AI / Robotics"],
+        "second_order_effects": ["Edge AI"], "evidence_sources": [], "archived": False,
     }
     return {"radar_evidence_interface": {"events": [event]}}
 
@@ -90,6 +105,79 @@ class AiReasoningDiscoveryTests(unittest.TestCase):
         self.assertNotIn("LITE", {row["ticker"] for row in discovery["stock_candidates"]})
         self.assertEqual(discovery["policy"]["missing_data"],
                          "Unresolved company identity remains unresolved and is not converted into a ticker.")
+
+    def test_profile_validated_company_outside_focused_universe_enters_radar(self):
+        emerging = {
+            "company": "Adaptive Motion Systems Inc.", "ticker": "AMSX", "exchange": "NASDAQ",
+            "listing_status": "Public", "resolution": "test broad listed universe",
+            "sector": "Industrials", "industry": "Industrial automation",
+            "description": "Develops machine vision sensors and motion control for robotics systems.",
+            "market_cap": 850_000_000, "profile_source": "Test exchange company profile",
+            "source_date": "2026-08-28", "source_link": "https://example.test/amsx",
+        }
+        irrelevant = {
+            "company": "General Consumer Stores Inc.", "ticker": "GCST", "exchange": "NYSE",
+            "listing_status": "Public", "resolution": "test broad listed universe",
+            "sector": "Consumer", "industry": "Retail", "description": "Operates general merchandise stores.",
+            "market_cap": 900_000_000, "profile_source": "Test exchange company profile",
+            "source_date": "2026-08-28", "source_link": "https://example.test/gcst",
+        }
+        self.assertNotIn(emerging["ticker"], COMPANY_TICKER_INDEX)
+        discovery = build_ai_reasoning_discovery(physical_ai_section(), [emerging, irrelevant])
+        discovered = {row["ticker"]: row for row in discovery["stock_candidates"]}
+        self.assertIn(emerging["ticker"], discovered)
+        self.assertNotIn(irrelevant["ticker"], discovered)
+        candidate = discovered[emerging["ticker"]]
+        self.assertEqual(candidate["discovery_method"], "category_profile_validation")
+        self.assertEqual(candidate["market_cap_bucket"], "Small/Emerging")
+        self.assertEqual(candidate["opportunity_stage"], "Early Beneficiary")
+        self.assertTrue(candidate["confirmation_missing"])
+        self.assertTrue(any(item.get("source_link") == emerging["source_link"]
+                            for item in candidate["thesis_evidence"]))
+
+        radar = build_ai_radar(physical_ai_section(), [], RUN_AT, ai_reasoning_discovery=discovery)
+        physical = next(row for row in radar if row["trend"] == "Physical AI / Robotics")
+        self.assertIn(emerging["ticker"], {row["ticker"] for row in physical["beneficiary_records"]})
+
+    def test_profile_discovery_preserves_size_diversity_without_size_scoring(self):
+        profiles = []
+        for index in range(5):
+            profiles.append({
+                "company": f"Established Optical Systems {index}", "ticker": f"EO{index}",
+                "exchange": "NASDAQ", "listing_status": "Public",
+                "description": "Optical networking equipment and fiber optic interconnect systems.",
+                "market_cap": 250_000_000_000 + index, "profile_source": "Test exchange profile",
+            })
+        smaller = {
+            "company": "Emerging Photonics Systems", "ticker": "EPSX", "exchange": "NASDAQ",
+            "listing_status": "Public", "description": "Develops optical components.",
+            "market_cap": 700_000_000, "profile_source": "Test exchange profile",
+        }
+        profiles.append(smaller)
+        discovery = build_ai_reasoning_discovery(news_section(), profiles)
+        profile_rows = [row for row in discovery["stock_candidates"]
+                        if row.get("discovery_method") == "category_profile_validation"
+                        and "Networking/Optical" in row.get("parent_tracks", [])]
+        self.assertEqual(len(profile_rows), 5)
+        self.assertIn(smaller["ticker"], {row["ticker"] for row in profile_rows})
+        self.assertTrue(all("market_cap" not in component
+                            for row in profile_rows for component in row.get("thesis_evidence", [])))
+
+    def test_general_listed_universe_retains_discovery_metadata(self):
+        def fetcher(_url, timeout):
+            self.assertEqual(timeout, 20)
+            return {"table": {"rows": [{
+                "symbol": "EMRG", "name": "Emerging Automation Inc.", "exchange": "NASDAQ",
+                "sector": "Industrials", "industry": "Industrial automation",
+                "country": "United States", "marketCap": "$750,000,000",
+            }]}}
+
+        companies, status = fetch_listed_company_universe(RUN_AT, fetcher)
+        self.assertEqual(companies[0]["industry"], "Industrial automation")
+        self.assertEqual(companies[0]["market_cap"], 750_000_000)
+        self.assertTrue(companies[0]["source_link"].endswith("/emrg"))
+        self.assertEqual(status["records_with_industry"], 1)
+        self.assertEqual(status["records_with_market_cap"], 1)
 
 
 if __name__ == "__main__":

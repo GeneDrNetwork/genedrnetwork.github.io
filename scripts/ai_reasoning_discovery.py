@@ -34,7 +34,8 @@ THEME_PATTERNS = (
     },
     {
         "theme": "Physical AI and production robotics",
-        "terms": ("physical ai", "robotics", "robot computer", "deployed robots", "production units"),
+        "terms": ("physical ai", "robotics", "robot computer", "deployed robots", "production units",
+                  "industrial automation", "machine vision", "autonomous systems", "sensors"),
         "parent_tracks": ("Physical AI / Robotics", "Edge AI"),
         "related_industries": ("Industrial automation", "Robotics", "Autonomous systems"),
         "technologies": ("Robot foundation models", "Edge AI", "Simulation"),
@@ -55,7 +56,8 @@ THEME_PATTERNS = (
     },
     {
         "theme": "AI power and grid constraints",
-        "terms": ("power demand", "power capacity", "grid", "megawatt", "gigawatt", "electricity"),
+        "terms": ("power demand", "power capacity", "grid", "megawatt", "gigawatt", "electricity",
+                  "backup power", "switchgear", "transformer", "electrical equipment"),
         "parent_tracks": ("Power/Electrical", "Grid/Energy/Materials", "Data Centers"),
         "related_industries": ("Electrical equipment", "Power generation", "Grid infrastructure"),
         "technologies": ("Power delivery", "Grid interconnection", "On-site generation"),
@@ -74,6 +76,91 @@ THEME_PATTERNS = (
         "related_industries": ("Industrial automation", "Automotive", "Edge computing"),
         "technologies": ("Edge accelerators", "On-device inference", "Embedded systems"),
     },
+    {
+        "theme": "Quantum computing and sensing",
+        "terms": ("quantum computing", "quantum computer", "quantum processor", "quantum sensing",
+                  "quantum networking", "qubit"),
+        "parent_tracks": ("Compute", "Networking/Optical"),
+        "related_industries": ("Quantum computing", "Precision instrumentation", "Photonics"),
+        "technologies": ("Quantum processors", "Quantum control", "Quantum networking"),
+    },
+    {
+        "theme": "Space-based AI and connectivity",
+        "terms": ("space technology", "space-based", "satellite network", "satellite connectivity",
+                  "on-orbit", "space systems"),
+        "parent_tracks": ("Networking/Optical", "Physical AI / Robotics", "Edge AI"),
+        "related_industries": ("Space systems", "Satellite communications", "Autonomous platforms"),
+        "technologies": ("On-orbit computing", "Satellite networking", "Autonomous navigation"),
+    },
+)
+
+
+# General product/capability rules used after an evidence-derived theme is active.
+# These are category definitions, not company or ticker lists.  A company must
+# match its own source-backed profile; size never creates relevance.
+PROFILE_DISCOVERY_RULES = {
+    "AI Models/Applications": {
+        "role": "First-Order",
+        "terms": ("artificial intelligence", "machine learning", "enterprise software", "cloud computing",
+                  "data analytics", "application software", "ai platform", "inference software"),
+    },
+    "Compute": {
+        "role": "First-Order",
+        "terms": ("semiconductor", "semiconductors", "accelerator", "processor", "gpu", "computer hardware", "quantum computing",
+                  "quantum processor", "electronic components"),
+    },
+    "HBM/Memory": {
+        "role": "Bottleneck/Picks-and-Shovels",
+        "terms": ("memory semiconductor", "dram", "high bandwidth memory", "hbm", "memory device",
+                  "semiconductor equipment"),
+    },
+    "Foundry/Advanced Packaging": {
+        "role": "Bottleneck/Picks-and-Shovels",
+        "terms": ("semiconductor manufacturing", "foundry", "wafer fabrication", "advanced packaging",
+                  "semiconductor equipment", "test equipment"),
+    },
+    "Networking/Optical": {
+        "role": "Bottleneck/Picks-and-Shovels",
+        "terms": ("optical", "photonics", "fiber optic", "networking equipment", "telecommunications equipment",
+                  "communications equipment", "network switch", "interconnect", "satellite communications",
+                  "quantum networking"),
+    },
+    "Data Centers": {
+        "role": "Second-Order",
+        "terms": ("data center", "datacenter", "digital infrastructure", "colocation", "server infrastructure",
+                  "data storage", "cloud infrastructure"),
+    },
+    "Power/Electrical": {
+        "role": "Bottleneck/Picks-and-Shovels",
+        "terms": ("electrical equipment", "electrical products", "switchgear", "transformer", "power distribution",
+                  "power management", "backup power", "uninterruptible power", "generator", "microgrid"),
+    },
+    "Cooling": {
+        "role": "Bottleneck/Picks-and-Shovels",
+        "terms": ("liquid cooling", "thermal management", "heat exchanger", "cooling equipment", "hvac",
+                  "refrigeration equipment", "data center cooling"),
+    },
+    "Grid/Energy/Materials": {
+        "role": "Second-Order",
+        "terms": ("grid infrastructure", "power generation", "electric utility", "transmission", "energy storage",
+                  "nuclear energy", "battery materials", "critical materials", "renewable energy equipment"),
+    },
+    "Physical AI / Robotics": {
+        "role": "First-Order",
+        "terms": ("robotics", "industrial automation", "factory automation", "machine vision", "motion control",
+                  "industrial sensor", "autonomous system", "embedded vision", "lidar", "space systems",
+                  "satellite systems"),
+    },
+    "Edge AI": {
+        "role": "Second-Order",
+        "terms": ("edge computing", "embedded systems", "industrial sensor", "machine vision", "on-device",
+                  "internet of things", "autonomous system", "space systems"),
+    },
+}
+
+PROFILE_TEXT_FIELDS = (
+    "company", "sector", "industry", "description", "products", "technologies", "capabilities",
+    "customer_exposure", "supply_chain_role",
 )
 
 
@@ -138,6 +225,81 @@ def evidence_record(event, evidence_types, basis):
     }
 
 
+def market_cap_bucket(value):
+    """Provide size context for diversity; never used as a relevance score."""
+    try:
+        amount = float(value)
+    except (TypeError, ValueError):
+        return "Unknown"
+    if amount >= 200_000_000_000:
+        return "Mega"
+    if amount >= 10_000_000_000:
+        return "Large"
+    if amount >= 2_000_000_000:
+        return "Mid"
+    if amount > 0:
+        return "Small/Emerging"
+    return "Unknown"
+
+
+def profile_matches(company, track):
+    """Return source-backed category matches from a general company profile."""
+    return profile_match_details(company, track)["terms"]
+
+
+def profile_match_details(company, track):
+    """Validate a category link and retain which profile fields support it."""
+    rule = PROFILE_DISCOVERY_RULES.get(track)
+    if not rule:
+        return {"terms": [], "fields": [], "strength": 0}
+    matches_by_field = {}
+    for field in PROFILE_TEXT_FIELDS:
+        text = str(company.get(field) or "")
+        matched = [term for term in rule["terms"] if _contains_term(text, term)]
+        if matched:
+            matches_by_field[field] = matched
+    terms = sorted({term for values in matches_by_field.values() for term in values})
+    field_weights = {
+        "company": 1, "sector": 1, "industry": 2, "description": 3, "products": 3,
+        "technologies": 3, "capabilities": 3, "customer_exposure": 3, "supply_chain_role": 3,
+    }
+    strength = sum(field_weights[field] for field in matches_by_field) + min(3, len(terms))
+    return {"terms": terms, "fields": sorted(matches_by_field), "strength": strength}
+
+
+def _profile_evidence(company, theme, track, matched_terms, matched_fields):
+    source_date = company.get("source_date") or company.get("retrieved_at")
+    return {
+        "event_id": next(iter(theme.get("evidence_ids", [])), None),
+        "date": source_date,
+        "headline": f"{company.get('company')} company-profile relevance validation",
+        "evidence_types": ["Product / Technology", "Industry Position", "Logical Connection"],
+        "basis": (
+            f"The listed-company profile connects {company.get('company')} to {track} through "
+            f"{', '.join(matched_terms)}. The separate theme evidence establishes current industry demand; "
+            "commercial confirmation is not assumed."
+        ),
+        "source": company.get("profile_source") or company.get("resolution"),
+        "source_link": company.get("source_link", ""),
+        "matched_profile_terms": matched_terms,
+        "matched_profile_fields": matched_fields,
+    }
+
+
+def _diverse_profile_selection(rows, limit=5):
+    """Keep relevance ordering while preventing an all-mega-cap result set."""
+    ordered = sorted(rows, key=lambda row: (-row["profile_validation_strength"],
+                                            -len(row["matched_terms"]), row["company"]))
+    selected = ordered[:limit]
+    has_smaller = any(row["market_cap_bucket"] in ("Mid", "Small/Emerging") for row in selected)
+    mega_dominated = sum(row["market_cap_bucket"] == "Mega" for row in selected) >= max(3, len(selected) - 1)
+    if selected and mega_dominated and not has_smaller:
+        emerging = next((row for row in ordered if row["market_cap_bucket"] in ("Mid", "Small/Emerging")), None)
+        if emerging and emerging not in selected:
+            selected[-1] = emerging
+    return selected
+
+
 def opportunity_stage(roles, thesis_evidence, confirmation_evidence):
     """Classify discovery maturity without turning the stages into scores."""
     confirmed_events = {item.get("event_id") for item in confirmation_evidence if item.get("event_id")}
@@ -147,7 +309,8 @@ def opportunity_stage(roles, thesis_evidence, confirmation_evidence):
     if confirmation_evidence:
         return "Commercial Confirmation"
     substantive_thesis = {kind for item in thesis_evidence for kind in item.get("evidence_types", [])} - {"Logical Connection"}
-    if substantive_thesis and any(role in roles for role in ("First-Order", "Second-Order")):
+    if substantive_thesis and any(role in roles for role in
+                                  ("First-Order", "Second-Order", "Bottleneck/Picks-and-Shovels")):
         return "Early Beneficiary"
     return "Emerging Trend"
 
@@ -206,10 +369,11 @@ def _identity_key(identity):
 
 
 def discover_ai_stocks(events, themes, listed_companies=None):
-    """Resolve public companies mentioned by evidence, then link them to inferred themes.
+    """Discover named and profile-validated public beneficiaries of inferred themes.
 
-    ``listed_companies`` may be the full SEC-listed company universe.  No ticker is
-    selected by a hand-maintained beneficiary list in this function.
+    ``listed_companies`` is a general listed-company universe with whatever
+    source-backed industry/product metadata is available. No ticker is selected
+    by a hand-maintained beneficiary list in this function.
     """
     event_by_id = {event.get("event_id"): event for event in events or [] if event.get("event_id")}
     identities_by_event = defaultdict(list)
@@ -281,6 +445,61 @@ def discover_ai_stocks(events, themes, listed_companies=None):
                     )
                     if confirmation not in row["confirmation_evidence"]:
                         row["confirmation_evidence"].append(confirmation)
+
+        # Broad discovery deliberately starts from the active theme and scans the
+        # general public-company universe.  It does not require a company mention,
+        # order, backlog, revenue, or prior membership in the focused universe.
+        for track in theme.get("parent_tracks", []):
+            profile_rows = []
+            for company in listed_companies or []:
+                if company.get("listing_status") != "Public" or not company.get("ticker"):
+                    continue
+                validation = profile_match_details(company, track)
+                if not validation["terms"]:
+                    continue
+                variants = company_name_variants(company.get("company"))
+                profile_rows.append({
+                    **company,
+                    "company": min(variants, key=len) if variants else company.get("company"),
+                    "matched_terms": validation["terms"],
+                    "matched_fields": validation["fields"],
+                    "profile_validation_strength": validation["strength"],
+                    "market_cap_bucket": market_cap_bucket(company.get("market_cap")),
+                })
+            for company in _diverse_profile_selection(profile_rows):
+                key = str(company["ticker"]).upper()
+                role = PROFILE_DISCOVERY_RULES[track]["role"]
+                row = results.setdefault(key, {
+                    "company": company["company"], "ticker": key,
+                    "exchange": company.get("exchange", ""), "listing_status": "Public",
+                    "resolution": company.get("resolution", "listed_company_profile"),
+                    "beneficiary_roles": [], "themes": [], "parent_tracks": [],
+                    "related_industries": [], "technologies": [], "evidence_ids": [],
+                    "discovery_sources": [], "thesis_evidence": [], "confirmation_evidence": [],
+                })
+                if role not in row["beneficiary_roles"]:
+                    row["beneficiary_roles"].append(role)
+                if theme["theme"] not in row["themes"]:
+                    row["themes"].append(theme["theme"])
+                for field in ("related_industries", "technologies", "evidence_ids"):
+                    for value in theme.get(field, []):
+                        if value not in row[field]:
+                            row[field].append(value)
+                if track not in row["parent_tracks"]:
+                    row["parent_tracks"].append(track)
+                source = f"Broad listed-company profile discovery: {track} ({', '.join(company['matched_terms'])})"
+                if source not in row["discovery_sources"]:
+                    row["discovery_sources"].append(source)
+                thesis = _profile_evidence(company, theme, track, company["matched_terms"], company["matched_fields"])
+                if thesis not in row["thesis_evidence"]:
+                    row["thesis_evidence"].append(thesis)
+                row["discovery_method"] = "category_profile_validation"
+                row["profile_matches"] = sorted(set(row.get("profile_matches", []) + company["matched_terms"]))
+                row["profile_match_fields"] = sorted(set(row.get("profile_match_fields", []) + company["matched_fields"]))
+                row["profile_validation_strength"] = max(
+                    row.get("profile_validation_strength", 0), company["profile_validation_strength"])
+                row["market_cap"] = company.get("market_cap")
+                row["market_cap_bucket"] = company["market_cap_bucket"]
     for row in results.values():
         row["opportunity_stage"] = opportunity_stage(
             row["beneficiary_roles"], row["thesis_evidence"], row["confirmation_evidence"])
@@ -301,7 +520,7 @@ def build_ai_reasoning_discovery(news_section, listed_companies=None, source_sta
     themes = discover_ai_themes(events)
     stocks = discover_ai_stocks(events, themes, listed_companies)
     return {
-        "schema_version": "ai-reasoning-discovery-v2",
+        "schema_version": "ai-reasoning-discovery-v3",
         "flow": "Evidence / News / Industry Data → Reasoning → Theme Discovery → Beneficiary Discovery → Stock Discovery → Radar",
         "theme_signals": themes,
         "stock_candidates": stocks,
@@ -309,13 +528,26 @@ def build_ai_reasoning_discovery(news_section, listed_companies=None, source_sta
             "evidence_events": len(events), "themes": len(themes), "public_stocks": len(stocks),
             "first_order": sum("First-Order" in row["beneficiary_roles"] for row in stocks),
             "second_order": sum("Second-Order" in row["beneficiary_roles"] for row in stocks),
+            "profile_discovered": sum(row.get("discovery_method") == "category_profile_validation" for row in stocks),
+            "by_market_cap_bucket": {bucket: sum(row.get("market_cap_bucket", "Unknown") == bucket for row in stocks)
+                                     for bucket in ("Mega", "Large", "Mid", "Small/Emerging", "Unknown")},
+            "by_parent_track": {track: sum(track in row.get("parent_tracks", []) for row in stocks)
+                                for track in PROFILE_DISCOVERY_RULES},
             "by_opportunity_stage": {stage: sum(row["opportunity_stage"] == stage for row in stocks)
                                      for stage in ("Emerging Trend", "Early Beneficiary",
                                                    "Commercial Confirmation", "Established Beneficiary")},
         },
         "listed_company_source": source_status or {"status": "not supplied"},
+        "diagnostics": {
+            "primary_bottleneck_fixed": "Company discovery previously required an explicit company mention in a current news event; active themes now scan and validate a general listed-company profile universe.",
+            "focused_universe_entry_gate": False,
+            "market_cap_entry_filter": False,
+            "category_candidate_limit": 5,
+            "remaining_source_constraint": "Discovery breadth depends on the industry/product metadata present in the listed-company source; missing profile detail remains missing.",
+        },
         "policy": {
-            "no_manual_ticker_insertion": "Stock discovery uses evidence identities and a general listed-company universe, not a theme-specific ticker list.",
+            "no_manual_ticker_insertion": "Stock discovery scans source-backed company profiles in a general listed-company universe using category capability rules, not a theme-specific ticker list.",
+            "size_diversity": "Market capitalization is context only. It never raises relevance; diversity selection prevents equally credible results from being dominated by mega caps.",
             "discovery_not_scoring": "Reasoning signals create research candidates only; existing Radar scoring remains unchanged.",
             "early_entry_policy": "Orders, backlog, guidance, customers, and revenue are not required for Radar entry when source-backed thesis evidence establishes a logical beneficiary connection.",
             "evidence_separation": "Thesis Evidence explains why a company may benefit; Confirmation Evidence records commercial proof without replacing the thesis.",

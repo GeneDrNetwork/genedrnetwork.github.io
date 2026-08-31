@@ -69,7 +69,7 @@
 .radar-icon { display: inline-grid; place-items: center; flex: 0 0 auto; width: 38px; height: 38px; border-radius: 8px; color: #fff; background: var(--dash-blue); font-size: .69rem; font-weight: 800; letter-spacing: .04em; }
 .radar-icon-bio { background: var(--dash-teal); }
 .radar-column-labels, .radar-item summary { display: grid; grid-template-columns: minmax(145px,1.05fr) 86px 90px 105px minmax(190px,1.45fr) minmax(170px,1.25fr) 25px; gap: 13px; align-items: center; }
-.ai-labels, .ai-stock-radar-item summary { grid-template-columns: minmax(155px,1.1fr) minmax(105px,.8fr) 82px minmax(125px,.95fr) minmax(205px,1.55fr) minmax(175px,1.3fr) 25px; }
+.ai-labels, .ai-stock-radar-item summary { grid-template-columns: minmax(110px,.82fr) minmax(170px,1.18fr) 82px minmax(125px,.95fr) minmax(205px,1.55fr) minmax(175px,1.3fr) 25px; }
 .ai-radar-item, .ai-radar-item summary, .ai-labels { width: 100%; min-width: 0; box-sizing: border-box; }
 .ai-stock-radar-item, .ai-stock-radar-item summary, .ai-stock-radar-item summary > * { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
 .ai-stock-radar-item summary { min-height: 80px; grid-auto-rows: auto; align-items: start; }
