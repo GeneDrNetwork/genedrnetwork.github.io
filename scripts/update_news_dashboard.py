@@ -506,8 +506,64 @@ MRNA_VALIDATION_CASE = {
 
 def watch_rows(values):
     return [{"company": c, "ticker": t, "sector": s, "why": w, "catalyst": k, "market_cap": m,
-             "growth_potential": g, "risk": r, "watchlist_source": "Manual"}
-            for c, t, s, w, k, m, g, r in values]
+             "growth_potential": g, "risk": r} for c, t, s, w, k, m, g, r in values]
+
+
+def build_strategy_watchlists(ai_radar, biotech_radar, monthly_picks, swing_section, market_data):
+    """Build the daily auto-managed Watchlist from current strategy selections only."""
+    selected = {}
+
+    def add(row, source_name, domain, why=None, context=None):
+        ticker = str((row or {}).get("ticker") or "").strip().upper()
+        if not ticker or ticker in ("PRIVATE", "N/A", "MISSING"):
+            return
+        key = ticker
+        item = selected.setdefault(key, {
+            "company": row.get("company") or ticker, "ticker": ticker, "domain": domain,
+            "watchlist_sources": [], "strategy_contexts": [],
+        })
+        if source_name not in item["watchlist_sources"]:
+            item["watchlist_sources"].append(source_name)
+        if context and context not in item["strategy_contexts"]:
+            item["strategy_contexts"].append(context)
+        if why and not item.get("why"):
+            item["why"] = why
+        for field in ("catalyst", "catalyst_timing", "binary_risk", "thesis_invalidation"):
+            if row.get(field) and not item.get(field):
+                item[field] = row[field]
+        if domain == "biotech":
+            item["domain"] = "biotech"
+
+    for trend in ai_radar or []:
+        for beneficiary in trend.get("beneficiary_records", []):
+            evidence = (beneficiary.get("thesis_evidence") or [{}])[0].get("basis")
+            why = f"Why on Radar: {beneficiary.get('company')} is an evidence-linked beneficiary of {trend.get('trend')}. {evidence or trend.get('what_it_means') or trend.get('why_now')}"
+            add(beneficiary, "Radar", "ai", why,
+                f"Radar growth thesis — {trend.get('trend')}: {evidence or trend.get('what_it_means') or 'Evidence is incomplete.'}")
+    for row in biotech_radar or []:
+        add(row, "Radar", "biotech", row.get("why_important"),
+            f"Radar catalyst — {row.get('program')}: {row.get('catalyst')}. {row.get('clinical_evidence')}")
+    for domain in ("ai", "biotech"):
+        for row in (monthly_picks or {}).get(domain, []):
+            why = (row.get("why_this_stock") or {}).get("summary") or row.get("why_selected")
+            support = (row.get("why_this_stock") or {}).get("supporting_evidence") or row.get("why_selected")
+            add(row, "High Conviction", domain, why, f"High Conviction quality thesis: {support}")
+    for row in (swing_section or {}).get("opportunities", []):
+        why = (row.get("why_this_swing_trade_opportunity") or {}).get("why_chart_selected")
+        stage = (row.get("why_this_swing_trade_opportunity") or {}).get("bottom_reversal_stage")
+        catalyst = (row.get("catalyst") or {}).get("description")
+        invalidation = (row.get("why_this_swing_trade_opportunity") or {}).get("invalidation")
+        enriched = {**row, "catalyst": catalyst, "catalyst_timing": (row.get("catalyst") or {}).get("timing")}
+        add(enriched, "Swing Trade", row.get("domain") or "ai", why,
+            f"Swing setup — {row.get('classification')}: {stage} Catalyst: {catalyst}. Invalidation: {invalidation}")
+
+    result = {"ai": [], "biotech": []}
+    for item in selected.values():
+        domain = item["domain"]
+        result[domain].append(attach_market_context([item], market_data, domain)[0])
+    for domain in result:
+        result[domain].sort(key=lambda row: (-(len(row.get("watchlist_sources", []))), row["ticker"]))
+    return result
 
 
 def catalyst_classification(score):
@@ -3434,13 +3490,13 @@ def build():
     company_quality = build_company_quality_layer(
         candidate_discovery["candidates"], run_at, fetch_nasdaq_json,
         previous.get("company_quality"))
-    watchlists = {"ai": attach_market_context(watch_rows(AI_WATCH), market_data, "ai"),
-                  "biotech": attach_market_context(watch_rows(BIOTECH_WATCH), market_data, "biotech")}
     monthly_picks, high_conviction_engine, entry_timing_engine = build_high_conviction_engine(
-        ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality, watchlists)
+        ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality)
     swing_trade_opportunities = build_swing_trade_engine(
         candidate_discovery, market_data, ai_radar, biotech_radar,
         ai_news_section, biotech_news_section)
+    watchlists = build_strategy_watchlists(
+        ai_radar, biotech_radar, monthly_picks, swing_trade_opportunities, market_data)
     high_conviction_commentary = annotate_high_conviction(monthly_picks)
     watchlists = annotate_watchlists(watchlists, biotech_radar)
     dashboard_commentary = {
@@ -3472,10 +3528,10 @@ def build():
         "candidate_discovery": candidate_discovery,
         "company_quality": company_quality, "watchlists": watchlists,
         "watchlist_policy": {
-            "membership": "User-selected in the browser from Radar, High Conviction, Swing Trade, or Manual Add.",
-            "persistence": "Browser selections and removals persist independently of daily JSON refreshes.",
+            "membership": "Automatically derived from current Radar, High Conviction, and Swing Trade selections, plus genuine browser Manual Add entries.",
+            "persistence": "Only genuine Manual Add entries persist independently of daily JSON refreshes.",
             "market_data": "Prices and technical indicators reuse the shared market-data layer; no frontend quote provider is used.",
-            "automatic_addition": "Radar membership alone never automatically adds a stock to the Watchlist.",
+            "automatic_refresh": "Strategy-derived membership is added, combined, and removed automatically as current strategy selections change.",
         },
         "commentary": dashboard_commentary,
         "high_conviction_engine": high_conviction_engine,

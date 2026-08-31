@@ -9,7 +9,9 @@ const setText = (id, value) => { const element = document.getElementById(id); if
 let sharedMarketSecurities = {};
 let currentDashboardData = null;
 let watchlistState = null;
-const WATCHLIST_STORAGE_KEY = "genedr-investment-watchlist-v1";
+let currentAutomaticWatchlistTickers = new Set();
+const WATCHLIST_STORAGE_KEY = "genedr-investment-watchlist-v2";
+const LEGACY_WATCHLIST_STORAGE_KEY = "genedr-investment-watchlist-v1";
 
 function normalizedTicker(value) {
   return String(value || "").trim().toUpperCase();
@@ -23,33 +25,36 @@ function initializeWatchlistState(data) {
   if (watchlistState) return watchlistState;
   try {
     const saved = JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY) || "null");
-    if (saved && saved.version === 1 && Array.isArray(saved.items)) watchlistState = saved;
+    if (saved && saved.version === 2 && Array.isArray(saved.manual_items)) watchlistState = saved;
   } catch (_) { watchlistState = null; }
   if (!watchlistState) {
-    const defaults = [
-      ...(data.watchlists?.ai || []).map((row) => ({ ...row, domain: "ai" })),
-      ...(data.watchlists?.biotech || []).map((row) => ({ ...row, domain: "biotech" })),
-    ];
-    watchlistState = { version: 1, items: defaults.map((row) => ({
-      ticker: normalizedTicker(row.ticker), company: row.company, domain: row.domain,
-      source: row.watchlist_source || "Manual", reason: row.why || "User-selected for active monitoring.",
-      added_at: data.updated_at || new Date().toISOString(),
-    })) };
+    let legacyItems = [];
+    try {
+      const legacy = JSON.parse(localStorage.getItem(LEGACY_WATCHLIST_STORAGE_KEY) || "null");
+      if (legacy?.version === 1 && Array.isArray(legacy.items)) legacyItems = legacy.items;
+    } catch (_) { legacyItems = []; }
+    const timestampCounts = legacyItems.reduce((counts, item) => {
+      counts[item.added_at] = (counts[item.added_at] || 0) + 1; return counts;
+    }, {});
+    const genuineManual = legacyItems.filter((item) => item.source === "Manual" && timestampCounts[item.added_at] === 1)
+      .map((item) => ({ ticker: normalizedTicker(item.ticker), company: item.company, domain: item.domain,
+        reason: item.reason || "Manually selected for active technical monitoring.", added_at: item.added_at }));
+    watchlistState = { version: 2, manual_items: genuineManual };
     writeWatchlistState();
+    try { localStorage.removeItem(LEGACY_WATCHLIST_STORAGE_KEY); } catch (_) { /* Browser storage may be disabled. */ }
   }
   return watchlistState;
 }
 
 function isOnWatchlist(ticker) {
   const key = normalizedTicker(ticker);
-  return Boolean(watchlistState?.items?.some((item) => normalizedTicker(item.ticker) === key));
+  return currentAutomaticWatchlistTickers.has(key) || Boolean(watchlistState?.manual_items?.some((item) => normalizedTicker(item.ticker) === key));
 }
 
 function watchlistAction(ticker, company, source, domain) {
   const key = normalizedTicker(ticker);
   if (!key || ["PRIVATE", "N/A", "MISSING"].includes(key)) return "";
-  const added = isOnWatchlist(key);
-  return `<button type="button" class="watchlist-action" data-watchlist-add data-ticker="${escapeHtml(key)}" data-company="${escapeHtml(company || key)}" data-source="${escapeHtml(source)}" data-domain="${escapeHtml(domain)}"${added ? " disabled" : ""}>${added ? "✓ On Watchlist" : "+ Add to Watchlist"}</button>`;
+  return `<button type="button" class="watchlist-action" data-watchlist-add data-ticker="${escapeHtml(key)}" data-company="${escapeHtml(company || key)}" data-source="${escapeHtml(source)}" data-domain="${escapeHtml(domain)}" disabled>✓ Auto Watchlist</button>`;
 }
 
 const PLACEHOLDER_SCORES = [88, 84, 81, 78, 75, 72, 69, 66, 63, 60];
@@ -483,37 +488,37 @@ function renderSwingTrades(section = {}) {
   }).join("") || `<p class="loading-state">No stock currently passes both the technical-first screen and the credible-catalyst check.</p>`;
 }
 
-function strategyRecord(selection, data) {
-  const ticker = normalizedTicker(selection.ticker);
-  const domain = selection.domain || sharedMarketSecurities[ticker]?.domains?.[0] || "ai";
-  if (selection.source === "Radar") {
-    if (domain === "biotech") {
-      const row = (data.radar?.biotech || []).find((item) => normalizedTicker(item.ticker) === ticker);
-      if (row) return { ...row, why: row.why_important, strategy_context: `Radar catalyst: ${row.catalyst || "Missing"}. ${row.clinical_evidence || ""}` };
+function automaticWatchlistSelections(data) {
+  const selected = new Map();
+  const add = (row, source, domain, why, context) => {
+    const ticker = normalizedTicker(row?.ticker);
+    if (!ticker || ["PRIVATE", "N/A", "MISSING"].includes(ticker)) return;
+    if (!selected.has(ticker)) selected.set(ticker, { ticker, company: row.company || ticker, domain, sources: [], records: [], contexts: [] });
+    const item = selected.get(ticker);
+    if (!item.sources.includes(source)) item.sources.push(source);
+    if (domain === "biotech") item.domain = "biotech";
+    item.records.push({ source, row, why, context });
+    if (context && !item.contexts.includes(context)) item.contexts.push(context);
+  };
+  for (const trend of data.radar?.ai || []) {
+    for (const beneficiary of trend.beneficiary_records || []) {
+      const thesis = beneficiary.thesis_evidence?.[0]?.basis || trend.what_it_means || trend.why_now;
+      add(beneficiary, "Radar", "ai", `Why on Radar: ${beneficiary.company} is an evidence-linked beneficiary of ${trend.trend}. ${thesis}`,
+        `Radar growth thesis — ${trend.trend}: ${thesis}`);
     }
-    for (const trend of data.radar?.ai || []) {
-      const beneficiary = (trend.beneficiary_records || []).find((item) => normalizedTicker(item.ticker) === ticker);
-      if (beneficiary) {
-        const thesis = beneficiary.thesis_evidence?.[0]?.basis || trend.what_it_means || trend.why_now;
-        return { ...beneficiary, why: `Why on Radar: ${beneficiary.company} is an evidence-linked beneficiary of ${trend.trend}. ${thesis}`, catalyst: trend.watch_next,
-          strategy_context: `Growth thesis: ${trend.trend}. ${thesis}` };
-      }
-    }
   }
-  if (selection.source === "High Conviction") {
-    const row = (data.monthly_picks?.[domain] || []).find((item) => normalizedTicker(item.ticker) === ticker);
-    if (row) return { ...row, why: row.why_this_stock?.summary || row.why_selected,
-      strategy_context: `Long-term quality thesis: ${row.why_this_stock?.supporting_evidence || row.why_selected || "Missing"}` };
+  for (const row of data.radar?.biotech || []) add(row, "Radar", "biotech", row.why_important,
+    `Radar catalyst — ${row.program}: ${row.catalyst}. ${row.clinical_evidence || "Evidence detail missing."}`);
+  for (const domain of ["ai", "biotech"]) {
+    for (const row of data.monthly_picks?.[domain] || []) add(row, "High Conviction", domain,
+      row.why_this_stock?.summary || row.why_selected,
+      `High Conviction quality thesis: ${row.why_this_stock?.supporting_evidence || row.why_selected || "Missing"}`);
   }
-  if (selection.source === "Swing Trade") {
-    const row = (data.swing_trade_opportunities?.opportunities || []).find((item) => normalizedTicker(item.ticker) === ticker);
-    if (row) return { ...row, why: row.why_this_swing_trade_opportunity?.why_chart_selected,
-      catalyst: row.catalyst?.description, strategy_context: `Swing setup: ${row.classification}. ${row.why_this_swing_trade_opportunity?.bottom_reversal_stage || ""} Catalyst: ${row.catalyst?.description || "Missing"}. Invalidation: ${row.why_this_swing_trade_opportunity?.invalidation || "Missing"}` };
-  }
-  const defaultRow = [...(data.watchlists?.ai || []), ...(data.watchlists?.biotech || [])].find((item) => normalizedTicker(item.ticker) === ticker);
-  if (defaultRow) return defaultRow;
-  const candidate = (data.candidate_discovery?.candidates || []).find((item) => normalizedTicker(item.ticker) === ticker);
-  return candidate || { company: selection.company || ticker, ticker, why: selection.reason || "Manually selected for active technical monitoring." };
+  for (const row of data.swing_trade_opportunities?.opportunities || []) add(row, "Swing Trade", row.domain || "ai",
+    row.why_this_swing_trade_opportunity?.why_chart_selected,
+    `Swing setup — ${row.classification}: ${row.why_this_swing_trade_opportunity?.bottom_reversal_stage || ""} Catalyst: ${row.catalyst?.description || "Missing"}. Invalidation: ${row.why_this_swing_trade_opportunity?.invalidation || "Missing"}`);
+  currentAutomaticWatchlistTickers = new Set(selected.keys());
+  return selected;
 }
 
 function watchlistTechnical(snapshot = {}, domain = "ai") {
@@ -552,15 +557,31 @@ function waitingCondition(technical) {
 }
 
 function hydratedWatchlistRows(data) {
-  return initializeWatchlistState(data).items.map((selection) => {
-    const ticker = normalizedTicker(selection.ticker); const sourceRow = strategyRecord(selection, data);
+  const selected = automaticWatchlistSelections(data);
+  for (const manual of initializeWatchlistState(data).manual_items) {
+    const ticker = normalizedTicker(manual.ticker);
+    if (!selected.has(ticker)) selected.set(ticker, { ticker, company: manual.company || ticker, domain: manual.domain || sharedMarketSecurities[ticker]?.domains?.[0] || "ai", sources: [], records: [], contexts: [] });
+    const item = selected.get(ticker);
+    if (!item.sources.includes("Manual")) item.sources.push("Manual");
+    const candidate = (data.candidate_discovery?.candidates || []).find((row) => normalizedTicker(row.ticker) === ticker) || { company: manual.company || ticker, ticker };
+    item.records.push({ source: "Manual", row: candidate, why: manual.reason || "Manually selected for active technical monitoring.",
+      context: "This ticker was personally added and does not need to qualify for another strategy." });
+    item.contexts.push("Manual selection: personally added for active technical monitoring.");
+  }
+  const sourcePriority = { "Swing Trade": 3, "High Conviction": 2, Radar: 1, Manual: 0 };
+  return [...selected.values()].map((selection) => {
+    const ticker = selection.ticker;
+    const primaryRecord = [...selection.records].sort((a, b) => sourcePriority[b.source] - sourcePriority[a.source])[0] || { row: {} };
+    const sourceRow = primaryRecord.row;
     const snapshot = sharedMarketSecurities[ticker] || sourceRow.market_data || {};
     const domain = selection.domain || snapshot.domains?.[0] || sourceRow.domain || "ai";
     const technical = watchlistTechnical(snapshot, domain);
-    const reason = sourceRow.why || selection.reason || "Manually selected for active technical monitoring.";
+    const reasons = selection.records.map((record) => record.why).filter(Boolean);
+    const reason = reasons.join(" ") || "Selected for active technical monitoring.";
+    const sourceLabel = selection.sources.join(" + ");
     const commentary = {
       why_on_watchlist: reason,
-      selection_source: `Source: ${selection.source}. ${sourceRow.strategy_context || (selection.source === "Manual" ? "This ticker was selected directly and does not need to qualify for another strategy." : "The originating strategy context remains attached to this selection.")}`,
+      selection_source: `Sources: ${sourceLabel}. ${selection.contexts.join(" ")}`,
       chart: `${technical.trend}. Price is ${technical.price_vs_ma20_pct ?? "an unknown distance"}% versus MA20 and ${technical.price_vs_ma50_pct ?? "an unknown distance"}% versus MA50. ${technical.bottom_formation} ${technical.reversal_status}`,
       entry: `Buy status is ${technical.buy_status}. ${waitingCondition(technical)}`,
       waiting_for: waitingCondition(technical),
@@ -571,9 +592,9 @@ function hydratedWatchlistRows(data) {
     technical.catalyst = sourceRow.catalyst?.description || sourceRow.catalyst || biotechRadar.catalyst || "Missing";
     technical.catalyst_timing = sourceRow.catalyst?.timing || sourceRow.catalyst_timing || biotechRadar.expected_timing || "Missing";
     technical.binary_risk = sourceRow.binary_risk || biotechRadar.binary_risk || "Missing";
-    return { ...sourceRow, ticker, company: sourceRow.company || selection.company || ticker, domain, category: domain === "biotech" ? "Biotech" : "AI",
-      watchlist_source: selection.source, market_data: snapshot, watchlist_commentary: commentary, watchlist_technical: technical };
-  });
+    return { ...sourceRow, ticker, company: selection.company || sourceRow.company || ticker, domain, category: domain === "biotech" ? "Biotech" : "AI",
+      watchlist_sources: selection.sources, market_data: snapshot, watchlist_commentary: commentary, watchlist_technical: technical };
+  }).sort((a, b) => b.watchlist_sources.length - a.watchlist_sources.length || a.ticker.localeCompare(b.ticker));
 }
 
 function renderWatchlist(data) {
@@ -592,14 +613,17 @@ function renderWatchlist(data) {
       <div><dt>+15% Level</dt><dd>${escapeHtml(formatTechnicalPrice(targets.plus_15))}</dd></div><div><dt>+20% Level</dt><dd>${escapeHtml(formatTechnicalPrice(targets.plus_20))}</dd></div>
       <div><dt>Catalyst</dt><dd>${escapeHtml(technical.catalyst || row.catalyst || "Missing")}${technical.catalyst_timing && technical.catalyst_timing !== "Missing" ? ` · ${escapeHtml(technical.catalyst_timing)}` : ""}</dd></div>
       <div><dt>Binary Risk</dt><dd>${escapeHtml(technical.binary_risk || "Missing")}</dd></div>` : "";
-    return `<details class="watchlist-card"><summary class="watchlist-summary"><span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">Source: ${escapeHtml(row.watchlist_source || "Manual")}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></span>
+    const sources = row.watchlist_sources || ["Manual"];
+    const sourcePrefix = sources.length > 1 ? "Sources" : "Source";
+    const manualAdded = sources.includes("Manual");
+    return `<details class="watchlist-card"><summary class="watchlist-summary"><span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></span>
       <span><small>Trend</small><strong>${escapeHtml(technical.trend || "Data unavailable")}</strong></span><span><small>Buy Status</small><strong class="watch-buy-status watch-buy-${classKey(technical.buy_status || "wait")}">${escapeHtml(technical.buy_status || "WAIT")}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
-      <div class="watchlist-detail"><section class="watchlist-commentary"><h4>Watchlist Commentary</h4><p><strong>Why it is here:</strong> ${escapeHtml(commentary.why_on_watchlist || row.why || "Missing")}</p><p><strong>Strategy context:</strong> ${escapeHtml(commentary.selection_source || `Source: ${row.watchlist_source || "Manual"}`)}</p><p><strong>What the chart is doing:</strong> ${escapeHtml(commentary.chart || "Technical interpretation unavailable.")}</p><p><strong>Entry situation:</strong> ${escapeHtml(commentary.entry || "Entry interpretation unavailable.")}</p><p><strong>What still needs to happen:</strong> ${escapeHtml(commentary.waiting_for || "Missing")}</p><p><strong>Setup strengthens if:</strong> ${escapeHtml(commentary.stronger || "Missing")}</p><p><strong>Setup weakens if:</strong> ${escapeHtml(commentary.weaker || "Missing")}</p></section>
+      <div class="watchlist-detail"><section class="watchlist-commentary"><h4>Watchlist Commentary</h4><p><strong>Why it is here:</strong> ${escapeHtml(commentary.why_on_watchlist || row.why || "Missing")}</p><p><strong>Strategy context:</strong> ${escapeHtml(commentary.selection_source || `${sourcePrefix}: ${sources.join(" + ")}`)}</p><p><strong>What the chart is doing:</strong> ${escapeHtml(commentary.chart || "Technical interpretation unavailable.")}</p><p><strong>Entry situation:</strong> ${escapeHtml(commentary.entry || "Entry interpretation unavailable.")}</p><p><strong>What still needs to happen:</strong> ${escapeHtml(commentary.waiting_for || "Missing")}</p><p><strong>Setup strengthens if:</strong> ${escapeHtml(commentary.stronger || "Missing")}</p><p><strong>Setup weakens if:</strong> ${escapeHtml(commentary.weaker || "Missing")}</p></section>
       <dl class="watchlist-technical-grid"><div><dt>Current Price</dt><dd>${escapeHtml(formatTechnicalPrice(technical.current_price))}</dd></div><div><dt>MA20</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma20))}</dd></div><div><dt>MA50</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma50))}</dd></div>
       <div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(formatTechnicalPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatTechnicalPrice(technical.resistance))}</dd></div>
       <div><dt>Volume / Volume Trend</dt><dd>${escapeHtml(technical.volume_trend || (technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${formatMarketValue(technical.volume_vs_20d_average)}x`))}</dd></div><div><dt>Trend</dt><dd>${escapeHtml(technical.trend || "Missing")}</dd></div><div><dt>Bottom Formation</dt><dd>${escapeHtml(technical.bottom_formation || "Missing")}</dd></div>
       <div><dt>Reversal Status</dt><dd>${escapeHtml(technical.reversal_status || "Missing")}</dd></div><div><dt>Entry Zone</dt><dd>${escapeHtml(zoneText)}</dd></div><div><dt>Buy Status</dt><dd>${escapeHtml(technical.buy_status || "WAIT")}</dd></div><div><dt>Invalidation Level</dt><dd>${escapeHtml(formatTechnicalPrice(technical.invalidation_level))}</dd></div>${biotechFields}</dl>
-      ${isBiotech && technical.target_basis ? `<p class="watchlist-basis-note">${escapeHtml(technical.target_basis)}; these are planning levels before a brokerage trade, not actual-position P/L targets.</p>` : ""}<div class="watchlist-controls"><button type="button" class="watchlist-action watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}">Remove from Watchlist</button></div></div></details>`;
+      ${isBiotech && technical.target_basis ? `<p class="watchlist-basis-note">${escapeHtml(technical.target_basis)}; these are planning levels before a brokerage trade, not actual-position P/L targets.</p>` : ""}<div class="watchlist-controls">${manualAdded ? `<button type="button" class="watchlist-action watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}">Remove Manual Addition</button>` : `<span class="watchlist-managed-note">Automatically managed by current strategy selections</span>`}</div></div></details>`;
   }).join("") || `<p class="loading-state">No stocks are currently selected for active monitoring.</p>`;
 }
 
@@ -638,16 +662,19 @@ function refreshWatchlistUi() {
   if (!currentDashboardData) return;
   renderSafely(() => renderWatchlist(currentDashboardData), "my-watchlist");
   document.querySelectorAll("[data-watchlist-add]").forEach((button) => {
-    const added = isOnWatchlist(button.dataset.ticker);
-    button.disabled = added;
-    button.textContent = added ? "✓ On Watchlist" : "+ Add to Watchlist";
+    button.disabled = true;
+    button.textContent = "✓ Auto Watchlist";
   });
 }
 
 function addWatchlistItem({ ticker, company, source, domain }) {
   const key = normalizedTicker(ticker);
-  if (isOnWatchlist(key)) {
-    setWatchlistStatus(`${key} is already on the Watchlist.`, "error");
+  if (source !== "Manual") {
+    setWatchlistStatus(`${key} is automatically managed by ${source}.`, "success");
+    return false;
+  }
+  if (watchlistState.manual_items.some((item) => normalizedTicker(item.ticker) === key)) {
+    setWatchlistStatus(`${key} is already preserved as a Manual addition.`, "error");
     return false;
   }
   const snapshot = sharedMarketSecurities[key];
@@ -656,20 +683,22 @@ function addWatchlistItem({ ticker, company, source, domain }) {
     return false;
   }
   const resolvedDomain = domain || snapshot.domains?.[0] || "ai";
-  watchlistState.items.push({ ticker: key, company: company || key, source, domain: resolvedDomain,
-    reason: source === "Manual" ? "Manually selected for active technical monitoring." : `Selected from ${source} for active monitoring.`,
+  watchlistState.manual_items.push({ ticker: key, company: company || key, domain: resolvedDomain,
+    reason: "Manually selected for active technical monitoring.",
     added_at: new Date().toISOString() });
   writeWatchlistState();
-  setWatchlistStatus(`${key} was added from ${source}. Daily data refreshes will update its technicals without removing it.`, "success");
+  const combined = currentAutomaticWatchlistTickers.has(key) ? " Its Manual source was added to the existing strategy sources." : "";
+  setWatchlistStatus(`${key} was added manually.${combined} Daily data refreshes will update its technicals without removing the Manual selection.`, "success");
   refreshWatchlistUi();
   return true;
 }
 
 function removeWatchlistItem(ticker) {
   const key = normalizedTicker(ticker);
-  watchlistState.items = watchlistState.items.filter((item) => normalizedTicker(item.ticker) !== key);
+  watchlistState.manual_items = watchlistState.manual_items.filter((item) => normalizedTicker(item.ticker) !== key);
   writeWatchlistState();
-  setWatchlistStatus(`${key} was removed from the Watchlist.`, "success");
+  const remainsAutomatic = currentAutomaticWatchlistTickers.has(key);
+  setWatchlistStatus(remainsAutomatic ? `${key}'s Manual source was removed; it remains because a current strategy still selects it.` : `${key} was removed from the Watchlist.`, "success");
   refreshWatchlistUi();
 }
 
