@@ -212,18 +212,57 @@ function aiBeneficiaryLabels(row, limit = null) {
   return (limit ? records.slice(0, limit) : records).map((item) => companyTickerLabel(item)).join("; ");
 }
 
+function conciseRadarText(value, limit = 220) {
+  const clean = String(value || "").replace(/\s+/g, " ").trim();
+  if (!clean) return "Evidence detail is unavailable.";
+  const sentence = clean.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim() || clean;
+  return sentence.length <= limit ? sentence : `${sentence.slice(0, limit - 1).replace(/\s+\S*$/, "")}…`;
+}
+
+function aiStockRadarRows(trends = []) {
+  const rows = [];
+  const seen = new Set();
+  for (const trend of trends) {
+    for (const beneficiary of trend.beneficiary_records || []) {
+      const ticker = normalizedTicker(beneficiary.ticker);
+      if (!ticker || ["PRIVATE", "N/A", "MISSING"].includes(ticker) || beneficiary.listing_status !== "Public") continue;
+      const key = `${trend.trend}|${ticker}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const thesis = beneficiary.thesis_evidence?.[0]?.basis;
+      const confirmation = beneficiary.confirmation_evidence?.[0]?.basis;
+      const category = `${trend.trend} · ${beneficiary.category || "Beneficiary"}`;
+      const whySelected = conciseRadarText(thesis || confirmation || `${beneficiary.company} is mapped as a ${beneficiary.category || "potential"} beneficiary of ${trend.trend} because the current industry-chain evidence connects it to this opportunity.`);
+      const riskUnproven = beneficiary.confirmation_missing
+        ? "Commercial confirmation remains incomplete; orders, customer adoption, guidance, or revenue evidence is still unproven."
+        : "Connected confirmation exists, but durability, revenue sensitivity, execution, and valuation still require monitoring.";
+      rows.push({ trend, beneficiary, ticker, category, strength: trend.trend_strength,
+        stage: beneficiary.opportunity_stage || "Stage unavailable", why_selected: whySelected, risk_unproven: riskUnproven });
+    }
+  }
+  return rows.sort((a, b) => (b.strength ?? -1) - (a.strength ?? -1)
+    || (b.beneficiary.beneficiary_relevance ?? -1) - (a.beneficiary.beneficiary_relevance ?? -1)
+    || a.ticker.localeCompare(b.ticker));
+}
+
 function renderAiRadar(rows) {
-  document.getElementById("ai-radar").innerHTML = rows.map((row) => `<details class="radar-item ai-radar-item"><summary>
-      <span class="radar-name"><strong>${escapeHtml(row.trend)}</strong><small>Technology trend</small></span>${renderScore(row.trend_strength, "Trend Strength")}
-      <span class="direction"><i aria-hidden="true">${row.direction === "Contradicting" ? "↘" : row.direction === "Mixed" ? "↔" : "↗"}</i>${escapeHtml(row.direction)}</span><span><b class="stage ${stageClass(row.adoption_stage || "missing")}">${escapeHtml(row.stage)}</b></span>
-      <span class="radar-copy">${escapeHtml(row.why_now)}</span><span class="beneficiaries">${escapeHtml(aiBeneficiaryLabels(row, 3))}</span><span class="expand-control" aria-hidden="true">+</span>
-    </summary><dl class="detail-grid">
-      ${detailItem("What It Means", row.what_it_means)}${detailItem("Key Intelligence", row.key_intelligence)}${detailItem("Demand Drivers", row.demand_drivers)}${detailItem("Current Bottleneck", row.current_bottleneck)}${detailItem("Next Likely Bottleneck", row.next_likely_bottleneck)}
-      ${detailItem("Beneficiaries", aiBeneficiaryLabels(row))}${detailItem("Market Expectation / Priced In", row.market_expectation, true)}
-      ${detailItem("Market Confirmation", row.market_confirmation?.score === null || row.market_confirmation?.score === undefined ? "Missing" : `${row.market_confirmation.score} / 10. ${row.market_confirmation.rationale}`)}
-      ${detailItem("Risks / Invalidation", row.risks, true)}${detailItem("What to Watch Next", row.watch_next)}
-      ${renderAiFactorBreakdown(row)}${renderAiHorizons(row.horizons)}${renderAiEvidence("Confirming Evidence", row.confirming_evidence)}${renderAiEvidence("Mixed Evidence", row.mixed_evidence)}${renderAiEvidence("Contradicting Evidence", row.contradicting_evidence)}${renderAiBeneficiaries(row.beneficiary_records, row.trend)}${renderAiHistory(row)}
-    </dl></details>`).join("") || `<p class="loading-state">No AI trends are available.</p>`;
+  const stockRows = aiStockRadarRows(rows);
+  document.getElementById("ai-radar").innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, strength, stage, why_selected, risk_unproven }) => `<details class="radar-item ai-stock-radar-item"><summary>
+      <span class="ai-stock-identity"><strong>${escapeHtml(ticker)} / ${escapeHtml(beneficiary.company)}</strong><small>${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
+      <span class="ai-stock-category">${escapeHtml(category)}</span>${renderScore(strength, "Radar Strength")}
+      <span><b class="ai-stock-stage">${escapeHtml(stage)}</b></span><span class="ai-stock-why">${escapeHtml(why_selected)}</span><span class="ai-stock-risk">${escapeHtml(risk_unproven)}</span><span class="expand-control" aria-hidden="true">+</span>
+    </summary><dl class="detail-grid ai-stock-details">
+      ${detailItem("Why Selected", why_selected)}${detailItem("Risk / What Remains Unproven", risk_unproven)}
+      ${detailItem("Category / Beneficiary Type", category)}${detailItem("Opportunity Stage", stage)}
+      ${detailItem("Beneficiary Relevance", beneficiary.beneficiary_relevance === null || beneficiary.beneficiary_relevance === undefined ? "Missing" : `${beneficiary.beneficiary_relevance} / 100 · ${beneficiary.data_completeness ?? "Missing"}% complete`)}
+      ${detailItem("What the Trend Means", trend.what_it_means)}${detailItem("Key Intelligence", trend.key_intelligence)}${detailItem("Demand Drivers", trend.demand_drivers)}${detailItem("Current Bottleneck", trend.current_bottleneck)}${detailItem("Next Likely Bottleneck", trend.next_likely_bottleneck)}
+      ${detailItem("Market Expectation / Priced In", trend.market_expectation, true)}${detailItem("What to Watch Next", trend.watch_next)}
+      ${renderMarketSnapshot(beneficiary.market_data, "qqq")}
+      <div class="detail-item detail-wide"><dt>Thesis Evidence</dt><dd>${renderDiscoveryEvidence("Evidence", beneficiary.thesis_evidence || [], "Missing / logical beneficiary thesis has not been structured.")}</dd></div>
+      <div class="detail-item detail-wide"><dt>Confirmation Evidence</dt><dd>${renderDiscoveryEvidence("Evidence", beneficiary.confirmation_evidence || [], "Commercial confirmation is not yet connected.")}</dd></div>
+      ${renderAiFactorBreakdown(trend)}${renderAiHorizons(trend.horizons)}${renderAiEvidence("Confirming Trend Evidence", trend.confirming_evidence)}${renderAiEvidence("Contradicting Trend Evidence", trend.contradicting_evidence)}${renderAiHistory(trend)}
+      <div class="detail-item detail-wide"><dt>Active Monitoring</dt><dd>${watchlistAction(ticker, beneficiary.company, "Radar", "ai")}</dd></div>
+    </dl></details>`).join("") || `<p class="loading-state">No public AI or technology stocks have sufficient beneficiary evidence for this view.</p>`;
 }
 
 function safeSourceUrl(value) {
