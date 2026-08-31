@@ -506,7 +506,8 @@ MRNA_VALIDATION_CASE = {
 
 def watch_rows(values):
     return [{"company": c, "ticker": t, "sector": s, "why": w, "catalyst": k, "market_cap": m,
-             "growth_potential": g, "risk": r} for c, t, s, w, k, m, g, r in values]
+             "growth_potential": g, "risk": r, "watchlist_source": "Manual"}
+            for c, t, s, w, k, m, g, r in values]
 
 
 def catalyst_classification(score):
@@ -3470,6 +3471,12 @@ def build():
         "market_data": market_data, "ai_reasoning_discovery": ai_reasoning_discovery,
         "candidate_discovery": candidate_discovery,
         "company_quality": company_quality, "watchlists": watchlists,
+        "watchlist_policy": {
+            "membership": "User-selected in the browser from Radar, High Conviction, Swing Trade, or Manual Add.",
+            "persistence": "Browser selections and removals persist independently of daily JSON refreshes.",
+            "market_data": "Prices and technical indicators reuse the shared market-data layer; no frontend quote provider is used.",
+            "automatic_addition": "Radar membership alone never automatically adds a stock to the Watchlist.",
+        },
         "commentary": dashboard_commentary,
         "high_conviction_engine": high_conviction_engine,
         "entry_timing_engine": entry_timing_engine,

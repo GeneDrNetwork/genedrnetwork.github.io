@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260830-5" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260830-6" />
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
@@ -89,6 +89,11 @@
 
         <section class="dashboard-section" id="my-stocks">
           <div class="section-heading"><div><span class="section-kicker">04 · Active trade preparation</span><h2>My Stocks / Watchlist</h2><p>The final list selected for active monitoring before a trade is placed in the brokerage account.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
+          <form id="watchlist-add-form" class="watchlist-add-form" novalidate>
+            <label for="watchlist-ticker">Add Ticker</label>
+            <div><input id="watchlist-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NTLA" aria-describedby="watchlist-add-status"><button type="submit">Add to Watchlist</button></div>
+            <p id="watchlist-add-status" class="watchlist-add-status" aria-live="polite">Manual additions use the existing shared daily market and technical data.</p>
+          </form>
           <div id="my-watchlist" class="watchlist-cards"><p class="loading-state">Loading watchlist commentary...</p></div>
         </section>
 
@@ -100,6 +105,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. AI and Biotech Radar exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260830-5" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260830-6" defer></script>
   </body>
 </html>
