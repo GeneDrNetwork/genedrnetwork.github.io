@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260830-4" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260830-5" />
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
@@ -35,7 +35,7 @@
       </section>
 
       <nav class="dashboard-nav" aria-label="Dashboard sections">
-        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#my-stocks">My Stocks / Watchlist</a><a href="#markets">Market Pulse</a>
+        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">My Stocks / Watchlist</a><a href="#markets">Market Pulse</a>
       </nav>
 
       <div class="dashboard-shell">
@@ -81,8 +81,14 @@
           <div class="opportunity-columns"><div><div class="subsection-title"><span class="radar-icon" aria-hidden="true">AI</span><h3>AI opportunities</h3></div><div id="ai-opportunities" class="opportunity-list"></div></div><div><div class="subsection-title"><span class="radar-icon radar-icon-bio" aria-hidden="true">BIO</span><h3>Biotech opportunities</h3></div><div id="biotech-opportunities" class="opportunity-list"></div></div></div>
         </section>
 
+        <section class="dashboard-section swing-section" id="swing-trades">
+          <div class="section-heading"><div><span class="section-kicker">03 · Independent technical-first strategy</span><h2>Swing Trade Opportunity</h2><p>Major decline → bottoming → early reversal → entry zone, followed by a separate credible-catalyst check.</p></div><span class="source-note">Early Technical Reversal + Credible Catalyst</span></div>
+          <div class="interpretation-grid swing-interpretation"><section class="interpretation-card"><h3>Strategy Reasoning</h3><div id="swing-reasoning"><p class="loading-state">Evaluating technical setups and catalysts...</p></div></section><section class="interpretation-card takeaways-card"><h3>Take-Home Messages</h3><ol id="swing-takeaways"><li>Loading swing-trade conclusions...</li></ol></section></div>
+          <div id="swing-opportunities" class="swing-opportunity-list"><p class="loading-state">Loading swing-trade opportunities...</p></div>
+        </section>
+
         <section class="dashboard-section" id="my-stocks">
-          <div class="section-heading"><div><span class="section-kicker">03 · Active trade preparation</span><h2>My Stocks / Watchlist</h2><p>The final list selected for active monitoring before a trade is placed in the brokerage account.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
+          <div class="section-heading"><div><span class="section-kicker">04 · Active trade preparation</span><h2>My Stocks / Watchlist</h2><p>The final list selected for active monitoring before a trade is placed in the brokerage account.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
           <div id="my-watchlist" class="watchlist-cards"><p class="loading-state">Loading watchlist commentary...</p></div>
         </section>
 
@@ -94,6 +100,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. AI and Biotech Radar exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260830-4" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260830-5" defer></script>
   </body>
 </html>

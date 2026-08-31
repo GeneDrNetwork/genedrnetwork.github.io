@@ -86,6 +86,10 @@ class EntryTimingEngineTests(unittest.TestCase):
         self.assertIsNotNone(inputs["resistance_level"])
         self.assertIsNotNone(inputs["invalidation_level"])
         self.assertEqual(inputs["history_sessions"], 100)
+        self.assertIsNotNone(inputs["fifty_two_week_high"])
+        self.assertIsNotNone(inputs["recent_low_63d"])
+        self.assertIsNotNone(inputs["drawdown_from_fifty_two_week_high_pct"])
+        self.assertIsNotNone(inputs["distance_from_recent_low_pct"])
 
     def test_layer_preserves_candidate_order_and_reuses_watchlist_record(self):
         ai_rows = [{"ticker": "A", "gates": [{"key": key, "label": key, "passed": True}

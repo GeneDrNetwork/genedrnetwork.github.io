@@ -407,6 +407,35 @@ function renderOpportunities(targetId, rows = []) {
   }).join("") || `<p class="loading-state">No opportunities are available.</p>`;
 }
 
+function renderSwingTrades(section = {}) {
+  const reasoning = section.reasoning || [];
+  const takeaways = section.take_home_messages || [];
+  document.getElementById("swing-reasoning").innerHTML = reasoning.map((item) => `<p>${escapeHtml(item)}</p>`).join("") || `<p>No swing-trade strategy reasoning is available.</p>`;
+  document.getElementById("swing-takeaways").innerHTML = takeaways.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || `<li>No qualifying swing-trade conclusions are available.</li>`;
+  const rows = section.opportunities || [];
+  document.getElementById("swing-opportunities").innerHTML = rows.map((row) => {
+    const technical = row.technical || {};
+    const catalyst = row.catalyst || {};
+    const why = row.why_this_swing_trade_opportunity || {};
+    const market = row.market_data || {};
+    const sourceUrl = safeSourceUrl(catalyst.source_link);
+    const formatPrice = (value) => value === null || value === undefined ? "Unavailable" : decisionPrice(value, market.currency || "USD");
+    return `<details class="swing-card"><summary class="swing-summary"><span class="opportunity-rank">${escapeHtml(row.rank)}</span><div><h4>${escapeHtml(tickerPriceLabel(row.ticker, market))}</h4><small>${escapeHtml(row.company)} · Technical ${escapeHtml(technical.technical_setup_score ?? "Missing")}/100</small></div><span class="swing-state swing-state-${classKey(row.classification)}">${escapeHtml(row.classification)}</span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+      <div class="swing-detail"><section class="swing-why"><h4>Why This Swing Trade Opportunity</h4><ol>
+        <li>${escapeHtml(why.why_chart_selected || "Technical selection reasoning unavailable.")}</li>
+        <li>${escapeHtml(why.bottom_reversal_stage || "Bottom/reversal stage unavailable.")}</li>
+        <li>${escapeHtml(why.why_still_early || "Entry-timing interpretation unavailable.")}</li>
+        <li>${escapeHtml(why.catalyst_support || "Catalyst support unavailable.")}</li>
+        <li>${escapeHtml(why.invalidation || "Invalidation condition unavailable.")}</li>
+      </ol></section>
+      <dl class="swing-technical-grid"><div><dt>Classification</dt><dd>${escapeHtml(row.classification)}</dd></div><div><dt>Current Price</dt><dd>${escapeHtml(formatPrice(technical.current_price))}</dd></div><div><dt>MA20</dt><dd>${escapeHtml(formatPrice(technical.ma20))}</dd></div><div><dt>MA50</dt><dd>${escapeHtml(formatPrice(technical.ma50))}</dd></div>
+        <div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Decline from 52W High</dt><dd>${escapeHtml(formatChange(technical.drawdown_from_high_pct))}</dd></div><div><dt>Recent Low</dt><dd>${escapeHtml(formatPrice(technical.recent_low))}</dd></div><div><dt>Distance From Bottom</dt><dd>${escapeHtml(formatChange(technical.distance_from_bottom_pct))}</dd></div>
+        <div><dt>Bottom Formation</dt><dd>${technical.bottom_stabilized ? "Stabilization rule passed" : "Still forming / not confirmed"}${technical.base_duration_sessions ? ` · ${escapeHtml(technical.base_duration_sessions)} sessions` : ""}</dd></div><div><dt>Early Reversal</dt><dd>${technical.early_reversal_confirmed ? "Confirmed by available momentum rules" : "Not yet confirmed"}</dd></div><div><dt>RSI / MACD</dt><dd>${escapeHtml(technical.rsi_14 ?? "Missing")} / ${escapeHtml(technical.macd?.histogram ?? "Missing")}</dd></div><div><dt>Volume vs 20D Average</dt><dd>${technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${escapeHtml(technical.volume_vs_20d_average)}x`}</dd></div>
+        <div><dt>Support</dt><dd>${escapeHtml(formatPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatPrice(technical.resistance))}</dd></div><div><dt>Invalidation</dt><dd>${escapeHtml(formatPrice(technical.invalidation_level))}</dd></div><div><dt>Extended?</dt><dd>${technical.extended ? "Yes — do not chase" : "No"}</dd></div></dl>
+      <section class="swing-catalyst"><h5>Step 2 · Credible Catalyst Check</h5><p><strong>${escapeHtml(catalyst.event_type || "Catalyst")}</strong> · ${escapeHtml(catalyst.description || "Missing")}</p><p>Timing: ${escapeHtml(catalyst.timing || "Missing")} · Source: ${escapeHtml(catalyst.source || "Missing")}${catalyst.date ? ` · ${escapeHtml(catalyst.date)}` : ""}</p><p>${escapeHtml(catalyst.basis || "Missing")}</p>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read Source</a>` : ""}</section></div></details>`;
+  }).join("") || `<p class="loading-state">No stock currently passes both the technical-first screen and the credible-catalyst check.</p>`;
+}
+
 function renderWatchlist(data) {
   const rows = [...(data.watchlists?.ai || []).map((row) => ({ ...row, category: "AI" })), ...(data.watchlists?.biotech || []).map((row) => ({ ...row, category: "Biotech" }))];
   document.getElementById("my-watchlist").innerHTML = rows.map((row) => {
@@ -473,6 +502,7 @@ function renderDashboard(data) {
   renderSafely(() => renderBiotechRadar(biotechRadarRows(data)), "biotech-radar");
   renderSafely(() => renderOpportunities("ai-opportunities", data.monthly_picks && data.monthly_picks.ai), "ai-opportunities");
   renderSafely(() => renderOpportunities("biotech-opportunities", data.monthly_picks && data.monthly_picks.biotech), "biotech-opportunities");
+  renderSafely(() => renderSwingTrades(data.swing_trade_opportunities), "swing-opportunities");
   renderSafely(() => renderWatchlist(data), "my-watchlist");
   renderSafely(() => renderMarkets(data.markets), "market-cards");
 }

@@ -52,6 +52,14 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
     if not closes:
         return {}
     current = closes[-1]
+    year_closes = closes[-252:]
+    recent_63 = closes[-63:] if len(closes) >= 63 else closes
+    year_high = max(year_closes) if year_closes else None
+    year_low = min(year_closes) if year_closes else None
+    recent_low = min(recent_63) if recent_63 else None
+    recent_high = max(recent_63) if recent_63 else None
+    drawdown_from_high = round((current / year_high - 1) * 100, 2) if year_high else None
+    distance_from_recent_low = round((current / recent_low - 1) * 100, 2) if recent_low else None
     range_63 = range_pct(closes[-63:]) if len(closes) >= 63 else None
     range_42 = range_pct(closes[-42:]) if len(closes) >= 42 else None
     range_20 = range_pct(closes[-20:]) if len(closes) >= 20 else None
@@ -91,6 +99,12 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
     invalidation = max(support_candidates) if support_candidates else None
     return {
         "history_sessions": len(closes), "base_duration_sessions": base_sessions,
+        "fifty_two_week_high": round(year_high, 4) if year_high else None,
+        "fifty_two_week_low": round(year_low, 4) if year_low else None,
+        "drawdown_from_fifty_two_week_high_pct": drawdown_from_high,
+        "recent_low_63d": round(recent_low, 4) if recent_low else None,
+        "recent_high_63d": round(recent_high, 4) if recent_high else None,
+        "distance_from_recent_low_pct": distance_from_recent_low,
         "base_range_pct": base_range, "range_63d_pct": range_63, "range_42d_pct": range_42,
         "tight_range_20d_pct": range_20, "base_low": round(base_low, 4) if base_low else None,
         "ma_compression_pct": round(compression, 2) if compression is not None else None,
@@ -103,6 +117,7 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
             "base": "A 63-session close range <=25%, or 42-session close range <=20%; this is a price-range screen, not a discretionary chart-pattern claim.",
             "resistance": "Highest close in the 60 sessions ending five sessions before the current close.",
             "invalidation": "Closest available support below price from the detected base low and MA50; omitted when neither is below price.",
+            "decline_and_bottom": "Major-decline context uses the current close versus the trailing 252-session high; distance from the bottom uses the trailing 63-session low.",
             "volume": "Last-10-session average versus the preceding 20 sessions; accumulation compares up-day and down-day volume over 20 sessions.",
         },
     }

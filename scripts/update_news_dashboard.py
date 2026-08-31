@@ -25,12 +25,14 @@ try:
     from .dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                        build_news_commentary, build_radar_commentary)
     from .entry_timing import build_entry_timing_layer, calculate_entry_inputs
+    from .swing_trade import build_swing_trade_engine
 except ImportError:
     from ai_reasoning_discovery import build_ai_reasoning_discovery
     from company_quality import build_company_quality_layer
     from dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                       build_news_commentary, build_radar_commentary)
     from entry_timing import build_entry_timing_layer, calculate_entry_inputs
+    from swing_trade import build_swing_trade_engine
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "news-dashboard.json"
@@ -3435,6 +3437,9 @@ def build():
                   "biotech": attach_market_context(watch_rows(BIOTECH_WATCH), market_data, "biotech")}
     monthly_picks, high_conviction_engine, entry_timing_engine = build_high_conviction_engine(
         ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality, watchlists)
+    swing_trade_opportunities = build_swing_trade_engine(
+        candidate_discovery, market_data, ai_radar, biotech_radar,
+        ai_news_section, biotech_news_section)
     high_conviction_commentary = annotate_high_conviction(monthly_picks)
     watchlists = annotate_watchlists(watchlists, biotech_radar)
     dashboard_commentary = {
@@ -3468,6 +3473,7 @@ def build():
         "commentary": dashboard_commentary,
         "high_conviction_engine": high_conviction_engine,
         "entry_timing_engine": entry_timing_engine,
+        "swing_trade_opportunities": swing_trade_opportunities,
         "monthly_picks": monthly_picks, "fda": fda, "markets": markets,
     }
     data = normalize_investment_data(data)
