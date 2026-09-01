@@ -26,7 +26,8 @@ try:
     from .company_quality import build_company_quality_layer
     from .dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                        build_news_commentary, build_radar_commentary)
-    from .entry_timing import build_entry_timing_layer, calculate_entry_inputs
+    from .entry_timing import (build_buy_decision, build_entry_timing_layer, calculate_entry_inputs,
+                               compact_entry_timing, score_entry_timing)
     from .swing_trade import build_swing_trade_engine
 except ImportError:
     from ai_reasoning_discovery import (PROFILE_DISCOVERY_RULES, build_ai_reasoning_discovery,
@@ -34,7 +35,8 @@ except ImportError:
     from company_quality import build_company_quality_layer
     from dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                       build_news_commentary, build_radar_commentary)
-    from entry_timing import build_entry_timing_layer, calculate_entry_inputs
+    from entry_timing import (build_buy_decision, build_entry_timing_layer, calculate_entry_inputs,
+                              compact_entry_timing, score_entry_timing)
     from swing_trade import build_swing_trade_engine
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -512,8 +514,30 @@ def watch_rows(values):
              "growth_potential": g, "risk": r} for c, t, s, w, k, m, g, r in values]
 
 
+CONSTRUCTIVE_WATCHLIST_STATUSES = ("READY TO BUY", "IN ENTRY ZONE", "APPROACHING ENTRY")
+WATCHLIST_STATUS_PRIORITY = {status: len(CONSTRUCTIVE_WATCHLIST_STATUSES) - index
+                             for index, status in enumerate(CONSTRUCTIVE_WATCHLIST_STATUSES)}
+
+
+def attach_watchlist_entry_readiness(market_data):
+    """Reuse Phase 7 technical scoring for automatic and browser-manual Watchlist rows."""
+    for snapshot in (market_data or {}).get("securities", {}).values():
+        readiness = {}
+        for domain in ("ai", "biotech"):
+            timing = score_entry_timing(snapshot, domain, {
+                "passed": True,
+                "rationale": "A Website Selected or user-manual Watchlist entry is being evaluated for timing only.",
+            })
+            readiness[domain] = {
+                **compact_entry_timing(timing),
+                "buy_decision": build_buy_decision(timing),
+            }
+        snapshot["watchlist_entry_readiness"] = readiness
+    return market_data
+
+
 def build_strategy_watchlists(ai_radar, biotech_radar, monthly_picks, swing_section, market_data):
-    """Build the daily auto-managed Watchlist from current strategy selections only."""
+    """Build technically constructive Website Selected rows from current strategies."""
     selected = {}
 
     def add(row, source_name, domain, why=None, context=None):
@@ -563,9 +587,21 @@ def build_strategy_watchlists(ai_radar, biotech_radar, monthly_picks, swing_sect
     result = {"ai": [], "biotech": []}
     for item in selected.values():
         domain = item["domain"]
-        result[domain].append(attach_market_context([item], market_data, domain)[0])
+        snapshot = (market_data or {}).get("securities", {}).get(item["ticker"], {})
+        readiness = (snapshot.get("watchlist_entry_readiness") or {}).get(domain, {})
+        decision = readiness.get("buy_decision") or {}
+        if decision.get("status") not in CONSTRUCTIVE_WATCHLIST_STATUSES:
+            continue
+        hydrated = attach_market_context([item], market_data, domain)[0]
+        hydrated["entry_timing"] = {key: value for key, value in readiness.items() if key != "buy_decision"}
+        hydrated["buy_decision"] = decision
+        hydrated["technical_entry_readiness_score"] = readiness.get("entry_timing_score")
+        hydrated["watchlist_section"] = "website-selected"
+        result[domain].append(hydrated)
     for domain in result:
-        result[domain].sort(key=lambda row: (-(len(row.get("watchlist_sources", []))), row["ticker"]))
+        result[domain].sort(key=lambda row: (
+            -WATCHLIST_STATUS_PRIORITY.get(row.get("buy_decision", {}).get("status"), 0),
+            -(row.get("technical_entry_readiness_score") or -1), row["ticker"]))
     return result
 
 
@@ -3626,6 +3662,7 @@ def build():
         previous.get("radar", {}).get("ai", []), previous.get("radar", {}).get("biotech", []),
         ai_reasoning_discovery)
     market_data = build_market_data_layer(previous, run_at, candidate_pool=preliminary_candidates)
+    attach_watchlist_entry_readiness(market_data)
 
     old_markets = {item["name"]: item for item in previous.get("markets", [])}
     markets = []
@@ -3698,10 +3735,11 @@ def build():
         "candidate_discovery": candidate_discovery,
         "company_quality": company_quality, "watchlists": watchlists,
         "watchlist_policy": {
-            "membership": "Automatically derived from current Radar, High Conviction, and Swing Trade selections, plus genuine browser Manual Add entries.",
-            "persistence": "Only genuine Manual Add entries persist independently of daily JSON refreshes.",
+            "membership": "Website Selected contains current Radar, High Conviction, and Swing Trade names only when Phase 7 Technical Entry Readiness is constructive; Manually Entered contains genuine browser Manual Add entries.",
+            "website_selected_screen": list(CONSTRUCTIVE_WATCHLIST_STATUSES),
+            "persistence": "Only genuine Manual Add entries persist independently of daily JSON refreshes, and they are never removed by the technical-entry screen.",
             "market_data": "Prices and technical indicators reuse the shared market-data layer; no frontend quote provider is used.",
-            "automatic_refresh": "Strategy-derived membership is added, combined, and removed automatically as current strategy selections change.",
+            "automatic_refresh": "Strategy-derived membership is added, combined, screened, ranked, and removed automatically as current strategy selections and technical readiness change.",
         },
         "commentary": dashboard_commentary,
         "high_conviction_engine": high_conviction_engine,

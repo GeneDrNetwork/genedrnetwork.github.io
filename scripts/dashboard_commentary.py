@@ -163,6 +163,8 @@ def price_distance(price, reference):
 def watchlist_technical_record(row, domain, biotech_radar):
     snapshot = row.get("market_data") or {}; mas = snapshot.get("moving_averages") or {}
     inputs = snapshot.get("entry_inputs") or {}; macd = snapshot.get("macd") or {}
+    readiness = (snapshot.get("watchlist_entry_readiness") or {}).get(domain, {})
+    decision = readiness.get("buy_decision") or row.get("buy_decision") or {}
     price = snapshot.get("current_price"); ma20 = mas.get("ma20"); ma50 = mas.get("ma50")
     support_candidates = [value for value in (inputs.get("base_low"), ma20, ma50) if isinstance(value, (int, float)) and isinstance(price, (int, float)) and value < price]
     support = max(support_candidates) if support_candidates else None
@@ -178,40 +180,56 @@ def watchlist_technical_record(row, domain, biotech_radar):
                 "Momentum is improving, but reversal confirmation is incomplete." if macd.get("improving") else
                 "No confirmed momentum reversal in the available MACD data." if macd.get("histogram") is not None else "Reversal data unavailable.")
     proximity = inputs.get("breakout_proximity_pct"); volume_ratio = inputs.get("breakout_volume_ratio")
-    timing_state = row.get("entry_timing", {}).get("state_key")
-    if timing_state == "extended":
-        buy_status = "EXTENDED / TOO LATE"
-    elif timing_state == "deterioration":
-        buy_status = "WAIT"
-    elif proximity is not None and 0 <= proximity <= 5 and volume_ratio is not None and volume_ratio >= 1.2:
-        buy_status = "READY TO BUY"
-    elif proximity is not None and -5 <= proximity < 0:
-        buy_status = "APPROACHING ENTRY"
-    else:
-        buy_status = "WAIT"
+    timing_state = readiness.get("state_key") or row.get("entry_timing", {}).get("state_key")
+    buy_status = decision.get("status") or row.get("buy_decision", {}).get("status") or "WAIT"
     entry_reference = resistance if isinstance(resistance, (int, float)) and resistance > 0 else None
     entry_zone = ({"low": round(entry_reference * .99, 2), "high": round(entry_reference * 1.01, 2), "reference": round(entry_reference, 2)}
                   if entry_reference else {"low": None, "high": None, "reference": None})
-    condition = ("A close through resistance with at least 1.2x 20-day volume." if buy_status == "APPROACHING ENTRY" else
-                 "Maintain the breakout without triggering extension or breakdown conditions." if buy_status == "READY TO BUY" else
-                 "Require a tighter base, improving momentum, and price confirmation around resistance." if buy_status == "WAIT" else
-                 "Wait for price extension to normalize or a new base to form.")
+    condition = decision.get("missing_condition") or readiness.get("entry_guidance") or (
+        "Require a tighter base, improving momentum, and price confirmation around resistance.")
     stronger = "Stronger if price holds above MA20/MA50, MACD improves, and volume confirms a move through resistance."
     weaker = "Weaker if price loses support/invalidation, relative strength fades, or volume expands on down days."
+    tight_range = inputs.get("tight_range_20d_pct")
+    chart_pattern = (f"{base_sessions}-session base/range under the existing close-range rule."
+                     if base_sessions else
+                     f"Tight 20-session range ({tight_range}%)." if tight_range is not None and tight_range <= 8 else
+                     "No rules-based base or constructive chart pattern is confirmed.")
+    early_reversal = ("Early reversal confirmed by a bullish MACD crossover and price recovery above MA20."
+                      if macd.get("crossover") == "bullish" and above20 is not None and above20 >= 0 else
+                      "Early reversal is developing but not fully confirmed." if macd.get("improving") else
+                      "No early reversal is confirmed by the available momentum data.")
+    breakout_volume = inputs.get("breakout_volume_ratio")
+    volume_confirmation = (f"Confirmed at {breakout_volume}x 20-day volume." if breakout_volume is not None and breakout_volume >= 1.2 else
+                           f"Not confirmed; current ratio is {breakout_volume}x." if breakout_volume is not None else
+                           "Volume confirmation is unavailable.")
+    accumulation = inputs.get("up_down_volume_ratio_20d")
+    accumulation_signal = (f"Constructive accumulation-like signal ({accumulation}x up/down volume)."
+                           if accumulation is not None and accumulation >= 1.1 else
+                           f"No constructive accumulation signal ({accumulation}x up/down volume)." if accumulation is not None else
+                           "Accumulation signal is unavailable.")
+    extended = timing_state == "extended"
     radar = biotech_radar.get(row.get("ticker"), {}) if domain == "biotech" else {}
     targets = ({"plus_10": round(entry_reference * 1.10, 2), "plus_15": round(entry_reference * 1.15, 2),
                 "plus_20": round(entry_reference * 1.20, 2)} if domain == "biotech" and entry_reference else None)
     commentary = {
         "why_on_watchlist": clean(row.get("why")),
         "chart": f"{trend}. Price is {above20 if above20 is not None else 'an unknown distance'}% versus MA20 and {above50 if above50 is not None else 'an unknown distance'}% versus MA50. {bottom} {reversal}",
-        "entry": f"Buy status is {buy_status}. {condition}",
+        "bottom_base": bottom, "early_reversal": early_reversal, "chart_pattern": chart_pattern,
+        "volume_confirmation": volume_confirmation, "accumulation_signal": accumulation_signal,
+        "entry": f"Buy status is {buy_status}. {condition}", "waiting_for": condition,
         "stronger": stronger, "weaker": weaker,
+        "extension": ("Extended / too late under the existing do-not-chase gate."
+                      if extended else "Not currently blocked by the extension gate."),
     }
     technical = {"current_price": price, "ma20": ma20, "ma50": ma50, "price_vs_ma20_pct": above20,
                  "price_vs_ma50_pct": above50, "support": support, "resistance": resistance,
                  "volume_vs_20d_average": snapshot.get("volume_vs_20d_average"), "trend": trend,
                  "bottom_formation": bottom, "reversal_status": reversal, "entry_zone": entry_zone,
                  "buy_status": buy_status, "invalidation_level": invalidation,
+                 "chart_pattern": chart_pattern, "early_reversal": early_reversal,
+                 "volume_confirmation": volume_confirmation, "accumulation_signal": accumulation_signal,
+                 "technical_entry_readiness_score": readiness.get("entry_timing_score") or row.get("technical_entry_readiness_score"),
+                 "entry_timing_state": readiness.get("state"), "extended": extended,
                  "targets": targets, "target_basis": "Planned watchlist entry reference" if targets else None,
                  "catalyst": radar.get("catalyst") or row.get("catalyst") or "Missing",
                  "catalyst_timing": radar.get("expected_timing") or "Missing",
@@ -224,6 +242,8 @@ def annotate_watchlists(watchlists, biotech_rows):
     for domain in ("ai", "biotech"):
         for row in watchlists.get(domain, []):
             commentary, technical = watchlist_technical_record(row, domain, biotech_radar)
+            sources = row.get("watchlist_sources") or []
+            commentary["selection_source"] = f"Sources: {' + '.join(sources)}. {' '.join(row.get('strategy_contexts') or [])}"
             row["watchlist_commentary"] = commentary
             row["watchlist_technical"] = technical
     return watchlists

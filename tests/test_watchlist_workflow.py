@@ -8,6 +8,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class WatchlistWorkflowTests(unittest.TestCase):
+    @staticmethod
+    def market_data(status="READY TO BUY", score=82):
+        decision = {"status": status}
+        readiness = {"entry_timing_score": score, "state": "🚀 Breakout Confirmed",
+                     "state_key": "breakout-confirmed", "buy_decision": decision}
+        snapshot = {"current_price": 25, "moving_averages": {"ma20": 24, "ma50": 23},
+                    "watchlist_entry_readiness": {"ai": readiness, "biotech": readiness}}
+        return {"securities": {"TEST": snapshot, "BIO": snapshot}}
+
     def test_legacy_static_rows_are_not_marked_manual(self):
         rows = watch_rows([
             ("Example Co", "TEST", "Technology", "Selected reason", "Catalyst", "Mid Cap", "High", "Medium")
@@ -23,17 +32,25 @@ class WatchlistWorkflowTests(unittest.TestCase):
         swing = {"opportunities": [{"company": "Example Co", "ticker": "TEST", "domain": "ai", "classification": "Entry Zone",
                                     "why_this_swing_trade_opportunity": {"why_chart_selected": "Early reversal.", "bottom_reversal_stage": "Entry Zone", "invalidation": "Lose support."},
                                     "catalyst": {"description": "Product event", "timing": "Soon"}}]}
-        result = build_strategy_watchlists(ai_radar, biotech_radar, monthly, swing, {"securities": {}})
+        result = build_strategy_watchlists(ai_radar, biotech_radar, monthly, swing, self.market_data())
         test_rows = [row for row in result["ai"] if row["ticker"] == "TEST"]
         self.assertEqual(len(test_rows), 1)
         self.assertEqual(test_rows[0]["watchlist_sources"], ["Radar", "High Conviction", "Swing Trade"])
         self.assertEqual([row["ticker"] for row in result["biotech"]], ["BIO"])
+        self.assertEqual(test_rows[0]["technical_entry_readiness_score"], 82)
+
+    def test_website_selected_excludes_wait_and_extended_without_changing_sources(self):
+        radar = [{"trend": "Compute", "beneficiary_records": [{"company": "Example Co", "ticker": "TEST"}]}]
+        for status in ("WAIT", "EXTENDED / TOO LATE"):
+            result = build_strategy_watchlists(radar, [], {"ai": [], "biotech": []}, {"opportunities": []},
+                                               self.market_data(status, 60))
+            self.assertEqual(result, {"ai": [], "biotech": []})
 
     def test_updater_declares_persistent_user_selection_policy(self):
         updater = (ROOT / "scripts" / "update_news_dashboard.py").read_text()
         self.assertIn('"watchlist_policy"', updater)
         self.assertIn("Only genuine Manual Add entries persist", updater)
-        self.assertIn("Strategy-derived membership is added, combined, and removed automatically", updater)
+        self.assertIn("Strategy-derived membership is added, combined, screened, ranked, and removed automatically", updater)
 
     def test_frontend_has_all_four_sources_and_no_duplicate_quote_provider(self):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
@@ -44,7 +61,15 @@ class WatchlistWorkflowTests(unittest.TestCase):
         self.assertIn("automaticWatchlistSelections", script)
         self.assertIn("manual_items", script)
         self.assertIn("sharedMarketSecurities", script)
+        self.assertIn("CONSTRUCTIVE_WATCHLIST_STATUSES", script)
+        self.assertIn("websiteSelected", script)
+        self.assertIn("manuallyEntered", script)
+        self.assertIn("technical_entry_readiness_score", script)
         self.assertNotIn("fetch(\"https://query", script)
+
+        page = (ROOT / "programs" / "genedrnews.html").read_text()
+        self.assertIn('id="website-selected-watchlist"', page)
+        self.assertIn('id="manually-entered-watchlist"', page)
 
 
 if __name__ == "__main__":

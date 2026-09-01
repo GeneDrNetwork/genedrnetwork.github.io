@@ -65,7 +65,18 @@ class DashboardCommentaryTests(unittest.TestCase):
                             for domain_rows in rows.values() for row in domain_rows))
 
     def test_watchlist_commentary_uses_existing_technicals_and_biotech_targets_only(self):
-        watchlists = copy.deepcopy(DATA["watchlists"])
+        readiness = {"entry_timing_score": 78, "state_key": "buy-zone", "state": "🟢 Buy Zone",
+                     "buy_decision": {"status": "IN ENTRY ZONE", "missing_condition": "Confirm volume."}}
+        market = {"current_price": 25, "moving_averages": {"ma20": 24, "ma50": 23},
+                  "entry_inputs": {"resistance_level": 26, "invalidation_level": 23,
+                                   "base_duration_sessions": 42, "breakout_proximity_pct": -3,
+                                   "breakout_volume_ratio": 1.1, "up_down_volume_ratio_20d": 1.2},
+                  "macd": {"improving": True},
+                  "watchlist_entry_readiness": {"ai": readiness, "biotech": readiness}}
+        watchlists = {"ai": [{"ticker": "TEST", "company": "Example", "market_data": market,
+                               "watchlist_sources": ["Radar"]}],
+                      "biotech": [{"ticker": "BEAM", "company": "Beam", "market_data": market,
+                                    "watchlist_sources": ["Radar"]}]}
         annotate_watchlists(watchlists, DATA["radar"]["biotech"])
         ai = watchlists["ai"][0]; biotech = watchlists["biotech"][0]
         self.assertIn("Buy status", ai["watchlist_commentary"]["entry"])
