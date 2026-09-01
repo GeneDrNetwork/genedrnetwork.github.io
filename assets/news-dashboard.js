@@ -10,8 +10,10 @@ let sharedMarketSecurities = {};
 let currentDashboardData = null;
 let watchlistState = null;
 let currentAutomaticWatchlistTickers = new Set();
+let positionState = null;
 const WATCHLIST_STORAGE_KEY = "genedr-investment-watchlist-v2";
 const LEGACY_WATCHLIST_STORAGE_KEY = "genedr-investment-watchlist-v1";
+const POSITION_STORAGE_KEY = "genedr-investment-positions-v1";
 
 function normalizedTicker(value) {
   return String(value || "").trim().toUpperCase();
@@ -19,6 +21,20 @@ function normalizedTicker(value) {
 
 function writeWatchlistState() {
   try { localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlistState)); } catch (_) { /* Browser storage may be disabled. */ }
+}
+
+function initializePositionState() {
+  if (positionState) return positionState;
+  try {
+    const saved = JSON.parse(localStorage.getItem(POSITION_STORAGE_KEY) || "null");
+    if (saved?.version === 1 && Array.isArray(saved.positions)) positionState = saved;
+  } catch (_) { positionState = null; }
+  if (!positionState) positionState = { version: 1, positions: [] };
+  return positionState;
+}
+
+function writePositionState() {
+  try { localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(positionState)); } catch (_) { /* Browser storage may be disabled. */ }
 }
 
 function initializeWatchlistState(data) {
@@ -680,7 +696,7 @@ function renderWatchlistCard(row, manualAdded) {
     <div><dt>Technical Entry Readiness</dt><dd>${escapeHtml(technical.technical_entry_readiness_score === null || technical.technical_entry_readiness_score === undefined ? "Unavailable" : `${technical.technical_entry_readiness_score}/100 · ${technical.entry_timing_state || "State unavailable"}`)}</dd></div><div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(formatTechnicalPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatTechnicalPrice(technical.resistance))}</dd></div>
     <div><dt>Volume / Volume Trend</dt><dd>${escapeHtml(technical.volume_trend || (technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${formatMarketValue(technical.volume_vs_20d_average)}x`))}</dd></div><div><dt>Volume Confirmation</dt><dd>${escapeHtml(technical.volume_confirmation || "Missing")}</dd></div><div><dt>Accumulation Signal</dt><dd>${escapeHtml(technical.accumulation_signal || "Missing")}</dd></div><div><dt>Trend</dt><dd>${escapeHtml(technical.trend || "Missing")}</dd></div><div><dt>Bottom / Base Formation</dt><dd>${escapeHtml(technical.bottom_formation || "Missing")}</dd></div>
     <div><dt>Early Reversal</dt><dd>${escapeHtml(technical.early_reversal || "Missing")}</dd></div><div><dt>Chart Pattern</dt><dd>${escapeHtml(technical.chart_pattern || "Missing")}</dd></div><div><dt>Reversal Status</dt><dd>${escapeHtml(technical.reversal_status || "Missing")}</dd></div><div><dt>Entry Zone</dt><dd>${escapeHtml(zoneText)}</dd></div><div><dt>Buy Status</dt><dd>${escapeHtml(technical.buy_status || "WAIT")}</dd></div><div><dt>Invalidation Level</dt><dd>${escapeHtml(formatTechnicalPrice(technical.invalidation_level))}</dd></div>${biotechFields}</dl>
-    ${isBiotech && technical.target_basis ? `<p class="watchlist-basis-note">${escapeHtml(technical.target_basis)}; these are planning levels before a brokerage trade, not actual-position P/L targets.</p>` : ""}<div class="watchlist-controls">${manualAdded ? `<button type="button" class="watchlist-action watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}">Remove Manual Addition</button>` : `<span class="watchlist-managed-note">Automatically managed by strategy selection plus the technical-entry screen</span>`}</div></div></details>`;
+    ${isBiotech && technical.target_basis ? `<p class="watchlist-basis-note">${escapeHtml(technical.target_basis)}; these are planning levels before a brokerage trade, not actual-position P/L targets.</p>` : ""}<div class="watchlist-controls"><button type="button" class="position-action" data-position-prefill data-ticker="${escapeHtml(row.ticker)}" data-company="${escapeHtml(row.company)}" data-domain="${escapeHtml(row.domain || "ai")}" data-sources="${escapeHtml(sources.join(" + "))}">Bought / Move to My Stock</button>${manualAdded ? `<button type="button" class="watchlist-action watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}">Remove Manual Addition</button>` : `<span class="watchlist-managed-note">Automatically managed by strategy selection plus the technical-entry screen</span>`}</div></div></details>`;
 }
 
 function renderWatchlist(data) {
@@ -691,6 +707,279 @@ function renderWatchlist(data) {
     || `<p class="loading-state">No strategy-derived stock currently has a constructive Technical Entry Readiness status.</p>`;
   manualTarget.innerHTML = rows.manuallyEntered.map((row) => renderWatchlistCard(row, true)).join("")
     || `<p class="loading-state">No tickers have been manually entered.</p>`;
+}
+
+const POSITION_STATUSES = ["HOLD", "ADD / ADD ON PULLBACK", "TAKE PARTIAL PROFIT", "TAKE PROFIT", "TIGHTEN STOP", "EXIT / THESIS BROKEN"];
+
+function positionSourceNames(value) {
+  const allowed = new Set(["Radar", "High Conviction", "Swing Trade", "Manual"]);
+  const values = (Array.isArray(value) ? value : String(value || "Manual").split("+")).map((item) => item.trim()).filter((item) => allowed.has(item));
+  return [...new Set(values.length ? values : ["Manual"])];
+}
+
+function positionCompany(ticker, data) {
+  const key = normalizedTicker(ticker);
+  const candidate = (data.candidate_discovery?.candidates || []).find((row) => normalizedTicker(row.ticker) === key);
+  if (candidate?.company) return candidate.company;
+  for (const domain of ["ai", "biotech"]) {
+    const pick = (data.monthly_picks?.[domain] || []).find((row) => normalizedTicker(row.ticker) === key);
+    if (pick?.company) return pick.company;
+  }
+  const biotech = (data.radar?.biotech || []).find((row) => normalizedTicker(row.ticker) === key);
+  if (biotech?.company) return biotech.company;
+  for (const trend of data.radar?.ai || []) {
+    const beneficiary = (trend.beneficiary_records || []).find((row) => normalizedTicker(row.ticker) === key);
+    if (beneficiary?.company) return beneficiary.company;
+  }
+  return key;
+}
+
+function positionStrategyEvidence(ticker, sources, data) {
+  const key = normalizedTicker(ticker);
+  const matches = { Radar: [], "High Conviction": [], "Swing Trade": [] };
+  for (const trend of data.radar?.ai || []) {
+    for (const row of trend.beneficiary_records || []) if (normalizedTicker(row.ticker) === key) matches.Radar.push({
+      row, thesis: row.thesis_evidence?.[0]?.basis || trend.what_it_means || trend.why_now,
+      invalidation: trend.risks, catalyst: trend.watch_next, domain: "ai",
+    });
+  }
+  for (const row of data.radar?.biotech || []) if (normalizedTicker(row.ticker) === key) matches.Radar.push({
+    row, thesis: row.why_important || row.clinical_evidence, invalidation: row.risks,
+    catalyst: `${row.catalyst || "Catalyst unavailable"}${row.expected_timing ? ` · ${row.expected_timing}` : ""}`, domain: "biotech",
+  });
+  for (const domain of ["ai", "biotech"]) for (const row of data.monthly_picks?.[domain] || []) if (normalizedTicker(row.ticker) === key) matches["High Conviction"].push({
+    row, thesis: row.why_this_stock?.summary || row.why_selected, invalidation: row.thesis_invalidation,
+    catalyst: row.catalyst, domain,
+  });
+  for (const row of data.swing_trade_opportunities?.opportunities || []) if (normalizedTicker(row.ticker) === key) matches["Swing Trade"].push({
+    row, thesis: row.why_this_swing_trade_opportunity?.why_chart_selected,
+    invalidation: row.why_this_swing_trade_opportunity?.invalidation,
+    catalyst: row.catalyst?.description, domain: row.domain || "ai",
+  });
+  const requested = positionSourceNames(sources);
+  const active = requested.filter((source) => source === "Manual" || matches[source]?.length);
+  const records = requested.flatMap((source) => matches[source] || []);
+  const explicitBroken = records.some(({ row }) => /thesis broken|avoid/i.test(`${row.classification || ""} ${row.opportunity_status || ""}`));
+  const nonManual = requested.filter((source) => source !== "Manual");
+  const thesisStatus = explicitBroken ? "Broken by an explicit current strategy status."
+    : nonManual.length && active.some((source) => source !== "Manual") ? "Intact under at least one current strategy evidence path."
+    : nonManual.length ? "Current website strategy evidence no longer confirms the original source; review required, but this alone does not prove the thesis is broken."
+    : "Manual position: no website strategy thesis is required or assumed.";
+  return {
+    requested, active, records, explicit_broken: explicitBroken, thesis_status: thesisStatus,
+    thesis: records.map((item) => item.thesis).filter(Boolean).join(" ") || "No structured website thesis is connected; manage from the available technical evidence and the user's own thesis.",
+    thesis_invalidation: records.map((item) => item.invalidation).filter(Boolean).join(" ") || "Missing: no explicit thesis-invalidation statement is connected.",
+    catalyst: records.map((item) => item.catalyst).filter(Boolean).join(" ") || "Missing: no source-backed catalyst is connected.",
+    domain: records.find((item) => item.domain === "biotech")?.domain || records[0]?.domain || null,
+  };
+}
+
+function targetRecord(label, price, buyPrice, basis) {
+  const valid = Number.isFinite(Number(price)) && Number(price) > 0;
+  return { label, price: valid ? Number(price) : null,
+    gain_pct: valid && buyPrice > 0 ? Math.round((Number(price) / buyPrice - 1) * 10000) / 100 : null, basis };
+}
+
+function positionTargets(position, snapshot, technical, evidence) {
+  const buy = Number(position.buy_price);
+  const custom = (position.custom_targets || []).map((value) => Number.isFinite(Number(value)) && Number(value) > 0 ? Number(value) : null);
+  let suggested = [];
+  let basis = "No reliable target is available; missing targets are not estimated.";
+  if (evidence.requested.includes("Swing Trade")) {
+    suggested = [buy * 1.10, buy * 1.15, buy * 1.20];
+    basis = "Mechanical +10% / +15% / +20% swing-planning levels from average buy price; not valuation targets.";
+  } else {
+    const resistance = technical.resistance;
+    const analystTarget = snapshot.expectation_data?.valuation?.one_year_target;
+    suggested = [resistance, analystTarget].filter((value, index, values) => Number.isFinite(Number(value)) && Number(value) > buy && values.indexOf(value) === index).sort((a, b) => a - b);
+    basis = evidence.requested.includes("High Conviction")
+      ? "Long-term planning uses available technical resistance and dated analyst-consensus context; swing percentages are not applied."
+      : "Planning uses available technical resistance and dated expectation context; unavailable levels remain missing.";
+  }
+  const targets = [0, 1, 2].map((index) => targetRecord(`Target ${index + 1}`, custom[index] ?? suggested[index] ?? null, buy,
+    custom[index] ? "User-entered target." : suggested[index] ? basis : "Unavailable."));
+  return { targets, basis };
+}
+
+function positionStop(position, snapshot, technical, evidence) {
+  const current = Number(snapshot.current_price);
+  const buy = Number(position.buy_price);
+  const inputs = snapshot.entry_inputs || {};
+  const isBiotech = position.domain === "biotech" || evidence.domain === "biotech";
+  let level = null; let basis = "Missing: no technically meaningful support or invalidation level is available.";
+  if (isBiotech && Number.isFinite(Number(inputs.base_low)) && Number(inputs.base_low) > 0 && Number(inputs.base_low) < current) {
+    level = Number(inputs.base_low); basis = "Biotech technical invalidation uses the documented multiweek base low to avoid an arbitrarily tight stop.";
+  } else if (Number.isFinite(Number(inputs.invalidation_level)) && Number(inputs.invalidation_level) > 0) {
+    level = Number(inputs.invalidation_level); basis = "Existing Phase 7 technical invalidation level derived from base support and MA50.";
+  } else if (Number.isFinite(Number(technical.support)) && Number(technical.support) > 0) {
+    level = Number(technical.support); basis = "Closest available technically derived support below current price.";
+  }
+  return { level, basis,
+    downside_from_current_pct: level && current > 0 ? Math.round((level / current - 1) * 10000) / 100 : null,
+    downside_from_buy_pct: level && buy > 0 ? Math.round((level / buy - 1) * 10000) / 100 : null,
+    thesis_invalidation: evidence.thesis_invalidation };
+}
+
+function positionStatus(position, snapshot, technical, evidence, targets, stop, gainPct) {
+  const current = Number(snapshot.current_price);
+  const targetPrices = targets.targets.map((item) => item.price);
+  const ma50 = snapshot.moving_averages?.ma50;
+  const macdHistogram = snapshot.macd?.histogram;
+  const stopBroken = stop.level && current < stop.level;
+  const deteriorating = (Number.isFinite(Number(ma50)) && current < ma50 && Number.isFinite(Number(macdHistogram)) && macdHistogram < 0);
+  const distribution = Number.isFinite(Number(snapshot.entry_inputs?.up_down_volume_ratio_20d)) && snapshot.entry_inputs.up_down_volume_ratio_20d < .8;
+  if (evidence.explicit_broken || (stopBroken && deteriorating && evidence.active.filter((source) => source !== "Manual").length === 0)) return "EXIT / THESIS BROKEN";
+  if (targetPrices[2] && current >= targetPrices[2]) return "TAKE PROFIT";
+  if ((targetPrices[0] && current >= targetPrices[0]) || (technical.extended && gainPct >= 10)) return "TAKE PARTIAL PROFIT";
+  if (stopBroken || deteriorating || (distribution && gainPct < 0)) return "TIGHTEN STOP";
+  const nearSupport = technical.support && current >= technical.support && (current / technical.support - 1) <= .03;
+  if (evidence.requested.includes("High Conviction") && nearSupport && /Constructive/.test(technical.trend) && !technical.extended) return "ADD / ADD ON PULLBACK";
+  if (["READY TO BUY", "IN ENTRY ZONE"].includes(technical.buy_status) && gainPct <= 5 && !technical.extended && !evidence.explicit_broken) return "ADD / ADD ON PULLBACK";
+  return "HOLD";
+}
+
+function hydratePosition(position, data) {
+  const ticker = normalizedTicker(position.ticker);
+  const snapshot = sharedMarketSecurities[ticker] || {};
+  const evidence = positionStrategyEvidence(ticker, position.strategy_sources, data);
+  const domain = position.domain || evidence.domain || snapshot.domains?.[0] || "ai";
+  const technical = watchlistTechnical(snapshot, domain);
+  const current = Number(snapshot.current_price);
+  const buy = Number(position.buy_price); const shares = Number(position.shares);
+  const cost = buy > 0 && shares > 0 ? buy * shares : null;
+  const marketValue = current > 0 && shares > 0 ? current * shares : null;
+  const gainLoss = marketValue !== null && cost !== null ? marketValue - cost : null;
+  const gainPct = gainLoss !== null && cost > 0 ? gainLoss / cost * 100 : null;
+  const targets = positionTargets(position, snapshot, technical, evidence);
+  const stop = positionStop({ ...position, domain }, snapshot, technical, evidence);
+  const status = positionStatus(position, snapshot, technical, evidence, targets, stop, gainPct);
+  const momentum = snapshot.macd?.crossover === "bullish" ? "Strengthening: bullish MACD crossover."
+    : snapshot.macd?.improving ? "Strengthening, but no complete crossover confirmation." : Number.isFinite(Number(snapshot.macd?.histogram)) && snapshot.macd.histogram < 0 ? "Weakening: MACD histogram is negative." : "Momentum confirmation is unavailable or mixed.";
+  const volume = technical.volume_confirmation;
+  const accumulation = technical.accumulation_signal;
+  const riskIncreasing = ["TIGHTEN STOP", "EXIT / THESIS BROKEN"].includes(status) || technical.extended;
+  const partialTrigger = targets.targets[0].price ? `Consider partial profit-taking if price reaches ${targets.targets[0].label}, rejects resistance, or becomes extended with weakening volume.` : "No numeric partial-profit trigger is available; monitor resistance and extension with volume.";
+  const fullExitTrigger = `Full exit requires ${evidence.explicit_broken ? "the currently broken thesis status to remain unresolved" : "an explicit thesis break"}${stop.level ? ` or a confirmed loss of technical invalidation at ${stop.level}` : " or a confirmed technical breakdown"}.`;
+  return { ...position, ticker, company: position.company || positionCompany(ticker, data), domain, snapshot, technical,
+    cost, market_value: marketValue, gain_loss: gainLoss, gain_loss_pct: gainPct, targets, stop, status, evidence,
+    commentary: {
+      trend: technical.trend,
+      relative_to_buy: gainPct === null ? "Current P/L is unavailable because a current price is missing." : `The position is ${gainPct >= 0 ? "up" : "down"} ${Math.abs(gainPct).toFixed(2)}% from the average buy price.`,
+      structure: `${technical.bottom_formation} ${technical.chart_pattern}`,
+      support_resistance: `Support: ${technical.support ?? "Unavailable"}. Resistance: ${technical.resistance ?? "Unavailable"}. MA20: ${technical.ma20 ?? "Unavailable"}; MA50: ${technical.ma50 ?? "Unavailable"}.`,
+      momentum, volume, accumulation, thesis: evidence.thesis_status,
+      extension: technical.extended ? "The position is extended under the existing do-not-chase framework." : "The position is not currently classified as extended.",
+      risk: riskIncreasing ? "Risk is increasing under the current technical/thesis checks." : "No current rule identifies a material increase in position risk; continue monitoring.",
+    },
+    sell_plan: { partial_trigger: partialTrigger, full_exit_trigger: fullExitTrigger },
+  };
+}
+
+function positionPrice(value, currency = "USD") {
+  return value === null || value === undefined || !Number.isFinite(Number(value)) ? "Unavailable" : decisionPrice(Number(value), currency);
+}
+
+function positionDollars(value, currency = "USD") {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) return "Unavailable";
+  return new Intl.NumberFormat(undefined, { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(Number(value));
+}
+
+function renderPositionCard(row) {
+  const currency = row.snapshot.currency || "USD";
+  const gainClass = row.gain_loss_pct > 0 ? "position-gain" : row.gain_loss_pct < 0 ? "position-loss" : "";
+  const targetRows = row.targets.targets.map((target) => `<li><strong>${escapeHtml(target.label)}:</strong> ${escapeHtml(positionPrice(target.price, currency))}${target.gain_pct === null ? "" : ` · ${escapeHtml(formatChange(target.gain_pct))} from buy`}<br><small>${escapeHtml(target.basis)}</small></li>`).join("");
+  const sources = positionSourceNames(row.strategy_sources).join(" + ");
+  return `<details class="position-card"><summary class="position-summary"><span class="position-company"><strong>${escapeHtml(row.ticker)} · ${escapeHtml(row.company)}</strong><small>${escapeHtml(sources)}</small></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.snapshot.current_price, currency))}</strong></span><span><small>Buy Price</small><strong>${escapeHtml(positionPrice(row.buy_price, currency))}</strong></span><span><small>Gain / Loss</small><strong class="${gainClass}">${escapeHtml(row.gain_loss_pct === null ? "Unavailable" : formatChange(row.gain_loss_pct))}</strong></span><span><small>Position Status</small><strong class="position-status position-status-${classKey(row.status)}">${escapeHtml(row.status)}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+    <div class="position-detail"><section class="position-commentary"><h4>Position Commentary</h4><p><strong>Current trend:</strong> ${escapeHtml(row.commentary.trend)}</p><p><strong>Relative to buy price:</strong> ${escapeHtml(row.commentary.relative_to_buy)}</p><p><strong>Technical structure:</strong> ${escapeHtml(row.commentary.structure)}</p><p><strong>Support / resistance / averages:</strong> ${escapeHtml(row.commentary.support_resistance)}</p><p><strong>Momentum:</strong> ${escapeHtml(row.commentary.momentum)}</p><p><strong>Volume confirmation:</strong> ${escapeHtml(row.commentary.volume)}</p><p><strong>Accumulation / distribution:</strong> ${escapeHtml(row.commentary.accumulation)}</p><p><strong>Original thesis:</strong> ${escapeHtml(row.commentary.thesis)}</p><p><strong>Extension:</strong> ${escapeHtml(row.commentary.extension)}</p><p><strong>Risk:</strong> ${escapeHtml(row.commentary.risk)}</p></section>
+    <dl class="position-metrics"><div><dt>Current Price</dt><dd>${escapeHtml(positionPrice(row.snapshot.current_price, currency))}</dd></div><div><dt>Average Buy Price</dt><dd>${escapeHtml(positionPrice(row.buy_price, currency))}</dd></div><div><dt>Shares</dt><dd>${escapeHtml(row.shares)}</dd></div><div><dt>Purchase Date</dt><dd>${escapeHtml(row.purchase_date)}</dd></div><div><dt>Position Cost</dt><dd>${escapeHtml(positionDollars(row.cost, currency))}</dd></div><div><dt>Current Market Value</dt><dd>${escapeHtml(positionDollars(row.market_value, currency))}</dd></div><div><dt>Unrealized Gain/Loss $</dt><dd class="${gainClass}">${escapeHtml(positionDollars(row.gain_loss, currency))}</dd></div><div><dt>Unrealized Gain/Loss %</dt><dd class="${gainClass}">${escapeHtml(row.gain_loss_pct === null ? "Unavailable" : formatChange(row.gain_loss_pct))}</dd></div><div><dt>Strategy Source</dt><dd>${escapeHtml(sources)}</dd></div><div><dt>Position Status</dt><dd>${escapeHtml(row.status)}</dd></div></dl>
+    <dl class="position-analysis-grid"><div><dt>MA20 / MA50</dt><dd>${escapeHtml(positionPrice(row.technical.ma20, currency))} / ${escapeHtml(positionPrice(row.technical.ma50, currency))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(positionPrice(row.technical.support, currency))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(positionPrice(row.technical.resistance, currency))}</dd></div><div><dt>Technical Structure</dt><dd>${escapeHtml(row.technical.chart_pattern)}</dd></div><div><dt>Momentum</dt><dd>${escapeHtml(row.commentary.momentum)}</dd></div><div><dt>Volume Confirmation</dt><dd>${escapeHtml(row.technical.volume_confirmation)}</dd></div><div><dt>Accumulation / Distribution</dt><dd>${escapeHtml(row.technical.accumulation_signal)}</dd></div><div><dt>Thesis Status</dt><dd>${escapeHtml(row.evidence.thesis_status)}</dd></div></dl>
+    <div class="position-plan-grid"><section class="position-plan"><h5>Profit Targets</h5><p>${escapeHtml(row.targets.basis)}</p><ul>${targetRows}</ul></section><section class="position-plan"><h5>Stop Loss vs Thesis Invalidation</h5><p><strong>Technical Stop / Invalidation:</strong> ${escapeHtml(positionPrice(row.stop.level, currency))}</p><p>${escapeHtml(row.stop.basis)}</p><p>From current: ${escapeHtml(row.stop.downside_from_current_pct === null ? "Unavailable" : formatChange(row.stop.downside_from_current_pct))} · From buy: ${escapeHtml(row.stop.downside_from_buy_pct === null ? "Unavailable" : formatChange(row.stop.downside_from_buy_pct))}</p><p><strong>Thesis invalidation:</strong> ${escapeHtml(row.stop.thesis_invalidation)}</p></section><section class="position-plan"><h5>Sell Plan</h5><p><strong>Current status:</strong> ${escapeHtml(row.status)}</p><p>${escapeHtml(row.sell_plan.partial_trigger)}</p><p>${escapeHtml(row.sell_plan.full_exit_trigger)}</p></section><section class="position-plan"><h5>Strategy Context</h5><p><strong>Source:</strong> ${escapeHtml(sources)}</p><p><strong>Thesis status:</strong> ${escapeHtml(row.evidence.thesis_status)}</p><p>${escapeHtml(row.evidence.thesis)}</p>${row.evidence.requested.includes("Swing Trade") ? `<p><strong>Catalyst:</strong> ${escapeHtml(row.evidence.catalyst)}</p>` : ""}</section></div>
+    <div class="position-actions"><button type="button" class="position-action" data-position-edit data-ticker="${escapeHtml(row.ticker)}">Edit Position</button><button type="button" class="position-action position-remove" data-position-remove data-ticker="${escapeHtml(row.ticker)}">Remove Position</button></div></div></details>`;
+}
+
+function renderPositions(data) {
+  const target = document.getElementById("my-stock-positions");
+  if (!target) return;
+  const rows = initializePositionState().positions.map((position) => hydratePosition(position, data))
+    .sort((a, b) => a.ticker.localeCompare(b.ticker));
+  target.innerHTML = rows.map(renderPositionCard).join("") || `<p class="loading-state">No owned positions have been entered. Add one directly or move a purchased stock from Watchlist.</p>`;
+}
+
+function setPositionFormStatus(message, type = "") {
+  const target = document.getElementById("position-form-status");
+  if (!target) return;
+  target.textContent = message;
+  target.className = `position-form-status${type ? ` is-${type}` : ""}`;
+}
+
+function resetPositionForm() {
+  const form = document.getElementById("position-form");
+  if (!form) return;
+  form.reset(); form.dataset.editingTicker = ""; form.dataset.fromWatchlist = "";
+  form.dataset.domain = ""; form.dataset.company = "";
+  document.getElementById("position-save").textContent = "Add Position";
+  document.getElementById("position-cancel").hidden = true;
+  document.getElementById("position-purchase-date").value = new Date().toISOString().slice(0, 10);
+  document.getElementById("position-source").value = "Manual";
+}
+
+function prefillPositionForm({ ticker, company, domain, sources, edit = false }) {
+  const key = normalizedTicker(ticker);
+  const existing = initializePositionState().positions.find((item) => normalizedTicker(item.ticker) === key);
+  resetPositionForm();
+  document.getElementById("position-ticker").value = key;
+  document.getElementById("position-source").value = (sources || existing?.strategy_sources?.join(" + ") || "Manual");
+  if (domain || existing?.domain) document.getElementById("position-form").dataset.domain = domain || existing.domain;
+  if (company || existing?.company) document.getElementById("position-form").dataset.company = company || existing.company;
+  if (existing) {
+    document.getElementById("position-buy-price").value = existing.buy_price;
+    document.getElementById("position-shares").value = existing.shares;
+    document.getElementById("position-purchase-date").value = existing.purchase_date;
+    (existing.custom_targets || []).forEach((value, index) => { if (value) document.getElementById(`position-target-${index + 1}`).value = value; });
+    document.getElementById("position-form").dataset.editingTicker = key;
+    document.getElementById("position-save").textContent = "Update Position";
+    document.getElementById("position-cancel").hidden = false;
+  } else if (!edit) {
+    document.getElementById("position-form").dataset.fromWatchlist = key;
+  }
+  document.getElementById("owned-stocks")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.getElementById("position-buy-price")?.focus();
+  setPositionFormStatus(existing ? `${key} is ready to edit.` : `Enter the actual execution details for ${key}; no position is created until you save.`, "success");
+}
+
+function savePositionForm(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const ticker = normalizedTicker(document.getElementById("position-ticker").value);
+  const buyPrice = Number(document.getElementById("position-buy-price").value);
+  const shares = Number(document.getElementById("position-shares").value);
+  const purchaseDate = document.getElementById("position-purchase-date").value;
+  const sources = positionSourceNames(document.getElementById("position-source").value);
+  const customTargets = [1, 2, 3].map((index) => {
+    const value = document.getElementById(`position-target-${index}`).value;
+    return value === "" ? null : Number(value);
+  });
+  if (!/^[A-Z][A-Z0-9.-]{0,9}$/.test(ticker)) return setPositionFormStatus("Enter a valid ticker.", "error");
+  if (!sharedMarketSecurities[ticker]) return setPositionFormStatus(`${ticker} is not in the current shared market feed, so an automatically updated position cannot be created.`, "error");
+  if (!(buyPrice > 0) || !(shares > 0) || !purchaseDate) return setPositionFormStatus("Buy price, shares, and purchase date are required and must be valid.", "error");
+  if (customTargets.some((value) => value !== null && (!(value > 0) || value <= buyPrice))) return setPositionFormStatus("Custom profit targets must be above the average buy price.", "error");
+  const originalTicker = normalizedTicker(form.dataset.editingTicker);
+  const existingIndex = positionState.positions.findIndex((item) => normalizedTicker(item.ticker) === (originalTicker || ticker));
+  const record = { ticker, company: form.dataset.company || positionCompany(ticker, currentDashboardData), buy_price: buyPrice,
+    shares, purchase_date: purchaseDate, strategy_sources: sources, domain: form.dataset.domain || sharedMarketSecurities[ticker]?.domains?.[0] || "ai",
+    custom_targets: customTargets, updated_at: new Date().toISOString() };
+  if (existingIndex >= 0) positionState.positions[existingIndex] = record; else positionState.positions.push(record);
+  writePositionState(); renderPositions(currentDashboardData);
+  setPositionFormStatus(`${ticker} position ${existingIndex >= 0 ? "updated" : "added"}. Daily data will refresh its market and technical analysis without deleting the position.`, "success");
+  resetPositionForm();
+}
+
+function removePosition(ticker) {
+  const key = normalizedTicker(ticker);
+  if (!window.confirm(`Remove the owned ${key} position from My Stock?`)) return;
+  positionState.positions = positionState.positions.filter((item) => normalizedTicker(item.ticker) !== key);
+  writePositionState(); renderPositions(currentDashboardData);
+  setPositionFormStatus(`${key} was removed from My Stock.`, "success");
 }
 
 function changeClass(value) { const number = Number.parseFloat(value); return number > 0 ? "change-up" : number < 0 ? "change-down" : "change-flat"; }
@@ -769,6 +1058,25 @@ function removeWatchlistItem(ticker) {
 }
 
 document.addEventListener("click", (event) => {
+  const positionPrefill = event.target.closest("[data-position-prefill]");
+  if (positionPrefill) {
+    event.preventDefault(); event.stopPropagation();
+    prefillPositionForm({ ticker: positionPrefill.dataset.ticker, company: positionPrefill.dataset.company,
+      domain: positionPrefill.dataset.domain, sources: positionPrefill.dataset.sources });
+    return;
+  }
+  const positionEdit = event.target.closest("[data-position-edit]");
+  if (positionEdit) {
+    event.preventDefault(); event.stopPropagation();
+    prefillPositionForm({ ticker: positionEdit.dataset.ticker, edit: true });
+    return;
+  }
+  const positionRemove = event.target.closest("[data-position-remove]");
+  if (positionRemove) {
+    event.preventDefault(); event.stopPropagation();
+    removePosition(positionRemove.dataset.ticker);
+    return;
+  }
   const addButton = event.target.closest("[data-watchlist-add]");
   if (addButton) {
     event.preventDefault(); event.stopPropagation();
@@ -794,11 +1102,21 @@ if (watchlistForm) watchlistForm.addEventListener("submit", (event) => {
   if (added && input) input.value = "";
 });
 
+const positionForm = document.getElementById("position-form");
+if (positionForm) positionForm.addEventListener("submit", savePositionForm);
+const positionCancel = document.getElementById("position-cancel");
+if (positionCancel) positionCancel.addEventListener("click", () => {
+  resetPositionForm();
+  setPositionFormStatus("Position edit cancelled. Enter an owned position directly, or move one from Watchlist.");
+});
+
 function renderDashboard(data) {
   if (!data || typeof data !== "object") throw new Error("Dashboard JSON is not an object.");
   currentDashboardData = data;
   sharedMarketSecurities = data.market_data?.securities || {};
   initializeWatchlistState(data);
+  initializePositionState();
+  if (!document.getElementById("position-purchase-date")?.value) resetPositionForm();
   const updated = new Date(data.updated_at);
   setText("last-updated", Number.isNaN(updated.valueOf()) ? data.updated_at : updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
   setText("ai-news-summary-copy", data.summaries && data.summaries.ai);
@@ -813,6 +1131,7 @@ function renderDashboard(data) {
   renderSafely(() => renderOpportunities("biotech-opportunities", data.monthly_picks && data.monthly_picks.biotech), "biotech-opportunities");
   renderSafely(() => renderSwingTrades(data.swing_trade_opportunities), "swing-opportunities");
   renderSafely(() => renderWatchlist(data), "my-watchlist");
+  renderSafely(() => renderPositions(data), "my-stock-positions");
   renderSafely(() => renderMarkets(data.markets), "market-cards");
 }
 

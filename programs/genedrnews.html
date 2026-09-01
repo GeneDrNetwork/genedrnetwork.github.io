@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260831-3" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260831-4" />
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
@@ -35,7 +35,7 @@
       </section>
 
       <nav class="dashboard-nav" aria-label="Dashboard sections">
-        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">My Stocks / Watchlist</a><a href="#markets">Market Pulse</a>
+        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">My Stocks / Watchlist</a><a href="#owned-stocks">My Stock</a><a href="#markets">Market Pulse</a>
       </nav>
 
       <div class="dashboard-shell">
@@ -102,6 +102,23 @@
           </div>
         </section>
 
+        <section class="dashboard-section position-section" id="owned-stocks">
+          <div class="section-heading"><div><span class="section-kicker">05 · Position management after purchase</span><h2>My Stock</h2><p>Owned positions only: current value, unrealized gain/loss, technical structure, thesis monitoring, targets, and sell planning.</p></div><span class="source-note">User-owned positions · never removed by daily updates</span></div>
+          <form id="position-form" class="position-form" novalidate>
+            <div><label for="position-ticker">Ticker</label><input id="position-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NVDA" required></div>
+            <div><label for="position-buy-price">Average Buy Price</label><input id="position-buy-price" name="buy_price" type="number" min="0.0001" step="any" placeholder="0.00" required></div>
+            <div><label for="position-shares">Shares</label><input id="position-shares" name="shares" type="number" min="0.000001" step="any" placeholder="0" required></div>
+            <div><label for="position-purchase-date">Purchase Date</label><input id="position-purchase-date" name="purchase_date" type="date" required></div>
+            <div><label for="position-source">Strategy Source</label><input id="position-source" name="strategy_source" type="text" list="position-source-options" placeholder="Manual" required><datalist id="position-source-options"><option value="Radar"><option value="High Conviction"><option value="Swing Trade"><option value="Manual"></datalist></div>
+            <div><label for="position-target-1">Custom Target 1 <small>optional</small></label><input id="position-target-1" name="target_1" type="number" min="0.0001" step="any" placeholder="Optional"></div>
+            <div><label for="position-target-2">Custom Target 2 <small>optional</small></label><input id="position-target-2" name="target_2" type="number" min="0.0001" step="any" placeholder="Optional"></div>
+            <div><label for="position-target-3">Custom Target 3 <small>optional</small></label><input id="position-target-3" name="target_3" type="number" min="0.0001" step="any" placeholder="Optional"></div>
+            <div class="position-form-actions"><button id="position-save" type="submit">Add Position</button><button id="position-cancel" type="button" hidden>Cancel Edit</button></div>
+            <p id="position-form-status" class="position-form-status" aria-live="polite">Enter an owned position directly, or use “Bought / Move to My Stock” from Watchlist.</p>
+          </form>
+          <div id="my-stock-positions" class="position-cards"><p class="loading-state">Loading owned positions...</p></div>
+        </section>
+
         <section class="market-section" id="markets">
           <div class="section-heading compact-heading"><div><span class="section-kicker">Market Pulse</span><h2>Market Dashboard</h2></div><span class="source-note">Daily, weekly, and monthly index movement</span></div>
           <div id="market-cards" class="market-grid"></div><article class="market-explainer"><span>Market context</span><h3>What moved the market today?</h3><p id="market-movers">Loading market context...</p></article>
@@ -110,6 +127,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. AI and Biotech Radar exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260831-3" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260831-4" defer></script>
   </body>
 </html>
