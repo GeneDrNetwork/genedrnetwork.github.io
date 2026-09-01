@@ -1,7 +1,8 @@
 import unittest
 from pathlib import Path
 
-from scripts.update_news_dashboard import build_strategy_watchlists, watch_rows
+from scripts.update_news_dashboard import (WEBSITE_SELECTED_LIMIT, build_strategy_watchlists,
+                                           watch_rows, watchlist_selection_metrics)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,6 +47,57 @@ class WatchlistWorkflowTests(unittest.TestCase):
                                                self.market_data(status, 60))
             self.assertEqual(result, {"ai": [], "biotech": []})
 
+    def test_focused_website_selected_is_capped_and_ranked(self):
+        rows = [{"company": f"Company {index}", "ticker": f"T{index:02d}", "why_selected": "Quality."}
+                for index in range(24)]
+        securities = {}
+        for index, row in enumerate(rows):
+            score = 90 - index
+            status = "READY TO BUY" if index < 10 else "WAIT"
+            state = "breakout-confirmed" if index < 10 else "base-building"
+            securities[row["ticker"]] = {
+                "current_price": 100, "moving_averages": {"ma20": 98, "ma50": 96},
+                "entry_inputs": {"base_duration_sessions": 63, "base_range_pct": 15,
+                                 "ma_compression_pct": 3, "volume_contraction_ratio": .8,
+                                 "up_down_volume_ratio_20d": 1.3, "breakout_proximity_pct": -2,
+                                 "breakout_volume_ratio": 1.1},
+                "macd": {"histogram": .2, "improving": True},
+                "watchlist_entry_readiness": {"ai": {"entry_timing_score": score,
+                    "state_key": state, "buy_decision": {"status": status}}},
+            }
+        result = build_strategy_watchlists([], [], {"ai": rows, "biotech": []},
+                                           {"opportunities": []}, {"securities": securities})
+        selected = result["ai"] + result["biotech"]
+        self.assertEqual(len(selected), WEBSITE_SELECTED_LIMIT)
+        self.assertEqual([row["ticker"] for row in selected],
+                         [f"T{index:02d}" for index in range(8)] + [f"T{index:02d}" for index in range(10, 22)])
+        self.assertEqual([row["website_selected_rank"] for row in selected], list(range(1, 21)))
+
+    def test_approaching_entry_requires_multiple_confirmed_signals(self):
+        weak = {"current_price": 100, "moving_averages": {"ma20": 99, "ma50": 98},
+                "entry_inputs": {"breakout_proximity_pct": -2},
+                "macd": {"histogram": -.1, "improving": False}}
+        strong = {"current_price": 100, "moving_averages": {"ma20": 99, "ma50": 98},
+                  "entry_inputs": {"base_duration_sessions": 63, "base_range_pct": 15,
+                                   "ma_compression_pct": 3, "volume_contraction_ratio": .8,
+                                   "up_down_volume_ratio_20d": 1.3, "breakout_proximity_pct": -2,
+                                   "breakout_volume_ratio": 1.1},
+                  "macd": {"histogram": .2, "improving": True}}
+        readiness = {"state_key": "near-buy-zone"}
+        self.assertFalse(watchlist_selection_metrics(weak, readiness)["approaching_entry_qualified"])
+        self.assertTrue(watchlist_selection_metrics(strong, readiness)["approaching_entry_qualified"])
+
+    def test_manual_workflow_persists_pending_tickers_without_fabricating_quotes(self):
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        self.assertIn('validation_status: "pending-market-data"', script)
+        self.assertIn("was saved to Manually Entered", script)
+        self.assertIn("no quote was fabricated", script)
+        self.assertIn('validation_status: "validated-shared-market-data"', script)
+        self.assertNotIn("so it was not added. No unverified quote was substituted", script)
+        self.assertIn("function removeWatchlistItem(ticker)", script)
+        self.assertIn("watchlistState.manual_items = watchlistState.manual_items.filter", script)
+        self.assertIn("data-watchlist-remove", script)
+
     def test_updater_declares_persistent_user_selection_policy(self):
         updater = (ROOT / "scripts" / "update_news_dashboard.py").read_text()
         self.assertIn('"watchlist_policy"', updater)
@@ -69,6 +121,8 @@ class WatchlistWorkflowTests(unittest.TestCase):
 
         page = (ROOT / "programs" / "genedrnews.html").read_text()
         self.assertIn('id="website-selected-watchlist"', page)
+        self.assertIn('id="top-entry-watchlist"', page)
+        self.assertIn('id="developing-watchlist"', page)
         self.assertIn('id="manually-entered-watchlist"', page)
 
 

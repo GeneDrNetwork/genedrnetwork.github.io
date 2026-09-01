@@ -517,6 +517,169 @@ def watch_rows(values):
 CONSTRUCTIVE_WATCHLIST_STATUSES = ("READY TO BUY", "IN ENTRY ZONE", "APPROACHING ENTRY")
 WATCHLIST_STATUS_PRIORITY = {status: len(CONSTRUCTIVE_WATCHLIST_STATUSES) - index
                              for index, status in enumerate(CONSTRUCTIVE_WATCHLIST_STATUSES)}
+WEBSITE_SELECTED_LIMIT = 20
+TOP_ENTRY_CANDIDATE_LIMIT = 8
+
+
+def _watchlist_normalized_average(parts):
+    available = [(value, weight) for value, weight in parts if value is not None]
+    if not available:
+        return None
+    return round(sum(value * weight for value, weight in available) / sum(weight for _, weight in available))
+
+
+def watchlist_selection_metrics(snapshot, readiness):
+    """Derive focused-entry ranking evidence from the existing Phase 7 inputs."""
+    snapshot, readiness = snapshot or {}, readiness or {}
+    inputs = snapshot.get("entry_inputs") or {}
+    averages = snapshot.get("moving_averages") or {}
+    macd = snapshot.get("macd") or {}
+    price = snapshot.get("current_price")
+    base_sessions, base_range = inputs.get("base_duration_sessions"), inputs.get("base_range_pct")
+    tight_range = inputs.get("tight_range_20d_pct")
+    if base_sessions == 63 and base_range is not None:
+        base_quality = 100 if base_range <= 15 else 88 if base_range <= 20 else 75
+    elif base_sessions == 42 and base_range is not None:
+        base_quality = 88 if base_range <= 15 else 75 if base_range <= 20 else 65
+    elif tight_range is not None:
+        base_quality = 60 if tight_range <= 8 else 45 if tight_range <= 10 else 25
+    else:
+        base_quality = None
+
+    ma20, ma50 = averages.get("ma20"), averages.get("ma50")
+    compression = inputs.get("ma_compression_pct")
+    ma_relationship_available = all(value is not None and value > 0 for value in (price, ma20, ma50))
+    above_both = price >= ma20 and price >= ma50 if ma_relationship_available else None
+    ma_improving = (above_both and (ma20 >= ma50 or (compression is not None and compression <= 8))
+                    if above_both is not None else None)
+    ma_quality = None
+    if above_both is not None:
+        ma_quality = 100 if ma_improving and ma20 >= ma50 else 85 if ma_improving else 65 if above_both else 25
+
+    early_reversal = (macd.get("crossover") == "bullish" or macd.get("improving") is True
+                      if macd.get("histogram") is not None else None)
+    momentum_quality = (100 if macd.get("crossover") == "bullish" else 80 if macd.get("improving") is True
+                        else 55 if macd.get("histogram") is not None and macd.get("histogram") > 0
+                        else 25 if macd.get("histogram") is not None else None)
+    pattern_quality = _watchlist_normalized_average(((base_quality, 50), (ma_quality, 30), (momentum_quality, 20)))
+
+    contraction = inputs.get("volume_contraction_ratio")
+    accumulation = inputs.get("up_down_volume_ratio_20d")
+    breakout_volume = inputs.get("breakout_volume_ratio")
+    contraction_quality = None if contraction is None else (
+        100 if contraction <= .75 else 85 if contraction <= .9 else 65 if contraction <= 1.1 else 30)
+    accumulation_quality = None if accumulation is None else (
+        100 if accumulation >= 1.5 else 85 if accumulation >= 1.1 else 55 if accumulation >= .9 else 25)
+    breakout_volume_quality = None if breakout_volume is None else (
+        100 if breakout_volume >= 1.2 else 75 if breakout_volume >= 1 else 40)
+    volume_quality = _watchlist_normalized_average(
+        ((contraction_quality, 35), (accumulation_quality, 45), (breakout_volume_quality, 20)))
+    volume_improving = ((contraction is not None and contraction <= .9) or
+                        (breakout_volume is not None and breakout_volume >= 1.0))
+    accumulation_signal = accumulation is not None and accumulation >= 1.1
+
+    proximity = inputs.get("breakout_proximity_pct")
+    if proximity is None:
+        entry_zone_distance = None
+    elif proximity < -5:
+        entry_zone_distance = round(-5 - proximity, 2)
+    elif proximity > 2:
+        entry_zone_distance = round(proximity - 2, 2)
+    else:
+        entry_zone_distance = 0
+    close_to_entry = proximity is not None and -5 <= proximity <= 2
+
+    distance_ma20 = round((price / ma20 - 1) * 100, 2) if price and ma20 else None
+    distance_ma50 = round((price / ma50 - 1) * 100, 2) if price and ma50 else None
+    three_month = (snapshot.get("returns") or {}).get("three_month")
+    extension_excess = [max(0, value - limit) for value, limit in (
+        (distance_ma20, 12), (distance_ma50, 18), (three_month, 40), (proximity, 8)) if value is not None]
+    extension_risk = round(min(100, max(extension_excess) * 5)) if extension_excess else None
+    not_extended = readiness.get("state_key") != "extended"
+    clear_base = bool(base_sessions in (42, 63) or (tight_range is not None and tight_range <= 10))
+    signals = {
+        "clear_base_or_bottom": clear_base,
+        "early_reversal": early_reversal,
+        "constructive_ma_structure": ma_improving,
+        "constructive_pattern": bool(clear_base and close_to_entry),
+        "improving_volume": volume_improving,
+        "accumulation_signal": accumulation_signal,
+        "close_to_entry_zone": close_to_entry,
+        "not_extended": not_extended,
+    }
+    constructive_count = sum(value is True for key, value in signals.items() if key != "not_extended")
+    approaching_qualified = bool(
+        clear_base and close_to_entry and not_extended and
+        (early_reversal is True or ma_improving is True) and constructive_count >= 4)
+    return {
+        "pattern_quality": pattern_quality, "volume_quality": volume_quality,
+        "entry_zone_distance_pct": entry_zone_distance, "extension_risk": extension_risk,
+        "constructive_signal_count": constructive_count, "constructive_signals": signals,
+        "approaching_entry_qualified": approaching_qualified,
+    }
+
+
+def _watchlist_rank_key(row):
+    metrics = row.get("watchlist_selection_metrics") or {}
+    return (
+        -WATCHLIST_STATUS_PRIORITY.get(row.get("buy_decision", {}).get("status"), 0),
+        -(row.get("technical_entry_readiness_score") if row.get("technical_entry_readiness_score") is not None else -1),
+        -(metrics.get("pattern_quality") if metrics.get("pattern_quality") is not None else -1),
+        -(metrics.get("volume_quality") if metrics.get("volume_quality") is not None else -1),
+        metrics.get("entry_zone_distance_pct") if metrics.get("entry_zone_distance_pct") is not None else float("inf"),
+        metrics.get("extension_risk") if metrics.get("extension_risk") is not None else float("inf"),
+        row["ticker"],
+    )
+
+
+def developing_watchlist_setup_qualified(readiness, metrics):
+    status = (readiness.get("buy_decision") or {}).get("status")
+    score = readiness.get("entry_timing_score")
+    state_key = readiness.get("state_key")
+    signals = metrics.get("constructive_signals") or {}
+    developing_structure = any(signals.get(key) is True for key in (
+        "clear_base_or_bottom", "early_reversal", "constructive_ma_structure"))
+    return bool(
+        status in ("WAIT", "APPROACHING ENTRY") and
+        state_key not in ("extended", "deterioration") and
+        score is not None and score >= 55 and
+        metrics.get("constructive_signal_count", 0) >= 3 and developing_structure and
+        (metrics.get("pattern_quality") is None or metrics["pattern_quality"] >= 50) and
+        signals.get("not_extended") is True)
+
+
+def _soft_diversify_watchlist(ordered, selected_rows):
+    """Swap only technically equivalent rows when one domain/source dominates."""
+    if len(selected_rows) < 4 or len(selected_rows) == len(ordered):
+        return selected_rows
+    chosen = list(selected_rows)
+
+    def comparable(candidate, incumbent):
+        return (candidate.get("buy_decision", {}).get("status") == incumbent.get("buy_decision", {}).get("status") and
+                (candidate.get("technical_entry_readiness_score") or -1) >=
+                (incumbent.get("technical_entry_readiness_score") or -1) - 3 and
+                ((candidate.get("watchlist_selection_metrics") or {}).get("pattern_quality") or -1) >=
+                ((incumbent.get("watchlist_selection_metrics") or {}).get("pattern_quality") or -1) - 8)
+
+    domain_counts = {domain: sum(row.get("domain") == domain for row in chosen) for domain in ("ai", "biotech")}
+    dominant_domain = max(domain_counts, key=domain_counts.get)
+    if domain_counts[dominant_domain] > len(chosen) * .75:
+        alternate = next((row for row in ordered if row not in chosen and row.get("domain") != dominant_domain), None)
+        incumbents = [row for row in reversed(chosen) if row.get("domain") == dominant_domain]
+        incumbent = next((row for row in incumbents if alternate and comparable(alternate, row)), None)
+        if alternate and incumbent:
+            chosen[chosen.index(incumbent)] = alternate
+
+    source_counts = {source: sum(source in row.get("watchlist_sources", []) for row in chosen)
+                     for source in ("Radar", "High Conviction", "Swing Trade")}
+    dominant_source = max(source_counts, key=source_counts.get)
+    if source_counts[dominant_source] > len(chosen) * .75:
+        alternate = next((row for row in ordered if row not in chosen and dominant_source not in row.get("watchlist_sources", [])), None)
+        incumbents = [row for row in reversed(chosen) if dominant_source in row.get("watchlist_sources", [])]
+        incumbent = next((row for row in incumbents if alternate and comparable(alternate, row)), None)
+        if alternate and incumbent:
+            chosen[chosen.index(incumbent)] = alternate
+    return sorted(chosen, key=_watchlist_rank_key)
 
 
 def attach_watchlist_entry_readiness(market_data):
@@ -584,24 +747,70 @@ def build_strategy_watchlists(ai_radar, biotech_radar, monthly_picks, swing_sect
         add(enriched, "Swing Trade", row.get("domain") or "ai", why,
             f"Swing setup — {row.get('classification')}: {stage} Catalyst: {catalyst}. Invalidation: {invalidation}")
 
-    result = {"ai": [], "biotech": []}
+    top_entry_pool, developing_pool = [], []
+    constructive_status_count = 0
+    removed = []
     for item in selected.values():
         domain = item["domain"]
         snapshot = (market_data or {}).get("securities", {}).get(item["ticker"], {})
         readiness = (snapshot.get("watchlist_entry_readiness") or {}).get(domain, {})
         decision = readiness.get("buy_decision") or {}
-        if decision.get("status") not in CONSTRUCTIVE_WATCHLIST_STATUSES:
-            continue
         hydrated = attach_market_context([item], market_data, domain)[0]
         hydrated["entry_timing"] = {key: value for key, value in readiness.items() if key != "buy_decision"}
         hydrated["buy_decision"] = decision
         hydrated["technical_entry_readiness_score"] = readiness.get("entry_timing_score")
         hydrated["watchlist_section"] = "website-selected"
-        result[domain].append(hydrated)
-    for domain in result:
-        result[domain].sort(key=lambda row: (
-            -WATCHLIST_STATUS_PRIORITY.get(row.get("buy_decision", {}).get("status"), 0),
-            -(row.get("technical_entry_readiness_score") or -1), row["ticker"]))
+        hydrated["watchlist_selection_metrics"] = watchlist_selection_metrics(snapshot, readiness)
+        if decision.get("status") in CONSTRUCTIVE_WATCHLIST_STATUSES:
+            constructive_status_count += 1
+        strong_approaching = (decision.get("status") != "APPROACHING ENTRY" or
+                              hydrated["watchlist_selection_metrics"]["approaching_entry_qualified"])
+        if decision.get("status") in ("READY TO BUY", "IN ENTRY ZONE") or (
+                decision.get("status") == "APPROACHING ENTRY" and strong_approaching):
+            hydrated["watchlist_group"] = "top-entry"
+            top_entry_pool.append(hydrated)
+        elif developing_watchlist_setup_qualified(readiness, hydrated["watchlist_selection_metrics"]):
+            hydrated["watchlist_group"] = "developing"
+            developing_pool.append(hydrated)
+        else:
+            removed.append({"ticker": item["ticker"], "reason":
+                            "Neither a strongest actionable entry nor a constructive developing setup under the current technical evidence."})
+
+    ordered_top = sorted(top_entry_pool, key=_watchlist_rank_key)
+    top_entry = _soft_diversify_watchlist(ordered_top, ordered_top[:TOP_ENTRY_CANDIDATE_LIMIT])
+    remaining_slots = max(0, WEBSITE_SELECTED_LIMIT - len(top_entry))
+    ordered_developing = sorted(developing_pool, key=_watchlist_rank_key)
+    developing = _soft_diversify_watchlist(ordered_developing, ordered_developing[:remaining_slots])
+    focused = top_entry + developing
+    focused_tickers = {row["ticker"] for row in focused}
+    removed.extend({"ticker": row["ticker"], "reason": "Outside the focused Website Selected limit after technical ranking."}
+                   for row in ordered_top + ordered_developing if row["ticker"] not in focused_tickers)
+    result = {"ai": [], "biotech": []}
+    for rank, row in enumerate(focused, 1):
+        row["website_selected_rank"] = rank
+        row["watchlist_group_rank"] = (top_entry.index(row) + 1 if row in top_entry else developing.index(row) + 1)
+        result[row["domain"]].append(row)
+    build_strategy_watchlists.last_diagnostics = {
+        "total_strategy_candidates_analyzed": len(selected),
+        "constructive_status_candidates": constructive_status_count,
+        "top_entry_candidates_count": len(top_entry),
+        "developing_setups_count": len(developing),
+        "final_website_selected_count": len(focused),
+        "limit": WEBSITE_SELECTED_LIMIT,
+        "top_entry_limit": TOP_ENTRY_CANDIDATE_LIMIT,
+        "top_entry_tickers": [row["ticker"] for row in top_entry],
+        "developing_setup_tickers": [row["ticker"] for row in developing],
+        "selected": [{"rank": row["website_selected_rank"], "ticker": row["ticker"],
+                      "group": row["watchlist_group"], "group_rank": row["watchlist_group_rank"],
+                      "domain": row["domain"], "sources": row["watchlist_sources"],
+                      "status": row["buy_decision"]["status"],
+                      "technical_entry_readiness_score": row["technical_entry_readiness_score"],
+                      "pattern_quality": row["watchlist_selection_metrics"]["pattern_quality"],
+                      "volume_quality": row["watchlist_selection_metrics"]["volume_quality"],
+                      "entry_zone_distance_pct": row["watchlist_selection_metrics"]["entry_zone_distance_pct"]}
+                     for row in focused],
+        "removed": removed,
+    }
     return result
 
 
@@ -3553,6 +3762,90 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
     return sorted(rows, key=lambda item: (-(item["trend_strength"] or -1), item["trend"]))
 
 
+AI_RADAR_UNIQUE_COMPANY_TARGET = 24
+
+
+def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET):
+    """Focus category-validated Radar beneficiaries to a globally unique company set."""
+    rows = [dict(row) for row in rows or []]
+    appearances = []
+    for row in rows:
+        for beneficiary in row.get("beneficiary_records", []):
+            relevance = beneficiary.get("beneficiary_relevance")
+            if relevance is None:
+                continue
+            appearances.append({
+                "trend": row.get("trend"), "trend_strength": row.get("trend_strength") or 0,
+                "trend_completeness": row.get("data_completeness") or 0,
+                "beneficiary": beneficiary,
+                "selection_score": round(relevance * .65 + (row.get("trend_strength") or 0) * .25 +
+                                         min(100, row.get("data_completeness") or 0) * .10, 2),
+            })
+    before_unique = {item["beneficiary"].get("ticker") for item in appearances}
+    by_trend = defaultdict(list)
+    for item in appearances:
+        by_trend[item["trend"]].append(item)
+    for candidates in by_trend.values():
+        candidates.sort(key=lambda item: (-item["selection_score"],
+                                          -item["beneficiary"].get("beneficiary_relevance", 0),
+                                          item["beneficiary"].get("company", "")))
+
+    assigned, used_tickers, category_counts = [], set(), defaultdict(int)
+    # Protect sparse but valid categories first, then let evidence strength allocate
+    # the remaining slots. A ticker receives one primary Radar category.
+    category_order = sorted(by_trend, key=lambda trend: (len(by_trend[trend]),
+                                                         -by_trend[trend][0]["selection_score"], trend))
+    for trend in category_order:
+        candidate = next((item for item in by_trend[trend]
+                          if item["beneficiary"].get("ticker") not in used_tickers), None)
+        if not candidate:
+            continue
+        assigned.append(candidate); used_tickers.add(candidate["beneficiary"].get("ticker")); category_counts[trend] += 1
+
+    remaining = [item for item in appearances if item["beneficiary"].get("ticker") not in used_tickers]
+    while remaining and len(assigned) < target:
+        candidate = max(remaining, key=lambda item: (
+            item["selection_score"] - max(0, category_counts[item["trend"]] - 2) * 2.5,
+            item["beneficiary"].get("beneficiary_relevance", 0),
+            -category_counts[item["trend"]],
+            item["beneficiary"].get("company", "")))
+        ticker = candidate["beneficiary"].get("ticker")
+        assigned.append(candidate); used_tickers.add(ticker); category_counts[candidate["trend"]] += 1
+        remaining = [item for item in remaining if item["beneficiary"].get("ticker") != ticker]
+
+    assignment = {item["beneficiary"].get("ticker"): item["trend"] for item in assigned}
+    selected_tickers = set(assignment)
+    focused_rows = []
+    for row in rows:
+        beneficiaries = [item for item in row.get("beneficiary_records", [])
+                         if assignment.get(item.get("ticker")) == row.get("trend")]
+        if not beneficiaries:
+            continue
+        row["beneficiary_records"] = beneficiaries
+        row["potential_beneficiaries"] = "; ".join(
+            f"{item['company']} ({item['ticker']}) · {item['category']} · {item['beneficiary_relevance']}"
+            for item in beneficiaries[:3])
+        row["beneficiaries"] = "; ".join(
+            f"{item['company']} ({item['ticker']}) — {item['category']} — relevance {item['beneficiary_relevance']}/100"
+            for item in beneficiaries)
+        focused_rows.append(row)
+    size_mix = defaultdict(int)
+    for item in assigned:
+        size_mix[item["beneficiary"].get("market_cap_bucket", "Unknown")] += 1
+    diagnostics = {
+        "target_unique_companies": target,
+        "rows_before": len(appearances), "unique_companies_before": len(before_unique),
+        "rows_after": sum(len(row.get("beneficiary_records", [])) for row in focused_rows),
+        "unique_companies_after": len(selected_tickers), "active_categories": len(focused_rows),
+        "companies_per_category": {row["trend"]: len(row.get("beneficiary_records", [])) for row in focused_rows},
+        "size_mix": dict(sorted(size_mix.items())),
+        "selected_tickers": sorted(selected_tickers),
+        "removed_tickers": sorted(before_unique - selected_tickers),
+        "policy": "Each selected public company receives one strongest category-specific Radar placement; sparse active categories are protected before remaining slots are allocated by category-specific evidence strength.",
+    }
+    return focused_rows, diagnostics
+
+
 def ai_radar_methodology():
     return {
         "engine_version": "ai-technology-radar-v1", "factor_weights": AI_RADAR_FACTOR_WEIGHTS,
@@ -3691,6 +3984,8 @@ def build():
         takeaways = previous.get("takeaways", ["Daily source monitoring is active."])
     ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at,
                               market_data, ai_reasoning_discovery)
+    ai_radar, ai_radar_focus = focus_ai_radar_companies(ai_radar)
+    ai_reasoning_discovery.setdefault("production_trace", {})["radar_unique_company_focus"] = ai_radar_focus
     biotech_radar = build_biotech_radar(
         score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
     candidate_discovery = discover_candidate_pool(ai_radar, biotech_radar, ai_reasoning_discovery)
@@ -3721,7 +4016,7 @@ def build():
         "ai": {"infrastructure_leaders": AI_INFRASTRUCTURE, "platform_leaders": AI_PLATFORMS,
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
-        "radar": {"ai": ai_radar, "biotech": biotech_radar,
+        "radar": {"ai": ai_radar, "biotech": biotech_radar, "ai_focus": ai_radar_focus,
                   "methodology": radar_methodology(), "ai_methodology": ai_radar_methodology()},
         "radar_validation": {
             "mrna": {
@@ -3735,11 +4030,18 @@ def build():
         "candidate_discovery": candidate_discovery,
         "company_quality": company_quality, "watchlists": watchlists,
         "watchlist_policy": {
-            "membership": "Website Selected contains current Radar, High Conviction, and Swing Trade names only when Phase 7 Technical Entry Readiness is constructive; Manually Entered contains genuine browser Manual Add entries.",
+            "membership": "Website Selected contains up to 20 current Radar, High Conviction, and Swing Trade names split into Top Entry Candidates and constructive Developing Setups; Manually Entered remains independent and user-controlled.",
             "website_selected_screen": list(CONSTRUCTIVE_WATCHLIST_STATUSES),
+            "website_selected_limit": WEBSITE_SELECTED_LIMIT,
+            "top_entry_limit": TOP_ENTRY_CANDIDATE_LIMIT,
+            "ranking": ["Buy Status", "Technical Entry Readiness Score", "Pattern Quality", "Volume / Accumulation", "Distance from Entry Zone", "Extension Risk"],
+            "approaching_entry_rule": "APPROACHING ENTRY requires a documented base/tight range, proximity to the calculated entry area, no extension flag, improving momentum or MA structure, and at least four constructive signals.",
+            "developing_setup_rule": "WAIT or less-complete APPROACHING ENTRY names may remain only when readiness is at least 55, the setup is neither extended nor deteriorating, at least three constructive signals exist, and base/reversal/MA structure is developing.",
+            "selection_diagnostics": getattr(build_strategy_watchlists, "last_diagnostics", {}),
             "persistence": "Only genuine Manual Add entries persist independently of daily JSON refreshes, and they are never removed by the technical-entry screen.",
             "market_data": "Prices and technical indicators reuse the shared market-data layer; no frontend quote provider is used.",
-            "automatic_refresh": "Strategy-derived membership is added, combined, screened, ranked, and removed automatically as current strategy selections and technical readiness change.",
+            "manual_static_boundary": "A manually entered ticker already present in the shared daily market file is validated and analyzed immediately. Other format-valid tickers persist as pending without fabricated data because a static GitHub Pages browser cannot send its private localStorage selections into the server-side daily Action.",
+            "automatic_refresh": "Strategy-derived membership is added, combined, screened, ranked, and removed automatically; grouped display keeps at most 20 names as current strategy selections and technical readiness change.",
         },
         "commentary": dashboard_commentary,
         "high_conviction_engine": high_conviction_engine,

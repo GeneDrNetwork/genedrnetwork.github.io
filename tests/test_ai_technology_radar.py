@@ -8,6 +8,7 @@ from scripts.update_news_dashboard import (
     ai_evidence_age,
     build_ai_radar,
     deduplicate_ai_radar_evidence,
+    focus_ai_radar_companies,
 )
 
 
@@ -34,6 +35,25 @@ def build_with_discovery(section, previous=None, run_at=RUN_AT):
 
 
 class AiTechnologyRadarTests(unittest.TestCase):
+    def test_global_focus_targets_unique_companies_and_preserves_categories(self):
+        rows = []
+        for category_index in range(10):
+            beneficiaries = []
+            for company_index in range(4):
+                ticker = "SHARED" if company_index == 0 else f"C{category_index}{company_index}"
+                beneficiaries.append({"company": ticker, "ticker": ticker, "category": "Direct",
+                                      "beneficiary_relevance": 90 - company_index,
+                                      "market_cap_bucket": "Small/Emerging" if company_index == 3 else "Large"})
+            rows.append({"trend": f"Category {category_index}", "trend_strength": 80 - category_index,
+                         "data_completeness": 75, "beneficiary_records": beneficiaries})
+        focused, diagnostics = focus_ai_radar_companies(rows, target=24)
+        tickers = [item["ticker"] for row in focused for item in row["beneficiary_records"]]
+        self.assertEqual(len(tickers), 24)
+        self.assertEqual(len(set(tickers)), 24)
+        self.assertEqual(len(focused), 10)
+        self.assertEqual(diagnostics["unique_companies_after"], 24)
+        self.assertLessEqual(tickers.count("SHARED"), 1)
+
     def test_builds_all_tracks_and_keeps_missing_factors_missing(self):
         section = {"radar_evidence_interface": {"events": [evidence(second_order=["Data Centers"])]}}
         rows = build_ai_radar(section, [], RUN_AT)

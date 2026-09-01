@@ -651,14 +651,15 @@ function hydrateWatchlistSelection(selection, data, manual = false) {
   return { ...sourceRow, ticker, company: selection.company || sourceRow.company || ticker, domain,
     category: domain === "biotech" ? "Biotech" : "AI", watchlist_sources: selection.sources,
     market_data: snapshot, watchlist_commentary: commentary, watchlist_technical: technical,
+    manual_validation_status: manual ? selection.validation_status || (snapshot.current_price ? "validated-shared-market-data" : "pending-market-data") : null,
     watchlist_section: manual ? "manually-entered" : "website-selected" };
 }
 
 function hydratedWatchlistRows(data) {
   const automatic = [...automaticWatchlistSelections(data).values()]
     .map((selection) => hydrateWatchlistSelection(selection, data, false))
-    .filter((row) => CONSTRUCTIVE_WATCHLIST_STATUSES.includes(row.watchlist_technical.buy_status))
-    .sort((a, b) => WATCHLIST_STATUS_PRIORITY[b.watchlist_technical.buy_status] - WATCHLIST_STATUS_PRIORITY[a.watchlist_technical.buy_status]
+    .sort((a, b) => (a.website_selected_rank ?? Number.MAX_SAFE_INTEGER) - (b.website_selected_rank ?? Number.MAX_SAFE_INTEGER)
+      || WATCHLIST_STATUS_PRIORITY[b.watchlist_technical.buy_status] - WATCHLIST_STATUS_PRIORITY[a.watchlist_technical.buy_status]
       || (b.watchlist_technical.technical_entry_readiness_score ?? -1) - (a.watchlist_technical.technical_entry_readiness_score ?? -1)
       || a.ticker.localeCompare(b.ticker));
   const manual = initializeWatchlistState(data).manual_items.map((item) => {
@@ -667,10 +668,14 @@ function hydratedWatchlistRows(data) {
       || { company: item.company || ticker, ticker };
     return hydrateWatchlistSelection({ ticker, company: item.company || candidate.company || ticker,
       domain: item.domain || sharedMarketSecurities[ticker]?.domains?.[0] || "ai", sources: ["Manual"],
+      validation_status: item.validation_status,
       records: [{ source: "Manual", row: candidate, why: item.reason || "Personally selected for technical entry monitoring." }],
       contexts: ["Personally added; strategy qualification and the automatic technical-entry screen are not required."] }, data, true);
   }).sort((a, b) => a.ticker.localeCompare(b.ticker));
-  return { websiteSelected: automatic, manuallyEntered: manual };
+  return { websiteSelected: automatic,
+    topEntry: automatic.filter((row) => row.watchlist_group === "top-entry"),
+    developing: automatic.filter((row) => row.watchlist_group === "developing"),
+    manuallyEntered: manual };
 }
 
 function renderWatchlistCard(row, manualAdded) {
@@ -689,9 +694,10 @@ function renderWatchlistCard(row, manualAdded) {
     <div><dt>Binary Risk</dt><dd>${escapeHtml(technical.binary_risk || "Missing")}</dd></div>` : "";
   const sources = row.watchlist_sources || ["Manual"];
   const sourcePrefix = sources.length > 1 ? "Sources" : "Source";
+  const validationNote = manualAdded && row.manual_validation_status === "pending-market-data" ? `<p class="watchlist-pending-note"><strong>Pending shared market data:</strong> the ticker is preserved, but the static daily file cannot yet validate it or calculate price/history-based technicals. Missing values remain unavailable.</p>` : "";
   return `<details class="watchlist-card"><summary class="watchlist-summary"><span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></span>
     <span><small>Entry Readiness</small><strong>${escapeHtml(technical.technical_entry_readiness_score === null || technical.technical_entry_readiness_score === undefined ? "Unavailable" : `${technical.technical_entry_readiness_score}/100`)}</strong></span><span><small>Buy Status</small><strong class="watch-buy-status watch-buy-${classKey(technical.buy_status || "wait")}">${escapeHtml(technical.buy_status || "WAIT")}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
-    <div class="watchlist-detail"><section class="watchlist-commentary"><h4>Watchlist Commentary</h4><p><strong>Why it is here:</strong> ${escapeHtml(commentary.why_on_watchlist || row.why || "Missing")}</p><p><strong>Selection source:</strong> ${escapeHtml(commentary.selection_source || `${sourcePrefix}: ${sources.join(" + ")}`)}</p><p><strong>What the chart is doing:</strong> ${escapeHtml(commentary.chart || "Technical interpretation unavailable.")}</p><p><strong>Bottom / base:</strong> ${escapeHtml(commentary.bottom_base || technical.bottom_formation || "Missing")}</p><p><strong>Early reversal:</strong> ${escapeHtml(commentary.early_reversal || technical.early_reversal || "Missing")}</p><p><strong>Chart pattern:</strong> ${escapeHtml(commentary.chart_pattern || technical.chart_pattern || "Missing")}</p><p><strong>Volume confirmation:</strong> ${escapeHtml(commentary.volume_confirmation || technical.volume_confirmation || "Missing")}</p><p><strong>Accumulation:</strong> ${escapeHtml(commentary.accumulation_signal || technical.accumulation_signal || "Missing")}</p><p><strong>Entry situation:</strong> ${escapeHtml(commentary.entry || "Entry interpretation unavailable.")}</p><p><strong>What still needs to happen:</strong> ${escapeHtml(commentary.waiting_for || "Missing")}</p><p><strong>Setup strengthens if:</strong> ${escapeHtml(commentary.stronger || "Missing")}</p><p><strong>Invalidation / weaker if:</strong> ${escapeHtml(commentary.weaker || "Missing")}</p><p><strong>Extension check:</strong> ${escapeHtml(commentary.extension || "Missing")}</p></section>
+    <div class="watchlist-detail">${validationNote}<section class="watchlist-commentary"><h4>Watchlist Commentary</h4><p><strong>Why it is here:</strong> ${escapeHtml(commentary.why_on_watchlist || row.why || "Missing")}</p><p><strong>Selection source:</strong> ${escapeHtml(commentary.selection_source || `${sourcePrefix}: ${sources.join(" + ")}`)}</p><p><strong>What the chart is doing:</strong> ${escapeHtml(commentary.chart || "Technical interpretation unavailable.")}</p><p><strong>Bottom / base:</strong> ${escapeHtml(commentary.bottom_base || technical.bottom_formation || "Missing")}</p><p><strong>Early reversal:</strong> ${escapeHtml(commentary.early_reversal || technical.early_reversal || "Missing")}</p><p><strong>Chart pattern:</strong> ${escapeHtml(commentary.chart_pattern || technical.chart_pattern || "Missing")}</p><p><strong>Volume confirmation:</strong> ${escapeHtml(commentary.volume_confirmation || technical.volume_confirmation || "Missing")}</p><p><strong>Accumulation:</strong> ${escapeHtml(commentary.accumulation_signal || technical.accumulation_signal || "Missing")}</p><p><strong>Entry situation:</strong> ${escapeHtml(commentary.entry || "Entry interpretation unavailable.")}</p><p><strong>What still needs to happen:</strong> ${escapeHtml(commentary.waiting_for || "Missing")}</p><p><strong>Setup strengthens if:</strong> ${escapeHtml(commentary.stronger || "Missing")}</p><p><strong>Invalidation / weaker if:</strong> ${escapeHtml(commentary.weaker || "Missing")}</p><p><strong>Extension check:</strong> ${escapeHtml(commentary.extension || "Missing")}</p></section>
     <dl class="watchlist-technical-grid"><div><dt>Current Price</dt><dd>${escapeHtml(formatTechnicalPrice(technical.current_price))}</dd></div><div><dt>MA20</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma20))}</dd></div><div><dt>MA50</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma50))}</dd></div>
     <div><dt>Technical Entry Readiness</dt><dd>${escapeHtml(technical.technical_entry_readiness_score === null || technical.technical_entry_readiness_score === undefined ? "Unavailable" : `${technical.technical_entry_readiness_score}/100 · ${technical.entry_timing_state || "State unavailable"}`)}</dd></div><div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(formatTechnicalPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatTechnicalPrice(technical.resistance))}</dd></div>
     <div><dt>Volume / Volume Trend</dt><dd>${escapeHtml(technical.volume_trend || (technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${formatMarketValue(technical.volume_vs_20d_average)}x`))}</dd></div><div><dt>Volume Confirmation</dt><dd>${escapeHtml(technical.volume_confirmation || "Missing")}</dd></div><div><dt>Accumulation Signal</dt><dd>${escapeHtml(technical.accumulation_signal || "Missing")}</dd></div><div><dt>Trend</dt><dd>${escapeHtml(technical.trend || "Missing")}</dd></div><div><dt>Bottom / Base Formation</dt><dd>${escapeHtml(technical.bottom_formation || "Missing")}</dd></div>
@@ -701,10 +707,13 @@ function renderWatchlistCard(row, manualAdded) {
 
 function renderWatchlist(data) {
   const rows = hydratedWatchlistRows(data);
-  const websiteTarget = document.getElementById("website-selected-watchlist");
+  const topTarget = document.getElementById("top-entry-watchlist");
+  const developingTarget = document.getElementById("developing-watchlist");
   const manualTarget = document.getElementById("manually-entered-watchlist");
-  websiteTarget.innerHTML = rows.websiteSelected.map((row) => renderWatchlistCard(row, false)).join("")
-    || `<p class="loading-state">No strategy-derived stock currently has a constructive Technical Entry Readiness status.</p>`;
+  topTarget.innerHTML = rows.topEntry.map((row) => renderWatchlistCard(row, false)).join("")
+    || `<p class="loading-state">No strategy-derived stock currently passes the strongest actionable-entry screen.</p>`;
+  developingTarget.innerHTML = rows.developing.map((row) => renderWatchlistCard(row, false)).join("")
+    || `<p class="loading-state">No additional strategy-derived setup is currently developing constructively.</p>`;
   manualTarget.innerHTML = rows.manuallyEntered.map((row) => renderWatchlistCard(row, true)).join("")
     || `<p class="loading-state">No tickers have been manually entered.</p>`;
 }
@@ -1034,12 +1043,18 @@ function addWatchlistItem({ ticker, company, source, domain }) {
   }
   const snapshot = sharedMarketSecurities[key];
   if (!snapshot) {
-    setWatchlistStatus(`${key} is not available in the current shared daily market feed, so it was not added. No unverified quote was substituted.`, "error");
-    return false;
+    watchlistState.manual_items.push({ ticker: key, company: company || key, domain: domain || "ai",
+      reason: "Personally selected for active technical monitoring.", validation_status: "pending-market-data",
+      added_at: new Date().toISOString() });
+    writeWatchlistState();
+    setWatchlistStatus(`${key} was saved to Manually Entered, but it is outside today's static shared market-data file. Validation, price history, and technical analysis remain pending; no quote was fabricated.`, "error");
+    refreshWatchlistUi();
+    return true;
   }
   const resolvedDomain = domain || snapshot.domains?.[0] || "ai";
   watchlistState.manual_items.push({ ticker: key, company: company || key, domain: resolvedDomain,
     reason: "Manually selected for active technical monitoring.",
+    validation_status: "validated-shared-market-data",
     added_at: new Date().toISOString() });
   writeWatchlistState();
   const combined = currentAutomaticWatchlistTickers.has(key) ? " Its Manual source was added to the existing strategy sources." : "";

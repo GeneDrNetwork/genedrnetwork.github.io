@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260831-4" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260901-1" />
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
@@ -90,8 +90,11 @@
         <section class="dashboard-section" id="my-stocks">
           <div class="section-heading"><div><span class="section-kicker">04 · Active trade preparation</span><h2>My Stocks / Watchlist</h2><p>Strategy-selected entry candidates and personally entered tickers are monitored separately using the same shared technical analysis.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
           <div id="my-watchlist" class="watchlist-groups">
-            <section class="watchlist-group website-selected-group"><div class="watchlist-group-heading"><span>A</span><div><h3>Website Selected</h3><p>Automatically selected technical-entry candidates from Radar, High Conviction, and Swing Trade.</p></div></div><div id="website-selected-watchlist" class="watchlist-cards"><p class="loading-state">Screening strategy candidates for constructive entry readiness...</p></div></section>
-            <section class="watchlist-group manually-entered-group"><div class="watchlist-group-heading"><span>B</span><div><h3>Manually Entered</h3><p>User-selected stocks being monitored for entry timing; technical status never removes them.</p></div></div>
+            <section class="watchlist-group website-selected-group"><div class="watchlist-group-heading"><span>W</span><div><h3>Website Selected</h3><p>Up to approximately 20 constructive setups selected automatically from current strategy candidates.</p></div></div><div id="website-selected-watchlist" class="website-watchlist-groups">
+              <section class="website-watchlist-subgroup"><div class="website-watchlist-subheading"><span>A</span><div><h4>Top Entry Candidates</h4><p>Strongest actionable setups closest to a practical entry now.</p></div></div><div id="top-entry-watchlist" class="watchlist-cards"><p class="loading-state">Ranking the strongest actionable entry candidates...</p></div></section>
+              <section class="website-watchlist-subgroup"><div class="website-watchlist-subheading"><span>B</span><div><h4>Developing Setups</h4><p>Constructive bases, reversals, and technical structures still developing toward entry.</p></div></div><div id="developing-watchlist" class="watchlist-cards"><p class="loading-state">Evaluating technically developing setups...</p></div></section>
+            </div></section>
+            <section class="watchlist-group manually-entered-group"><div class="watchlist-group-heading"><span>C</span><div><h3>Manually Entered</h3><p>User-selected stocks being monitored independently for entry timing; technical status never removes them.</p></div></div>
               <form id="watchlist-add-form" class="watchlist-add-form" novalidate>
                 <label for="watchlist-ticker">Add Ticker</label>
                 <div><input id="watchlist-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NTLA" aria-describedby="watchlist-add-status"><button type="submit">Add to Watchlist</button></div>
@@ -127,6 +130,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. AI and Biotech Radar exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260831-4" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260901-1" defer></script>
   </body>
 </html>
