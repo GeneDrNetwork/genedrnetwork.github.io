@@ -6,6 +6,12 @@ const DATA_URL = dataUrl.href;
 const escapeHtml = (value = "") => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
   .replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
 const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value ?? "No update available."; };
+const formatMarketDataThrough = (value) => {
+  const text = String(value || "").trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return text || "Unavailable";
+  const date = new Date(`${text}T00:00:00Z`);
+  return Number.isNaN(date.valueOf()) ? text : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(date);
+};
 let sharedMarketSecurities = {};
 let currentDashboardData = null;
 let watchlistState = null;
@@ -95,9 +101,7 @@ function renderNumberedMessages(targetId, rows = []) {
 function renderDashboardCommentary(commentary = {}) {
   const aiNews = commentary.news?.ai_technology || commentary.news || {};
   const biotechNews = commentary.news?.biotech_healthcare || commentary.news || {};
-  renderReasoning("news-reasoning", aiNews.reasoning);
   renderNumberedMessages("news-takeaways", aiNews.take_home_messages);
-  renderReasoning("biotech-news-reasoning", biotechNews.reasoning);
   renderNumberedMessages("biotech-news-takeaways", biotechNews.take_home_messages);
   renderReasoning("radar-reasoning", commentary.radar?.reasoning);
   renderNumberedMessages("radar-takeaways", commentary.radar?.take_home_messages);
@@ -1134,6 +1138,7 @@ function renderDashboard(data) {
   if (!document.getElementById("position-purchase-date")?.value) resetPositionForm();
   const updated = new Date(data.updated_at);
   setText("last-updated", Number.isNaN(updated.valueOf()) ? data.updated_at : updated.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
+  setText("market-data-through", formatMarketDataThrough(data.market_data_through || data.market_data?.data_through));
   setText("ai-news-summary-copy", data.summaries && data.summaries.ai);
   setText("biotech-news-summary-copy", data.summaries && data.summaries.biotech);
   setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("market-movers", data.summaries && data.summaries.market_movers);
@@ -1158,6 +1163,7 @@ fetch(DATA_URL, { cache: "no-store", headers: { Accept: "application/json" } }).
   return response.json();
 }).then(renderDashboard).catch((error) => {
   setText("last-updated", "Dashboard temporarily unavailable");
+  setText("market-data-through", "Unavailable");
   document.querySelectorAll(".loading-state").forEach((element) => { element.textContent = "The daily data feed could not be loaded. Please try again shortly."; });
   console.error("GeneDr Investment Intelligence dashboard:", error);
 });

@@ -2,7 +2,9 @@ name: Update GeneDr News Dashboard
 
 on:
   schedule:
-    - cron: "17 11 * * *"
+    # GitHub cron is UTC. 23:17 UTC is 3:17 PM PDT / 4:17 PM PST,
+    # after the regular U.S. market close on weekdays.
+    - cron: "17 23 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -15,6 +17,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Check out main
         uses: actions/checkout@v4
@@ -24,6 +27,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Run production pipeline tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Refresh dashboard data
         run: python scripts/update_news_dashboard.py
       - name: Commit updated intelligence

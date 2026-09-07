@@ -8,6 +8,7 @@ import hashlib
 import html
 import io
 import json
+import os
 import re
 import ssl
 import subprocess
@@ -2600,6 +2601,107 @@ def prior_data():
         return {}
 
 
+def market_data_through(market_data):
+    """Return the latest actual trading date represented by the shared layer."""
+    current_dates, retained_dates = [], []
+    collections = [
+        (market_data or {}).get("securities", {}),
+        (market_data or {}).get("indexes", {}),
+        (market_data or {}).get("benchmarks", {}),
+    ]
+    for records in collections:
+        for record in records.values():
+            value = str(record.get("price_date") or "").strip()
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+                continue
+            (current_dates if record.get("data_status") == "current" else retained_dates).append(value)
+    return max(current_dates or retained_dates) if current_dates or retained_dates else None
+
+
+def production_section_status(data, source_health):
+    ai_rows = (data.get("radar") or {}).get("ai") or []
+    ai_companies = {
+        str(item.get("ticker") or "").upper()
+        for trend in ai_rows for item in trend.get("beneficiary_records", [])
+        if item.get("ticker") not in (None, "", "Private", "N/A")
+    }
+    market_coverage = (data.get("market_data") or {}).get("coverage", {})
+    watchlists = data.get("watchlists") or {}
+    return {
+        "news_intelligence": {
+            "refreshed": True,
+            "fresh_ai_candidates": source_health.get("ai_news_candidates", 0),
+            "fresh_biotech_candidates": source_health.get("biotech_news_candidates", 0),
+            "fallback": "Previous current/archive records are retained when fresh feeds return no qualifying events.",
+        },
+        "ai_technology_radar": {"refreshed": True, "trend_count": len(ai_rows),
+                                 "unique_public_companies": len(ai_companies)},
+        "biotechnology_radar": {"refreshed": True, "opportunity_count": len((data.get("radar") or {}).get("biotech") or [])},
+        "high_conviction": {"refreshed": True, "opportunity_count": sum(len(rows) for rows in (data.get("monthly_picks") or {}).values())},
+        "swing_trade_opportunity": {"refreshed": True, "opportunity_count": len((data.get("swing_trade_opportunities") or {}).get("opportunities") or [])},
+        "watchlist_website_selected": {"refreshed": True, "selection_count": sum(len(rows) for rows in watchlists.values())},
+        "watchlist_manually_entered": {
+            "refreshed": True,
+            "mode": "Browser-owned tickers are preserved in localStorage and rehydrated from this shared market layer on every load.",
+            "shared_market_universe": len((data.get("market_data") or {}).get("securities") or {}),
+        },
+        "my_stock": {
+            "refreshed": True,
+            "mode": "Browser-owned execution data is preserved in localStorage; only market-derived analysis is recalculated on load.",
+            "shared_market_universe": len((data.get("market_data") or {}).get("securities") or {}),
+        },
+        "market_data": {"current": market_coverage.get("current", 0), "stale": market_coverage.get("stale", 0),
+                        "missing": market_coverage.get("missing", 0)},
+    }
+
+
+def validate_production_data(data):
+    """Fail closed before replacing the last valid production artifact."""
+    errors = []
+    if not data.get("updated_at"):
+        errors.append("updated_at is missing")
+    if not data.get("market_data_through"):
+        errors.append("market_data_through is missing")
+    market = data.get("market_data") or {}
+    if not market.get("securities"):
+        errors.append("shared market securities are empty")
+    if not market.get("indexes"):
+        errors.append("market indexes are empty")
+    for key in ("ai_technology", "biotech_healthcare"):
+        section = (data.get("top_investment_news") or {}).get(key) or {}
+        if not (section.get("stories") or section.get("important_news_archive")):
+            errors.append(f"{key} news and archive are both empty")
+    radar = data.get("radar") or {}
+    if not radar.get("ai"):
+        errors.append("AI/Technology Radar is empty")
+    if not radar.get("biotech"):
+        errors.append("Biotechnology Radar is empty")
+    for key in ("monthly_picks", "watchlists"):
+        value = data.get(key)
+        if not isinstance(value, dict) or not all(isinstance(value.get(domain), list) for domain in ("ai", "biotech")):
+            errors.append(f"{key} is malformed")
+    if not isinstance((data.get("swing_trade_opportunities") or {}).get("opportunities"), list):
+        errors.append("Swing Trade output is malformed")
+    if not isinstance(data.get("commentary"), dict):
+        errors.append("dashboard commentary is missing")
+    return errors
+
+
+def write_production_data(data, output=OUTPUT):
+    errors = validate_production_data(data)
+    if errors:
+        raise RuntimeError("Production validation failed; previous output preserved: " + "; ".join(errors))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(data, indent=2, ensure_ascii=True) + "\n"
+    json.loads(payload)
+    temporary = output.with_name(f".{output.name}.{os.getpid()}.tmp")
+    try:
+        temporary.write_text(payload)
+        os.replace(temporary, output)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def summarize(headlines, label):
     if not headlines:
         return f"No new {label} headlines were found in today's public feeds. Monitoring continues."
@@ -3956,6 +4058,8 @@ def build():
         ai_reasoning_discovery)
     market_data = build_market_data_layer(previous, run_at, candidate_pool=preliminary_candidates)
     attach_watchlist_entry_readiness(market_data)
+    data_through = market_data_through(market_data) or previous.get("market_data_through")
+    market_data["data_through"] = data_through
 
     old_markets = {item["name"]: item for item in previous.get("markets", [])}
     markets = []
@@ -4009,6 +4113,7 @@ def build():
 
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
+        "market_data_through": data_through,
         "top_investment_news": {"ai_technology": ai_news_section, "biotech_healthcare": biotech_news_section},
         "summaries": {"ai": summarize(ai_news, "AI"), "biotech": summarize(biotech_news, "biotech"),
                       "market": summarize(market_news, "market"), "market_movers": market_movers},
@@ -4049,10 +4154,28 @@ def build():
         "swing_trade_opportunities": swing_trade_opportunities,
         "monthly_picks": monthly_picks, "fda": fda, "markets": markets,
     }
+    source_health = {
+        "ai_news_candidates": len(ai_news_candidates),
+        "biotech_news_candidates": len(biotech_news_candidates),
+        "listed_company_universe": len(listed_companies),
+        "profiled_ai_companies": len(profiled_companies),
+    }
+    data["production_pipeline"] = {
+        "schema_version": "investment-intelligence-daily-v1",
+        "generated_at": run_at.isoformat(timespec="seconds"),
+        "market_data_through": data_through,
+        "source_health": source_health,
+        "sections": production_section_status(data, source_health),
+        "user_data_policy": {
+            "manual_watchlist": "Stored only in browser localStorage and never written or deleted by the daily generator.",
+            "my_stock": "Buy price, shares, purchase date, strategy source, and custom targets remain browser-owned and are never written or deleted by the daily generator.",
+        },
+        "failure_policy": "Supplemental-source failures retain available current/stale core records. Schema validation and atomic replacement preserve the previous production JSON when a critical result is missing or malformed.",
+    }
     data = normalize_investment_data(data)
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(data, indent=2, ensure_ascii=True) + "\n")
+    write_production_data(data)
     print(f"Updated {OUTPUT}")
+    return data
 
 
 if __name__ == "__main__":
