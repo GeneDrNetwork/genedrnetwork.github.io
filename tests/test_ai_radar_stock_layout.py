@@ -30,8 +30,21 @@ class AiRadarStockLayoutTests(unittest.TestCase):
 
     def test_biotech_renderer_remains_separate(self):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
-        self.assertIn("function renderBiotechRadar(rows)", script)
+        self.assertIn("function renderBiotechRadar(rows, targetId", script)
         self.assertIn('class="radar-item biotech-radar-item"', script)
+
+    def test_manual_analysis_and_separate_radar_commentary_are_present(self):
+        page = (ROOT / "programs" / "genedrnews.html").read_text()
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        self.assertIn('id="radar-analyze-form"', page)
+        self.assertIn('id="ai-radar-summary-copy"', page)
+        self.assertIn('id="biotech-radar-summary-copy"', page)
+        self.assertNotIn('id="radar-reasoning"', page)
+        self.assertNotIn('id="radar-takeaways"', page)
+        self.assertIn("function renderRadarAnalysis", script)
+        self.assertIn("ai_manual_analysis_candidates", script)
+        self.assertIn("manual_market_context", script)
+        self.assertIn("does not alter automatic Radar ranking", script)
 
 
 if __name__ == "__main__":

@@ -82,32 +82,52 @@ def build_news_commentary(ai_section, biotech_section):
 
 
 def build_radar_commentary(ai_rows, biotech_rows):
-    top_ai = ranked(ai_rows, "trend_strength")[:3]; top_bio = ranked(biotech_rows, "opportunity_score")[:3]
-    stages = top_counts([row.get("adoption_stage_label") or row.get("stage") for row in ai_rows] +
-                        [row.get("stage") for row in biotech_rows])
-    bottlenecks = top_counts([row.get("current_bottleneck") for row in ai_rows if row.get("current_bottleneck") and not str(row.get("current_bottleneck")).startswith("Missing")], 3)
-    beneficiaries = []
-    for row in ai_rows or []:
-        beneficiaries.extend(item.get("company") for item in row.get("beneficiary_records", [])
-                             if item.get("company") and item.get("listing_status") != "Private")
-    top_beneficiaries = top_counts(beneficiaries, 4)
-    ai_names = ", ".join(f"{row.get('trend')} ({row.get('trend_strength', 'Missing')}/100)" for row in top_ai) or "no scored AI themes"
-    bio_names = ", ".join(f"{row.get('ticker')} ({row.get('opportunity_score', 'Missing')}/100)" for row in top_bio) or "no scored biotech catalysts"
-    reasoning = [
-        {"label": "Why these themes and stocks?", "text": f"Radar is elevating {ai_names}; the leading biotech catalyst records are {bio_names}. They appear because current evidence links demand, adoption, scientific evidence, catalyst impact, or market confirmation to a defined trend or company."},
-        {"label": "Current industry stage", "text": f"The observed stages are concentrated in {', '.join(stages) if stages else 'insufficiently classified stages'}. This means opportunity and execution risk coexist: visible adoption or evidence exists, but not every theme has reached mass deployment or every program has cleared its evidence gate."},
-        {"label": "What may develop next?", "text": f"The next transition is likely to be governed by {', '.join(shorten(item, 105) for item in bottlenecks) if bottlenecks else 'the next confirmed operating or clinical bottleneck'}. Watch whether capital spending, deployment, regulatory progress, and market confirmation move together."},
-        {"label": "Who may benefit next?", "text": f"Current company-linked evidence most often points to {', '.join(top_beneficiaries) if top_beneficiaries else 'no sufficiently repeated public beneficiary yet'}. Beneficiary status remains conditional on revenue sensitivity, moat, company quality, and expectation data."},
-        {"label": "Second-order inference", "text": "Inference: when a first-order bottleneck eases, demand can shift to the next constrained layer—such as networking, power, cooling, data-center capacity, manufacturing, or competing clinical platforms. Radar should therefore track the sequence of bottlenecks, not only the current leader."},
+    ai_candidates = sorted(
+        [(row, item) for row in ai_rows or [] for item in row.get("beneficiary_records", [])],
+        key=lambda pair: pair[1].get("radar_rank_score") if pair[1].get("radar_rank_score") is not None else -1,
+        reverse=True)
+    top_ai = ai_candidates[:3]
+    top_bio = ranked(biotech_rows, "radar_rank_score")[:3]
+    ai_names = ", ".join(
+        f"{item.get('ticker')} ({item.get('bottleneck_opportunity_score', 'Missing')}/100)"
+        for _, item in top_ai) or "no evidence-qualified AI/technology beneficiaries"
+    bio_names = ", ".join(
+        f"{row.get('ticker')} ({row.get('biotech_opportunity_score', row.get('opportunity_score', 'Missing'))}/100)"
+        for row in top_bio) or "no evidence-qualified biotech catalysts"
+    ai_penalized = sum((item.get("priced_in_penalty") or 0) > 0 for _, item in ai_candidates)
+    bio_penalized = sum((row.get("priced_in_penalty") or 0) > 0 for row in biotech_rows or [])
+    ai_summary = (
+        f"The AI/Technology Radar currently evaluates {len(ai_candidates)} public beneficiaries across "
+        f"{len(ai_rows or [])} active technology tracks. Its leading early-opportunity records are {ai_names}. "
+        f"{ai_penalized} candidates receive an Already-Ran or Priced-In ranking penalty.")
+    bio_summary = (
+        f"The Biotech Radar currently evaluates {len(biotech_rows or [])} company–program–indication catalysts. "
+        f"The leading evidence-adjusted records are {bio_names}. {bio_penalized} candidates receive an "
+        "Already-Ran or Priced-In ranking penalty, while scientific-evidence and binary-risk gates remain active.")
+    ai_takeaways = [
+        (f"The highest-ranked current AI/technology candidate is {top_ai[0][1].get('ticker')} in "
+         f"{top_ai[0][0].get('trend')}, with Bottleneck Opportunity {top_ai[0][1].get('bottleneck_opportunity_score', 'Missing')}/100 and "
+         f"Multibagger Potential {top_ai[0][1].get('multibagger_potential_score', 'Missing')}/100."
+         if top_ai else "No AI/technology candidate currently has sufficient evidence for a leading conclusion."),
+        "Bottleneck Opportunity requires category-specific constraint or limited-supplier evidence; general AI exposure alone is capped below 50.",
+        f"Price discovery matters to rank: {ai_penalized} current candidates are penalized because a re-rating or priced-in condition is already visible.",
+        "Entry Stage is a quick reference from the shared technical engine; detailed timing analysis remains in Swing Trade Opportunity.",
     ]
-    takeaways = [
-        f"The strongest current AI trend signal is {top_ai[0].get('trend')} at {top_ai[0].get('trend_strength')}/100." if top_ai else "No AI trend currently has sufficient evidence for a leading conclusion.",
-        f"The leading biotech catalyst record is {top_bio[0].get('company')} / {top_bio[0].get('program')} at {top_bio[0].get('opportunity_score')}/100, subject to its evidence and binary-risk gates." if top_bio else "No biotech catalyst currently has sufficient data for a leading conclusion.",
-        "Trend strength is not the same as stock opportunity; valuation, company exposure, evidence quality, and technical confirmation still determine investability.",
-        "The best second-order opportunities should emerge where the next bottleneck has evidence-supported demand but is not yet fully reflected in expectations.",
+    bio_takeaways = [
+        (f"The leading biotech record is {top_bio[0].get('ticker')} / {top_bio[0].get('program')}, with Biotech Opportunity "
+         f"{top_bio[0].get('biotech_opportunity_score', top_bio[0].get('opportunity_score', 'Missing'))}/100 and Multibagger Potential "
+         f"{top_bio[0].get('multibagger_potential_score', 'Missing')}/100."
+         if top_bio else "No biotech catalyst currently has sufficient evidence for a leading conclusion."),
+        "Scientific evidence, catalyst sensitivity, unmet need, valuation headroom, and binary risk remain distinct; a price move cannot substitute for clinical evidence.",
+        f"Price discovery matters to rank: {bio_penalized} current candidates are penalized because a re-rating or priced-in condition is already visible.",
+        "Missing company sensitivity, cash-runway, or probability inputs remain missing rather than being scored as zero.",
     ]
-    return {"reasoning": reasoning, "take_home_messages": takeaways,
-            "engine_version": "dashboard-commentary-v1"}
+    return {
+        "ai_technology": {"summary": ai_summary, "take_home_messages": ai_takeaways},
+        "biotech_healthcare": {"summary": bio_summary, "take_home_messages": bio_takeaways},
+        "engine_version": "dashboard-radar-commentary-v2",
+        "separation_policy": "AI/Technology and Biotechnology commentary use only their own Radar records.",
+    }
 
 
 def failed_gate(row):

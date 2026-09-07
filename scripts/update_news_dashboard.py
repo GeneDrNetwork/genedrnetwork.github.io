@@ -4222,6 +4222,44 @@ def ai_radar_methodology():
     }
 
 
+def build_manual_radar_market_context(market_data):
+    """Precompute Radar-only market classifications without adding securities to ranked Radar."""
+    context = {}
+    for ticker, snapshot in (market_data or {}).get("securities", {}).items():
+        context[ticker] = {}
+        for domain, maximum in (("ai", 15), ("biotech", 20)):
+            expectation = expectation_assessment(snapshot, domain, maximum)
+            discovery = radar_price_discovery(snapshot, expectation)
+            context[ticker][domain] = {
+                **discovery,
+                "entry_stage": radar_entry_stage(snapshot, domain),
+                "expectation": expectation,
+                "market_data": compact_market_snapshot(snapshot),
+                "scores_available": False,
+                "score_note": "Radar Opportunity and Multibagger scores require company/category or company/program evidence; market data alone does not create a score.",
+            }
+    return context
+
+
+def build_ai_manual_analysis_candidates(all_rows, ranked_rows):
+    """Keep the best evidence-qualified non-Radar placement per ticker for manual review only."""
+    ranked_tickers = {item.get("ticker") for row in ranked_rows or []
+                      for item in row.get("beneficiary_records", [])}
+    best = {}
+    for row in all_rows or []:
+        for beneficiary in row.get("beneficiary_records", []):
+            ticker = beneficiary.get("ticker")
+            if not ticker or ticker in ranked_tickers:
+                continue
+            record = {"trend": row.get("trend"), "beneficiary": beneficiary}
+            current = best.get(ticker)
+            if current is None or (beneficiary.get("radar_rank_score") or -1) > (
+                    current["beneficiary"].get("radar_rank_score") or -1):
+                best[ticker] = record
+    return sorted(best.values(), key=lambda item: (
+        -(item["beneficiary"].get("radar_rank_score") or -1), item["beneficiary"].get("ticker", "")))
+
+
 def normalize_company_row(row):
     normalized = dict(row)
     normalized.update(company_identity(normalized.get("company"), normalized.get("ticker")))
@@ -4342,9 +4380,10 @@ def build():
     takeaways = [item["title"] for item in (ai_news[:2] + biotech_news[:2] + fda_news[:2] + market_news[:1])]
     if not takeaways:
         takeaways = previous.get("takeaways", ["Daily source monitoring is active."])
-    ai_radar = build_ai_radar(ai_news_section, previous.get("radar", {}).get("ai", []), run_at,
-                              market_data, ai_reasoning_discovery)
-    ai_radar, ai_radar_focus = focus_ai_radar_companies(ai_radar)
+    ai_radar_analysis_universe = build_ai_radar(
+        ai_news_section, previous.get("radar", {}).get("ai", []), run_at,
+        market_data, ai_reasoning_discovery)
+    ai_radar, ai_radar_focus = focus_ai_radar_companies(ai_radar_analysis_universe)
     ai_reasoning_discovery.setdefault("production_trace", {})["radar_unique_company_focus"] = ai_radar_focus
     biotech_radar = build_biotech_radar(
         score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
@@ -4378,6 +4417,9 @@ def build():
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
         "radar": {"ai": ai_radar, "biotech": biotech_radar, "ai_focus": ai_radar_focus,
+                  "ai_manual_analysis_candidates": build_ai_manual_analysis_candidates(
+                      ai_radar_analysis_universe, ai_radar),
+                  "manual_market_context": build_manual_radar_market_context(market_data),
                   "methodology": radar_methodology(), "ai_methodology": ai_radar_methodology()},
         "radar_validation": {
             "mrna": {

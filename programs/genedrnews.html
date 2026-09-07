@@ -58,16 +58,23 @@
 
         <section class="radar-section" id="radar">
           <div class="section-heading radar-heading"><div><span class="section-kicker">01 · Primary intelligence surface</span><h2>Future Trend &amp; Investment Radar</h2><p>AI Technology Radar V1 analyzes trends across three horizons; Biotech Catalyst Radar V1 tracks source-backed catalysts.</p></div><span class="live-pill"><i aria-hidden="true"></i> Daily data live</span></div>
-          <div class="interpretation-grid"><section class="interpretation-card"><h3>Radar Reasoning</h3><div id="radar-reasoning"><p class="loading-state">Interpreting Radar evidence...</p></div></section><section class="interpretation-card takeaways-card"><h3>Radar Take-Home Messages</h3><ol id="radar-takeaways"><li>Loading conclusions...</li></ol></section></div>
+          <section class="radar-analyze" aria-labelledby="radar-analyze-title">
+            <div><h3 id="radar-analyze-title">Analyze a Stock</h3><p>Review a ticker with the existing AI/Technology or Biotech Radar evidence without adding it to automatic rankings.</p></div>
+            <form id="radar-analyze-form" class="radar-analyze-form" novalidate><label for="radar-analyze-ticker">Ticker</label><input id="radar-analyze-ticker" name="ticker" type="text" maxlength="10" placeholder="e.g. AMD" autocomplete="off" spellcheck="false"><label for="radar-analyze-domain">Radar model</label><select id="radar-analyze-domain" name="domain"><option value="auto">Auto-detect</option><option value="ai">AI / Technology</option><option value="biotech">Biotechnology</option></select><button type="submit">Analyze</button></form>
+            <p id="radar-analyze-status" class="radar-analyze-status">Enter a valid public-company ticker. Missing evidence remains missing and never creates a score.</p>
+            <div id="radar-analyze-result" class="radar-analyze-result" hidden><section class="interpretation-card"><h3>Summary</h3><p id="radar-analyze-summary"></p></section><section class="interpretation-card takeaways-card"><h3>Take-Home Message</h3><ol id="radar-analyze-takeaways"></ol></section><div id="radar-analyze-details" class="radar-list"></div></div>
+          </section>
 
           <div class="radar-group" aria-labelledby="ai-radar-title">
             <div class="radar-group-heading"><div><span class="radar-icon" aria-hidden="true">AI</span><div><h3 id="ai-radar-title">AI &amp; Technology Radar</h3><p id="ai-summary">Loading daily AI intelligence...</p></div></div><span class="source-note">Stock-first view · expand any stock for its evidence brief</span></div>
+            <div class="interpretation-grid radar-category-commentary"><section class="interpretation-card"><h3>Summary</h3><p id="ai-radar-summary-copy">Loading AI/Technology Radar summary...</p></section><section class="interpretation-card takeaways-card"><h3>Take-Home Message</h3><ol id="ai-radar-takeaways"><li>Loading conclusions...</li></ol></section></div>
             <div class="radar-column-labels ai-labels" aria-hidden="true"><span>Ticker</span><span>Opportunity Score</span><span>Multibagger Potential</span><span>Price Discovery Stage</span><span>Already Priced In</span><span>Entry Stage</span><span></span></div>
             <div id="ai-radar" class="radar-list"><p class="loading-state">Loading AI and technology stocks...</p></div>
           </div>
 
           <div class="radar-group" aria-labelledby="biotech-radar-title">
             <div class="radar-group-heading"><div><span class="radar-icon radar-icon-bio" aria-hidden="true">BIO</span><div><h3 id="biotech-radar-title">Biotech &amp; Healthcare Radar</h3><p id="biotech-summary">Loading daily biotech intelligence...</p></div></div><span class="source-note">Clinical and regulatory context from the existing daily feed</span></div>
+            <div class="interpretation-grid radar-category-commentary"><section class="interpretation-card"><h3>Summary</h3><p id="biotech-radar-summary-copy">Loading Biotech Radar summary...</p></section><section class="interpretation-card takeaways-card"><h3>Take-Home Message</h3><ol id="biotech-radar-takeaways"><li>Loading conclusions...</li></ol></section></div>
             <div class="radar-column-labels biotech-labels" aria-hidden="true"><span>Ticker</span><span>Opportunity Score</span><span>Multibagger Potential</span><span>Price Discovery Stage</span><span>Already Priced In</span><span>Entry Stage</span><span></span></div>
             <div id="biotech-radar" class="radar-list"><p class="loading-state">Loading biotech opportunities...</p></div>
           </div>

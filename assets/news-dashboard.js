@@ -85,13 +85,6 @@ const stageClass = (stage = "") => String(stage).toLowerCase().replace(/\s+/g, "
 const classKey = (value = "") => String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const detailItem = (label, value, placeholder = false) => `<div class="detail-item${placeholder ? " detail-placeholder" : ""}"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`;
 
-function renderReasoning(targetId, rows = []) {
-  const target = document.getElementById(targetId);
-  if (!target) return;
-  target.innerHTML = rows.map((row) => `<article class="reasoning-point"><h4>${escapeHtml(row.label || "Interpretation")}</h4><p>${escapeHtml(row.text || "Evidence is currently insufficient for interpretation.")}</p></article>`).join("")
-    || `<p class="loading-state">Reasoning is unavailable because the connected evidence is incomplete.</p>`;
-}
-
 function renderNumberedMessages(targetId, rows = []) {
   const target = document.getElementById(targetId);
   if (!target) return;
@@ -101,10 +94,14 @@ function renderNumberedMessages(targetId, rows = []) {
 function renderDashboardCommentary(commentary = {}) {
   const aiNews = commentary.news?.ai_technology || commentary.news || {};
   const biotechNews = commentary.news?.biotech_healthcare || commentary.news || {};
+  const aiRadar = commentary.radar?.ai_technology || {};
+  const biotechRadar = commentary.radar?.biotech_healthcare || {};
   renderNumberedMessages("news-takeaways", aiNews.take_home_messages);
   renderNumberedMessages("biotech-news-takeaways", biotechNews.take_home_messages);
-  renderReasoning("radar-reasoning", commentary.radar?.reasoning);
-  renderNumberedMessages("radar-takeaways", commentary.radar?.take_home_messages);
+  setText("ai-radar-summary-copy", aiRadar.summary);
+  renderNumberedMessages("ai-radar-takeaways", aiRadar.take_home_messages);
+  setText("biotech-radar-summary-copy", biotechRadar.summary);
+  renderNumberedMessages("biotech-radar-takeaways", biotechRadar.take_home_messages);
   renderNumberedMessages("high-conviction-reasons", commentary.high_conviction?.reasons);
 }
 
@@ -276,9 +273,9 @@ function renderEarlyRadarBreakdown(label, components = [], completeness) {
   return `<div class="detail-item detail-wide score-breakdown"><dt>${escapeHtml(label)}</dt><dd><ul>${rows || "<li>Score evidence is unavailable.</li>"}</ul><p>Data completeness: ${escapeHtml(completeness ?? "Missing")}% · missing inputs are excluded rather than scored as zero.</p></dd></div>`;
 }
 
-function renderAiRadar(rows) {
+function renderAiRadar(rows, targetId = "ai-radar") {
   const stockRows = aiStockRadarRows(rows);
-  document.getElementById("ai-radar").innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, opportunity_score, multibagger_score, price_discovery_stage, already_priced_in, entry_stage, why_selected, risk_unproven }) => `<details class="radar-item ai-stock-radar-item"><summary>
+  document.getElementById(targetId).innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, opportunity_score, multibagger_score, price_discovery_stage, already_priced_in, entry_stage, why_selected, risk_unproven }) => `<details class="radar-item ai-stock-radar-item"><summary>
       <span class="ai-stock-identity"><strong>${escapeHtml(ticker)}</strong><small>${escapeHtml(beneficiary.company)} · ${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
       ${renderScore(opportunity_score, "Bottleneck Opportunity")}${renderScore(multibagger_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(price_discovery_stage)}</b></span><span><b class="radar-stage-pill priced-${classKey(already_priced_in)}">${escapeHtml(already_priced_in)}</b></span><span><b class="radar-stage-pill entry-${classKey(entry_stage)}">${escapeHtml(entry_stage)}</b></span><span class="expand-control" aria-hidden="true">+</span>
@@ -431,8 +428,8 @@ function renderSources(sources = [], scoreAsOf) {
     <p>Score as of ${escapeHtml(scoreAsOf)}.</p></dd></div>`;
 }
 
-function renderBiotechRadar(rows) {
-  document.getElementById("biotech-radar").innerHTML = rows.map((row) => `<details class="radar-item biotech-radar-item"><summary>
+function renderBiotechRadar(rows, targetId = "biotech-radar") {
+  document.getElementById(targetId).innerHTML = rows.map((row) => `<details class="radar-item biotech-radar-item"><summary>
       <span class="radar-name"><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
       ${renderScore(row.biotech_opportunity_score ?? row.opportunity_score, "Biotech Opportunity")}${renderScore(row.multibagger_potential_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(row.price_discovery_stage || "Emerging")}</b></span><span><b class="radar-stage-pill priced-${classKey(row.already_priced_in || "NO")}">${escapeHtml(row.already_priced_in || "NO")}</b></span><span><b class="radar-stage-pill entry-${classKey(row.entry_stage?.stage || "Unavailable")}">${escapeHtml(row.entry_stage?.stage || "Unavailable")}</b></span><span class="expand-control" aria-hidden="true">+</span>
@@ -457,6 +454,88 @@ function renderBiotechRadar(rows) {
       ${renderBiotechEvidenceGroup("Confirming Evidence", row.confirming_evidence)}${renderBiotechEvidenceGroup("Mixed Evidence", row.mixed_evidence)}${renderBiotechEvidenceGroup("Contradicting Evidence", row.contradicting_evidence)}${renderBiotechHistory(row)}
       <div class="detail-item detail-wide"><dt>Active Monitoring</dt><dd>${watchlistAction(row.ticker, row.company, "Radar", "biotech")}</dd></div>
     </dl></details>`).join("") || `<p class="loading-state">No biotech opportunities are available.</p>`;
+}
+
+function radarAnalysisMatches(data, ticker) {
+  const aiTrends = data.radar?.ai || [];
+  const ai = [];
+  const seen = new Set();
+  for (const trend of aiTrends) {
+    for (const beneficiary of trend.beneficiary_records || []) {
+      if (normalizedTicker(beneficiary.ticker) !== ticker) continue;
+      const key = `${trend.trend}|${ticker}`;
+      if (!seen.has(key)) ai.push({ trend, beneficiary });
+      seen.add(key);
+    }
+  }
+  for (const candidate of data.radar?.ai_manual_analysis_candidates || []) {
+    const beneficiary = candidate.beneficiary || {};
+    if (normalizedTicker(beneficiary.ticker) !== ticker) continue;
+    const trend = aiTrends.find((row) => row.trend === candidate.trend) || { trend: candidate.trend };
+    const key = `${trend.trend}|${ticker}`;
+    if (!seen.has(key)) ai.push({ trend, beneficiary });
+    seen.add(key);
+  }
+  ai.sort((a, b) => (b.beneficiary.radar_rank_score ?? -1) - (a.beneficiary.radar_rank_score ?? -1));
+  const biotech = (data.radar?.biotech || []).filter((row) => normalizedTicker(row.ticker) === ticker)
+    .sort((a, b) => (b.radar_rank_score ?? -1) - (a.radar_rank_score ?? -1));
+  return { ai, biotech };
+}
+
+function renderMarketOnlyRadarAnalysis(ticker, domain, context) {
+  const market = context?.market_data || sharedMarketSecurities[ticker];
+  const discovery = context?.price_discovery_stage || "Unavailable";
+  const priced = context?.already_priced_in || "Unavailable";
+  const entry = context?.entry_stage?.stage || "Unavailable";
+  document.getElementById("radar-analyze-details").innerHTML = `<details class="radar-item ai-stock-radar-item"><summary>
+    <span class="ai-stock-identity"><strong>${escapeHtml(ticker)}</strong><small>${escapeHtml(currentPriceLabel(ticker, market) || "Price unavailable")} · ${escapeHtml(domain === "biotech" ? "Biotechnology" : "AI / Technology")}</small></span>
+    ${renderScore(null, "Opportunity Score")}${renderScore(null, "Multibagger Potential")}
+    <span><b class="radar-stage-pill">${escapeHtml(discovery)}</b></span><span><b class="radar-stage-pill">${escapeHtml(priced)}</b></span><span><b class="radar-stage-pill">${escapeHtml(entry)}</b></span><span class="expand-control" aria-hidden="true">+</span>
+  </summary><dl class="detail-grid"><div class="detail-item detail-wide"><dt>Evidence Boundary</dt><dd>${escapeHtml(context?.score_note || "No company-specific Radar thesis is connected, so Opportunity and Multibagger scores remain missing.")}</dd></div>
+    ${detailItem("Price Discovery / Priced In", context?.rationale || "Missing")}${detailItem("Entry Stage", `${entry}. ${context?.entry_stage?.rationale || "Missing"}`)}${renderMarketSnapshot(market, domain === "biotech" ? "xbi" : "qqq")}
+  </dl></details>`;
+}
+
+function renderRadarAnalysis(data, ticker, requestedDomain) {
+  const matches = radarAnalysisMatches(data, ticker);
+  const market = sharedMarketSecurities[ticker];
+  let domain = requestedDomain;
+  if (domain === "auto") domain = matches.biotech.length ? "biotech" : matches.ai.length ? "ai" :
+    (market?.domains?.includes("biotech") ? "biotech" : "ai");
+  const result = document.getElementById("radar-analyze-result");
+  const status = document.getElementById("radar-analyze-status");
+  result.hidden = false;
+  if (domain === "ai" && matches.ai.length) {
+    const { trend, beneficiary } = matches.ai[0];
+    const why = beneficiary.thesis_evidence?.[0]?.basis || beneficiary.classification_reason || "Company-specific thesis evidence is missing.";
+    setText("radar-analyze-summary", `${beneficiary.company} (${ticker}) is analyzed under ${trend.trend}. Bottleneck Opportunity is ${beneficiary.bottleneck_opportunity_score ?? "Missing"}/100 and Multibagger Potential is ${beneficiary.multibagger_potential_score ?? "Missing"}/100; price discovery is ${beneficiary.price_discovery_stage}, priced-in status is ${beneficiary.already_priced_in}, and Entry Stage is ${beneficiary.entry_stage?.stage || "Unavailable"}.`);
+    renderNumberedMessages("radar-analyze-takeaways", [conciseRadarText(why), `The ranking penalty is ${beneficiary.priced_in_penalty ?? 0} points; this manual review does not alter automatic Radar ranking.`, beneficiary.confirmation_missing ? "Commercial confirmation remains unproven; monitor orders, backlog, customers, guidance, or revenue evidence." : "Commercial confirmation is connected, but durability and valuation still require monitoring."]);
+    renderAiRadar([{ ...trend, beneficiary_records: [beneficiary] }], "radar-analyze-details");
+    status.textContent = `${ticker} analyzed with existing AI/Technology Radar evidence. It was not added to automatic rankings.`;
+    status.className = "radar-analyze-status is-success";
+    return;
+  }
+  if (domain === "biotech" && matches.biotech.length) {
+    const row = matches.biotech[0];
+    setText("radar-analyze-summary", `${row.company} (${ticker}) is analyzed at the ${row.program} / ${row.indication} catalyst level. Biotech Opportunity is ${row.biotech_opportunity_score ?? row.opportunity_score ?? "Missing"}/100 and Multibagger Potential is ${row.multibagger_potential_score ?? "Missing"}/100; price discovery is ${row.price_discovery_stage}, priced-in status is ${row.already_priced_in}, and Entry Stage is ${row.entry_stage?.stage || "Unavailable"}.`);
+    renderNumberedMessages("radar-analyze-takeaways", [conciseRadarText(row.why_important), `Scientific Evidence is ${row.scientific_evidence_score ?? "Missing"}/30 and Binary Risk is ${row.binary_risk || "Missing"}.`, `The ranking penalty is ${row.priced_in_penalty ?? 0} points; this manual review does not alter automatic Radar ranking.`]);
+    renderBiotechRadar([row], "radar-analyze-details");
+    status.textContent = `${ticker} analyzed with existing Biotech Radar evidence. It was not added to automatic rankings.`;
+    status.className = "radar-analyze-status is-success";
+    return;
+  }
+  const context = data.radar?.manual_market_context?.[ticker]?.[domain];
+  if (market && context) {
+    setText("radar-analyze-summary", `${ticker} has current shared market and technical data, but no ${domain === "biotech" ? "company–program–catalyst" : "category-specific beneficiary"} evidence in today's Radar analysis universe. Opportunity and Multibagger scores therefore remain missing.`);
+    renderNumberedMessages("radar-analyze-takeaways", [`Price Discovery Stage is ${context.price_discovery_stage}; Already Priced In is ${context.already_priced_in}; Entry Stage is ${context.entry_stage?.stage || "Unavailable"}.`, "Market data alone cannot create a Radar thesis or opportunity score.", "The ticker remains outside automatic Radar rankings unless the daily evidence pipeline independently qualifies it."]);
+    renderMarketOnlyRadarAnalysis(ticker, domain, context);
+    status.textContent = `${ticker} market analysis is available; company-specific Radar evidence is missing.`;
+    status.className = "radar-analyze-status";
+    return;
+  }
+  result.hidden = true;
+  status.textContent = `${ticker} is syntactically valid but is not available in today's shared market/Radar dataset. No score or quote was fabricated.`;
+  status.className = "radar-analyze-status is-error";
 }
 
 function buyDecisionFor(row = {}) {
@@ -1143,6 +1222,25 @@ if (watchlistForm) watchlistForm.addEventListener("submit", (event) => {
   const snapshot = sharedMarketSecurities[ticker];
   const added = addWatchlistItem({ ticker, company: ticker, source: "Manual", domain: snapshot?.domains?.[0] });
   if (added && input) input.value = "";
+});
+
+const radarAnalyzeForm = document.getElementById("radar-analyze-form");
+if (radarAnalyzeForm) radarAnalyzeForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const ticker = normalizedTicker(document.getElementById("radar-analyze-ticker")?.value);
+  const status = document.getElementById("radar-analyze-status");
+  if (!/^[A-Z][A-Z0-9.-]{0,9}$/.test(ticker)) {
+    status.textContent = "Enter a valid ticker using letters, numbers, a period, or a hyphen.";
+    status.className = "radar-analyze-status is-error";
+    document.getElementById("radar-analyze-result").hidden = true;
+    return;
+  }
+  if (!currentDashboardData) {
+    status.textContent = "Dashboard data is still loading. Try again after Last Updated appears.";
+    status.className = "radar-analyze-status is-error";
+    return;
+  }
+  renderRadarAnalysis(currentDashboardData, ticker, document.getElementById("radar-analyze-domain")?.value || "auto");
 });
 
 const positionForm = document.getElementById("position-form");

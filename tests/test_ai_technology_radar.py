@@ -8,6 +8,7 @@ from scripts.update_news_dashboard import (
     ai_adoption_stage,
     ai_evidence_age,
     build_ai_radar,
+    build_manual_radar_market_context,
     deduplicate_ai_radar_evidence,
     focus_ai_radar_companies,
 )
@@ -36,6 +37,19 @@ def build_with_discovery(section, previous=None, run_at=RUN_AT):
 
 
 class AiTechnologyRadarTests(unittest.TestCase):
+    def test_manual_market_context_does_not_create_radar_scores(self):
+        snapshot = {
+            "ticker": "TEST", "current_price": 20, "returns": {"one_month": 2, "three_month": -4, "six_month": -8},
+            "fifty_two_week_position": 35, "data_status": "current",
+            "watchlist_entry_readiness": {"ai": {"state_key": "base-building", "state": "Base Building",
+                                                       "entry_timing_score": 60, "entry_guidance": "Wait."}},
+        }
+        context = build_manual_radar_market_context({"securities": {"TEST": snapshot}})["TEST"]["ai"]
+        self.assertFalse(context["scores_available"])
+        self.assertIn("does not create a score", context["score_note"])
+        self.assertEqual(context["entry_stage"]["stage"], "Bottoming")
+        self.assertEqual(context["price_discovery_stage"], "Early Discovery")
+
     def test_already_ran_and_priced_in_penalty_changes_actual_rank(self):
         base = {
             "category": "Bottleneck/Picks-and-Shovels", "market_cap_bucket": "Mid",

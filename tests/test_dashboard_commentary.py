@@ -46,11 +46,16 @@ class DashboardCommentaryTests(unittest.TestCase):
         self.assertIn("Biotech-only-change", biotech_text)
         self.assertNotIn("AI-only-change", biotech_text)
 
-    def test_radar_commentary_precedes_stock_level_detail(self):
+    def test_radar_commentary_is_separate_by_domain(self):
         result = build_radar_commentary(DATA["radar"]["ai"], DATA["radar"]["biotech"])
-        self.assertEqual(len(result["reasoning"]), 5)
-        self.assertGreaterEqual(len(result["take_home_messages"]), 3)
-        self.assertIn(DATA["radar"]["ai"][0]["trend"], " ".join(item["text"] for item in result["reasoning"]) + " " + " ".join(result["take_home_messages"]))
+        self.assertNotIn("reasoning", result)
+        self.assertNotIn("take_home_messages", result)
+        self.assertIn("AI/Technology Radar", result["ai_technology"]["summary"])
+        self.assertIn("Biotech Radar", result["biotech_healthcare"]["summary"])
+        self.assertGreaterEqual(len(result["ai_technology"]["take_home_messages"]), 3)
+        self.assertGreaterEqual(len(result["biotech_healthcare"]["take_home_messages"]), 3)
+        self.assertNotIn("Biotech Radar", result["ai_technology"]["summary"])
+        self.assertNotIn("AI/Technology Radar", result["biotech_healthcare"]["summary"])
 
     def test_high_conviction_commentary_does_not_change_ranking_or_scores(self):
         rows = copy.deepcopy(DATA["monthly_picks"])
