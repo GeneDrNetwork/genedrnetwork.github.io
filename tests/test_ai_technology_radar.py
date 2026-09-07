@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from scripts.ai_reasoning_discovery import build_ai_reasoning_discovery
 from scripts.update_news_dashboard import (
     AI_RADAR_FACTOR_WEIGHTS,
+    ai_early_opportunity_scores,
     ai_adoption_stage,
     ai_evidence_age,
     build_ai_radar,
@@ -35,6 +36,34 @@ def build_with_discovery(section, previous=None, run_at=RUN_AT):
 
 
 class AiTechnologyRadarTests(unittest.TestCase):
+    def test_already_ran_and_priced_in_penalty_changes_actual_rank(self):
+        base = {
+            "category": "Bottleneck/Picks-and-Shovels", "market_cap_bucket": "Mid",
+            "profile_matches": ["capacity", "specialized systems"], "evidence_ids": ["event-1"],
+            "thesis_evidence": [{"basis": "Specialized capacity is a documented supply bottleneck.",
+                                 "evidence_types": ["Industry Position"]}],
+            "confirmation_evidence": [{"basis": "Orders and backlog accelerated.",
+                                       "evidence_types": ["Orders / Backlog"]}],
+            "score_components": [
+                {"label": "Trend Exposure", "score": 26},
+                {"label": "Revenue Sensitivity", "score": 20},
+                {"label": "Evidence Quality", "score": 9},
+            ],
+            "expectation": {"state": "Fairly Priced", "score": 8, "maximum": 15, "signals": []},
+        }
+        early = ai_early_opportunity_scores({**base, "market_data": {
+            "returns": {"one_month": -2, "three_month": -8, "six_month": -12},
+            "fifty_two_week_position": 35,
+        }})
+        ran = ai_early_opportunity_scores({**base, "market_data": {
+            "returns": {"one_month": 20, "three_month": 65, "six_month": 110},
+            "fifty_two_week_position": 98,
+        }})
+        self.assertEqual(early["priced_in_penalty"], 6)
+        self.assertEqual(ran["priced_in_penalty"], 25)
+        self.assertGreater(early["radar_rank_score"], ran["radar_rank_score"])
+        self.assertGreater(early["multibagger_potential_score"], ran["multibagger_potential_score"])
+
     def test_global_focus_targets_unique_companies_and_preserves_categories(self):
         rows = []
         for category_index in range(10):

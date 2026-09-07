@@ -23,12 +23,16 @@ class BiotechCatalystRadarTests(unittest.TestCase):
 
     def test_live_radar_is_hierarchical_and_keeps_outputs_distinct(self):
         rows = build_biotech_radar(date(2026, 8, 27))
-        self.assertEqual([row["opportunity_score"] for row in rows], sorted(
-            (row["opportunity_score"] for row in rows), reverse=True))
+        self.assertEqual([row["radar_rank_score"] for row in rows], sorted(
+            (row["radar_rank_score"] for row in rows), reverse=True))
         self.assertTrue(all(row["engine_version"] == "biotech-radar-v1" for row in rows))
         self.assertTrue(all(len(row["score_components"]) == 5 for row in rows))
         self.assertTrue(all(row.get("company") and row.get("program") and row.get("indication") and row.get("catalyst") for row in rows))
         self.assertTrue(all("binary_risk" in row and "confidence" in row for row in rows))
+        self.assertTrue(all(row["biotech_opportunity_score"] == row["opportunity_score"] for row in rows))
+        self.assertTrue(all(row["price_discovery_stage"] in
+                            ("Early Discovery", "Emerging", "Re-rating Underway", "Already Ran") for row in rows))
+        self.assertTrue(all(row["already_priced_in"] in ("NO", "PARTIALLY", "YES") for row in rows))
 
     def test_missing_inputs_are_not_zero(self):
         beam = next(row for row in build_biotech_radar(date(2026, 8, 27)) if row["ticker"] == "BEAM")

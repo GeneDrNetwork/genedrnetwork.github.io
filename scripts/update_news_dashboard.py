@@ -1014,6 +1014,9 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
         status = "Evidence-Supported / High Impact"
     else:
         status = "Monitoring"
+    early_opportunity = biotech_multibagger_scores(
+        item, opportunity_score, scientific_score, catalyst_impact, expectation,
+        None if timing_missing else timing_score, security_market_record, news_evidence)
     result = {key: value for key, value in item.items() if key not in ("components", "window_start", "window_end")}
     result.update({
         "opportunity_score": opportunity_score,
@@ -1063,6 +1066,7 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
         "contradicting_evidence": contradicting,
         "evidence_count": len(news_evidence),
     })
+    result.update(early_opportunity)
     result["why_changed"] = biotech_radar_why_changed(previous, result)
     prior_history = list(previous.get("score_history", [])) if previous else []
     snapshot = {
@@ -1071,6 +1075,10 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
         "expectation_gap_score": expectation_score, "binary_risk": binary_risk,
         "data_completeness": available_weight, "confidence": confidence,
         "opportunity_status": status, "evidence_count": len(news_evidence), "why_changed": result["why_changed"],
+        "multibagger_potential_score": result["multibagger_potential_score"],
+        "price_discovery_stage": result["price_discovery_stage"],
+        "already_priced_in": result["already_priced_in"],
+        "priced_in_penalty": result["priced_in_penalty"],
     }
     snapshot_day = snapshot["as_of"][:10]
     prior_history = [entry for entry in prior_history if str(entry.get("as_of", ""))[:10] != snapshot_day]
@@ -1092,7 +1100,9 @@ def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None, ma
             key = (item.get("ticker"), item.get("program"), item.get("indication"), item.get("catalyst"))
             eligible.append(score_biotech_catalyst(
                 item, as_of, biotech_news_section, previous_by_key.get(key), market_data))
-    return sorted(eligible, key=lambda item: (-(item["opportunity_score"] or -1), item["expected_timing"], item["ticker"]))
+    return sorted(eligible, key=lambda item: (-(item["radar_rank_score"] or -1),
+                                               -(item["biotech_opportunity_score"] or -1),
+                                               item["expected_timing"], item["ticker"]))
 
 
 def radar_methodology():
@@ -1109,6 +1119,10 @@ def radar_methodology():
         "market_data_policy": "XBI price trend supplies up to 10 of 15 Sector Trend points; security price/volume technicals supply up to 5 of 10 Timing & Technicals points. Phase 5B supplies Expectation Gap from current valuation, run-up, analyst-revision and short-interest inputs. Options IV and advanced capital-flow data remain excluded.",
         "binary_risk": "Low / Moderate / High / Extreme uses available evidence uncertainty and catalyst magnitude; missing company valuation sensitivity or portfolio dependence prevents a Low classification.",
         "status_policy": ["High Conviction", "Evidence-Supported / High Impact", "Monitoring", "Speculative Binary", "High Downside Risk", "Thesis Broken"],
+        "early_discovery_ranking": "Biotech Opportunity remains separate from Multibagger Potential. Final Radar ordering combines the two and subtracts an explicit 0–25 Already-Ran / Priced-In penalty.",
+        "price_discovery_stages": ["Early Discovery", "Emerging", "Re-rating Underway", "Already Ran"],
+        "priced_in_states": ["NO", "PARTIALLY", "YES"],
+        "entry_stage_boundary": "Falling / Bottoming / Reversal / Entry Zone / Breakout / Extended is a compact reuse of the shared technical engine; detailed entry analysis remains in Swing Trade Opportunity.",
         "scope_note": "V1 scores the existing curated Company → Drug/Program → Indication → Catalyst set. Unavailable valuation, analyst, short-interest, trial, portfolio-dependence, options-IV and advanced capital-flow inputs remain missing.",
     }
 
@@ -1806,6 +1820,233 @@ def expectation_assessment(snapshot, domain, maximum):
     return {"state": state, "score": score, "maximum": maximum, "coverage": len(groups),
             "available_input_groups": groups, "signals": signals, "rationale": rationale,
             "sources": record.get("sources", [])}
+
+
+def radar_price_discovery(snapshot, expectation):
+    """Classify how much price discovery has occurred and attach an explicit rank penalty."""
+    returns = (snapshot or {}).get("returns", {})
+    one_month = returns.get("one_month")
+    three_month = returns.get("three_month")
+    six_month = returns.get("six_month")
+    week_52 = (snapshot or {}).get("fifty_two_week_position")
+    already_ran = (
+        (six_month is not None and six_month >= 75) or
+        (three_month is not None and three_month >= 50) or
+        (week_52 is not None and week_52 >= 93 and six_month is not None and six_month >= 35)
+    )
+    rerating = (
+        (six_month is not None and six_month >= 30) or
+        (three_month is not None and three_month >= 20) or
+        (one_month is not None and one_month >= 12)
+    )
+    early = (
+        not already_ran and not rerating and
+        ((six_month is not None and six_month <= 0) or
+         (six_month is None and three_month is not None and three_month <= 0))
+    )
+    stage = "Already Ran" if already_ran else "Re-rating Underway" if rerating else "Early Discovery" if early else "Emerging"
+    expectation_state = (expectation or {}).get("state", "Data Insufficient")
+    if expectation_state == "Crowded / Priced In":
+        priced_in = "YES"
+    elif stage == "Already Ran":
+        priced_in = "PARTIALLY" if expectation_state == "Underpriced" else "YES"
+    elif expectation_state == "Underpriced":
+        priced_in = "NO"
+    elif expectation_state == "Fairly Priced" or stage == "Re-rating Underway":
+        priced_in = "PARTIALLY"
+    else:
+        priced_in = "NO"
+    stage_penalty = {"Early Discovery": 0, "Emerging": 0, "Re-rating Underway": 5, "Already Ran": 15}[stage]
+    priced_penalty = {"NO": 0, "PARTIALLY": 6, "YES": 15}[priced_in]
+    penalty = min(25, stage_penalty + priced_penalty)
+    observed = [
+        f"1M return {one_month:.1f}%" if one_month is not None else None,
+        f"3M return {three_month:.1f}%" if three_month is not None else None,
+        f"6M return {six_month:.1f}%" if six_month is not None else None,
+        f"52-week position {week_52:.1f}%" if week_52 is not None else None,
+    ]
+    observed = [item for item in observed if item]
+    rationale = (f"{stage}; {expectation_state}. " + ("; ".join(observed) if observed else
+                 "Price-history inputs are missing; no price-run penalty was inferred."))
+    return {"price_discovery_stage": stage, "already_priced_in": priced_in,
+            "priced_in_penalty": penalty, "rationale": rationale,
+            "market_inputs_available": len(observed), "expectation_state": expectation_state}
+
+
+def radar_entry_stage(snapshot, domain):
+    """Reuse the shared Entry Timing engine while exposing only Radar's compact stage."""
+    readiness = ((snapshot or {}).get("watchlist_entry_readiness") or {}).get(domain, {})
+    state_key = readiness.get("state_key")
+    mapping = {
+        "deterioration": "Falling", "base-building": "Bottoming",
+        "near-buy-zone": "Reversal", "buy-zone": "Entry Zone",
+        "breakout-confirmed": "Breakout", "extended": "Extended",
+    }
+    return {"stage": mapping.get(state_key, "Unavailable"),
+            "source_state": readiness.get("state"),
+            "entry_timing_score": readiness.get("entry_timing_score"),
+            "data_completeness": readiness.get("data_completeness"),
+            "rationale": readiness.get("entry_guidance") or "Detailed entry evidence is unavailable in the shared market layer."}
+
+
+def normalized_radar_score(components):
+    available = [item for item in components if item.get("score") is not None]
+    weight = sum(item["weight"] for item in available)
+    if not weight:
+        return None, 0
+    points = sum(item["score"] for item in available)
+    return round(points / weight * 100), weight
+
+
+def ai_early_opportunity_scores(beneficiary):
+    """Score a beneficiary's bottleneck economics separately from broad AI popularity."""
+    expectation = beneficiary.get("expectation") or {"state": "Data Insufficient", "score": None, "maximum": 15}
+    market = beneficiary.get("market_data") or {}
+    discovery = radar_price_discovery(market, expectation)
+    component_by_label = {item.get("label"): item.get("score") for item in beneficiary.get("score_components", [])}
+    thesis_text = " ".join(
+        str(value) for evidence in beneficiary.get("thesis_evidence", [])
+        for value in (evidence.get("basis"), " ".join(evidence.get("evidence_types", []))))
+    confirmation_text = " ".join(
+        str(value) for evidence in beneficiary.get("confirmation_evidence", [])
+        for value in (evidence.get("basis"), " ".join(evidence.get("evidence_types", []))))
+    bottleneck_terms = ("bottleneck", "limited supplier", "capacity", "shortage", "constraint", "scarcity", "supply chain")
+    explicit_bottleneck = (beneficiary.get("category") == "Bottleneck/Picks-and-Shovels" or
+                           any(term in thesis_text.lower() for term in bottleneck_terms))
+    confirmation_types = {
+        kind.lower() for evidence in beneficiary.get("confirmation_evidence", [])
+        for kind in evidence.get("evidence_types", [])
+    }
+    inflection_evidence = bool(confirmation_types.intersection(
+        {"orders / backlog", "revenue / earnings", "guidance", "customer adoption", "commercial deployment"}))
+    trend_exposure = component_by_label.get("Trend Exposure")
+    revenue_sensitivity = component_by_label.get("Revenue Sensitivity")
+    evidence_quality = component_by_label.get("Evidence Quality")
+    moat_score = 15 if explicit_bottleneck and len(beneficiary.get("profile_matches", [])) >= 2 else (
+        11 if explicit_bottleneck else None)
+    confirmation_score = min(10, 5 + len(confirmation_types)) if inflection_evidence else None
+    valuation_score = expectation.get("score")
+    bottleneck_components = [
+        {"key": "trend_exposure", "label": "Emerging Demand / Trend Exposure", "weight": 20,
+         "score": None if trend_exposure is None else round(trend_exposure / 30 * 20),
+         "evidence": beneficiary.get("thesis_evidence", [])},
+        {"key": "bottleneck_supplier_position", "label": "Bottleneck / Limited-Supplier Position", "weight": 25,
+         "score": 25 if explicit_bottleneck else None, "evidence": beneficiary.get("thesis_evidence", [])},
+        {"key": "moat", "label": "Specialized Capability / Moat", "weight": 15,
+         "score": moat_score, "evidence": beneficiary.get("profile_matches", [])},
+        {"key": "revenue_exposure", "label": "Revenue Exposure", "weight": 15,
+         "score": None if revenue_sensitivity is None else round(revenue_sensitivity / 20 * 15),
+         "evidence": beneficiary.get("confirmation_evidence", [])},
+        {"key": "orders_earnings_inflection", "label": "Orders / Backlog / Earnings Inflection", "weight": 10,
+         "score": confirmation_score, "evidence": beneficiary.get("confirmation_evidence", [])},
+        {"key": "valuation_headroom", "label": "Valuation Headroom", "weight": 10,
+         "score": None if valuation_score is None else round(valuation_score / 15 * 10),
+         "evidence": expectation.get("signals", [])},
+        {"key": "evidence_quality", "label": "Evidence Quality", "weight": 5,
+         "score": None if evidence_quality is None else round(evidence_quality / 10 * 5),
+         "evidence": beneficiary.get("evidence_ids", [])},
+    ]
+    bottleneck_score, bottleneck_completeness = normalized_radar_score(bottleneck_components)
+    if not explicit_bottleneck and bottleneck_score is not None:
+        bottleneck_score = min(49, bottleneck_score)
+    size_bucket = beneficiary.get("market_cap_bucket", "Unknown")
+    size_score = {"Small/Emerging": 10, "Mid": 8, "Large": 5, "Mega": 2}.get(size_bucket)
+    early_score = {"Early Discovery": 10, "Emerging": 8, "Re-rating Underway": 4, "Already Ran": 0}[discovery["price_discovery_stage"]]
+    multibagger_components = [
+        {"key": "bottleneck_opportunity", "label": "Bottleneck Opportunity", "weight": 30,
+         "score": None if bottleneck_score is None else round(bottleneck_score * .30)},
+        {"key": "revenue_exposure", "label": "Revenue Exposure / Sensitivity", "weight": 10,
+         "score": None if revenue_sensitivity is None else round(revenue_sensitivity / 20 * 10)},
+        {"key": "commercial_inflection", "label": "Orders / Backlog / Earnings Inflection", "weight": 10,
+         "score": confirmation_score},
+        {"key": "supplier_moat", "label": "Supplier Scarcity / Moat", "weight": 15,
+         "score": moat_score},
+        {"key": "size_asymmetry", "label": "Company-Size Upside Asymmetry", "weight": 10,
+         "score": size_score},
+        {"key": "valuation_headroom", "label": "Valuation Headroom", "weight": 15,
+         "score": valuation_score},
+        {"key": "early_discovery", "label": "Early Discovery", "weight": 10,
+         "score": early_score},
+    ]
+    raw_multibagger, multibagger_completeness = normalized_radar_score(multibagger_components)
+    multibagger = None if raw_multibagger is None else max(0, raw_multibagger - discovery["priced_in_penalty"])
+    raw_rank = None if bottleneck_score is None or raw_multibagger is None else round(bottleneck_score * .55 + raw_multibagger * .45)
+    rank_score = None if raw_rank is None else max(0, raw_rank - discovery["priced_in_penalty"])
+    return {
+        "bottleneck_opportunity_score": bottleneck_score,
+        "multibagger_potential_score": multibagger,
+        "raw_multibagger_potential_score": raw_multibagger,
+        "radar_rank_score": rank_score,
+        "priced_in_penalty": discovery["priced_in_penalty"],
+        "price_discovery_stage": discovery["price_discovery_stage"],
+        "already_priced_in": discovery["already_priced_in"],
+        "price_discovery_rationale": discovery["rationale"],
+        "entry_stage": radar_entry_stage(market, "ai"),
+        "bottleneck_score_components": bottleneck_components,
+        "multibagger_score_components": multibagger_components,
+        "early_discovery_completeness": {
+            "bottleneck_opportunity": bottleneck_completeness,
+            "multibagger_potential": multibagger_completeness,
+        },
+        "missing_early_discovery_inputs": [item["label"] for item in bottleneck_components + multibagger_components
+                                           if item.get("score") is None],
+        "scoring_note": ("Bottleneck evidence is explicitly connected." if explicit_bottleneck else
+                         "Explicit bottleneck or limited-supplier evidence is missing; Bottleneck Opportunity is capped below 50."),
+    }
+
+
+def biotech_multibagger_scores(item, opportunity_score, scientific_score, catalyst_impact,
+                               expectation, timing_score, market_snapshot_record, news_evidence):
+    discovery = radar_price_discovery(market_snapshot_record, expectation)
+    market_cap = (market_snapshot_record or {}).get("market_cap")
+    bucket = market_cap_bucket(market_cap)
+    size_score = {"Small/Emerging": 15, "Mid": 12, "Large": 7, "Mega": 3}.get(bucket)
+    commercial_points = item["components"]["commercial_impact"][0]
+    partnership_events = [event for event in news_evidence if any(
+        term in str(event.get("event_type") or "").lower() for term in ("partnership", "licensing", "m&a"))]
+    components = [
+        {"key": "scientific_probability", "label": "Clinical Evidence / Probability Support", "weight": 20,
+         "score": None if scientific_score is None else round(scientific_score / 30 * 20)},
+        {"key": "catalyst_impact", "label": "Catalyst Impact", "weight": 12,
+         "score": round(catalyst_impact / 15 * 12)},
+        {"key": "company_sensitivity", "label": "Company / Portfolio Sensitivity", "weight": 8,
+         "score": None},
+        {"key": "unmet_need_differentiation", "label": "Unmet Need / Differentiation / Revenue Potential", "weight": 15,
+         "score": round(commercial_points / 15 * 15)},
+        {"key": "market_cap_asymmetry", "label": "Market-Cap Upside Asymmetry", "weight": 15,
+         "score": size_score},
+        {"key": "valuation_headroom", "label": "Valuation / Expectation Headroom", "weight": 15,
+         "score": expectation.get("score")},
+        {"key": "timing", "label": "Catalyst Timing", "weight": 5,
+         "score": None if timing_score is None else round(timing_score / 15 * 5)},
+        {"key": "partnership_ma", "label": "Partnership / M&A Validation", "weight": 5,
+         "score": 5 if partnership_events else None},
+        {"key": "cash_runway", "label": "Cash Runway / Dilution Risk", "weight": 5,
+         "score": None},
+    ]
+    raw_multibagger, completeness = normalized_radar_score(components)
+    multibagger = None if raw_multibagger is None else max(0, raw_multibagger - discovery["priced_in_penalty"])
+    raw_rank = None if opportunity_score is None or raw_multibagger is None else round(opportunity_score * .65 + raw_multibagger * .35)
+    rank_score = None if raw_rank is None else max(0, raw_rank - discovery["priced_in_penalty"])
+    return {
+        "biotech_opportunity_score": opportunity_score,
+        "multibagger_potential_score": multibagger,
+        "raw_multibagger_potential_score": raw_multibagger,
+        "radar_rank_score": rank_score,
+        "priced_in_penalty": discovery["priced_in_penalty"],
+        "price_discovery_stage": discovery["price_discovery_stage"],
+        "already_priced_in": discovery["already_priced_in"],
+        "price_discovery_rationale": discovery["rationale"],
+        "entry_stage": radar_entry_stage(market_snapshot_record, "biotech"),
+        "multibagger_score_components": components,
+        "multibagger_data_completeness": completeness,
+        "market_cap": market_cap,
+        "market_cap_bucket": bucket,
+        "probability_of_success": "Missing: no independently validated program probability-of-success estimate is connected.",
+        "cash_runway_dilution": "Missing: no verified cash-runway and dilution-risk calculation is connected at Radar generation time.",
+        "partnership_ma_evidence": partnership_events,
+        "missing_multibagger_inputs": [component["label"] for component in components if component.get("score") is None],
+    }
 
 
 AI_CANDIDATE_LIMIT = 30
@@ -3696,6 +3937,8 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
             "discovery_method": item.get("discovery_method", "news_identity"),
             "profile_matches": item.get("profile_matches", []),
             "profile_match_fields": item.get("profile_match_fields", []),
+            "profile_validation_strength": item.get("profile_validation_strength"),
+            "market_cap": item.get("market_cap"),
             "market_cap_bucket": item.get("market_cap_bucket", "Unknown"),
             "market_data": compact_market_snapshot(security_market),
             "expectation": expectation_assessment(security_market, "ai", 15),
@@ -3785,16 +4028,22 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
             weighted_importance = sum(item.get("news_importance_score", 0) * item["freshness_multiplier"] *
                                       (1 if item["relation"] == "direct" else 0.55) for item in relevant) / len(relevant)
             demand_score = min(20, round(6 + weighted_importance * 0.13 + min(3, len(confirming))))
-        bottleneck_tracks = {"Compute", "HBM/Memory", "Foundry/Advanced Packaging", "Networking/Optical", "Data Centers", "Power/Electrical", "Cooling", "Grid/Energy/Materials"}
+        beneficiaries = ai_beneficiaries(trend, relevant, market_data, ai_reasoning_discovery)
+        bottleneck_evidence_text = " ".join(
+            str(item.get("new_information") or "") for item in relevant).lower()
+        bottleneck_terms = ("bottleneck", "capacity", "shortage", "constraint", "scarcity", "limited supplier", "supply chain")
+        bottleneck_beneficiaries = [item for item in beneficiaries
+                                    if item.get("category") == "Bottleneck/Picks-and-Shovels"]
         bottleneck_score = None
-        if trend in bottleneck_tracks:
-            bottleneck_score = min(20, 10 + min(6, len(relevant) * 2))
-        elif relevant and any(term in " ".join(item.get("new_information", "") for item in relevant).lower()
-                              for term in ("bottleneck", "capacity", "shortage", "latency", "power", "bandwidth")):
+        if bottleneck_beneficiaries:
+            bottleneck_score = min(20, 10 + min(6, len(bottleneck_beneficiaries) * 2) +
+                                   (2 if any(term in bottleneck_evidence_text for term in bottleneck_terms) else 0))
+        elif relevant and any(term in bottleneck_evidence_text for term in bottleneck_terms):
             bottleneck_score = min(20, 8 + min(8, len(relevant) * 2))
         earnings_events = [item for item in relevant if item.get("event_type") == "Financial Results" and item["relation"] == "direct"]
         earnings_score = min(15, 10 + len(earnings_events)) if earnings_events else None
-        beneficiaries = ai_beneficiaries(trend, relevant, market_data, ai_reasoning_discovery)
+        for beneficiary in beneficiaries:
+            beneficiary.update(ai_early_opportunity_scores(beneficiary))
         expectation_context = aggregate_ai_expectation(beneficiaries)
         expectation_score = expectation_context["score"]
         beneficiary_market_scores = []
@@ -3850,6 +4099,7 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
             "confirming_evidence": confirming, "contradicting_evidence": contradicting, "mixed_evidence": mixed_evidence,
             "evidence_count": len(relevant), "deduplicated_event_count": len(events), "evidence_as_of": run_at.isoformat(timespec="minutes"),
             "engine_version": "ai-technology-radar-v1",
+            "early_opportunity_model": "bottleneck-multibagger-v1",
         }
         previous = previous_by_trend.get(trend)
         row["why_changed"] = ai_radar_why_changed(previous, row)
@@ -3880,8 +4130,9 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET):
                 "trend": row.get("trend"), "trend_strength": row.get("trend_strength") or 0,
                 "trend_completeness": row.get("data_completeness") or 0,
                 "beneficiary": beneficiary,
-                "selection_score": round(relevance * .65 + (row.get("trend_strength") or 0) * .25 +
-                                         min(100, row.get("data_completeness") or 0) * .10, 2),
+                "selection_score": (beneficiary.get("radar_rank_score") if beneficiary.get("radar_rank_score") is not None else
+                                    round(relevance * .65 + (row.get("trend_strength") or 0) * .25 +
+                                          min(100, row.get("data_completeness") or 0) * .10, 2)),
             })
     before_unique = {item["beneficiary"].get("ticker") for item in appearances}
     by_trend = defaultdict(list)
@@ -3963,6 +4214,11 @@ def ai_radar_methodology():
         "evidence_aging": {"fresh": "0-7 days", "current": "8-30 days", "aging": "31-90 days", "stale": ">90 days"},
         "beneficiary_weights": {"trend_exposure": 30, "bottleneck_position": 25, "revenue_sensitivity": 20,
                                 "competitive_moat": 15, "evidence_quality": 10},
+        "early_opportunity_model": "Each beneficiary receives separate Bottleneck Opportunity and Multibagger Potential scores. Candidate ranking follows emerging demand → constraint → supplier/moat → exposure → commercial inflection → valuation headroom → price-discovery status.",
+        "dynamic_bottleneck_policy": "A bottleneck score requires company/category-specific or event-language evidence of a constraint, scarcity, limited supply, capacity, or supply-chain role; category names alone do not create bottleneck points.",
+        "priced_in_penalty": "Final beneficiary ranking and Multibagger Potential subtract an explicit 0–25 penalty for Re-rating Underway / Already Ran and PARTIALLY / YES priced-in classifications.",
+        "price_discovery_stages": ["Early Discovery", "Emerging", "Re-rating Underway", "Already Ran"],
+        "entry_stage_boundary": "Radar shows only Falling / Bottoming / Reversal / Entry Zone / Breakout / Extended by reusing the shared technical engine; full entry analysis remains in Swing Trade Opportunity.",
     }
 
 

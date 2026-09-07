@@ -256,30 +256,47 @@ function aiStockRadarRows(trends = []) {
       const riskUnproven = beneficiary.confirmation_missing
         ? "Commercial confirmation remains incomplete; orders, customer adoption, guidance, or revenue evidence is still unproven."
         : "Connected confirmation exists, but durability, revenue sensitivity, execution, and valuation still require monitoring.";
-      rows.push({ trend, beneficiary, ticker, category, strength: trend.trend_strength,
-        stage: beneficiary.opportunity_stage || "Stage unavailable", why_selected: whySelected, risk_unproven: riskUnproven });
+      rows.push({ trend, beneficiary, ticker, category,
+        opportunity_score: beneficiary.bottleneck_opportunity_score,
+        multibagger_score: beneficiary.multibagger_potential_score,
+        price_discovery_stage: beneficiary.price_discovery_stage || "Emerging",
+        already_priced_in: beneficiary.already_priced_in || "NO",
+        entry_stage: beneficiary.entry_stage?.stage || "Unavailable",
+        why_selected: whySelected, risk_unproven: riskUnproven });
     }
   }
-  return rows.sort((a, b) => (b.strength ?? -1) - (a.strength ?? -1)
-    || (b.beneficiary.beneficiary_relevance ?? -1) - (a.beneficiary.beneficiary_relevance ?? -1)
+  return rows.sort((a, b) => (b.beneficiary.radar_rank_score ?? -1) - (a.beneficiary.radar_rank_score ?? -1)
+    || (b.opportunity_score ?? -1) - (a.opportunity_score ?? -1)
     || a.ticker.localeCompare(b.ticker));
+}
+
+function renderEarlyRadarBreakdown(label, components = [], completeness) {
+  const rows = components.map((component) => `<li class="${component.score === null || component.score === undefined ? "score-component-missing" : ""}">
+    <span>${escapeHtml(component.label)}</span><strong>${component.score === null || component.score === undefined ? "Missing" : `${escapeHtml(component.score)} / ${escapeHtml(component.weight)}`}</strong></li>`).join("");
+  return `<div class="detail-item detail-wide score-breakdown"><dt>${escapeHtml(label)}</dt><dd><ul>${rows || "<li>Score evidence is unavailable.</li>"}</ul><p>Data completeness: ${escapeHtml(completeness ?? "Missing")}% · missing inputs are excluded rather than scored as zero.</p></dd></div>`;
 }
 
 function renderAiRadar(rows) {
   const stockRows = aiStockRadarRows(rows);
-  document.getElementById("ai-radar").innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, strength, stage, why_selected, risk_unproven }) => `<details class="radar-item ai-stock-radar-item"><summary>
-      <span class="ai-stock-category">${escapeHtml(category)}</span>
-      <span class="ai-stock-identity"><strong>${escapeHtml(beneficiary.company)} · ${escapeHtml(ticker)}</strong><small>${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>${renderScore(strength, "Radar Strength")}
-      <span><b class="ai-stock-stage">${escapeHtml(stage)}</b></span><span class="ai-stock-why">${escapeHtml(why_selected)}</span><span class="ai-stock-risk">${escapeHtml(risk_unproven)}</span><span class="expand-control" aria-hidden="true">+</span>
+  document.getElementById("ai-radar").innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, opportunity_score, multibagger_score, price_discovery_stage, already_priced_in, entry_stage, why_selected, risk_unproven }) => `<details class="radar-item ai-stock-radar-item"><summary>
+      <span class="ai-stock-identity"><strong>${escapeHtml(ticker)}</strong><small>${escapeHtml(beneficiary.company)} · ${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
+      ${renderScore(opportunity_score, "Bottleneck Opportunity")}${renderScore(multibagger_score, "Multibagger Potential")}
+      <span><b class="radar-stage-pill">${escapeHtml(price_discovery_stage)}</b></span><span><b class="radar-stage-pill priced-${classKey(already_priced_in)}">${escapeHtml(already_priced_in)}</b></span><span><b class="radar-stage-pill entry-${classKey(entry_stage)}">${escapeHtml(entry_stage)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid ai-stock-details">
       ${detailItem("Why Selected", why_selected)}${detailItem("Risk / What Remains Unproven", risk_unproven)}
-      ${detailItem("Category / Beneficiary Type", category)}${detailItem("Opportunity Stage", stage)}
+      ${detailItem("Category / Beneficiary Type", category)}${detailItem("Discovery Maturity", beneficiary.opportunity_stage || "Missing")}
+      ${detailItem("Price Discovery / Priced In", `${price_discovery_stage} · ${already_priced_in}. ${beneficiary.price_discovery_rationale || "Evidence unavailable."}`)}
+      ${detailItem("Entry Stage", `${entry_stage}. ${beneficiary.entry_stage?.rationale || "Detailed technical evidence remains in Swing Trade Opportunity."}`)}
+      ${detailItem("Ranking Penalty", `${beneficiary.priced_in_penalty ?? 0} points applied to ranking and Multibagger Potential.`)}
+      ${detailItem("Early-Opportunity Ranking", beneficiary.radar_rank_score === null || beneficiary.radar_rank_score === undefined ? "Missing" : `${beneficiary.radar_rank_score} / 100`)}
       ${detailItem("Beneficiary Relevance", beneficiary.beneficiary_relevance === null || beneficiary.beneficiary_relevance === undefined ? "Missing" : `${beneficiary.beneficiary_relevance} / 100 · ${beneficiary.data_completeness ?? "Missing"}% complete`)}
       ${detailItem("What the Trend Means", trend.what_it_means)}${detailItem("Key Intelligence", trend.key_intelligence)}${detailItem("Demand Drivers", trend.demand_drivers)}${detailItem("Current Bottleneck", trend.current_bottleneck)}${detailItem("Next Likely Bottleneck", trend.next_likely_bottleneck)}
       ${detailItem("Market Expectation / Priced In", trend.market_expectation, true)}${detailItem("What to Watch Next", trend.watch_next)}
       ${renderMarketSnapshot(beneficiary.market_data, "qqq")}
       <div class="detail-item detail-wide"><dt>Thesis Evidence</dt><dd>${renderDiscoveryEvidence("Evidence", beneficiary.thesis_evidence || [], "Missing / logical beneficiary thesis has not been structured.")}</dd></div>
       <div class="detail-item detail-wide"><dt>Confirmation Evidence</dt><dd>${renderDiscoveryEvidence("Evidence", beneficiary.confirmation_evidence || [], "Commercial confirmation is not yet connected.")}</dd></div>
+      ${renderEarlyRadarBreakdown("Bottleneck Opportunity Score", beneficiary.bottleneck_score_components, beneficiary.early_discovery_completeness?.bottleneck_opportunity)}
+      ${renderEarlyRadarBreakdown("Multibagger Potential Score", beneficiary.multibagger_score_components, beneficiary.early_discovery_completeness?.multibagger_potential)}
       ${renderAiFactorBreakdown(trend)}${renderAiHorizons(trend.horizons)}${renderAiEvidence("Confirming Trend Evidence", trend.confirming_evidence)}${renderAiEvidence("Contradicting Trend Evidence", trend.contradicting_evidence)}${renderAiHistory(trend)}
       <div class="detail-item detail-wide"><dt>Active Monitoring</dt><dd>${watchlistAction(ticker, beneficiary.company, "Radar", "ai")}</dd></div>
     </dl></details>`).join("") || `<p class="loading-state">No public AI or technology stocks have sufficient beneficiary evidence for this view.</p>`;
@@ -416,11 +433,16 @@ function renderSources(sources = [], scoreAsOf) {
 
 function renderBiotechRadar(rows) {
   document.getElementById("biotech-radar").innerHTML = rows.map((row) => `<details class="radar-item biotech-radar-item"><summary>
-      <span class="radar-name"><strong>${escapeHtml(row.company)}</strong><small>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))} · ${escapeHtml(row.program)} · ${escapeHtml(row.indication)} · ${escapeHtml(row.catalyst)}</small></span>${renderScore(row.opportunity_score, "Opportunity Score")}
-      <span class="timing">${escapeHtml(row.expected_timing)}</span><span><b class="stage ${stageClass(row.stage)}">${escapeHtml(row.stage)}</b></span>
-      <span class="radar-copy">${escapeHtml(row.why_important)}</span><span class="status-badge ${stageClass(row.opportunity_status)}">${escapeHtml(row.opportunity_status)}</span><span class="expand-control" aria-hidden="true">+</span>
+      <span class="radar-name"><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      ${renderScore(row.biotech_opportunity_score ?? row.opportunity_score, "Biotech Opportunity")}${renderScore(row.multibagger_potential_score, "Multibagger Potential")}
+      <span><b class="radar-stage-pill">${escapeHtml(row.price_discovery_stage || "Emerging")}</b></span><span><b class="radar-stage-pill priced-${classKey(row.already_priced_in || "NO")}">${escapeHtml(row.already_priced_in || "NO")}</b></span><span><b class="radar-stage-pill entry-${classKey(row.entry_stage?.stage || "Unavailable")}">${escapeHtml(row.entry_stage?.stage || "Unavailable")}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid biotech-details">
       ${detailItem("Company → Program → Indication → Catalyst", `${row.company} (${tickerPriceLabel(row.ticker, row.market_data)}) → ${row.program} → ${row.indication} → ${row.catalyst}`)}
+      ${detailItem("Why Selected", row.why_important)}${detailItem("Risk / What Remains Unproven", row.risks)}
+      ${detailItem("Price Discovery / Priced In", `${row.price_discovery_stage || "Emerging"} · ${row.already_priced_in || "NO"}. ${row.price_discovery_rationale || "Evidence unavailable."}`)}
+      ${detailItem("Entry Stage", `${row.entry_stage?.stage || "Unavailable"}. ${row.entry_stage?.rationale || "Detailed technical evidence remains in Swing Trade Opportunity."}`)}
+      ${detailItem("Ranking Penalty", `${row.priced_in_penalty ?? 0} points applied to ranking and Multibagger Potential.`)}
+      ${detailItem("Early-Opportunity Ranking", row.radar_rank_score === null || row.radar_rank_score === undefined ? "Missing" : `${row.radar_rank_score} / 100`)}
       ${detailItem("Clinical Evidence", row.clinical_evidence, String(row.clinical_evidence).startsWith("Missing"))}${detailItem("Upcoming Catalyst", row.upcoming_catalyst)}${detailItem("Previous Trial Results", row.previous_results, String(row.previous_results).startsWith("Missing"))}
       ${detailItem("FDA / Regulatory Status", row.regulatory_status)}${detailItem("Commercial Potential", row.commercial_potential)}
       ${detailItem("Market Expectation / Priced In", row.market_expectation, String(row.market_expectation).startsWith("Missing"))}${detailItem("Positioning / Short Interest", row.positioning, String(row.positioning).startsWith("Missing"))}
@@ -428,7 +450,9 @@ function renderBiotechRadar(rows) {
       ${detailItem("Scientific Evidence", row.scientific_evidence_score === null ? "Missing" : `${row.scientific_evidence_score} / 30`)}${detailItem("Catalyst Impact / Company Sensitivity", `${row.catalyst_impact_score} / 25. ${row.company_sensitivity}`)}${detailItem("Expectation Gap", row.expectation_gap_score === null ? "Missing" : `${row.expectation_gap_score} / 20`)}
       ${detailItem("Binary Risk", `${row.binary_risk}. ${row.binary_risk_rationale}`)}${detailItem("Data Completeness / Confidence", `${row.data_completeness}% / ${row.confidence}`)}${detailItem("Evidence Gate", `${row.evidence_gate.passed ? "Passed" : "Not passed"}. ${row.evidence_gate.rule}`)}
       ${detailItem("Evidence Integrity Gate", `${row.evidence_integrity_gate.concern_identified ? "Concern identified; confidence capped." : "No explicit integrity concern identified in connected evidence."} ${row.evidence_integrity_gate.rule}`)}
+      ${detailItem("Market Cap / Size", row.market_cap === null || row.market_cap === undefined ? "Missing" : `${row.market_cap_bucket} · ${Number(row.market_cap).toLocaleString()}`)}${detailItem("Probability of Success", row.probability_of_success)}${detailItem("Cash Runway / Dilution", row.cash_runway_dilution)}
       ${renderMarketSnapshot(row.market_data, "xbi")}${renderMarketSnapshot(row.sector_market_data, "sp500")}
+      ${renderEarlyRadarBreakdown("Multibagger Potential Score", row.multibagger_score_components, row.multibagger_data_completeness)}
       ${renderScoreBreakdown(row.score_components, row.data_completeness)}${renderSources(row.sources, row.score_as_of)}
       ${renderBiotechEvidenceGroup("Confirming Evidence", row.confirming_evidence)}${renderBiotechEvidenceGroup("Mixed Evidence", row.mixed_evidence)}${renderBiotechEvidenceGroup("Contradicting Evidence", row.contradicting_evidence)}${renderBiotechHistory(row)}
       <div class="detail-item detail-wide"><dt>Active Monitoring</dt><dd>${watchlistAction(row.ticker, row.company, "Radar", "biotech")}</dd></div>
