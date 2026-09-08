@@ -40,6 +40,24 @@ class PendingOrderWorkflowTests(unittest.TestCase):
         self.assertIn("potential_profit_2", self.script)
         self.assertIn("risk_reward", self.script)
 
+    def test_suggested_entry_is_independent_and_can_require_waiting(self):
+        for value in ("suggested_entry_low", "suggested_entry_high", "limit_difference",
+                      "GOOD LIMIT", "LOWER LIMIT", "RAISE LIMIT", "WAIT"):
+            self.assertIn(value, self.script)
+        self.assertIn("technicallyFalling", self.script)
+        self.assertIn("reversalConfirmed", self.script)
+        self.assertIn("No technical entry recommended yet", self.script)
+        self.assertIn("Limit vs Suggested Entry", self.script)
+
+    def test_compact_summary_and_expanded_otoco_fields_are_present(self):
+        for label in ("Current Price", "Your Limit", "Shares", "Entry Stage", "Order Status",
+                      "Suggested Entry", "Stop Loss", "Target 1", "Target 2",
+                      "Max Loss $", "Potential Profit $", "Risk / Reward",
+                      "Entry reason:", "Stop reason:", "Target reason:"):
+            self.assertIn(label, self.script)
+        self.assertIn("pending-order-workflow", self.script)
+        self.assertIn("OTOCO Recommendation", self.script)
+
     def test_edit_delete_and_fill_handoff_are_wired(self):
         for action in ("data-pending-order-edit", "data-pending-order-remove", "data-pending-order-fill"):
             self.assertIn(action, self.script)

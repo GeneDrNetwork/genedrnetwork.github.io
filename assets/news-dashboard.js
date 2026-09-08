@@ -890,11 +890,56 @@ function pendingOrderAnalysis(order) {
   const limitPrice = Number(order.limit_price);
   const shares = Number(order.shares);
   const currentPrice = Number(snapshot.current_price);
+  const validPrice = (value) => Number.isFinite(Number(value)) && Number(value) > 0;
+  const rawEntryStage = technical.entry_timing_state || technical.buy_status || "Unavailable";
+  const stageKey = String(rawEntryStage).toLowerCase();
+  const reversalConfirmed = snapshot.macd?.crossover === "bullish" || ["READY TO BUY", "IN ENTRY ZONE"].includes(technical.buy_status);
+  const technicallyFalling = stageKey.includes("falling") || stageKey.includes("technical deterioration")
+    || (String(technical.trend).toLowerCase().includes("weak/downtrend") && !reversalConfirmed);
+  const approachingEntry = technical.buy_status === "APPROACHING ENTRY" || stageKey.includes("near buy") || stageKey.includes("entry zone") || stageKey.includes("breakout");
+  const entryCandidates = [technical.support, inputs.recent_low_63d, technical.ma20, technical.ma50, inputs.resistance_level]
+    .filter(validPrice).map(Number);
+  let suggestedEntry = null; let suggestedEntryReason = "WAIT — No technical entry recommended yet.";
+  if (!technicallyFalling && (reversalConfirmed || approachingEntry)) {
+    if ((approachingEntry || ["READY TO BUY", "IN ENTRY ZONE"].includes(technical.buy_status)) && validPrice(inputs.resistance_level)) {
+      suggestedEntry = Number(inputs.resistance_level);
+      suggestedEntryReason = "Suggested entry is anchored to the existing resistance/entry trigger because the setup is approaching or confirming entry.";
+    } else {
+      const supportsAtOrBelowPrice = entryCandidates.filter((value) => !validPrice(currentPrice) || value <= currentPrice);
+      if (supportsAtOrBelowPrice.length) {
+        suggestedEntry = Math.max(...supportsAtOrBelowPrice);
+        suggestedEntryReason = "Suggested entry is anchored to the closest available support, recent low, or MA20/MA50 level after reversal confirmation.";
+      }
+    }
+  }
   const validBelowLimit = (value) => Number.isFinite(Number(value)) && Number(value) > 0 && Number(value) < limitPrice;
   const invalidation = validBelowLimit(inputs.invalidation_level) ? Number(inputs.invalidation_level) : null;
   const structuralSupports = [inputs.base_low, inputs.recent_low_63d, technical.support].filter(validBelowLimit).map(Number);
   const structuralStop = structuralSupports.length ? Math.max(...structuralSupports) : null;
   const atr = [snapshot.atr_14, inputs.atr_14, snapshot.volatility?.atr_14].map(Number).find((value) => Number.isFinite(value) && value > 0) || null;
+  let suggestedEntryLow = suggestedEntry; let suggestedEntryHigh = suggestedEntry;
+  if (suggestedEntry !== null && atr) {
+    suggestedEntryLow = Math.max(.01, suggestedEntry - (.5 * atr));
+    suggestedEntryHigh = suggestedEntry + (.5 * atr);
+    suggestedEntryReason += " The displayed zone spans one ATR around that technical anchor.";
+  } else if (suggestedEntry !== null) {
+    const nearestDistinct = entryCandidates.filter((value) => Math.abs(value - suggestedEntry) > .000001)
+      .sort((a, b) => Math.abs(a - suggestedEntry) - Math.abs(b - suggestedEntry))[0];
+    if (validPrice(nearestDistinct)) {
+      suggestedEntryLow = Math.min(suggestedEntry, nearestDistinct);
+      suggestedEntryHigh = Math.max(suggestedEntry, nearestDistinct);
+      suggestedEntryReason += " With ATR unavailable, the zone uses the nearest distinct existing technical level rather than an invented volatility band.";
+    } else {
+      suggestedEntryReason += " ATR and a second technical boundary are unavailable, so a single suggested price is shown.";
+    }
+  }
+  const suggestedEntryMid = suggestedEntryLow !== null && suggestedEntryHigh !== null ? (suggestedEntryLow + suggestedEntryHigh) / 2 : null;
+  const limitDifference = suggestedEntryMid !== null ? limitPrice - suggestedEntryMid : null;
+  const limitDifferencePct = suggestedEntryMid > 0 ? (limitDifference / suggestedEntryMid) * 100 : null;
+  let limitRecommendation = "WAIT";
+  if (!technicallyFalling && suggestedEntryLow !== null && suggestedEntryHigh !== null) {
+    limitRecommendation = limitPrice < suggestedEntryLow ? "RAISE LIMIT" : limitPrice > suggestedEntryHigh ? "LOWER LIMIT" : "GOOD LIMIT";
+  }
   const atrStop = atr && limitPrice - (2 * atr) > 0 ? limitPrice - (2 * atr) : null;
   const stop = invalidation ?? structuralStop ?? atrStop;
   const stopBasis = invalidation !== null ? "Existing technical invalidation below the planned limit price."
@@ -915,9 +960,13 @@ function pendingOrderAnalysis(order) {
   const hasCurrentPrice = Number.isFinite(currentPrice) && currentPrice > 0;
   const fillReady = hasCurrentPrice && currentPrice <= limitPrice;
   const nearLimit = hasCurrentPrice && currentPrice > limitPrice && ((currentPrice / limitPrice) - 1) <= .02;
-  const status = !hasCurrentPrice ? "MARKET DATA UNAVAILABLE" : fillReady ? "AT/BELOW LIMIT — VERIFY FILL" : nearLimit ? "NEAR LIMIT" : "WAITING";
+  const status = !hasCurrentPrice ? "MARKET DATA UNAVAILABLE" : fillReady && limitRecommendation === "WAIT" ? "AT/BELOW LIMIT — TECHNICAL WAIT"
+    : fillReady ? "AT/BELOW LIMIT — VERIFY FILL" : nearLimit ? "NEAR LIMIT" : "WAITING";
   return { ...order, snapshot, domain, technical, current_price: hasCurrentPrice ? currentPrice : null,
-    entry_stage: technical.entry_timing_state || technical.buy_status || "Unavailable", stop, stop_basis: stopBasis,
+    entry_stage: rawEntryStage, suggested_entry: suggestedEntry, suggested_entry_low: suggestedEntryLow,
+    suggested_entry_high: suggestedEntryHigh, suggested_entry_reason: suggestedEntryReason,
+    limit_difference: limitDifference, limit_difference_pct: limitDifferencePct, limit_recommendation: limitRecommendation,
+    stop, stop_basis: stopBasis,
     target_1: target1, target_2: target2, target_basis: targetBasis, max_loss: maxLoss,
     potential_profit_1: potentialProfit1, potential_profit_2: potentialProfit2, risk_reward: riskReward,
     order_status: status, fill_ready: fillReady };
@@ -925,9 +974,16 @@ function pendingOrderAnalysis(order) {
 
 function renderPendingOrderCard(row) {
   const currency = row.snapshot.currency || "USD";
-  return `<details class="pending-order-card"><summary class="pending-order-summary"><span><strong>${escapeHtml(row.ticker)} · ${escapeHtml(row.company || row.ticker)}</strong><small>Limit ${escapeHtml(positionPrice(row.limit_price, currency))} · ${escapeHtml(row.shares)} shares</small></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.current_price, currency))}</strong></span><span><small>Entry Stage</small><strong>${escapeHtml(row.entry_stage)}</strong></span><span><small>Order Status</small><strong class="pending-order-status pending-order-status-${classKey(row.order_status)}">${escapeHtml(row.order_status)}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
-    <div class="pending-order-detail"><dl class="pending-order-metrics"><div><dt>Current Price</dt><dd>${escapeHtml(positionPrice(row.current_price, currency))}</dd></div><div><dt>Limit Buy Price</dt><dd>${escapeHtml(positionPrice(row.limit_price, currency))}</dd></div><div><dt>Shares</dt><dd>${escapeHtml(row.shares)}</dd></div><div><dt>Entry Stage</dt><dd>${escapeHtml(row.entry_stage)}</dd></div><div><dt>Recommended Stop Loss</dt><dd>${escapeHtml(positionPrice(row.stop, currency))}</dd></div><div><dt>Target 1</dt><dd>${escapeHtml(positionPrice(row.target_1, currency))}</dd></div><div><dt>Target 2</dt><dd>${escapeHtml(positionPrice(row.target_2, currency))}</dd></div><div><dt>Max Loss $</dt><dd>${escapeHtml(positionDollars(row.max_loss, currency))}</dd></div><div><dt>Potential Profit $</dt><dd>${escapeHtml(row.potential_profit_1 === null ? "Unavailable" : `${positionDollars(row.potential_profit_1, currency)} at Target 1`)}${row.potential_profit_2 === null ? "" : `<br>${escapeHtml(positionDollars(row.potential_profit_2, currency))} at Target 2`}</dd></div><div><dt>Risk / Reward</dt><dd>${escapeHtml(row.risk_reward === null ? "Unavailable" : `1 : ${row.risk_reward.toFixed(2)}`)}</dd></div><div><dt>Order Status</dt><dd>${escapeHtml(row.order_status)}</dd></div></dl>
-    <div class="pending-order-notes"><p><strong>Stop basis:</strong> ${escapeHtml(row.stop_basis)}</p><p><strong>Target basis:</strong> ${escapeHtml(row.target_basis)}</p><p><strong>Fill note:</strong> This dashboard does not connect to a broker. “At/below limit” means verify the actual fill before moving the order to My Stock.</p></div>
+  const suggestedEntryText = row.suggested_entry_low === null ? "Unavailable"
+    : Math.abs(row.suggested_entry_high - row.suggested_entry_low) < .000001 ? positionPrice(row.suggested_entry_low, currency)
+      : `${positionPrice(row.suggested_entry_low, currency)} – ${positionPrice(row.suggested_entry_high, currency)}`;
+  const differenceText = row.limit_difference === null ? "Unavailable"
+    : `${row.limit_difference >= 0 ? "+" : "−"}${positionPrice(Math.abs(row.limit_difference), currency)} (${row.limit_difference_pct >= 0 ? "+" : ""}${row.limit_difference_pct.toFixed(2)}%)`;
+  return `<details class="pending-order-card"><summary class="pending-order-summary"><span class="pending-order-company"><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company || row.ticker)}</small></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.current_price, currency))}</strong></span><span><small>Your Limit</small><strong>${escapeHtml(positionPrice(row.limit_price, currency))}</strong></span><span><small>Shares</small><strong>${escapeHtml(row.shares)}</strong></span><span><small>Entry Stage</small><strong>${escapeHtml(row.entry_stage)}</strong></span><span><small>Order Status</small><strong class="pending-order-status pending-order-status-${classKey(row.order_status)}">${escapeHtml(row.order_status)}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+    <div class="pending-order-detail"><div class="pending-order-workflow" aria-label="Pending order price workflow"><div><small>Current Price</small><strong>${escapeHtml(positionPrice(row.current_price, currency))}</strong></div><span>→</span><div><small>Your Limit</small><strong>${escapeHtml(positionPrice(row.limit_price, currency))}</strong></div><span>→</span><div><small>Suggested Entry</small><strong>${escapeHtml(suggestedEntryText)}</strong></div><span>→</span><div><small>Stop Loss</small><strong>${escapeHtml(positionPrice(row.stop, currency))}</strong></div><span>→</span><div><small>Target 1</small><strong>${escapeHtml(positionPrice(row.target_1, currency))}</strong></div><span>→</span><div><small>Target 2</small><strong>${escapeHtml(positionPrice(row.target_2, currency))}</strong></div></div>
+    <div class="pending-order-decision"><span><small>Limit vs Suggested Entry</small><strong>${escapeHtml(differenceText)}</strong></span><span><small>Recommendation</small><strong class="pending-order-recommendation recommendation-${classKey(row.limit_recommendation)}">${escapeHtml(row.limit_recommendation)}</strong></span>${row.limit_recommendation === "WAIT" ? `<p>WAIT — No technical entry recommended yet. Reversal confirmation is missing or the setup is deteriorating.</p>` : ""}</div>
+    <section class="pending-order-otoco"><h4>OTOCO Recommendation</h4><dl class="pending-order-metrics"><div><dt>Suggested Entry / Zone</dt><dd>${escapeHtml(suggestedEntryText)}</dd></div><div><dt>Recommended Stop Loss</dt><dd>${escapeHtml(positionPrice(row.stop, currency))}</dd></div><div><dt>Target 1</dt><dd>${escapeHtml(positionPrice(row.target_1, currency))}</dd></div><div><dt>Target 2</dt><dd>${escapeHtml(positionPrice(row.target_2, currency))}</dd></div><div><dt>Max Loss $</dt><dd>${escapeHtml(positionDollars(row.max_loss, currency))}</dd></div><div><dt>Potential Profit $</dt><dd>${escapeHtml(row.potential_profit_1 === null ? "Unavailable" : `${positionDollars(row.potential_profit_1, currency)} at Target 1`)}${row.potential_profit_2 === null ? "" : `<br>${escapeHtml(positionDollars(row.potential_profit_2, currency))} at Target 2`}</dd></div><div><dt>Risk / Reward</dt><dd>${escapeHtml(row.risk_reward === null ? "Unavailable" : `1 : ${row.risk_reward.toFixed(2)}`)}</dd></div><div><dt>Entry Stage</dt><dd>${escapeHtml(row.entry_stage)}</dd></div><div><dt>Order Status</dt><dd>${escapeHtml(row.order_status)}</dd></div></dl></section>
+    <div class="pending-order-notes"><p><strong>Entry reason:</strong> ${escapeHtml(row.suggested_entry_reason)}</p><p><strong>Stop reason:</strong> ${escapeHtml(row.stop_basis)}</p><p><strong>Target reason:</strong> ${escapeHtml(row.target_basis)}</p><p><strong>Fill note:</strong> This dashboard does not connect to a broker. “At/below limit” means verify the actual fill before moving the order to My Stock.</p></div>
     <div class="pending-order-actions"><button type="button" class="position-action" data-pending-order-edit data-ticker="${escapeHtml(row.ticker)}">Edit</button><button type="button" class="position-action position-remove" data-pending-order-remove data-ticker="${escapeHtml(row.ticker)}">Delete</button>${row.fill_ready ? `<button type="button" class="position-action" data-pending-order-fill data-ticker="${escapeHtml(row.ticker)}">Filled — Move to My Stock</button>` : ""}</div></div></details>`;
 }
 
