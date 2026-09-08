@@ -35,7 +35,7 @@
       </section>
 
       <nav class="dashboard-nav" aria-label="Dashboard sections">
-        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">Watchlist</a><a href="#owned-stocks">My Stock</a><a href="#markets">Market Pulse</a>
+        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">Watchlist</a><a href="#pending-orders">Pending Orders</a><a href="#owned-stocks">My Stock</a><a href="#markets">Market Pulse</a>
       </nav>
 
       <div class="dashboard-shell">
@@ -117,8 +117,20 @@
           </div>
         </section>
 
+        <section class="dashboard-section pending-orders-section" id="pending-orders">
+          <div class="section-heading"><div><span class="section-kicker">05 · Planned limit entries</span><h2>Pending Orders</h2><p>Plan a limit buy with technically derived risk, targets, and fill readiness before moving the position to My Stock.</p></div><span class="source-note">Watchlist → Pending Orders → My Stock</span></div>
+          <form id="pending-order-form" class="pending-order-form" novalidate>
+            <div><label for="pending-order-ticker">Ticker</label><input id="pending-order-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NVDA" required></div>
+            <div><label for="pending-order-limit-price">Limit Buy Price</label><input id="pending-order-limit-price" name="limit_price" type="number" min="0.0001" step="any" placeholder="0.00" required></div>
+            <div><label for="pending-order-shares">Shares</label><input id="pending-order-shares" name="shares" type="number" min="0.000001" step="any" placeholder="0" required></div>
+            <div class="pending-order-form-actions"><button id="pending-order-save" type="submit">Add Pending Order</button><button id="pending-order-cancel" type="button" hidden>Cancel Edit</button></div>
+            <p id="pending-order-form-status" class="pending-order-form-status" aria-live="polite">Stop and target levels use the existing daily technical data; unavailable inputs remain unavailable.</p>
+          </form>
+          <div id="pending-order-cards" class="pending-order-cards"><p class="loading-state">Loading pending orders...</p></div>
+        </section>
+
         <section class="dashboard-section position-section" id="owned-stocks">
-          <div class="section-heading"><div><span class="section-kicker">05 · Position management after purchase</span><h2>My Stock</h2><p>Owned positions only: current value, unrealized gain/loss, technical structure, thesis monitoring, targets, and sell planning.</p></div><span class="source-note">User-owned positions · never removed by daily updates</span></div>
+          <div class="section-heading"><div><span class="section-kicker">06 · Position management after purchase</span><h2>My Stock</h2><p>Owned positions only: current value, unrealized gain/loss, technical structure, thesis monitoring, targets, and sell planning.</p></div><span class="source-note">User-owned positions · never removed by daily updates</span></div>
           <form id="position-form" class="position-form" novalidate>
             <div><label for="position-ticker">Ticker</label><input id="position-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NVDA" required></div>
             <div><label for="position-buy-price">Average Buy Price</label><input id="position-buy-price" name="buy_price" type="number" min="0.0001" step="any" placeholder="0.00" required></div>
@@ -142,6 +154,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. Radar models exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260907-2" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260907-3" defer></script>
   </body>
 </html>

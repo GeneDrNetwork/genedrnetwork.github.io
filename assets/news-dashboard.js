@@ -17,9 +17,11 @@ let currentDashboardData = null;
 let watchlistState = null;
 let currentAutomaticWatchlistTickers = new Set();
 let positionState = null;
+let pendingOrderState = null;
 const WATCHLIST_STORAGE_KEY = "genedr-investment-watchlist-v2";
 const LEGACY_WATCHLIST_STORAGE_KEY = "genedr-investment-watchlist-v1";
 const POSITION_STORAGE_KEY = "genedr-investment-positions-v1";
+const PENDING_ORDER_STORAGE_KEY = "genedr-investment-pending-orders-v1";
 
 function normalizedTicker(value) {
   return String(value || "").trim().toUpperCase();
@@ -41,6 +43,20 @@ function initializePositionState() {
 
 function writePositionState() {
   try { localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(positionState)); } catch (_) { /* Browser storage may be disabled. */ }
+}
+
+function initializePendingOrderState() {
+  if (pendingOrderState) return pendingOrderState;
+  try {
+    const saved = JSON.parse(localStorage.getItem(PENDING_ORDER_STORAGE_KEY) || "null");
+    if (saved?.version === 1 && Array.isArray(saved.orders)) pendingOrderState = saved;
+  } catch (_) { pendingOrderState = null; }
+  if (!pendingOrderState) pendingOrderState = { version: 1, orders: [] };
+  return pendingOrderState;
+}
+
+function writePendingOrderState() {
+  try { localStorage.setItem(PENDING_ORDER_STORAGE_KEY, JSON.stringify(pendingOrderState)); } catch (_) { /* Browser storage may be disabled. */ }
 }
 
 function initializeWatchlistState(data) {
@@ -850,7 +866,7 @@ function renderWatchlistCard(row, manualAdded) {
     <div><dt>Technical Entry Readiness</dt><dd>${escapeHtml(technical.technical_entry_readiness_score === null || technical.technical_entry_readiness_score === undefined ? "Unavailable" : `${technical.technical_entry_readiness_score}/100 · ${technical.entry_timing_state || "State unavailable"}`)}</dd></div><div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(formatTechnicalPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatTechnicalPrice(technical.resistance))}</dd></div>
     <div><dt>Volume / Volume Trend</dt><dd>${escapeHtml(technical.volume_trend || (technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${formatMarketValue(technical.volume_vs_20d_average)}x`))}</dd></div><div><dt>Volume Confirmation</dt><dd>${escapeHtml(technical.volume_confirmation || "Missing")}</dd></div><div><dt>Accumulation Signal</dt><dd>${escapeHtml(technical.accumulation_signal || "Missing")}</dd></div><div><dt>Trend</dt><dd>${escapeHtml(technical.trend || "Missing")}</dd></div><div><dt>Bottom / Base Formation</dt><dd>${escapeHtml(technical.bottom_formation || "Missing")}</dd></div>
     <div><dt>Early Reversal</dt><dd>${escapeHtml(technical.early_reversal || "Missing")}</dd></div><div><dt>Chart Pattern</dt><dd>${escapeHtml(technical.chart_pattern || "Missing")}</dd></div><div><dt>Reversal Status</dt><dd>${escapeHtml(technical.reversal_status || "Missing")}</dd></div><div><dt>Entry Zone</dt><dd>${escapeHtml(zoneText)}</dd></div><div><dt>Buy Status</dt><dd>${escapeHtml(technical.buy_status || "WAIT")}</dd></div><div><dt>Invalidation Level</dt><dd>${escapeHtml(formatTechnicalPrice(technical.invalidation_level))}</dd></div>${biotechFields}</dl>
-    ${isBiotech && technical.target_basis ? `<p class="watchlist-basis-note">${escapeHtml(technical.target_basis)}; these are planning levels before a brokerage trade, not actual-position P/L targets.</p>` : ""}<div class="watchlist-controls"><button type="button" class="position-action" data-position-prefill data-ticker="${escapeHtml(row.ticker)}" data-company="${escapeHtml(row.company)}" data-domain="${escapeHtml(row.domain || "ai")}" data-sources="${escapeHtml(sources.join(" + "))}">Bought / Move to My Stock</button>${manualAdded ? `<button type="button" class="watchlist-action watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}">Delete / Remove</button>` : `<span class="watchlist-managed-note">Automatically managed by strategy selection plus the technical-entry screen</span>`}</div></div></details>`;
+    ${isBiotech && technical.target_basis ? `<p class="watchlist-basis-note">${escapeHtml(technical.target_basis)}; these are planning levels before a brokerage trade, not actual-position P/L targets.</p>` : ""}<div class="watchlist-controls"><button type="button" class="position-action" data-pending-order-prefill data-ticker="${escapeHtml(row.ticker)}">Create Pending Order</button><button type="button" class="position-action" data-position-prefill data-ticker="${escapeHtml(row.ticker)}" data-company="${escapeHtml(row.company)}" data-domain="${escapeHtml(row.domain || "ai")}" data-sources="${escapeHtml(sources.join(" + "))}">Bought / Move to My Stock</button>${manualAdded ? `<button type="button" class="watchlist-action watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}">Delete / Remove</button>` : `<span class="watchlist-managed-note">Automatically managed by strategy selection plus the technical-entry screen</span>`}</div></div></details>`;
 }
 
 function renderWatchlist(data) {
@@ -864,6 +880,123 @@ function renderWatchlist(data) {
     || `<p class="loading-state">No additional strategy-derived setup is currently developing constructively.</p>`;
   manualTarget.innerHTML = rows.manuallyEntered.map((row) => renderWatchlistCard(row, true)).join("")
     || `<p class="loading-state">No tickers have been manually entered.</p>`;
+}
+
+function pendingOrderAnalysis(order) {
+  const snapshot = sharedMarketSecurities[order.ticker] || {};
+  const domain = order.domain || snapshot.domains?.[0] || "ai";
+  const technical = watchlistTechnical(snapshot, domain);
+  const inputs = snapshot.entry_inputs || {};
+  const limitPrice = Number(order.limit_price);
+  const shares = Number(order.shares);
+  const currentPrice = Number(snapshot.current_price);
+  const validBelowLimit = (value) => Number.isFinite(Number(value)) && Number(value) > 0 && Number(value) < limitPrice;
+  const invalidation = validBelowLimit(inputs.invalidation_level) ? Number(inputs.invalidation_level) : null;
+  const structuralSupports = [inputs.base_low, inputs.recent_low_63d, technical.support].filter(validBelowLimit).map(Number);
+  const structuralStop = structuralSupports.length ? Math.max(...structuralSupports) : null;
+  const atr = [snapshot.atr_14, inputs.atr_14, snapshot.volatility?.atr_14].map(Number).find((value) => Number.isFinite(value) && value > 0) || null;
+  const atrStop = atr && limitPrice - (2 * atr) > 0 ? limitPrice - (2 * atr) : null;
+  const stop = invalidation ?? structuralStop ?? atrStop;
+  const stopBasis = invalidation !== null ? "Existing technical invalidation below the planned limit price."
+    : structuralStop !== null ? "Closest available support from the existing base/recent-low analysis below the planned limit price."
+      : atrStop !== null ? "Two ATRs below the planned limit price because no structural invalidation was available."
+        : "Unavailable: no support, recent-low, invalidation, or ATR input supports a non-fabricated stop.";
+  const riskPerShare = stop !== null ? limitPrice - stop : null;
+  const resistance = Number.isFinite(Number(inputs.resistance_level)) && Number(inputs.resistance_level) > limitPrice ? Number(inputs.resistance_level) : null;
+  const target1 = resistance ?? (riskPerShare > 0 ? limitPrice + riskPerShare : null);
+  const target2 = riskPerShare > 0 ? Math.max(limitPrice + (2 * riskPerShare), target1 !== null ? target1 + riskPerShare : 0) : null;
+  const targetBasis = resistance !== null ? "Target 1 uses existing resistance; Target 2 extends by the same technically defined per-share risk."
+    : riskPerShare > 0 ? "No resistance above the limit was available; targets use 1R and 2R from the technically derived stop."
+      : "Unavailable because a defensible technical stop/risk unit could not be calculated.";
+  const maxLoss = riskPerShare > 0 && shares > 0 ? riskPerShare * shares : null;
+  const potentialProfit1 = target1 !== null && shares > 0 ? (target1 - limitPrice) * shares : null;
+  const potentialProfit2 = target2 !== null && shares > 0 ? (target2 - limitPrice) * shares : null;
+  const riskReward = maxLoss > 0 && potentialProfit2 !== null ? potentialProfit2 / maxLoss : null;
+  const hasCurrentPrice = Number.isFinite(currentPrice) && currentPrice > 0;
+  const fillReady = hasCurrentPrice && currentPrice <= limitPrice;
+  const nearLimit = hasCurrentPrice && currentPrice > limitPrice && ((currentPrice / limitPrice) - 1) <= .02;
+  const status = !hasCurrentPrice ? "MARKET DATA UNAVAILABLE" : fillReady ? "AT/BELOW LIMIT — VERIFY FILL" : nearLimit ? "NEAR LIMIT" : "WAITING";
+  return { ...order, snapshot, domain, technical, current_price: hasCurrentPrice ? currentPrice : null,
+    entry_stage: technical.entry_timing_state || technical.buy_status || "Unavailable", stop, stop_basis: stopBasis,
+    target_1: target1, target_2: target2, target_basis: targetBasis, max_loss: maxLoss,
+    potential_profit_1: potentialProfit1, potential_profit_2: potentialProfit2, risk_reward: riskReward,
+    order_status: status, fill_ready: fillReady };
+}
+
+function renderPendingOrderCard(row) {
+  const currency = row.snapshot.currency || "USD";
+  return `<details class="pending-order-card"><summary class="pending-order-summary"><span><strong>${escapeHtml(row.ticker)} · ${escapeHtml(row.company || row.ticker)}</strong><small>Limit ${escapeHtml(positionPrice(row.limit_price, currency))} · ${escapeHtml(row.shares)} shares</small></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.current_price, currency))}</strong></span><span><small>Entry Stage</small><strong>${escapeHtml(row.entry_stage)}</strong></span><span><small>Order Status</small><strong class="pending-order-status pending-order-status-${classKey(row.order_status)}">${escapeHtml(row.order_status)}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+    <div class="pending-order-detail"><dl class="pending-order-metrics"><div><dt>Current Price</dt><dd>${escapeHtml(positionPrice(row.current_price, currency))}</dd></div><div><dt>Limit Buy Price</dt><dd>${escapeHtml(positionPrice(row.limit_price, currency))}</dd></div><div><dt>Shares</dt><dd>${escapeHtml(row.shares)}</dd></div><div><dt>Entry Stage</dt><dd>${escapeHtml(row.entry_stage)}</dd></div><div><dt>Recommended Stop Loss</dt><dd>${escapeHtml(positionPrice(row.stop, currency))}</dd></div><div><dt>Target 1</dt><dd>${escapeHtml(positionPrice(row.target_1, currency))}</dd></div><div><dt>Target 2</dt><dd>${escapeHtml(positionPrice(row.target_2, currency))}</dd></div><div><dt>Max Loss $</dt><dd>${escapeHtml(positionDollars(row.max_loss, currency))}</dd></div><div><dt>Potential Profit $</dt><dd>${escapeHtml(row.potential_profit_1 === null ? "Unavailable" : `${positionDollars(row.potential_profit_1, currency)} at Target 1`)}${row.potential_profit_2 === null ? "" : `<br>${escapeHtml(positionDollars(row.potential_profit_2, currency))} at Target 2`}</dd></div><div><dt>Risk / Reward</dt><dd>${escapeHtml(row.risk_reward === null ? "Unavailable" : `1 : ${row.risk_reward.toFixed(2)}`)}</dd></div><div><dt>Order Status</dt><dd>${escapeHtml(row.order_status)}</dd></div></dl>
+    <div class="pending-order-notes"><p><strong>Stop basis:</strong> ${escapeHtml(row.stop_basis)}</p><p><strong>Target basis:</strong> ${escapeHtml(row.target_basis)}</p><p><strong>Fill note:</strong> This dashboard does not connect to a broker. “At/below limit” means verify the actual fill before moving the order to My Stock.</p></div>
+    <div class="pending-order-actions"><button type="button" class="position-action" data-pending-order-edit data-ticker="${escapeHtml(row.ticker)}">Edit</button><button type="button" class="position-action position-remove" data-pending-order-remove data-ticker="${escapeHtml(row.ticker)}">Delete</button>${row.fill_ready ? `<button type="button" class="position-action" data-pending-order-fill data-ticker="${escapeHtml(row.ticker)}">Filled — Move to My Stock</button>` : ""}</div></div></details>`;
+}
+
+function renderPendingOrders() {
+  const target = document.getElementById("pending-order-cards");
+  if (!target) return;
+  const rows = initializePendingOrderState().orders.map(pendingOrderAnalysis).sort((a, b) => a.ticker.localeCompare(b.ticker));
+  target.innerHTML = rows.map(renderPendingOrderCard).join("") || `<p class="loading-state">No pending orders have been entered.</p>`;
+}
+
+function setPendingOrderFormStatus(message, type = "") {
+  const target = document.getElementById("pending-order-form-status");
+  if (!target) return;
+  target.textContent = message;
+  target.className = `pending-order-form-status${type ? ` is-${type}` : ""}`;
+}
+
+function resetPendingOrderForm() {
+  const form = document.getElementById("pending-order-form");
+  if (!form) return;
+  form.reset(); form.dataset.editingTicker = "";
+  document.getElementById("pending-order-save").textContent = "Add Pending Order";
+  document.getElementById("pending-order-cancel").hidden = true;
+}
+
+function prefillPendingOrderForm(ticker, edit = false) {
+  const key = normalizedTicker(ticker);
+  const existing = initializePendingOrderState().orders.find((item) => normalizedTicker(item.ticker) === key);
+  resetPendingOrderForm();
+  document.getElementById("pending-order-ticker").value = key;
+  if (existing) {
+    document.getElementById("pending-order-limit-price").value = existing.limit_price;
+    document.getElementById("pending-order-shares").value = existing.shares;
+    document.getElementById("pending-order-form").dataset.editingTicker = key;
+    document.getElementById("pending-order-save").textContent = "Update Pending Order";
+    document.getElementById("pending-order-cancel").hidden = false;
+  }
+  document.getElementById("pending-orders")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.getElementById(existing || edit ? "pending-order-limit-price" : "pending-order-ticker")?.focus();
+  setPendingOrderFormStatus(existing ? `${key} is ready to edit.` : `Enter a limit buy price and shares for ${key}.`, "success");
+}
+
+function savePendingOrderForm(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const ticker = normalizedTicker(document.getElementById("pending-order-ticker").value);
+  const limitPrice = Number(document.getElementById("pending-order-limit-price").value);
+  const shares = Number(document.getElementById("pending-order-shares").value);
+  if (!/^[A-Z][A-Z0-9.-]{0,9}$/.test(ticker)) return setPendingOrderFormStatus("Enter a valid ticker.", "error");
+  if (!sharedMarketSecurities[ticker]) return setPendingOrderFormStatus(`${ticker} is not in the current shared market feed, so a technically analyzed pending order cannot be created.`, "error");
+  if (!(limitPrice > 0) || !(shares > 0)) return setPendingOrderFormStatus("Limit buy price and shares must be greater than zero.", "error");
+  const originalTicker = normalizedTicker(form.dataset.editingTicker);
+  const existingIndex = pendingOrderState.orders.findIndex((item) => normalizedTicker(item.ticker) === (originalTicker || ticker));
+  if (!originalTicker && pendingOrderState.orders.some((item) => normalizedTicker(item.ticker) === ticker)) return setPendingOrderFormStatus(`${ticker} already has a pending order. Edit the existing order instead.`, "error");
+  const record = { ticker, company: positionCompany(ticker, currentDashboardData), limit_price: limitPrice, shares,
+    domain: sharedMarketSecurities[ticker]?.domains?.[0] || "ai", updated_at: new Date().toISOString() };
+  if (existingIndex >= 0) pendingOrderState.orders[existingIndex] = record; else pendingOrderState.orders.push(record);
+  writePendingOrderState(); renderPendingOrders(); resetPendingOrderForm();
+  setPendingOrderFormStatus(`${ticker} pending order ${existingIndex >= 0 ? "updated" : "added"}.`, "success");
+}
+
+function removePendingOrder(ticker, confirmRemoval = true) {
+  const key = normalizedTicker(ticker);
+  if (confirmRemoval && !window.confirm(`Delete the pending ${key} order?`)) return;
+  const state = initializePendingOrderState();
+  state.orders = state.orders.filter((item) => normalizedTicker(item.ticker) !== key);
+  pendingOrderState = state;
+  writePendingOrderState(); renderPendingOrders();
+  setPendingOrderFormStatus(`${key} was deleted from Pending Orders.`, "success");
 }
 
 const POSITION_STATUSES = ["HOLD", "ADD", "TRIM", "TAKE PROFIT", "EXIT"];
@@ -1084,7 +1217,7 @@ function setPositionFormStatus(message, type = "") {
 function resetPositionForm() {
   const form = document.getElementById("position-form");
   if (!form) return;
-  form.reset(); form.dataset.editingTicker = ""; form.dataset.fromWatchlist = "";
+  form.reset(); form.dataset.editingTicker = ""; form.dataset.fromWatchlist = ""; form.dataset.pendingOrderTicker = "";
   form.dataset.domain = ""; form.dataset.company = "";
   document.getElementById("position-save").textContent = "Add Position";
   document.getElementById("position-cancel").hidden = true;
@@ -1092,7 +1225,7 @@ function resetPositionForm() {
   document.getElementById("position-source").value = "Manual";
 }
 
-function prefillPositionForm({ ticker, company, domain, sources, edit = false }) {
+function prefillPositionForm({ ticker, company, domain, sources, edit = false, buyPrice = null, shares = null, fromPending = false }) {
   const key = normalizedTicker(ticker);
   const existing = initializePositionState().positions.find((item) => normalizedTicker(item.ticker) === key);
   resetPositionForm();
@@ -1110,7 +1243,10 @@ function prefillPositionForm({ ticker, company, domain, sources, edit = false })
     document.getElementById("position-cancel").hidden = false;
   } else if (!edit) {
     document.getElementById("position-form").dataset.fromWatchlist = key;
+    if (Number.isFinite(Number(buyPrice)) && Number(buyPrice) > 0) document.getElementById("position-buy-price").value = Number(buyPrice);
+    if (Number.isFinite(Number(shares)) && Number(shares) > 0) document.getElementById("position-shares").value = Number(shares);
   }
+  if (fromPending) document.getElementById("position-form").dataset.pendingOrderTicker = key;
   document.getElementById("owned-stocks")?.scrollIntoView({ behavior: "smooth", block: "start" });
   document.getElementById("position-buy-price")?.focus();
   setPositionFormStatus(existing ? `${key} is ready to edit.` : `Enter the actual execution details for ${key}; no position is created until you save.`, "success");
@@ -1135,12 +1271,14 @@ function savePositionForm(event) {
   if (purchaseDate > new Date().toISOString().slice(0, 10)) return setPositionFormStatus("Purchase date cannot be in the future.", "error");
   if (customTargets.some((value) => value !== null && (!(value > 0) || value <= buyPrice))) return setPositionFormStatus("Custom profit targets must be above the average buy price.", "error");
   const originalTicker = normalizedTicker(form.dataset.editingTicker);
+  const pendingOrderTicker = normalizedTicker(form.dataset.pendingOrderTicker);
   const existingIndex = positionState.positions.findIndex((item) => normalizedTicker(item.ticker) === (originalTicker || ticker));
   const record = { ticker, company: form.dataset.company || positionCompany(ticker, currentDashboardData), buy_price: buyPrice,
     shares, purchase_date: purchaseDate, strategy_sources: sources, domain: form.dataset.domain || sharedMarketSecurities[ticker]?.domains?.[0] || "ai",
     custom_targets: customTargets, updated_at: new Date().toISOString() };
   if (existingIndex >= 0) positionState.positions[existingIndex] = record; else positionState.positions.push(record);
   writePositionState(); renderPositions(currentDashboardData);
+  if (pendingOrderTicker) removePendingOrder(pendingOrderTicker, false);
   setPositionFormStatus(`${ticker} position ${existingIndex >= 0 ? "updated" : "added"}. Daily data will refresh its market and technical analysis without deleting the position.`, "success");
   resetPositionForm();
 }
@@ -1235,6 +1373,33 @@ function removeWatchlistItem(ticker) {
 }
 
 document.addEventListener("click", (event) => {
+  const pendingPrefill = event.target.closest("[data-pending-order-prefill]");
+  if (pendingPrefill) {
+    event.preventDefault(); event.stopPropagation();
+    prefillPendingOrderForm(pendingPrefill.dataset.ticker);
+    return;
+  }
+  const pendingEdit = event.target.closest("[data-pending-order-edit]");
+  if (pendingEdit) {
+    event.preventDefault(); event.stopPropagation();
+    prefillPendingOrderForm(pendingEdit.dataset.ticker, true);
+    return;
+  }
+  const pendingRemove = event.target.closest("[data-pending-order-remove]");
+  if (pendingRemove) {
+    event.preventDefault(); event.stopPropagation();
+    removePendingOrder(pendingRemove.dataset.ticker);
+    return;
+  }
+  const pendingFill = event.target.closest("[data-pending-order-fill]");
+  if (pendingFill) {
+    event.preventDefault(); event.stopPropagation();
+    const key = normalizedTicker(pendingFill.dataset.ticker);
+    const order = initializePendingOrderState().orders.find((item) => normalizedTicker(item.ticker) === key);
+    if (order) prefillPositionForm({ ticker: key, company: order.company, domain: order.domain, sources: "Manual",
+      buyPrice: order.limit_price, shares: order.shares, fromPending: true });
+    return;
+  }
   const positionPrefill = event.target.closest("[data-position-prefill]");
   if (positionPrefill) {
     event.preventDefault(); event.stopPropagation();
@@ -1298,6 +1463,14 @@ if (radarAnalyzeForm) radarAnalyzeForm.addEventListener("submit", (event) => {
   renderRadarAnalysis(currentDashboardData, ticker, document.getElementById("radar-analyze-domain")?.value || "auto");
 });
 
+const pendingOrderForm = document.getElementById("pending-order-form");
+if (pendingOrderForm) pendingOrderForm.addEventListener("submit", savePendingOrderForm);
+const pendingOrderCancel = document.getElementById("pending-order-cancel");
+if (pendingOrderCancel) pendingOrderCancel.addEventListener("click", () => {
+  resetPendingOrderForm();
+  setPendingOrderFormStatus("Pending-order edit cancelled.");
+});
+
 const positionForm = document.getElementById("position-form");
 if (positionForm) positionForm.addEventListener("submit", savePositionForm);
 const positionCancel = document.getElementById("position-cancel");
@@ -1311,6 +1484,7 @@ function renderDashboard(data) {
   currentDashboardData = data;
   sharedMarketSecurities = data.market_data?.securities || {};
   initializeWatchlistState(data);
+  initializePendingOrderState();
   initializePositionState();
   if (!document.getElementById("position-purchase-date")?.value) resetPositionForm();
   const updated = new Date(data.updated_at);
@@ -1329,6 +1503,7 @@ function renderDashboard(data) {
   renderSafely(() => renderOpportunities("biotech-opportunities", data.monthly_picks && data.monthly_picks.biotech), "biotech-opportunities");
   renderSafely(() => renderSwingTrades(data.swing_trade_opportunities), "swing-opportunities");
   renderSafely(() => renderWatchlist(data), "my-watchlist");
+  renderSafely(() => renderPendingOrders(), "pending-order-cards");
   renderSafely(() => renderPositions(data), "my-stock-positions");
   renderSafely(() => renderMarkets(data.markets), "market-cards");
 }
