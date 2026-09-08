@@ -10,6 +10,7 @@ class PendingOrderWorkflowTests(unittest.TestCase):
     def setUpClass(cls):
         cls.page = (ROOT / "programs" / "genedrnews.html").read_text()
         cls.script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        cls.styles = (ROOT / "assets" / "news-dashboard.css").read_text()
 
     def test_section_sits_between_watchlist_and_my_stock(self):
         self.assertIn('href="#pending-orders">Pending Orders</a>', self.page)
@@ -57,6 +58,10 @@ class PendingOrderWorkflowTests(unittest.TestCase):
             self.assertIn(label, self.script)
         self.assertIn("pending-order-workflow", self.script)
         self.assertIn("OTOCO Recommendation", self.script)
+        self.assertIn("grid-template-columns: minmax(110px,1fr) repeat(3,minmax(82px,.55fr))", self.styles)
+        self.assertIn("word-break: normal", self.styles)
+        self.assertIn("overflow-wrap: normal", self.styles)
+        self.assertIn("flex-wrap: nowrap", self.styles)
 
     def test_edit_delete_and_fill_handoff_are_wired(self):
         for action in ("data-pending-order-edit", "data-pending-order-remove", "data-pending-order-fill"):
@@ -65,6 +70,20 @@ class PendingOrderWorkflowTests(unittest.TestCase):
         self.assertIn("pendingOrderTicker", self.script)
         self.assertIn("removePendingOrder(pendingOrderTicker, false)", self.script)
         self.assertIn("data-pending-order-prefill", self.script)
+        self.assertIn("Delete Pending Order", self.script)
+        self.assertIn("window.confirm", self.script)
+        self.assertIn("writePendingOrderState(); renderPendingOrders()", self.script)
+
+    def test_otoco_requires_complete_actionable_levels(self):
+        self.assertIn("hasSuggestedEntry", self.script)
+        self.assertIn("hasStop", self.script)
+        self.assertIn("hasTarget", self.script)
+        self.assertIn('otocoStatus === "READY"', self.script)
+        for status in ("READY", "WAIT", "INCOMPLETE DATA"):
+            self.assertIn(status, self.script)
+        self.assertIn("Reference Resistance", self.script)
+        self.assertIn("Unavailable — OTOCO is not ready", self.script)
+        self.assertIn("row.actionable_otoco ? row.target_1 : null", self.script)
 
 
 if __name__ == "__main__":
