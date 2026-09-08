@@ -202,7 +202,7 @@ def score_entry_timing(snapshot, domain, thesis_gate):
     momentum_score = round(sum(score * weight for score, weight in momentum_parts) / sum(weight for _, weight in momentum_parts)) if momentum_parts else None
     momentum_rationale = f"RSI {rsi if rsi is not None else 'Missing'}; MACD histogram {histogram if histogram is not None else 'Missing'}, crossover {macd.get('crossover') or 'none'}, improving {macd.get('improving') if macd.get('improving') is not None else 'Missing'}."
 
-    benchmark = "qqq" if domain == "ai" else "xbi"
+    benchmark = {"ai": "qqq", "biotech": "xbi", "crypto": "btc"}.get(domain, "sp500")
     relative = (snapshot.get("relative_strength") or {}).get(benchmark, {})
     relative_values = [relative.get(key) for key in ("one_month", "three_month") if relative.get(key) is not None]
     relative_average = mean(relative_values) if relative_values else None

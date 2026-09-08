@@ -81,7 +81,7 @@ def build_news_commentary(ai_section, biotech_section):
     }
 
 
-def build_radar_commentary(ai_rows, biotech_rows):
+def build_radar_commentary(ai_rows, biotech_rows, crypto_rows=None):
     ai_candidates = sorted(
         [(row, item) for row in ai_rows or [] for item in row.get("beneficiary_records", [])],
         key=lambda pair: pair[1].get("radar_rank_score") if pair[1].get("radar_rank_score") is not None else -1,
@@ -96,6 +96,11 @@ def build_radar_commentary(ai_rows, biotech_rows):
         for row in top_bio) or "no evidence-qualified biotech catalysts"
     ai_penalized = sum((item.get("priced_in_penalty") or 0) > 0 for _, item in ai_candidates)
     bio_penalized = sum((row.get("priced_in_penalty") or 0) > 0 for row in biotech_rows or [])
+    top_crypto = ranked(crypto_rows, "radar_rank_score")[:3]
+    crypto_names = ", ".join(
+        f"{row.get('ticker')} ({row.get('crypto_opportunity_score', 'Missing')}/100)"
+        for row in top_crypto) or "no evidence-qualified crypto/stablecoin opportunities"
+    crypto_penalized = sum((row.get("priced_in_penalty") or 0) > 0 for row in crypto_rows or [])
     ai_summary = (
         f"The AI/Technology Radar currently evaluates {len(ai_candidates)} public beneficiaries across "
         f"{len(ai_rows or [])} active technology tracks. Its leading early-opportunity records are {ai_names}. "
@@ -122,11 +127,25 @@ def build_radar_commentary(ai_rows, biotech_rows):
         f"Price discovery matters to rank: {bio_penalized} current candidates are penalized because a re-rating or priced-in condition is already visible.",
         "Missing company sensitivity, cash-runway, or probability inputs remain missing rather than being scored as zero.",
     ]
+    crypto_summary = (
+        f"The Crypto & Stablecoin Radar evaluates {len(crypto_rows or [])} source-backed crypto assets and public-company beneficiaries. "
+        f"The leading early-opportunity records are {crypto_names}. {crypto_penalized} candidates receive an "
+        "Already-Ran or Priced-In ranking penalty.")
+    crypto_takeaways = [
+        (f"The leading current crypto/stablecoin record is {top_crypto[0].get('ticker')}, with Crypto Opportunity "
+         f"{top_crypto[0].get('crypto_opportunity_score', 'Missing')}/100 and Multibagger Potential "
+         f"{top_crypto[0].get('multibagger_potential_score', 'Missing')}/100."
+         if top_crypto else "No crypto/stablecoin record currently has enough evidence for a leading conclusion."),
+        "Stablecoin/payment adoption, institutional access, network or company monetization, token economics, liquidity, and regulation are assessed separately.",
+        f"Price discovery matters to rank: {crypto_penalized} current candidates are penalized because a re-rating or priced-in condition is already visible.",
+        "Missing on-chain activity, fees, valuation, or token-economic evidence is excluded rather than scored as zero.",
+    ]
     return {
         "ai_technology": {"summary": ai_summary, "take_home_messages": ai_takeaways},
         "biotech_healthcare": {"summary": bio_summary, "take_home_messages": bio_takeaways},
+        "crypto_stablecoin": {"summary": crypto_summary, "take_home_messages": crypto_takeaways},
         "engine_version": "dashboard-radar-commentary-v2",
-        "separation_policy": "AI/Technology and Biotechnology commentary use only their own Radar records.",
+        "separation_policy": "AI/Technology, Biotechnology, and Crypto/Stablecoin commentary use only their own Radar records.",
     }
 
 

@@ -111,6 +111,10 @@ COMPANY_REGISTRY = [
     company_registry_record("SiMa.ai", "Private", ("sima.ai",), listing_status="Private", domain="ai"),
     company_registry_record("Owkin", "Private", listing_status="Private", domain="both"),
     company_registry_record("PathAI", "Private", listing_status="Private", domain="both"),
+    company_registry_record("Coinbase Global", "COIN", ("coinbase",), domain="crypto"),
+    company_registry_record("Circle Internet Group", "CRCL", ("circle", "circle internet group"), domain="crypto"),
+    company_registry_record("Robinhood Markets", "HOOD", ("robinhood",), domain="crypto"),
+    company_registry_record("PayPal Holdings", "PYPL", ("paypal",), domain="crypto"),
     company_registry_record("Vertex Pharmaceuticals", "VRTX", ("vertex",), domain="biotech"),
     company_registry_record("Sarepta Therapeutics", "SRPT", ("sarepta",), domain="biotech"),
     company_registry_record("Regeneron", "REGN", domain="biotech"),
@@ -687,7 +691,7 @@ def attach_watchlist_entry_readiness(market_data):
     """Reuse Phase 7 technical scoring for automatic and browser-manual Watchlist rows."""
     for snapshot in (market_data or {}).get("securities", {}).values():
         readiness = {}
-        for domain in ("ai", "biotech"):
+        for domain in ("ai", "biotech", "crypto"):
             timing = score_entry_timing(snapshot, domain, {
                 "passed": True,
                 "rationale": "A Website Selected or user-manual Watchlist entry is being evaluated for timing only.",
@@ -1146,6 +1150,149 @@ MONTHLY_PICKS = {
 
 MARKETS = {"^GSPC": ("^spx", "S&P 500"), "^IXIC": ("^ndq", "Nasdaq"),
            "^DJI": ("^dji", "Dow Jones"), "^RUT": ("^rty", "Russell 2000")}
+
+CRYPTO_RADAR_WEIGHTS = {
+    "adoption_usage_growth": 15, "stablecoin_payment_growth": 15,
+    "institutional_adoption": 10, "regulatory_environment": 10,
+    "network_activity_revenue_fees": 15, "token_economics": 10,
+    "competitive_moat": 10, "liquidity": 5, "valuation_upside": 5,
+    "catalysts_risks": 5,
+}
+
+
+def crypto_evidence(score, rationale, source, date, url):
+    return {"score": score, "rationale": rationale,
+            "sources": [{"source": source, "date": date, "url": url}]}
+
+
+# V1 begins with a focused, source-backed crypto/stablecoin set. Scores describe
+# the cited evidence, not an assumed value for unavailable on-chain or valuation data.
+CRYPTO_RADAR_CANDIDATES = [
+    {
+        "ticker": "BTC-USD", "company": "Bitcoin", "asset_type": "Crypto asset",
+        "thesis": "Scarce settlement asset with regulated U.S. exchange-traded access and deep global liquidity.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "A broad global holder and transfer network is established, but a reliable current unique-address or usage-growth series is missing from V1.", "Bitcoin.org", "2008-10-31", "https://bitcoin.org/bitcoin.pdf"),
+            "institutional_adoption": crypto_evidence(92, "U.S. spot bitcoin ETP listing and trading approval created regulated institutional access.", "U.S. SEC", "2024-01-10", "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"),
+            "regulatory_environment": crypto_evidence(72, "Spot ETP access is established, but the SEC explicitly did not endorse bitcoin and emphasized investor risk.", "U.S. SEC", "2024-01-10", "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"),
+            "token_economics": crypto_evidence(90, "Protocol issuance is capped at 21 million bitcoin under the published consensus design.", "Bitcoin.org", "2008-10-31", "https://bitcoin.org/bitcoin.pdf"),
+            "competitive_moat": crypto_evidence(88, "Longest operating proof-of-work network and established liquidity create a strong network-effect moat.", "Bitcoin.org", "2008-10-31", "https://bitcoin.org/bitcoin.pdf"),
+            "liquidity": crypto_evidence(95, "The asset has continuous global markets and regulated U.S. spot ETP access.", "U.S. SEC", "2024-01-10", "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"),
+            "catalysts_risks": crypto_evidence(65, "Institutional access is a catalyst; volatility, custody, market-structure and regulatory risks remain material.", "U.S. SEC", "2024-01-10", "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"),
+        },
+        "catalysts": "Institutional allocation, regulated product adoption, and broader payment or treasury use.",
+        "risks": "High volatility, policy changes, custody/market-structure risk, and limited cash-flow valuation anchors.",
+    },
+    {
+        "ticker": "ETH-USD", "company": "Ethereum", "asset_type": "Crypto asset / smart-contract network",
+        "thesis": "General-purpose settlement and smart-contract network with material stablecoin and tokenization exposure.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "The network supports applications, assets and rollups; a reliable current activity-growth series is missing from V1.", "Ethereum Foundation", "", "https://ethereum.org/en/roadmap/"),
+            "stablecoin_payment_growth": crypto_evidence(None, "Ethereum is a major programmable settlement layer for stablecoins, but current stablecoin/payment growth is not connected.", "Ethereum Foundation", "", "https://ethereum.org/en/stablecoins/"),
+            "institutional_adoption": crypto_evidence(82, "U.S. spot ether ETPs and later in-kind creation/redemption support regulated access.", "U.S. SEC", "2025-07-29", "https://www.sec.gov/newsroom/press-releases/2025-101-sec-permits-kind-creations-redemptions-crypto-etps"),
+            "regulatory_environment": crypto_evidence(68, "Regulated ETP access improved while broader crypto-asset classification and protocol regulation remain evolving.", "U.S. SEC", "2025-07-29", "https://www.sec.gov/newsroom/press-releases/2025-101-sec-permits-kind-creations-redemptions-crypto-etps"),
+            "token_economics": crypto_evidence(75, "Proof-of-stake issuance and fee burning connect network usage to supply, but outcomes vary with activity.", "Ethereum Foundation", "", "https://ethereum.org/en/roadmap/"),
+            "competitive_moat": crypto_evidence(84, "Developer, liquidity and application network effects are substantial, with competing execution layers a continuing risk.", "Ethereum Foundation", "", "https://ethereum.org/en/what-is-ethereum/"),
+            "liquidity": crypto_evidence(92, "Continuous global markets and regulated spot ETP access support high liquidity.", "U.S. SEC", "2025-07-29", "https://www.sec.gov/newsroom/press-releases/2025-101-sec-permits-kind-creations-redemptions-crypto-etps"),
+            "catalysts_risks": crypto_evidence(74, "Scaling improvements and tokenization are catalysts; execution-layer competition and value capture remain risks.", "Ethereum Foundation", "", "https://ethereum.org/en/roadmap/"),
+        },
+        "catalysts": "Scaling progress, stablecoin/tokenized-asset settlement growth, and institutional product adoption.",
+        "risks": "Execution-layer competition, uncertain fee/value capture, smart-contract risk, and evolving regulation.",
+    },
+    {
+        "ticker": "SOL-USD", "company": "Solana", "asset_type": "Crypto asset / smart-contract network",
+        "thesis": "High-throughput network positioned for low-cost trading, payments, stablecoins, and consumer applications.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "Low-cost, high-throughput architecture supports applications, but an independent current user-growth series is missing.", "Solana Foundation", "", "https://solana.com/docs/core"),
+            "stablecoin_payment_growth": crypto_evidence(None, "The network supports token and payment settlement, but current stablecoin/payment growth is not connected.", "Solana Foundation", "", "https://solana.com/solutions/payments"),
+            "network_activity_revenue_fees": crypto_evidence(72, "Network fee and activity economics exist, but current normalized fee growth is missing from V1.", "Solana Foundation", "", "https://solana.com/docs/core/fees"),
+            "token_economics": crypto_evidence(62, "SOL secures the network and pays fees; issuance and staking dynamics dilute simple valuation comparisons.", "Solana Foundation", "", "https://solana.com/docs/economics/inflation/inflation_schedule"),
+            "competitive_moat": crypto_evidence(72, "Performance and ecosystem liquidity are differentiated, but smart-contract network competition is intense.", "Solana Foundation", "", "https://solana.com/docs/core"),
+            "liquidity": crypto_evidence(86, "SOL trades across major global venues, although liquidity remains below bitcoin and ether.", "CoinGecko", "", "https://www.coingecko.com/en/coins/solana"),
+            "catalysts_risks": crypto_evidence(68, "Payments and application growth are catalysts; reliability, decentralization and competitive risks remain.", "Solana Foundation", "", "https://solana.com/docs/core"),
+        },
+        "catalysts": "Payment adoption, consumer application activity, stablecoin settlement, and infrastructure upgrades.",
+        "risks": "Competitive networks, execution reliability, token issuance, regulation, and activity cyclicality.",
+    },
+    {
+        "ticker": "LINK-USD", "company": "Chainlink", "asset_type": "Crypto asset / oracle and interoperability network",
+        "thesis": "Infrastructure layer connecting blockchains and off-chain data, with leverage to institutional tokenization.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "Oracle and interoperability integrations create usage pathways, but standardized current usage growth is missing.", "Chainlink Labs", "", "https://chain.link/cross-chain"),
+            "institutional_adoption": crypto_evidence(None, "CCIP targets financial institutions, but target-market positioning alone does not prove institutional adoption.", "Chainlink Labs", "", "https://chain.link/use-cases/financial-services"),
+            "network_activity_revenue_fees": crypto_evidence(58, "Network services generate fees, but complete current fee and token-value-capture evidence is missing.", "Chainlink Labs", "", "https://chain.link/economics"),
+            "token_economics": crypto_evidence(60, "LINK is used in service economics and staking, while the timing and scale of value capture remain unproven.", "Chainlink Labs", "", "https://chain.link/economics"),
+            "competitive_moat": crypto_evidence(82, "Broad integrations and security-focused oracle infrastructure support a network-effect moat.", "Chainlink Labs", "", "https://chain.link/cross-chain"),
+            "liquidity": crypto_evidence(78, "LINK has broad exchange access, but liquidity remains below the largest crypto assets.", "CoinGecko", "", "https://www.coingecko.com/en/coins/chainlink"),
+            "catalysts_risks": crypto_evidence(76, "Institutional tokenization and cross-chain adoption are catalysts; token value capture and competitors remain key risks.", "Chainlink Labs", "", "https://chain.link/economics"),
+        },
+        "catalysts": "Institutional tokenization, CCIP adoption, and expansion of verifiable data services.",
+        "risks": "Uncertain token value capture, competing oracle/interoperability systems, and regulatory risk.",
+    },
+    {
+        "ticker": "COIN", "company": "Coinbase Global", "asset_type": "Public company / crypto infrastructure",
+        "thesis": "Regulated exchange, custody and stablecoin-economics platform with direct exposure to institutional and onchain adoption.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "Trading, custody, staking and onchain products provide adoption channels, but a current normalized usage-growth input is missing.", "Coinbase Investor Relations", "", "https://investor.coinbase.com/financials/quarterly-results/default.aspx"),
+            "stablecoin_payment_growth": crypto_evidence(None, "USDC-related revenue creates material exposure, but a current normalized stablecoin/payment-growth input is missing.", "Coinbase Investor Relations", "", "https://investor.coinbase.com/financials/quarterly-results/default.aspx"),
+            "institutional_adoption": crypto_evidence(90, "Institutional custody and regulated market infrastructure connect Coinbase to asset-manager adoption.", "Coinbase Investor Relations", "", "https://investor.coinbase.com/financials/quarterly-results/default.aspx"),
+            "regulatory_environment": crypto_evidence(62, "A public U.S. listing and compliance infrastructure help, while policy and litigation exposure remain material.", "Coinbase SEC filings", "", "https://investor.coinbase.com/financials/sec-filings/default.aspx"),
+            "network_activity_revenue_fees": crypto_evidence(84, "Transaction and subscription/services revenue provide observable monetization, though trading revenue is cyclical.", "Coinbase Investor Relations", "", "https://investor.coinbase.com/financials/quarterly-results/default.aspx"),
+            "competitive_moat": crypto_evidence(82, "Brand, licenses, custody, liquidity and institutional integrations form a defensible regulated-market position.", "Coinbase SEC filings", "", "https://investor.coinbase.com/financials/sec-filings/default.aspx"),
+            "liquidity": crypto_evidence(92, "Nasdaq listing provides deep public-equity liquidity.", "Nasdaq", "2021-04-14", "https://www.nasdaq.com/market-activity/stocks/coin"),
+            "catalysts_risks": crypto_evidence(72, "Stablecoin, derivatives and institutional growth are catalysts; fee compression and crypto-cycle sensitivity are risks.", "Coinbase Investor Relations", "", "https://investor.coinbase.com/financials/quarterly-results/default.aspx"),
+        },
+        "catalysts": "USDC growth, institutional custody, derivatives, onchain products, and clearer regulation.",
+        "risks": "Crypto-cycle sensitivity, regulation, fee compression, custody/security events, and valuation risk.",
+    },
+    {
+        "ticker": "CRCL", "company": "Circle Internet Group", "asset_type": "Public company / stablecoin issuer",
+        "thesis": "Direct public-equity exposure to USDC circulation, reserve income, payments and stablecoin infrastructure.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "USDC infrastructure creates adoption exposure, but a current normalized usage-growth input is missing.", "Circle Investor Relations", "", "https://investor.circle.com/"),
+            "stablecoin_payment_growth": crypto_evidence(None, "USDC issuance is the core exposure, but a current circulation/payment-growth series is not connected in V1.", "Circle Transparency", "", "https://www.circle.com/transparency"),
+            "institutional_adoption": crypto_evidence(None, "Reserve disclosure and integrations support institutional use, but current institutional adoption is not quantified.", "Circle Transparency", "", "https://www.circle.com/transparency"),
+            "regulatory_environment": crypto_evidence(78, "A regulated, reserve-backed operating model benefits from clearer stablecoin rules but remains policy-sensitive.", "Circle SEC filings", "", "https://investor.circle.com/financials/sec-filings/default.aspx"),
+            "network_activity_revenue_fees": crypto_evidence(88, "Reserve income and services create observable monetization linked to circulation and rates.", "Circle Investor Relations", "", "https://investor.circle.com/"),
+            "competitive_moat": crypto_evidence(80, "Distribution, liquidity, compliance and integrations support a moat, with issuer and bank competition increasing.", "Circle Transparency", "", "https://www.circle.com/transparency"),
+            "liquidity": crypto_evidence(74, "Public listing supplies equity liquidity, but the trading history is shorter than established large-cap peers.", "NYSE", "2025-06-05", "https://www.nyse.com/quote/XNYS:CRCL"),
+            "catalysts_risks": crypto_evidence(78, "Stablecoin adoption and regulatory clarity are catalysts; rate sensitivity and distribution economics are key risks.", "Circle Investor Relations", "", "https://investor.circle.com/"),
+        },
+        "catalysts": "USDC circulation, payment integrations, regulatory clarity, and new network/services monetization.",
+        "risks": "Interest-rate sensitivity, distribution costs, competing stablecoins/bank deposits, regulation, and valuation.",
+    },
+    {
+        "ticker": "HOOD", "company": "Robinhood Markets", "asset_type": "Public company / brokerage and crypto platform",
+        "thesis": "Retail distribution and crypto product expansion provide leveraged exposure to mainstream digital-asset participation.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "A large retail platform can broaden crypto access, but current normalized crypto usage growth is missing.", "Robinhood Investor Relations", "", "https://investors.robinhood.com/financials/sec-filings/default.aspx"),
+            "institutional_adoption": crypto_evidence(None, "The core thesis is retail distribution; institutional adoption evidence is missing.", "Robinhood Investor Relations", "", "https://investors.robinhood.com/financials/sec-filings/default.aspx"),
+            "regulatory_environment": crypto_evidence(60, "Licensing and a public-company framework help, while crypto product rules remain a material constraint.", "Robinhood Investor Relations", "", "https://investors.robinhood.com/financials/sec-filings/default.aspx"),
+            "network_activity_revenue_fees": crypto_evidence(70, "Crypto transaction revenue provides visible monetization but remains volume- and cycle-sensitive.", "Robinhood Investor Relations", "", "https://investors.robinhood.com/financials/sec-filings/default.aspx"),
+            "competitive_moat": crypto_evidence(66, "Retail distribution and integrated brokerage are advantages, but switching costs and product differentiation are limited.", "Robinhood Investor Relations", "", "https://investors.robinhood.com/financials/sec-filings/default.aspx"),
+            "liquidity": crypto_evidence(88, "Nasdaq-listed equity with established public-market liquidity.", "Nasdaq", "2021-07-29", "https://www.nasdaq.com/market-activity/stocks/hood"),
+            "catalysts_risks": crypto_evidence(68, "Product expansion and retail engagement are catalysts; cycle exposure, competition and regulation remain risks.", "Robinhood Investor Relations", "", "https://investors.robinhood.com/financials/sec-filings/default.aspx"),
+        },
+        "catalysts": "Broader crypto products, tokenized assets, international expansion, and higher retail participation.",
+        "risks": "Trading-cycle dependence, regulation, competition, execution and valuation risk.",
+    },
+    {
+        "ticker": "PYPL", "company": "PayPal Holdings", "asset_type": "Public company / payments and stablecoin distribution",
+        "thesis": "Large merchant and consumer network offers a distribution path for stablecoin payments through PYUSD.",
+        "factors": {
+            "adoption_usage_growth": crypto_evidence(None, "The installed payments network is large, but incremental crypto adoption growth is not separately proven.", "PayPal Investor Relations", "", "https://investor.pypl.com/financials/sec-filings/default.aspx"),
+            "stablecoin_payment_growth": crypto_evidence(None, "PYUSD establishes a stablecoin product, but product launch alone does not prove current payment growth.", "PayPal Newsroom", "2023-08-07", "https://newsroom.paypal-corp.com/2023-08-07-PayPal-Launches-U-S-Dollar-Stablecoin"),
+            "institutional_adoption": crypto_evidence(None, "Merchant distribution is credible, but institutional adoption evidence is missing.", "PayPal Newsroom", "2023-08-07", "https://newsroom.paypal-corp.com/2023-08-07-PayPal-Launches-U-S-Dollar-Stablecoin"),
+            "regulatory_environment": crypto_evidence(68, "Existing payments compliance is an advantage, while stablecoin-specific rules still govern expansion.", "PayPal SEC filings", "", "https://investor.pypl.com/financials/sec-filings/default.aspx"),
+            "network_activity_revenue_fees": crypto_evidence(48, "Payments revenue is proven, but PYUSD-specific revenue and fee contribution are not separately established here.", "PayPal SEC filings", "", "https://investor.pypl.com/financials/sec-filings/default.aspx"),
+            "competitive_moat": crypto_evidence(70, "Consumer and merchant distribution support a moat, offset by intense payments competition.", "PayPal SEC filings", "", "https://investor.pypl.com/financials/sec-filings/default.aspx"),
+            "liquidity": crypto_evidence(94, "Nasdaq-listed large-cap equity has deep public-market liquidity.", "Nasdaq", "2015-07-20", "https://www.nasdaq.com/market-activity/stocks/pypl"),
+            "catalysts_risks": crypto_evidence(58, "Merchant stablecoin use is an upside catalyst, while weak user adoption would invalidate the crypto-specific thesis.", "PayPal Newsroom", "2023-08-07", "https://newsroom.paypal-corp.com/2023-08-07-PayPal-Launches-U-S-Dollar-Stablecoin"),
+        },
+        "catalysts": "Merchant settlement, remittance/payment integration, and broader PYUSD distribution.",
+        "risks": "PYUSD adoption may remain immaterial; payments competition, regulation and execution are additional risks.",
+    },
+]
 
 AI_INDUSTRY_MAP = [
     ("AI Models/Applications", ("artificial intelligence", " ai ", "model", "inference", "agent", "software", "copilot")),
@@ -1898,6 +2045,138 @@ def normalized_radar_score(components):
     return round(points / weight * 100), weight
 
 
+def build_crypto_radar(run_at, market_data, previous_rows=None):
+    """Build a distinct crypto/stablecoin Radar using source-backed factor evidence."""
+    previous_by_ticker = {row.get("ticker"): row for row in (previous_rows or [])}
+    rows = []
+    for candidate in CRYPTO_RADAR_CANDIDATES:
+        ticker = candidate["ticker"]
+        snapshot = (market_data or {}).get("securities", {}).get(ticker, {})
+        is_public_company = candidate["asset_type"].startswith("Public company")
+        expectation = expectation_assessment(snapshot, "crypto", 5) if is_public_company else {
+            "state": "Data Insufficient", "score": None, "maximum": 5,
+            "rationale": "Equity valuation and analyst inputs do not apply directly to this crypto asset; no token valuation proxy was fabricated.",
+            "signals": [], "sources": [],
+        }
+        factor_inputs = dict(candidate.get("factors", {}))
+        if expectation.get("score") is not None:
+            factor_inputs["valuation_upside"] = {
+                "score": round(expectation["score"] / 5 * 100),
+                "rationale": expectation.get("rationale"),
+                "sources": expectation.get("sources", []),
+            }
+        components = []
+        sources = []
+        for key, weight in CRYPTO_RADAR_WEIGHTS.items():
+            evidence = factor_inputs.get(key) or {}
+            score_100 = evidence.get("score")
+            points = None if score_100 is None else round(score_100 / 100 * weight, 2)
+            component = {
+                "key": key, "label": key.replace("_", " ").title(), "weight": weight,
+                "score": points, "score_100": score_100,
+                "missing": score_100 is None,
+                "rationale": evidence.get("rationale") or "Missing: no reliable current evidence is connected for this factor.",
+                "sources": evidence.get("sources", []),
+            }
+            components.append(component)
+            sources.extend(component["sources"])
+        opportunity_score, completeness = normalized_radar_score(components)
+        discovery = radar_price_discovery(snapshot, expectation)
+        asset_cap = snapshot.get("market_cap")
+        size_bucket = market_cap_bucket(asset_cap)
+        adoption_scores = [factor_inputs.get(key, {}).get("score") for key in (
+            "adoption_usage_growth", "stablecoin_payment_growth", "institutional_adoption")]
+        adoption_scores = [value for value in adoption_scores if value is not None]
+        adoption_runway = round(sum(adoption_scores) / len(adoption_scores)) if adoption_scores else None
+        economics_scores = [factor_inputs.get(key, {}).get("score") for key in (
+            "network_activity_revenue_fees", "token_economics")]
+        economics_scores = [value for value in economics_scores if value is not None]
+        economics = round(sum(economics_scores) / len(economics_scores)) if economics_scores else None
+        size_asymmetry = {"Small/Emerging": 85, "Mid": 70, "Large": 48, "Mega": 28}.get(size_bucket)
+        catalyst_score = factor_inputs.get("catalysts_risks", {}).get("score")
+        moat_score = factor_inputs.get("competitive_moat", {}).get("score")
+        multibagger_components = [
+            {"key": "crypto_opportunity", "label": "Crypto Opportunity", "weight": 35,
+             "score": None if opportunity_score is None else round(opportunity_score * .35),
+             "rationale": "Composite of available crypto/stablecoin factor evidence."},
+            {"key": "adoption_runway", "label": "Adoption / Usage Runway", "weight": 20,
+             "score": None if adoption_runway is None else round(adoption_runway * .20),
+             "rationale": "Available adoption, stablecoin/payment and institutional evidence."},
+            {"key": "economics", "label": "Network / Revenue / Token Economics", "weight": 15,
+             "score": None if economics is None else round(economics * .15),
+             "rationale": "Available network-fee, company-revenue and token-economic evidence."},
+            {"key": "competitive_moat", "label": "Competitive Moat", "weight": 15,
+             "score": None if moat_score is None else round(moat_score * .15),
+             "rationale": factor_inputs.get("competitive_moat", {}).get("rationale", "Missing")},
+            {"key": "valuation_upside", "label": "Valuation / Upside Headroom", "weight": 10,
+             "score": (round(expectation["score"] / 5 * 10) if expectation.get("score") is not None else
+                       (round(size_asymmetry * .10) if size_asymmetry is not None else None)),
+             "rationale": (expectation.get("rationale") if expectation.get("score") is not None else
+                           (f"Market-cap bucket is {size_bucket}; this is an upside-asymmetry proxy, not an intrinsic valuation." if size_asymmetry is not None else
+                            "Missing: no reliable valuation or market-cap upside proxy is available."))},
+            {"key": "catalysts_risks", "label": "Catalysts / Risks", "weight": 5,
+             "score": None if catalyst_score is None else round(catalyst_score * .05),
+             "rationale": factor_inputs.get("catalysts_risks", {}).get("rationale", "Missing")},
+        ]
+        raw_multibagger, multibagger_completeness = normalized_radar_score(multibagger_components)
+        penalty = discovery["priced_in_penalty"]
+        multibagger = None if raw_multibagger is None else max(0, raw_multibagger - penalty)
+        raw_rank = None if opportunity_score is None or raw_multibagger is None else round(
+            opportunity_score * .60 + raw_multibagger * .40)
+        rank_score = None if raw_rank is None else max(0, raw_rank - penalty)
+        prior = previous_by_ticker.get(ticker, {})
+        score_snapshot = {
+            "as_of": run_at.date().isoformat(), "crypto_opportunity_score": opportunity_score,
+            "multibagger_potential_score": multibagger, "radar_rank_score": rank_score,
+            "price_discovery_stage": discovery["price_discovery_stage"],
+            "already_priced_in": discovery["already_priced_in"],
+        }
+        history = [item for item in prior.get("score_history", [])
+                   if str(item.get("as_of", ""))[:10] != run_at.date().isoformat()]
+        unique_sources = []
+        seen_sources = set()
+        for source in sources:
+            key = (source.get("source"), source.get("date"), source.get("url"))
+            if key not in seen_sources:
+                unique_sources.append({**source, "title": source.get("title") or source.get("source")})
+                seen_sources.add(key)
+        rows.append({
+            **candidate, "crypto_opportunity_score": opportunity_score,
+            "multibagger_potential_score": multibagger,
+            "raw_multibagger_potential_score": raw_multibagger,
+            "radar_rank_score": rank_score, "price_discovery_stage": discovery["price_discovery_stage"],
+            "already_priced_in": discovery["already_priced_in"], "priced_in_penalty": penalty,
+            "price_discovery_rationale": discovery["rationale"],
+            "entry_stage": radar_entry_stage(snapshot, "crypto"),
+            "market_data": compact_market_snapshot(snapshot),
+            "market_cap": asset_cap, "market_cap_bucket": size_bucket,
+            "expectation": expectation, "score_components": components,
+            "multibagger_score_components": multibagger_components,
+            "data_completeness": completeness, "multibagger_data_completeness": multibagger_completeness,
+            "confidence": "High" if completeness >= 85 else "Medium" if completeness >= 60 else "Low",
+            "missing_data": [item["label"] for item in components if item.get("score") is None],
+            "sources": unique_sources, "score_as_of": run_at.date().isoformat(),
+            "score_history": (history + [score_snapshot])[-60:],
+            "why_changed": ("Initial Crypto & Stablecoin Radar V1 baseline." if not prior else
+                            "Scores refreshed from the shared market/expectation layer; source-backed thesis inputs are unchanged unless their evidence record changes."),
+        })
+    return sorted(rows, key=lambda row: (-(row.get("radar_rank_score") or -1), row["ticker"]))
+
+
+def crypto_radar_methodology():
+    return {
+        "engine_version": "crypto-stablecoin-radar-v1",
+        "weights": CRYPTO_RADAR_WEIGHTS,
+        "scope": "Focused crypto/stablecoin assets and public companies with material adoption exposure; this is not a broad token screener.",
+        "missing_data": "Unavailable network activity, fees, valuation, token economics, or regulatory evidence remains missing and is excluded from normalized scores.",
+        "priced_in_penalty": "The shared 0–25 Already-Ran / Priced-In penalty is subtracted from Multibagger Potential and final Radar ranking.",
+        "ranking": "60% Crypto Opportunity + 40% raw Multibagger Potential − shared priced-in penalty.",
+        "price_discovery_stages": ["Early Discovery", "Emerging", "Re-rating Underway", "Already Ran"],
+        "priced_in_states": ["NO", "PARTIALLY", "YES"],
+        "entry_stage_boundary": "Falling / Bottoming / Reversal / Entry Zone / Breakout / Extended reuses the shared technical engine.",
+    }
+
+
 def ai_early_opportunity_scores(beneficiary):
     """Score a beneficiary's bottleneck economics separately from broad AI popularity."""
     expectation = beneficiary.get("expectation") or {"state": "Data Insufficient", "score": None, "maximum": 15}
@@ -2220,12 +2499,16 @@ def shared_market_ticker_domains(previous=None, candidate_pool=None):
         add(row.get("ticker"), "ai")
     for row in BIOTECH_CATALYSTS + watch_rows(BIOTECH_WATCH):
         add(row.get("ticker"), "biotech")
+    for row in CRYPTO_RADAR_CANDIDATES:
+        add(row.get("ticker"), "crypto")
     for domain, rows in MONTHLY_PICKS.items():
         for row in rows:
             add(company_identity(row.get("company")).get("ticker"), domain)
     for row in (previous or {}).get("radar", {}).get("ai", []):
         for beneficiary in row.get("beneficiary_records", []):
             add(beneficiary.get("ticker"), "ai")
+    for row in (previous or {}).get("radar", {}).get("crypto", []):
+        add(row.get("ticker"), "crypto")
     for row in (candidate_pool or {}).get("candidates", []):
         add(row.get("ticker"), row.get("domain"))
     return {ticker: sorted(values) for ticker, values in domains.items()}
@@ -2234,7 +2517,7 @@ def shared_market_ticker_domains(previous=None, candidate_pool=None):
 def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None, expectations_by_ticker=None,
                             candidate_pool=None):
     ticker_domains = shared_market_ticker_domains(previous, candidate_pool)
-    benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI"}
+    benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI", "btc": "BTC-USD"}
     dashboard_symbols = set(MARKETS) | set(benchmark_symbols.values())
     requested_symbols = sorted(set(ticker_domains) | dashboard_symbols)
     supplied_series = series_by_symbol is not None
@@ -2252,14 +2535,15 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
     if market_caps is None:
         market_caps = fetch_market_caps(set(ticker_domains))
     if expectations_by_ticker is None:
-        expectations_by_ticker = {} if supplied_series else fetch_expectation_inputs(set(ticker_domains), run_at)
+        expectations_by_ticker = {} if supplied_series else fetch_expectation_inputs(
+            {ticker for ticker in ticker_domains if not ticker.endswith("-USD")}, run_at)
     benchmarks = {
         name: calculate_market_technicals(symbol, series_by_symbol.get(symbol, {"rows": []}))
         for name, symbol in benchmark_symbols.items()
     }
     benchmarks = {name: record for name, record in benchmarks.items() if record}
     if "sp500" in benchmarks:
-        for name in ("qqq", "xbi"):
+        for name in ("qqq", "xbi", "btc"):
             if name in benchmarks:
                 benchmarks[name]["relative_strength"] = {
                     "sp500": benchmark_relative_strength(benchmarks[name].get("returns", {}), benchmarks["sp500"].get("returns", {}))
@@ -2878,6 +3162,7 @@ def production_section_status(data, source_health):
         "ai_technology_radar": {"refreshed": True, "trend_count": len(ai_rows),
                                  "unique_public_companies": len(ai_companies)},
         "biotechnology_radar": {"refreshed": True, "opportunity_count": len((data.get("radar") or {}).get("biotech") or [])},
+        "crypto_stablecoin_radar": {"refreshed": True, "opportunity_count": len((data.get("radar") or {}).get("crypto") or [])},
         "high_conviction": {"refreshed": True, "opportunity_count": sum(len(rows) for rows in (data.get("monthly_picks") or {}).values())},
         "swing_trade_opportunity": {"refreshed": True, "opportunity_count": len((data.get("swing_trade_opportunities") or {}).get("opportunities") or [])},
         "watchlist_website_selected": {"refreshed": True, "selection_count": sum(len(rows) for rows in watchlists.values())},
@@ -2917,6 +3202,8 @@ def validate_production_data(data):
         errors.append("AI/Technology Radar is empty")
     if not radar.get("biotech"):
         errors.append("Biotechnology Radar is empty")
+    if not radar.get("crypto"):
+        errors.append("Crypto & Stablecoin Radar is empty")
     for key in ("monthly_picks", "watchlists"):
         value = data.get(key)
         if not isinstance(value, dict) or not all(isinstance(value.get(domain), list) for domain in ("ai", "biotech")):
@@ -4227,7 +4514,7 @@ def build_manual_radar_market_context(market_data):
     context = {}
     for ticker, snapshot in (market_data or {}).get("securities", {}).items():
         context[ticker] = {}
-        for domain, maximum in (("ai", 15), ("biotech", 20)):
+        for domain, maximum in (("ai", 15), ("biotech", 20), ("crypto", 5)):
             expectation = expectation_assessment(snapshot, domain, maximum)
             discovery = radar_price_discovery(snapshot, expectation)
             context[ticker][domain] = {
@@ -4236,7 +4523,7 @@ def build_manual_radar_market_context(market_data):
                 "expectation": expectation,
                 "market_data": compact_market_snapshot(snapshot),
                 "scores_available": False,
-                "score_note": "Radar Opportunity and Multibagger scores require company/category or company/program evidence; market data alone does not create a score.",
+                "score_note": "Radar Opportunity and Multibagger scores require model-specific thesis evidence; market data alone does not create a score.",
             }
     return context
 
@@ -4387,6 +4674,8 @@ def build():
     ai_reasoning_discovery.setdefault("production_trace", {})["radar_unique_company_focus"] = ai_radar_focus
     biotech_radar = build_biotech_radar(
         score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
+    crypto_radar = build_crypto_radar(
+        run_at, market_data, previous.get("radar", {}).get("crypto", []))
     candidate_discovery = discover_candidate_pool(ai_radar, biotech_radar, ai_reasoning_discovery)
     company_quality = build_company_quality_layer(
         candidate_discovery["candidates"], run_at, fetch_nasdaq_json,
@@ -4402,7 +4691,7 @@ def build():
     watchlists = annotate_watchlists(watchlists, biotech_radar)
     dashboard_commentary = {
         "news": build_news_commentary(ai_news_section, biotech_news_section),
-        "radar": build_radar_commentary(ai_radar, biotech_radar),
+        "radar": build_radar_commentary(ai_radar, biotech_radar, crypto_radar),
         "high_conviction": high_conviction_commentary,
     }
 
@@ -4411,16 +4700,18 @@ def build():
         "market_data_through": data_through,
         "top_investment_news": {"ai_technology": ai_news_section, "biotech_healthcare": biotech_news_section},
         "summaries": {"ai": summarize(ai_news, "AI"), "biotech": summarize(biotech_news, "biotech"),
+                      "crypto": f"{len(crypto_radar)} source-backed crypto assets and public-company beneficiaries are ranked for early opportunity and remaining upside.",
                       "market": summarize(market_news, "market"), "market_movers": market_movers},
         "takeaways": takeaways[:8],
         "ai": {"infrastructure_leaders": AI_INFRASTRUCTURE, "platform_leaders": AI_PLATFORMS,
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
-        "radar": {"ai": ai_radar, "biotech": biotech_radar, "ai_focus": ai_radar_focus,
+        "radar": {"ai": ai_radar, "biotech": biotech_radar, "crypto": crypto_radar, "ai_focus": ai_radar_focus,
                   "ai_manual_analysis_candidates": build_ai_manual_analysis_candidates(
                       ai_radar_analysis_universe, ai_radar),
                   "manual_market_context": build_manual_radar_market_context(market_data),
-                  "methodology": radar_methodology(), "ai_methodology": ai_radar_methodology()},
+                  "methodology": radar_methodology(), "ai_methodology": ai_radar_methodology(),
+                  "crypto_methodology": crypto_radar_methodology()},
         "radar_validation": {
             "mrna": {
                 "cutoff_date": "2026-07-31",

@@ -96,12 +96,15 @@ function renderDashboardCommentary(commentary = {}) {
   const biotechNews = commentary.news?.biotech_healthcare || commentary.news || {};
   const aiRadar = commentary.radar?.ai_technology || {};
   const biotechRadar = commentary.radar?.biotech_healthcare || {};
+  const cryptoRadar = commentary.radar?.crypto_stablecoin || {};
   renderNumberedMessages("news-takeaways", aiNews.take_home_messages);
   renderNumberedMessages("biotech-news-takeaways", biotechNews.take_home_messages);
   setText("ai-radar-summary-copy", aiRadar.summary);
   renderNumberedMessages("ai-radar-takeaways", aiRadar.take_home_messages);
   setText("biotech-radar-summary-copy", biotechRadar.summary);
   renderNumberedMessages("biotech-radar-takeaways", biotechRadar.take_home_messages);
+  setText("crypto-radar-summary-copy", cryptoRadar.summary);
+  renderNumberedMessages("crypto-radar-takeaways", cryptoRadar.take_home_messages);
   renderNumberedMessages("high-conviction-reasons", commentary.high_conviction?.reasons);
 }
 
@@ -123,6 +126,11 @@ function aiRadarRows(data) {
 
 function biotechRadarRows(data) {
   if (Array.isArray(data.radar?.biotech)) return data.radar.biotech;
+  return [];
+}
+
+function cryptoRadarRows(data) {
+  if (Array.isArray(data.radar?.crypto)) return data.radar.crypto;
   return [];
 }
 
@@ -456,6 +464,28 @@ function renderBiotechRadar(rows, targetId = "biotech-radar") {
     </dl></details>`).join("") || `<p class="loading-state">No biotech opportunities are available.</p>`;
 }
 
+function renderCryptoRadar(rows, targetId = "crypto-radar") {
+  document.getElementById(targetId).innerHTML = rows.map((row) => `<details class="radar-item crypto-radar-item"><summary>
+      <span class="radar-name"><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      ${renderScore(row.crypto_opportunity_score, "Crypto Opportunity")}${renderScore(row.multibagger_potential_score, "Multibagger Potential")}
+      <span><b class="radar-stage-pill">${escapeHtml(row.price_discovery_stage || "Emerging")}</b></span><span><b class="radar-stage-pill priced-${classKey(row.already_priced_in || "NO")}">${escapeHtml(row.already_priced_in || "NO")}</b></span><span><b class="radar-stage-pill entry-${classKey(row.entry_stage?.stage || "Unavailable")}">${escapeHtml(row.entry_stage?.stage || "Unavailable")}</b></span><span class="expand-control" aria-hidden="true">+</span>
+    </summary><dl class="detail-grid crypto-details">
+      ${detailItem("Asset / Company", `${row.company} (${tickerPriceLabel(row.ticker, row.market_data)}) · ${row.asset_type || "Type missing"}`)}
+      ${detailItem("Thesis", row.thesis)}${detailItem("Major Catalysts", row.catalysts)}${detailItem("Major Risks", row.risks)}
+      ${detailItem("Price Discovery / Priced In", `${row.price_discovery_stage || "Emerging"} · ${row.already_priced_in || "NO"}. ${row.price_discovery_rationale || "Evidence unavailable."}`)}
+      ${detailItem("Entry Stage", `${row.entry_stage?.stage || "Unavailable"}. ${row.entry_stage?.rationale || "Detailed technical evidence is unavailable."}`)}
+      ${detailItem("Ranking Penalty", `${row.priced_in_penalty ?? 0} points applied to ranking and Multibagger Potential.`)}
+      ${detailItem("Early-Opportunity Ranking", row.radar_rank_score === null || row.radar_rank_score === undefined ? "Missing" : `${row.radar_rank_score} / 100`)}
+      ${detailItem("Data Completeness / Confidence", `${row.data_completeness ?? "Missing"}% / ${row.confidence || "Missing"}`)}
+      ${detailItem("Missing Data", (row.missing_data || []).join(", ") || "None in the defined V1 score; review evidence dates and limitations.")}
+      ${renderMarketSnapshot(row.market_data, "btc")}
+      ${renderScoreBreakdown(row.score_components, row.data_completeness)}
+      ${renderEarlyRadarBreakdown("Multibagger Potential Score", row.multibagger_score_components, row.multibagger_data_completeness)}
+      ${renderSources(row.sources, row.score_as_of)}
+      <div class="detail-item detail-wide radar-sources"><dt>Evidence / Score History</dt><dd><p>${escapeHtml(row.why_changed || "Missing")}</p><ul>${(row.score_history || []).slice(-5).reverse().map((item) => `<li>${escapeHtml(item.as_of)}: Opportunity ${escapeHtml(item.crypto_opportunity_score ?? "Missing")} · Multibagger ${escapeHtml(item.multibagger_potential_score ?? "Missing")} · Rank ${escapeHtml(item.radar_rank_score ?? "Missing")}</li>`).join("") || "<li>No prior snapshot.</li>"}</ul></dd></div>
+    </dl></details>`).join("") || `<p class="loading-state">No crypto or stablecoin opportunities are available.</p>`;
+}
+
 function radarAnalysisMatches(data, ticker) {
   const aiTrends = data.radar?.ai || [];
   const ai = [];
@@ -479,7 +509,9 @@ function radarAnalysisMatches(data, ticker) {
   ai.sort((a, b) => (b.beneficiary.radar_rank_score ?? -1) - (a.beneficiary.radar_rank_score ?? -1));
   const biotech = (data.radar?.biotech || []).filter((row) => normalizedTicker(row.ticker) === ticker)
     .sort((a, b) => (b.radar_rank_score ?? -1) - (a.radar_rank_score ?? -1));
-  return { ai, biotech };
+  const crypto = (data.radar?.crypto || []).filter((row) => normalizedTicker(row.ticker) === ticker)
+    .sort((a, b) => (b.radar_rank_score ?? -1) - (a.radar_rank_score ?? -1));
+  return { ai, biotech, crypto };
 }
 
 function renderMarketOnlyRadarAnalysis(ticker, domain, context) {
@@ -492,7 +524,7 @@ function renderMarketOnlyRadarAnalysis(ticker, domain, context) {
     ${renderScore(null, "Opportunity Score")}${renderScore(null, "Multibagger Potential")}
     <span><b class="radar-stage-pill">${escapeHtml(discovery)}</b></span><span><b class="radar-stage-pill">${escapeHtml(priced)}</b></span><span><b class="radar-stage-pill">${escapeHtml(entry)}</b></span><span class="expand-control" aria-hidden="true">+</span>
   </summary><dl class="detail-grid"><div class="detail-item detail-wide"><dt>Evidence Boundary</dt><dd>${escapeHtml(context?.score_note || "No company-specific Radar thesis is connected, so Opportunity and Multibagger scores remain missing.")}</dd></div>
-    ${detailItem("Price Discovery / Priced In", context?.rationale || "Missing")}${detailItem("Entry Stage", `${entry}. ${context?.entry_stage?.rationale || "Missing"}`)}${renderMarketSnapshot(market, domain === "biotech" ? "xbi" : "qqq")}
+    ${detailItem("Price Discovery / Priced In", context?.rationale || "Missing")}${detailItem("Entry Stage", `${entry}. ${context?.entry_stage?.rationale || "Missing"}`)}${renderMarketSnapshot(market, domain === "biotech" ? "xbi" : domain === "crypto" ? "btc" : "qqq")}
   </dl></details>`;
 }
 
@@ -500,8 +532,8 @@ function renderRadarAnalysis(data, ticker, requestedDomain) {
   const matches = radarAnalysisMatches(data, ticker);
   const market = sharedMarketSecurities[ticker];
   let domain = requestedDomain;
-  if (domain === "auto") domain = matches.biotech.length ? "biotech" : matches.ai.length ? "ai" :
-    (market?.domains?.includes("biotech") ? "biotech" : "ai");
+  if (domain === "auto") domain = matches.crypto.length ? "crypto" : matches.biotech.length ? "biotech" : matches.ai.length ? "ai" :
+    (market?.domains?.includes("crypto") ? "crypto" : market?.domains?.includes("biotech") ? "biotech" : "ai");
   const result = document.getElementById("radar-analyze-result");
   const status = document.getElementById("radar-analyze-status");
   result.hidden = false;
@@ -524,9 +556,18 @@ function renderRadarAnalysis(data, ticker, requestedDomain) {
     status.className = "radar-analyze-status is-success";
     return;
   }
+  if (domain === "crypto" && matches.crypto.length) {
+    const row = matches.crypto[0];
+    setText("radar-analyze-summary", `${row.company} (${ticker}) is analyzed with the Crypto & Stablecoin model. Crypto Opportunity is ${row.crypto_opportunity_score ?? "Missing"}/100 and Multibagger Potential is ${row.multibagger_potential_score ?? "Missing"}/100; price discovery is ${row.price_discovery_stage}, priced-in status is ${row.already_priced_in}, and Entry Stage is ${row.entry_stage?.stage || "Unavailable"}.`);
+    renderNumberedMessages("radar-analyze-takeaways", [conciseRadarText(row.thesis), `The ranking penalty is ${row.priced_in_penalty ?? 0} points; this manual review does not alter automatic Radar ranking.`, row.missing_data?.length ? `Missing inputs: ${row.missing_data.join(", ")}.` : "All defined V1 factors have evidence, but source age and model limitations still require review."]);
+    renderCryptoRadar([row], "radar-analyze-details");
+    status.textContent = `${ticker} analyzed with existing Crypto & Stablecoin Radar evidence. It was not added to automatic rankings.`;
+    status.className = "radar-analyze-status is-success";
+    return;
+  }
   const context = data.radar?.manual_market_context?.[ticker]?.[domain];
   if (market && context) {
-    setText("radar-analyze-summary", `${ticker} has current shared market and technical data, but no ${domain === "biotech" ? "company–program–catalyst" : "category-specific beneficiary"} evidence in today's Radar analysis universe. Opportunity and Multibagger scores therefore remain missing.`);
+    setText("radar-analyze-summary", `${ticker} has current shared market and technical data, but no ${domain === "biotech" ? "company–program–catalyst" : domain === "crypto" ? "crypto/stablecoin adoption" : "category-specific beneficiary"} evidence in today's Radar analysis universe. Opportunity and Multibagger scores therefore remain missing.`);
     renderNumberedMessages("radar-analyze-takeaways", [`Price Discovery Stage is ${context.price_discovery_stage}; Already Priced In is ${context.already_priced_in}; Entry Stage is ${context.entry_stage?.stage || "Unavailable"}.`, "Market data alone cannot create a Radar thesis or opportunity score.", "The ticker remains outside automatic Radar rankings unless the daily evidence pipeline independently qualifies it."]);
     renderMarketOnlyRadarAnalysis(ticker, domain, context);
     status.textContent = `${ticker} market analysis is available; company-specific Radar evidence is missing.`;
@@ -1263,12 +1304,13 @@ function renderDashboard(data) {
   setText("market-data-through", formatMarketDataThrough(data.market_data_through || data.market_data?.data_through));
   setText("ai-news-summary-copy", data.summaries && data.summaries.ai);
   setText("biotech-news-summary-copy", data.summaries && data.summaries.biotech);
-  setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("market-movers", data.summaries && data.summaries.market_movers);
+  setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("crypto-summary", data.summaries && data.summaries.crypto); setText("market-movers", data.summaries && data.summaries.market_movers);
   renderDashboardCommentary(data.commentary);
   renderSafely(() => renderTopNews(data.top_investment_news && data.top_investment_news.ai_technology), "ai-top-news");
   renderSafely(() => renderBiotechNews(data.top_investment_news && data.top_investment_news.biotech_healthcare), "biotech-top-news");
   renderSafely(() => renderAiRadar(aiRadarRows(data)), "ai-radar");
   renderSafely(() => renderBiotechRadar(biotechRadarRows(data)), "biotech-radar");
+  renderSafely(() => renderCryptoRadar(cryptoRadarRows(data)), "crypto-radar");
   renderSafely(() => renderOpportunities("ai-opportunities", data.monthly_picks && data.monthly_picks.ai), "ai-opportunities");
   renderSafely(() => renderOpportunities("biotech-opportunities", data.monthly_picks && data.monthly_picks.biotech), "biotech-opportunities");
   renderSafely(() => renderSwingTrades(data.swing_trade_opportunities), "swing-opportunities");

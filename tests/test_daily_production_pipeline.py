@@ -23,7 +23,7 @@ def valid_payload():
             "biotech_healthcare": {"stories": [{"headline": "Biotech event"}], "important_news_archive": []},
         },
         "radar": {"ai": [{"trend": "Compute", "beneficiary_records": []}],
-                  "biotech": [{"ticker": "BIO"}]},
+                  "biotech": [{"ticker": "BIO"}], "crypto": [{"ticker": "BTC-USD"}]},
         "monthly_picks": {"ai": [], "biotech": []},
         "watchlists": {"ai": [], "biotech": []},
         "swing_trade_opportunities": {"opportunities": []},

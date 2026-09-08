@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260906-1" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260907-1" />
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
@@ -57,10 +57,10 @@
         </section>
 
         <section class="radar-section" id="radar">
-          <div class="section-heading radar-heading"><div><span class="section-kicker">01 · Primary intelligence surface</span><h2>Future Trend &amp; Investment Radar</h2><p>AI Technology Radar V1 analyzes trends across three horizons; Biotech Catalyst Radar V1 tracks source-backed catalysts.</p></div><span class="live-pill"><i aria-hidden="true"></i> Daily data live</span></div>
+          <div class="section-heading radar-heading"><div><span class="section-kicker">01 · Primary intelligence surface</span><h2>Future Trend &amp; Investment Radar</h2><p>Separate AI/Technology, Biotech, and Crypto &amp; Stablecoin models rank source-backed opportunities with shared price-discovery and entry context.</p></div><span class="live-pill"><i aria-hidden="true"></i> Daily data live</span></div>
           <section class="radar-analyze" aria-labelledby="radar-analyze-title">
-            <div><h3 id="radar-analyze-title">Analyze a Stock</h3><p>Review a ticker with the existing AI/Technology or Biotech Radar evidence without adding it to automatic rankings.</p></div>
-            <form id="radar-analyze-form" class="radar-analyze-form" novalidate><label for="radar-analyze-ticker">Ticker</label><input id="radar-analyze-ticker" name="ticker" type="text" maxlength="10" placeholder="e.g. AMD" autocomplete="off" spellcheck="false"><label for="radar-analyze-domain">Radar model</label><select id="radar-analyze-domain" name="domain"><option value="auto">Auto-detect</option><option value="ai">AI / Technology</option><option value="biotech">Biotechnology</option></select><button type="submit">Analyze</button></form>
+            <div><h3 id="radar-analyze-title">Analyze a Stock</h3><p>Review a ticker or supported crypto asset with existing model evidence without adding it to automatic rankings.</p></div>
+            <form id="radar-analyze-form" class="radar-analyze-form" novalidate><label for="radar-analyze-ticker">Ticker</label><input id="radar-analyze-ticker" name="ticker" type="text" maxlength="10" placeholder="e.g. AMD" autocomplete="off" spellcheck="false"><label for="radar-analyze-domain">Radar model</label><select id="radar-analyze-domain" name="domain"><option value="auto">Auto-detect</option><option value="ai">AI / Technology</option><option value="biotech">Biotechnology</option><option value="crypto">Crypto / Stablecoin</option></select><button type="submit">Analyze</button></form>
             <p id="radar-analyze-status" class="radar-analyze-status">Enter a valid public-company ticker. Missing evidence remains missing and never creates a score.</p>
             <div id="radar-analyze-result" class="radar-analyze-result" hidden><section class="interpretation-card"><h3>Summary</h3><p id="radar-analyze-summary"></p></section><section class="interpretation-card takeaways-card"><h3>Take-Home Message</h3><ol id="radar-analyze-takeaways"></ol></section><div id="radar-analyze-details" class="radar-list"></div></div>
           </section>
@@ -77,6 +77,13 @@
             <div class="interpretation-grid radar-category-commentary"><section class="interpretation-card"><h3>Summary</h3><p id="biotech-radar-summary-copy">Loading Biotech Radar summary...</p></section><section class="interpretation-card takeaways-card"><h3>Take-Home Message</h3><ol id="biotech-radar-takeaways"><li>Loading conclusions...</li></ol></section></div>
             <div class="radar-column-labels biotech-labels" aria-hidden="true"><span>Ticker</span><span>Opportunity Score</span><span>Multibagger Potential</span><span>Price Discovery Stage</span><span>Already Priced In</span><span>Entry Stage</span><span></span></div>
             <div id="biotech-radar" class="radar-list"><p class="loading-state">Loading biotech opportunities...</p></div>
+          </div>
+
+          <div class="radar-group" aria-labelledby="crypto-radar-title">
+            <div class="radar-group-heading"><div><span class="radar-icon radar-icon-crypto" aria-hidden="true">CR</span><div><h3 id="crypto-radar-title">Crypto &amp; Stablecoin Radar</h3><p id="crypto-summary">Loading daily crypto and stablecoin intelligence...</p></div></div><span class="source-note">Crypto assets and public-company adoption beneficiaries</span></div>
+            <div class="interpretation-grid radar-category-commentary"><section class="interpretation-card"><h3>Summary</h3><p id="crypto-radar-summary-copy">Loading Crypto &amp; Stablecoin Radar summary...</p></section><section class="interpretation-card takeaways-card"><h3>Take-Home Message</h3><ol id="crypto-radar-takeaways"><li>Loading conclusions...</li></ol></section></div>
+            <div class="radar-column-labels crypto-labels" aria-hidden="true"><span>Ticker</span><span>Opportunity Score</span><span>Multibagger Potential</span><span>Price Discovery Stage</span><span>Already Priced In</span><span>Entry Stage</span><span></span></div>
+            <div id="crypto-radar" class="radar-list"><p class="loading-state">Loading crypto and stablecoin opportunities...</p></div>
           </div>
         </section>
 
@@ -132,9 +139,9 @@
           <div id="market-cards" class="market-grid"></div><article class="market-explainer"><span>Market context</span><h3>What moved the market today?</h3><p id="market-movers">Loading market context...</p></article>
         </section>
 
-        <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. AI and Biotech Radar exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
+        <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. Radar models exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260906-1" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260907-1" defer></script>
   </body>
 </html>
