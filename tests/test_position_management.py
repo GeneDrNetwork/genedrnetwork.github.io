@@ -25,6 +25,8 @@ class PositionManagementTests(unittest.TestCase):
         self.assertIn("POSITION_STORAGE_KEY", self.script)
         self.assertIn("strategy_sources", self.script)
         self.assertIn("custom_targets", self.script)
+        shares_field = self.page.split('id="position-shares"', 1)[1].split(">", 1)[0]
+        self.assertNotIn("required", shares_field)
 
     def test_watchlist_handoff_and_direct_entry_share_one_workflow(self):
         self.assertIn("data-position-prefill", self.script)
@@ -34,8 +36,7 @@ class PositionManagementTests(unittest.TestCase):
         self.assertNotIn('fetch("https://query', self.script)
 
     def test_status_engine_uses_strategy_and_technical_context(self):
-        for status in ("HOLD", "ADD / ADD ON PULLBACK", "TAKE PARTIAL PROFIT",
-                       "TAKE PROFIT", "TIGHTEN STOP", "EXIT / THESIS BROKEN"):
+        for status in ("HOLD", "ADD", "TRIM", "TAKE PROFIT", "EXIT"):
             self.assertIn(status, self.script)
         self.assertIn("technical.extended", self.script)
         self.assertIn("evidence.explicit_broken", self.script)
@@ -50,13 +51,21 @@ class PositionManagementTests(unittest.TestCase):
         self.assertIn("swing percentages are not applied", self.script)
 
     def test_stop_and_thesis_invalidation_are_distinct_and_positions_refresh(self):
-        self.assertIn("Stop Loss vs Thesis Invalidation", self.script)
-        self.assertIn("Technical Stop / Invalidation", self.script)
+        self.assertIn("Support / Invalidation", self.script)
+        self.assertIn("Technical support / invalidation", self.script)
         self.assertIn("thesis_invalidation", self.script)
         self.assertIn("downside_from_current_pct", self.script)
         self.assertIn("downside_from_buy_pct", self.script)
         self.assertIn("renderPositions(data)", self.script)
         self.assertIn('renderSafely(() => renderPositions(data), "my-stock-positions")', self.script)
+
+    def test_position_output_includes_holding_period_and_exit_reason(self):
+        self.assertIn("function positionDaysHeld", self.script)
+        self.assertIn("days_held", self.script)
+        self.assertIn("Days Held", self.script)
+        self.assertIn("Exit Signal / Reason", self.script)
+        self.assertIn("exit_signal_reason", self.script)
+        self.assertIn('row.shares === null ? "Not entered"', self.script)
 
 
 if __name__ == "__main__":

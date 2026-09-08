@@ -124,6 +124,9 @@ class WatchlistWorkflowTests(unittest.TestCase):
         self.assertIn('id="top-entry-watchlist"', page)
         self.assertIn('id="developing-watchlist"', page)
         self.assertIn('id="manually-entered-watchlist"', page)
+        self.assertIn('href="#my-stocks">Watchlist</a>', page)
+        self.assertIn('<h2>Watchlist</h2>', page)
+        self.assertIn("Delete / Remove", script)
 
 
 if __name__ == "__main__":

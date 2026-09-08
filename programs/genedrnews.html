@@ -35,7 +35,7 @@
       </section>
 
       <nav class="dashboard-nav" aria-label="Dashboard sections">
-        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">My Stocks / Watchlist</a><a href="#owned-stocks">My Stock</a><a href="#markets">Market Pulse</a>
+        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">Watchlist</a><a href="#owned-stocks">My Stock</a><a href="#markets">Market Pulse</a>
       </nav>
 
       <div class="dashboard-shell">
@@ -100,7 +100,7 @@
         </section>
 
         <section class="dashboard-section" id="my-stocks">
-          <div class="section-heading"><div><span class="section-kicker">04 · Active trade preparation</span><h2>My Stocks / Watchlist</h2><p>Strategy-selected entry candidates and personally entered tickers are monitored separately using the same shared technical analysis.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
+          <div class="section-heading"><div><span class="section-kicker">04 · Active trade preparation</span><h2>Watchlist</h2><p>Strategy-selected entry candidates and personally entered tickers are monitored separately using the same shared technical analysis.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
           <div id="my-watchlist" class="watchlist-groups">
             <section class="watchlist-group website-selected-group"><div class="watchlist-group-heading"><span>W</span><div><h3>Website Selected</h3><p>Up to approximately 20 constructive setups selected automatically from current strategy candidates.</p></div></div><div id="website-selected-watchlist" class="website-watchlist-groups">
               <section class="website-watchlist-subgroup"><div class="website-watchlist-subheading"><span>A</span><div><h4>Top Entry Candidates</h4><p>Strongest actionable setups closest to a practical entry now.</p></div></div><div id="top-entry-watchlist" class="watchlist-cards"><p class="loading-state">Ranking the strongest actionable entry candidates...</p></div></section>
@@ -122,7 +122,7 @@
           <form id="position-form" class="position-form" novalidate>
             <div><label for="position-ticker">Ticker</label><input id="position-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NVDA" required></div>
             <div><label for="position-buy-price">Average Buy Price</label><input id="position-buy-price" name="buy_price" type="number" min="0.0001" step="any" placeholder="0.00" required></div>
-            <div><label for="position-shares">Shares</label><input id="position-shares" name="shares" type="number" min="0.000001" step="any" placeholder="0" required></div>
+            <div><label for="position-shares">Shares <small>optional</small></label><input id="position-shares" name="shares" type="number" min="0.000001" step="any" placeholder="Optional"></div>
             <div><label for="position-purchase-date">Purchase Date</label><input id="position-purchase-date" name="purchase_date" type="date" required></div>
             <div><label for="position-source">Strategy Source</label><input id="position-source" name="strategy_source" type="text" list="position-source-options" placeholder="Manual" required><datalist id="position-source-options"><option value="Radar"><option value="High Conviction"><option value="Swing Trade"><option value="Manual"></datalist></div>
             <div><label for="position-target-1">Custom Target 1 <small>optional</small></label><input id="position-target-1" name="target_1" type="number" min="0.0001" step="any" placeholder="Optional"></div>
@@ -142,6 +142,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. Radar models exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260907-1" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260907-2" defer></script>
   </body>
 </html>
