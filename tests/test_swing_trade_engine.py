@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.swing_trade import build_swing_trade_engine, technical_setup
+from scripts.swing_trade import build_swing_trade_engine, stage_transition, technical_setup
 
 
 def snapshot(state="entry"):
@@ -50,6 +50,67 @@ def biotech_radar():
 
 
 class SwingTradeEngineTests(unittest.TestCase):
+    def test_large_one_day_gain_alone_does_not_confirm_transition(self):
+        previous = {"stage": "Bottoming", "technical": {"returns": {"daily": 0}}}
+        current = {"state": "Early Reversal", "price_date": "2026-08-29",
+                   "returns": {"daily": 6}, "macd": {}, "relative_strength": {}}
+        result = stage_transition(previous, current)
+        self.assertFalse(result["fresh_favorable_transition"])
+        self.assertTrue(result["large_one_day_gain_only"])
+
+    def test_full_screened_universe_can_enter_on_fresh_favorable_transition(self):
+        prior_technical = {
+            "current_price": 92, "ma20": 99, "ma50": 106,
+            "price_vs_ma20_pct": -7.1, "price_vs_ma50_pct": -13.2,
+            "recent_low": 85, "macd": {"improving": False}, "returns": {"daily": 0},
+        }
+        previous = {"stage_tracking": [{
+            "ticker": "TEST", "stage": "Bottoming", "as_of": "2026-08-28",
+            "last_changed_on": "2026-08-25", "technical": prior_technical,
+        }], "opportunities": []}
+        market = {"securities": {"TEST": snapshot("early")}}
+        result = build_swing_trade_engine(
+            candidates(), market, [], biotech_radar(), previous_section=previous)
+        row = result["opportunities"][0]
+        self.assertEqual(row["stage_transition"]["transition"], "Bottoming → Early Reversal")
+        self.assertTrue(row["stage_transition"]["fresh_favorable_transition"])
+        self.assertEqual(row["stage_transition"]["days_since_change"], 0)
+        self.assertEqual(result["stage_tracking"][0]["ticker"], "TEST")
+
+    def test_days_since_change_persists_when_stage_is_unchanged(self):
+        current = technical_setup(snapshot("entry"))
+        previous = {"stage": "Entry Zone", "last_changed_on": "2026-08-25",
+                    "as_of": "2026-08-28", "technical": current}
+        transition = stage_transition(previous, current, "biotech")
+        self.assertFalse(transition["changed"])
+        self.assertEqual(transition["days_since_change"], 4)
+
+    def test_recent_transition_label_and_priority_persist_for_five_days(self):
+        current = technical_setup(snapshot("early"))
+        previous = {
+            "stage": "Early Reversal", "last_changed_on": "2026-08-25", "as_of": "2026-08-28",
+            "technical": current, "transition": {
+                "previous_stage": "Bottoming", "current_stage": "Early Reversal",
+                "fresh_favorable_transition": True, "signals": ["Higher trailing low", "MACD reversal momentum improved"],
+            },
+        }
+        transition = stage_transition(previous, current, "biotech")
+        self.assertEqual(transition["transition"], "Bottoming → Early Reversal")
+        self.assertEqual(transition["days_since_change"], 4)
+        self.assertTrue(transition["fresh_favorable_transition"])
+
+    def test_failed_reversal_is_tracked_as_technical_deterioration(self):
+        previous = {"stage": "Early Reversal", "technical": {
+            "support": 95, "current_price": 98, "price_vs_ma20_pct": 1,
+            "macd": {"improving": True},
+        }}
+        current = {"state": "Bottoming", "price_date": "2026-08-29", "current_price": 90,
+                   "price_vs_ma20_pct": -5, "macd": {"crossover": "bearish"},
+                   "returns": {}, "relative_strength": {}}
+        transition = stage_transition(previous, current)
+        self.assertTrue(transition["failed_reversal"])
+        self.assertEqual(transition["current_stage"], "Failed Reversal / Technical Deterioration")
+
     def test_classifies_requested_technical_states(self):
         self.assertEqual(technical_setup(snapshot("entry"))["state"], "Entry Zone")
         self.assertEqual(technical_setup(snapshot("early"))["state"], "Early Reversal")
@@ -103,6 +164,35 @@ class SwingTradeEngineTests(unittest.TestCase):
         ]
         result = build_swing_trade_engine(pool, market, [], radar)
         self.assertEqual([row["ticker"] for row in result["opportunities"]], ["ENT", "BOT"])
+
+    def test_fresh_confirmed_transition_ranks_ahead_of_static_entry_zone(self):
+        pool = {"candidates": [
+            {"company": "Fresh Bio", "ticker": "FRESH", "domain": "biotech"},
+            {"company": "Static Bio", "ticker": "STATIC", "domain": "biotech"},
+        ]}
+        fresh_snapshot, static_snapshot = snapshot("early"), snapshot("entry")
+        market = {"securities": {"FRESH": fresh_snapshot, "STATIC": static_snapshot}}
+        radar = [
+            {**biotech_radar()[0], "ticker": "FRESH"},
+            {**biotech_radar()[0], "ticker": "STATIC"},
+        ]
+        previous = {"stage_tracking": [
+            {"ticker": "FRESH", "stage": "Bottoming", "as_of": "2026-08-28",
+             "technical": {"current_price": 92, "ma20": 99, "ma50": 106,
+                           "price_vs_ma20_pct": -7.1, "price_vs_ma50_pct": -13.2,
+                           "recent_low": 85, "macd": {"improving": False}, "returns": {"daily": 0}}},
+            {"ticker": "STATIC", "stage": "Entry Zone", "as_of": "2026-08-28",
+             "technical": technical_setup(static_snapshot)},
+        ]}
+        result = build_swing_trade_engine(pool, market, [], radar, previous_section=previous)
+        self.assertEqual([row["ticker"] for row in result["opportunities"]], ["FRESH", "STATIC"])
+
+    def test_swing_cards_show_compact_stage_transition(self):
+        from pathlib import Path
+        script = (Path(__file__).resolve().parents[1] / "assets" / "news-dashboard.js").read_text()
+        self.assertIn("transition.previous_stage", script)
+        self.assertIn("since change", script)
+        self.assertIn("swing-transition", script)
 
 
 if __name__ == "__main__":

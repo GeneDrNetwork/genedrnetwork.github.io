@@ -4794,7 +4794,8 @@ def build():
         ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality)
     swing_trade_opportunities = build_swing_trade_engine(
         candidate_discovery, market_data, ai_radar, biotech_radar,
-        ai_news_section, biotech_news_section)
+        ai_news_section, biotech_news_section,
+        previous_section=previous.get("swing_trade_opportunities"))
     watchlists = build_strategy_watchlists(
         ai_radar, biotech_radar, monthly_picks, swing_trade_opportunities, market_data)
     high_conviction_commentary = annotate_high_conviction(monthly_picks)

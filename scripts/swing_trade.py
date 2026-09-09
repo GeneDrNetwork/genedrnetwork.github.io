@@ -6,11 +6,20 @@ High-Conviction classifications, and it does not promote Radar scores.
 """
 
 from collections import Counter
+from datetime import date
 
 
-SWING_STATES = ("Bottoming", "Early Reversal", "Entry Zone", "Breakout", "Extended")
+SWING_STATES = ("Falling", "Bottoming", "Early Reversal", "Entry Zone", "Breakout",
+                "Extended", "Failed Reversal / Technical Deterioration")
 STATE_PRIORITY = {"Entry Zone": 0, "Early Reversal": 1, "Bottoming": 2,
-                  "Breakout": 3, "Extended": 4}
+                  "Breakout": 3, "Falling": 4, "Extended": 5,
+                  "Failed Reversal / Technical Deterioration": 6}
+FAVORABLE_TRANSITION_PRIORITY = {
+    ("Bottoming", "Early Reversal"): 0,
+    ("Early Reversal", "Entry Zone"): 1,
+    ("Entry Zone", "Breakout"): 2,
+    ("Falling", "Bottoming"): 3,
+}
 
 
 def pct_distance(value, reference):
@@ -77,6 +86,8 @@ def technical_setup(snapshot):
         state = "Entry Zone"
     elif major_decline and stabilized and reversal_signal and momentum_usable and near_ma20:
         state = "Early Reversal"
+    elif major_decline and not stabilized and not reversal_signal and (price_vs_ma20 is None or price_vs_ma20 < 0):
+        state = "Falling"
     else:
         state = "Bottoming"
 
@@ -89,7 +100,8 @@ def technical_setup(snapshot):
                       85 if reversal_signal and momentum_usable else 60 if reversal_signal else
                       35 if histogram is not None else None)
     entry_score = (100 if state == "Entry Zone" else 90 if state == "Early Reversal" else
-                   75 if state == "Breakout" else 60 if state == "Bottoming" else 10)
+                   75 if state == "Breakout" else 60 if state == "Bottoming" else
+                   30 if state == "Falling" else 10)
     volume_ratio = snapshot.get("volume_vs_20d_average")
     accumulation = inputs.get("up_down_volume_ratio_20d")
     volume_score = average([
@@ -119,6 +131,7 @@ def technical_setup(snapshot):
         "drawdown_from_high_pct": drawdown, "recent_low": inputs.get("recent_low_63d"),
         "distance_from_bottom_pct": distance_bottom, "bottom_range_20d_pct": tight_range,
         "base_duration_sessions": base_sessions, "rsi_14": rsi, "macd": macd,
+        "returns": returns, "relative_strength": snapshot.get("relative_strength") or {},
         "volume_vs_20d_average": volume_ratio, "up_down_volume_ratio_20d": accumulation,
         "support": round(support, 4) if support is not None else None,
         "resistance": inputs.get("resistance_level"),
@@ -128,6 +141,142 @@ def technical_setup(snapshot):
                         "missing": value is None} for label, value, weight in components],
         "price_date": snapshot.get("price_date"), "source": snapshot.get("source"),
     }
+
+
+def parse_day(value):
+    try:
+        return date.fromisoformat(str(value or "")[:10])
+    except ValueError:
+        return None
+
+
+def transition_metrics(record):
+    technical = (record or {}).get("technical") or record or {}
+    return {
+        "current_price": technical.get("current_price"), "ma20": technical.get("ma20"),
+        "ma50": technical.get("ma50"), "price_vs_ma20_pct": technical.get("price_vs_ma20_pct"),
+        "price_vs_ma50_pct": technical.get("price_vs_ma50_pct"), "recent_low": technical.get("recent_low"),
+        "support": technical.get("support"), "resistance": technical.get("resistance"),
+        "breakout_proximity_pct": technical.get("breakout_proximity_pct"),
+        "volume_vs_20d_average": technical.get("volume_vs_20d_average"),
+        "macd": technical.get("macd") or {}, "returns": technical.get("returns") or {},
+        "relative_strength": technical.get("relative_strength") or {},
+    }
+
+
+def stage_transition(previous, technical, domain="ai"):
+    """Compare daily technical states; price acceleration alone never confirms a change."""
+    previous = previous or {}
+    prior_stage = previous.get("stage") or previous.get("classification")
+    current_stage = technical.get("state")
+    prior = transition_metrics(previous)
+    current = transition_metrics(technical)
+    signals = []
+
+    higher_low = (prior.get("recent_low") is not None and current.get("recent_low") is not None and
+                  current["recent_low"] >= prior["recent_low"] * 1.005)
+    if higher_low:
+        signals.append("Higher trailing low")
+    ma20_reclaim = (prior.get("price_vs_ma20_pct") is not None and current.get("price_vs_ma20_pct") is not None and
+                    prior["price_vs_ma20_pct"] < 0 <= current["price_vs_ma20_pct"])
+    if ma20_reclaim:
+        signals.append("Price reclaimed MA20")
+    support_reclaim = (prior.get("support") is not None and prior.get("current_price") is not None and
+                       current.get("current_price") is not None and
+                       prior["current_price"] <= prior["support"] < current["current_price"])
+    if support_reclaim:
+        signals.append("Price reclaimed prior support")
+    ma20_slope = (prior.get("ma20") is not None and current.get("ma20") is not None and prior["ma20"] > 0 and
+                  current["ma20"] >= prior["ma20"] * 1.001)
+    if ma20_slope:
+        signals.append("MA20 slope turned/improved upward")
+    prior_spread = pct_distance(prior.get("ma20"), prior.get("ma50"))
+    current_spread = pct_distance(current.get("ma20"), current.get("ma50"))
+    ma_structure = (prior_spread is not None and current_spread is not None and
+                    current_spread >= prior_spread + .5)
+    if ma_structure:
+        signals.append("MA20/MA50 structure improved")
+    resistance_breakout = (current_stage == "Breakout" and current.get("breakout_proximity_pct") is not None and
+                           0 <= current["breakout_proximity_pct"] <= 5)
+    if resistance_breakout:
+        signals.append("Price cleared calculated resistance")
+    volume_expansion = (current.get("volume_vs_20d_average") is not None and
+                        current["volume_vs_20d_average"] >= 1.2)
+    if volume_expansion:
+        signals.append("Volume expanded versus 20-day average")
+    prior_macd = prior.get("macd") or {}
+    current_macd = current.get("macd") or {}
+    momentum_improvement = bool(
+        current_macd.get("crossover") == "bullish" or
+        (current_macd.get("improving") is True and prior_macd.get("improving") is not True))
+    if momentum_improvement:
+        signals.append("MACD reversal momentum improved")
+    benchmark = "xbi" if domain == "biotech" else "qqq"
+    prior_relative = (prior.get("relative_strength") or {}).get(benchmark, {})
+    current_relative = (current.get("relative_strength") or {}).get(benchmark, {})
+    relative_acceleration = (prior_relative.get("one_month") is not None and
+                             current_relative.get("one_month") is not None and
+                             current_relative["one_month"] >= prior_relative["one_month"] + 2)
+    if relative_acceleration:
+        signals.append(f"Relative strength versus {benchmark.upper()} accelerated")
+    prior_daily = (prior.get("returns") or {}).get("daily")
+    current_daily = (current.get("returns") or {}).get("daily")
+    price_acceleration = (current_daily is not None and current_daily >= 4 and
+                          (prior_daily is None or current_daily > prior_daily))
+    if price_acceleration:
+        signals.append("Daily price acceleration detected")
+
+    deterioration = bool(
+        prior_stage in ("Early Reversal", "Entry Zone", "Breakout") and
+        current_stage in ("Falling", "Bottoming") and
+        ((current.get("price_vs_ma20_pct") is not None and current["price_vs_ma20_pct"] < -3) or
+         current_macd.get("crossover") == "bearish" or
+         (prior.get("support") is not None and current.get("current_price") is not None and
+          current["current_price"] < prior["support"])))
+    display_stage = "Failed Reversal / Technical Deterioration" if deterioration else current_stage
+    pair = (prior_stage, display_stage)
+    changed = bool(prior_stage and prior_stage != display_stage)
+    structural_count = sum((higher_low, ma20_reclaim, support_reclaim, ma20_slope, ma_structure, resistance_breakout))
+    confirming_count = sum((volume_expansion, momentum_improvement, relative_acceleration))
+    confirmed_today = bool(changed and pair in FAVORABLE_TRANSITION_PRIORITY and structural_count >= 1 and
+                           structural_count + confirming_count >= 2)
+    as_of = technical.get("price_date")
+    previous_transition = previous.get("transition") or {}
+    previous_change = (previous.get("last_changed_on") or previous_transition.get("last_changed_on") or
+                       previous.get("as_of"))
+    last_changed_on = as_of if changed else previous_change
+    current_day, changed_day = parse_day(as_of), parse_day(last_changed_on)
+    days_since = ((current_day - changed_day).days if current_day and changed_day and current_day >= changed_day else None)
+    carried_transition = bool(
+        not changed and previous_transition.get("current_stage") == display_stage and
+        previous_transition.get("previous_stage") not in (None, "", "Unavailable"))
+    display_previous = previous_transition.get("previous_stage") if carried_transition else prior_stage
+    if carried_transition:
+        signals = list(previous_transition.get("signals") or signals)
+    fresh_favorable = bool(
+        confirmed_today or
+        (carried_transition and previous_transition.get("fresh_favorable_transition") and
+         days_since is not None and days_since <= 5))
+    return {
+        "previous_stage": display_previous or "Unavailable", "current_stage": display_stage,
+        "transition": f"{display_previous or 'Unavailable'} → {display_stage}", "changed": changed,
+        "fresh_favorable_transition": fresh_favorable, "failed_reversal": deterioration,
+        "days_since_change": days_since, "last_changed_on": last_changed_on,
+        "signals": signals, "large_one_day_gain_only": bool(price_acceleration and not confirmed_today and len(signals) == 1),
+        "confirmation_note": ("Confirmed by multiple non-price technical signals." if fresh_favorable else
+                              "No fresh favorable transition is confirmed; a large one-day gain alone is insufficient."),
+    }
+
+
+def prior_stage_map(section):
+    mapped = {row.get("ticker"): row for row in (section or {}).get("stage_tracking", []) if row.get("ticker")}
+    for row in (section or {}).get("opportunities", []):
+        ticker = row.get("ticker")
+        if ticker and ticker not in mapped:
+            mapped[ticker] = {"ticker": ticker, "stage": row.get("classification"),
+                              "as_of": (row.get("technical") or {}).get("price_date"),
+                              "technical": row.get("technical") or {}}
+    return mapped
 
 
 def section_events(section):
@@ -232,7 +381,8 @@ def build_explanation(company, technical, catalyst):
 
 
 def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_radar,
-                             ai_news_section=None, biotech_news_section=None, limit=8):
+                             ai_news_section=None, biotech_news_section=None, limit=8,
+                             previous_section=None):
     candidates = {}
     for candidate in (candidate_pool or {}).get("candidates", []):
         ticker = candidate.get("ticker")
@@ -241,16 +391,28 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
     evaluated_states = []
     qualified_records = []
     technical_qualified = []
+    tracking = []
+    previous_stages = prior_stage_map(previous_section)
     for ticker, candidate in candidates.items():
         snapshot = (market_data or {}).get("securities", {}).get(ticker)
         if not snapshot:
             continue
         technical = technical_setup(snapshot)
+        domain = candidate.get("domain") or (snapshot.get("domains") or ["ai"])[0]
+        transition = stage_transition(previous_stages.get(ticker), technical, domain)
+        technical["state"] = transition["current_stage"]
+        if transition["failed_reversal"]:
+            technical["qualified_step_1"] = False
+        tracking.append({
+            "ticker": ticker, "company": candidate.get("company") or ticker, "domain": domain,
+            "stage": technical["state"], "as_of": technical.get("price_date"),
+            "last_changed_on": transition.get("last_changed_on"), "transition": transition,
+            "technical": transition_metrics(technical),
+        })
         evaluated_states.append(technical["state"])
         if not technical["qualified_step_1"]:
             continue
         technical_qualified.append(ticker)
-        domain = candidate.get("domain") or (snapshot.get("domains") or ["ai"])[0]
         catalyst = catalyst_check(ticker, domain, ai_radar, biotech_radar,
                                   ai_news_section, biotech_news_section)
         if not catalyst["credible"]:
@@ -260,12 +422,12 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
             "company": candidate.get("company") or ticker, "ticker": ticker,
             "exchange": candidate.get("exchange", ""), "listing_status": candidate.get("listing_status", "Public"),
             "domain": domain, "classification": technical["state"],
-            "technical": technical, "catalyst": catalyst,
+            "technical": technical, "stage_transition": transition, "catalyst": catalyst,
             "why_this_swing_trade_opportunity": explanation,
             "selection_principle": "Early Technical Reversal + Credible Catalyst",
             "market_data": {key: snapshot.get(key) for key in
                             ("current_price", "price_date", "currency", "source", "data_status")},
-            "engine_version": "swing-trade-opportunity-v1",
+            "engine_version": "swing-trade-opportunity-v1.1",
         }
         evaluated_record["selection_score"] = round(
             technical["technical_setup_score"] * .8 +
@@ -275,7 +437,11 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
         qualified_records.append(evaluated_record)
     catalyst_qualified_count = len(qualified_records)
     opportunities = list(qualified_records)
-    opportunities.sort(key=lambda item: (STATE_PRIORITY[item["classification"]],
+    opportunities.sort(key=lambda item: (
+                                         0 if item["stage_transition"]["fresh_favorable_transition"] else 1,
+                                         FAVORABLE_TRANSITION_PRIORITY.get(
+                                             (item["stage_transition"]["previous_stage"], item["stage_transition"]["current_stage"]), 9),
+                                         STATE_PRIORITY[item["classification"]],
                                          -item["selection_score"], item["ticker"]))
     opportunities = opportunities[:limit]
     for rank, row in enumerate(opportunities, 1):
@@ -286,25 +452,28 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
     reasoning = [
         "Step 1 screens independently for a major decline, stabilization near a recent low, and an early reversal or entry-zone structure. Extended stocks are rejected.",
         "Step 2 runs only after the technical screen and requires a dated, source-backed clinical, regulatory, corporate, commercial, or industry catalyst.",
-        "Early Reversal and Entry Zone rank ahead of Bottoming and Breakout because the strategy seeks improving setups before a substantial run-up.",
+        "Fresh, multi-signal favorable transitions rank first; otherwise Early Reversal and Entry Zone rank ahead of Bottoming and Breakout.",
     ]
+    fresh_selected = sum(row["stage_transition"]["fresh_favorable_transition"] for row in opportunities)
     takeaways = [
         f"{len(technical_qualified)} stocks passed the technical-first screen; {catalyst_qualified_count} also had a credible connected catalyst.",
         f"Current selected candidates: {selected_names}.",
         f"Selected-state distribution: {', '.join(f'{state} {count}' for state, count in selected_states.items()) or 'none'}.",
-        "A catalyst cannot compensate for a failed or extended technical setup, and missing data never becomes a positive signal.",
+        f"{fresh_selected} selected setup(s) have a newly confirmed favorable stage transition.",
+        "A catalyst cannot compensate for a failed, extended, or one-day-only technical move, and missing data never becomes a positive signal.",
     ]
     return {
         "methodology": {
-            "engine_version": "swing-trade-opportunity-v1",
-            "strategy": "Major Decline → Bottoming → Early Reversal → Entry Zone, followed by a separate credible-catalyst check.",
+            "engine_version": "swing-trade-opportunity-v1.1",
+            "strategy": "Falling → Bottoming → Early Reversal → Entry Zone → Breakout → Extended, followed by a separate credible-catalyst check.",
             "selection_principle": "Early Technical Reversal + Credible Catalyst = Strong Swing Trade Opportunity",
-            "state_priority": ["Entry Zone", "Early Reversal", "Bottoming", "Breakout", "Extended"],
+            "state_priority": ["Fresh favorable transition", "Entry Zone", "Early Reversal", "Bottoming", "Breakout", "Extended"],
+            "transition_confirmation": "A favorable transition needs multiple technical signals; a large one-day gain alone is insufficient.",
             "missing_data_policy": "Missing values remain missing and cannot satisfy either selection step.",
             "independence": "This engine does not use High-Conviction classification and does not modify Radar or Watchlist outputs.",
         },
         "reasoning": reasoning, "take_home_messages": takeaways,
-        "opportunities": opportunities,
+        "opportunities": opportunities, "stage_tracking": tracking,
         "coverage": {"candidate_pool": len(candidates), "market_evaluated": len(evaluated_states),
                      "technical_qualified": len(technical_qualified), "catalyst_qualified": catalyst_qualified_count,
                      "selected": len(opportunities),
