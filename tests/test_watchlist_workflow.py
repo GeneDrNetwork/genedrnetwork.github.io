@@ -97,6 +97,23 @@ class WatchlistWorkflowTests(unittest.TestCase):
         self.assertIn("function removeWatchlistItem(ticker)", script)
         self.assertIn("watchlistState.manual_items = watchlistState.manual_items.filter", script)
         self.assertIn("data-watchlist-remove", script)
+        self.assertIn('item.validation_status = "validated-shared-market-data"', script)
+        self.assertIn("if (upgradedValidation) writeWatchlistState()", script)
+        self.assertIn("Data Unavailable", script)
+
+    def test_manual_cards_expose_shared_score_stage_entry_and_visible_remove(self):
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        self.assertIn('class="watchlist-summary manual-watchlist-summary"', script)
+        for label in ("Current Price:", "Score", "Entry Readiness / Stage", "Buy Status", "Suggested Entry"):
+            self.assertIn(label, script)
+        self.assertIn('class="watchlist-action watchlist-remove manual-watchlist-remove"', script)
+        self.assertIn("event.stopPropagation(); removeWatchlistItem", script)
+
+    def test_manual_storage_is_normalized_and_deduplicated_on_load(self):
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        self.assertIn("seenManualTickers", script)
+        self.assertIn("deduplicatedManualItems", script)
+        self.assertIn("seenManualTickers.has(ticker)", script)
 
     def test_updater_declares_persistent_user_selection_policy(self):
         updater = (ROOT / "scripts" / "update_news_dashboard.py").read_text()

@@ -81,6 +81,20 @@ function initializeWatchlistState(data) {
     writeWatchlistState();
     try { localStorage.removeItem(LEGACY_WATCHLIST_STORAGE_KEY); } catch (_) { /* Browser storage may be disabled. */ }
   }
+  const seenManualTickers = new Set();
+  let normalizedManualStorage = false;
+  const deduplicatedManualItems = watchlistState.manual_items.filter((item) => {
+    const ticker = normalizedTicker(item.ticker);
+    if (!ticker || seenManualTickers.has(ticker)) { normalizedManualStorage = true; return false; }
+    seenManualTickers.add(ticker);
+    if (item.ticker !== ticker) normalizedManualStorage = true;
+    item.ticker = ticker;
+    return true;
+  });
+  if (normalizedManualStorage || deduplicatedManualItems.length !== watchlistState.manual_items.length) {
+    watchlistState.manual_items = deduplicatedManualItems;
+    writeWatchlistState();
+  }
   return watchlistState;
 }
 
@@ -862,10 +876,11 @@ function hydrateWatchlistSelection(selection, data, manual = false) {
   technical.catalyst = sourceRow.catalyst?.description || sourceRow.catalyst || biotechRadar.catalyst || "Missing";
   technical.catalyst_timing = sourceRow.catalyst?.timing || sourceRow.catalyst_timing || biotechRadar.expected_timing || "Missing";
   technical.binary_risk = sourceRow.binary_risk || biotechRadar.binary_risk || "Missing";
+  const currentManualData = snapshot.data_status === "current" && snapshot.current_price !== null && snapshot.current_price !== undefined;
   return { ...sourceRow, ticker, company: selection.company || sourceRow.company || ticker, domain,
     category: domain === "biotech" ? "Biotech" : "AI", watchlist_sources: selection.sources,
     market_data: snapshot, watchlist_commentary: commentary, watchlist_technical: technical,
-    manual_validation_status: manual ? selection.validation_status || (snapshot.current_price ? "validated-shared-market-data" : "pending-market-data") : null,
+    manual_validation_status: manual ? (currentManualData ? "validated-shared-market-data" : "pending-market-data") : null,
     watchlist_section: manual ? "manually-entered" : "website-selected" };
 }
 
@@ -876,8 +891,15 @@ function hydratedWatchlistRows(data) {
       || WATCHLIST_STATUS_PRIORITY[b.watchlist_technical.buy_status] - WATCHLIST_STATUS_PRIORITY[a.watchlist_technical.buy_status]
       || (b.watchlist_technical.technical_entry_readiness_score ?? -1) - (a.watchlist_technical.technical_entry_readiness_score ?? -1)
       || a.ticker.localeCompare(b.ticker));
+  let upgradedValidation = false;
   const manual = initializeWatchlistState(data).manual_items.map((item) => {
     const ticker = normalizedTicker(item.ticker);
+    const refreshedSnapshot = sharedMarketSecurities[ticker];
+    if (refreshedSnapshot?.data_status === "current" && refreshedSnapshot.current_price !== null && refreshedSnapshot.current_price !== undefined && item.validation_status !== "validated-shared-market-data") {
+      item.validation_status = "validated-shared-market-data";
+      item.domain = item.domain || refreshedSnapshot.domains?.[0] || "ai";
+      upgradedValidation = true;
+    }
     const candidate = (data.candidate_discovery?.candidates || []).find((row) => normalizedTicker(row.ticker) === ticker)
       || { company: item.company || ticker, ticker };
     return hydrateWatchlistSelection({ ticker, company: item.company || candidate.company || ticker,
@@ -886,6 +908,7 @@ function hydratedWatchlistRows(data) {
       records: [{ source: "Manual", row: candidate, why: item.reason || "Personally selected for technical entry monitoring." }],
       contexts: ["Personally added; strategy qualification and the automatic technical-entry screen are not required."] }, data, true);
   }).sort((a, b) => a.ticker.localeCompare(b.ticker));
+  if (upgradedValidation) writeWatchlistState();
   return { websiteSelected: automatic,
     topEntry: automatic.filter((row) => row.watchlist_group === "top-entry"),
     developing: automatic.filter((row) => row.watchlist_group === "developing"),
@@ -908,9 +931,18 @@ function renderWatchlistCard(row, manualAdded) {
     <div><dt>Binary Risk</dt><dd>${escapeHtml(technical.binary_risk || "Missing")}</dd></div>` : "";
   const sources = row.watchlist_sources || ["Manual"];
   const sourcePrefix = sources.length > 1 ? "Sources" : "Source";
-  const validationNote = manualAdded && row.manual_validation_status === "pending-market-data" ? `<p class="watchlist-pending-note"><strong>Pending shared market data:</strong> the ticker is preserved, but the static daily file cannot yet validate it or calculate price/history-based technicals. Missing values remain unavailable.</p>` : "";
-  return `<details class="watchlist-card"><summary class="watchlist-summary"><span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></span>
-    <span><small>Entry Readiness</small><strong>${escapeHtml(technical.technical_entry_readiness_score === null || technical.technical_entry_readiness_score === undefined ? "Unavailable" : `${technical.technical_entry_readiness_score}/100`)}</strong></span><span><small>Buy Status</small><strong class="watch-buy-status watch-buy-${classKey(technical.buy_status || "wait")}">${escapeHtml(technical.buy_status || "WAIT")}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+  const dataUnavailable = manualAdded && row.manual_validation_status === "pending-market-data";
+  const unavailableLabel = dataUnavailable ? "Data Unavailable" : "Unavailable";
+  const readinessScore = technical.technical_entry_readiness_score === null || technical.technical_entry_readiness_score === undefined ? unavailableLabel : `${technical.technical_entry_readiness_score}/100`;
+  const entryStage = technical.entry_timing_state || unavailableLabel;
+  const buyStatus = dataUnavailable ? "Data Unavailable" : technical.buy_status || "WAIT";
+  const validationNote = dataUnavailable ? `<p class="watchlist-pending-note"><strong>Data Unavailable:</strong> this Manual selection remains saved. The page will retry against the refreshed shared market-data and Entry Readiness pipeline on every load; no quote or score is fabricated.</p>` : "";
+  const manualIdentity = `<span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${escapeHtml(row.ticker)}</strong><small>${escapeHtml(row.company)}</small><small>Current Price: ${escapeHtml(dataUnavailable ? "Data Unavailable" : formatTechnicalPrice(technical.current_price))}</small></span>`;
+  const automaticIdentity = `<span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${escapeHtml(tickerPriceLabel(row.ticker, row.market_data))}</strong><small>${escapeHtml(row.company)}</small></span>`;
+  const summary = manualAdded
+    ? `<summary class="watchlist-summary manual-watchlist-summary">${manualIdentity}<span><small>Score</small><strong>${escapeHtml(readinessScore)}</strong></span><span><small>Entry Readiness / Stage</small><strong>${escapeHtml(entryStage)}</strong></span><span><small>Buy Status</small><strong class="watch-buy-status watch-buy-${classKey(buyStatus)}">${escapeHtml(buyStatus)}</strong></span><span><small>Suggested Entry</small><strong>${escapeHtml(dataUnavailable ? "Data Unavailable" : zoneText)}</strong></span><button type="button" class="watchlist-action watchlist-remove manual-watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}" aria-label="Remove ${escapeHtml(row.ticker)} from Manually Entered">Remove</button><span class="opportunity-expand" aria-hidden="true"></span></summary>`
+    : `<summary class="watchlist-summary">${automaticIdentity}<span><small>Entry Readiness</small><strong>${escapeHtml(readinessScore)}</strong></span><span><small>Buy Status</small><strong class="watch-buy-status watch-buy-${classKey(buyStatus)}">${escapeHtml(buyStatus)}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>`;
+  return `<details class="watchlist-card${manualAdded ? " manual-watchlist-card" : ""}">${summary}
     <div class="watchlist-detail">${validationNote}<section class="watchlist-commentary"><h4>Watchlist Commentary</h4><p><strong>Why it is here:</strong> ${escapeHtml(commentary.why_on_watchlist || row.why || "Missing")}</p><p><strong>Selection source:</strong> ${escapeHtml(commentary.selection_source || `${sourcePrefix}: ${sources.join(" + ")}`)}</p><p><strong>What the chart is doing:</strong> ${escapeHtml(commentary.chart || "Technical interpretation unavailable.")}</p><p><strong>Bottom / base:</strong> ${escapeHtml(commentary.bottom_base || technical.bottom_formation || "Missing")}</p><p><strong>Early reversal:</strong> ${escapeHtml(commentary.early_reversal || technical.early_reversal || "Missing")}</p><p><strong>Chart pattern:</strong> ${escapeHtml(commentary.chart_pattern || technical.chart_pattern || "Missing")}</p><p><strong>Volume confirmation:</strong> ${escapeHtml(commentary.volume_confirmation || technical.volume_confirmation || "Missing")}</p><p><strong>Accumulation:</strong> ${escapeHtml(commentary.accumulation_signal || technical.accumulation_signal || "Missing")}</p><p><strong>Entry situation:</strong> ${escapeHtml(commentary.entry || "Entry interpretation unavailable.")}</p><p><strong>What still needs to happen:</strong> ${escapeHtml(commentary.waiting_for || "Missing")}</p><p><strong>Setup strengthens if:</strong> ${escapeHtml(commentary.stronger || "Missing")}</p><p><strong>Invalidation / weaker if:</strong> ${escapeHtml(commentary.weaker || "Missing")}</p><p><strong>Extension check:</strong> ${escapeHtml(commentary.extension || "Missing")}</p></section>
     <dl class="watchlist-technical-grid"><div><dt>Current Price</dt><dd>${escapeHtml(formatTechnicalPrice(technical.current_price))}</dd></div><div><dt>MA20</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma20))}</dd></div><div><dt>MA50</dt><dd>${escapeHtml(formatTechnicalPrice(technical.ma50))}</dd></div>
     <div><dt>Technical Entry Readiness</dt><dd>${escapeHtml(technical.technical_entry_readiness_score === null || technical.technical_entry_readiness_score === undefined ? "Unavailable" : `${technical.technical_entry_readiness_score}/100 · ${technical.entry_timing_state || "State unavailable"}`)}</dd></div><div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(formatTechnicalPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatTechnicalPrice(technical.resistance))}</dd></div>
@@ -1541,7 +1573,7 @@ document.addEventListener("click", (event) => {
     return;
   }
   const removeButton = event.target.closest("[data-watchlist-remove]");
-  if (removeButton) { event.preventDefault(); removeWatchlistItem(removeButton.dataset.ticker); }
+  if (removeButton) { event.preventDefault(); event.stopPropagation(); removeWatchlistItem(removeButton.dataset.ticker); }
 });
 
 const watchlistForm = document.getElementById("watchlist-add-form");
