@@ -42,6 +42,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "news-dashboard.json"
+MANUAL_WATCHLIST_PATH = ROOT / "data" / "manual_watchlist.json"
 USER_AGENT = "GeneDrNetwork-Daily-Dashboard/2.0 (+https://genedrnetwork.github.io/)"
 try:
     import certifi
@@ -2484,7 +2485,34 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None, ai_reasoning_disc
                             "biotech_path": "Therapeutic trend → program → company → catalyst when a current Radar record exists; related modality matches remain unverified discovery candidates."}}
 
 
-def shared_market_ticker_domains(previous=None, candidate_pool=None):
+def load_manual_watchlist(path=MANUAL_WATCHLIST_PATH):
+    """Load the repository-owned manual analysis universe before market collection."""
+    try:
+        payload = json.loads(Path(path).read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Manual Watchlist unavailable: {exc}")
+        payload = {"schema_version": "manual-watchlist-v1", "tickers": []}
+    items, seen = [], set()
+    for raw in payload.get("tickers", []):
+        source = {"ticker": raw} if isinstance(raw, str) else dict(raw) if isinstance(raw, dict) else {}
+        ticker = str(source.get("ticker") or "").strip().upper()
+        if not re.fullmatch(r"[A-Z][A-Z0-9.-]{0,14}", ticker) or ticker in seen:
+            continue
+        domain = str(source.get("domain") or "ai").strip().lower()
+        if domain not in ("ai", "biotech", "crypto"):
+            domain = "ai"
+        identity = company_identity(source.get("company"), ticker)
+        company = identity.get("company")
+        if not company or company.startswith("Missing"):
+            company = ticker
+        items.append({"ticker": ticker, "company": company, "domain": domain,
+                      "source": "Manual", "repository_managed": True})
+        seen.add(ticker)
+    return {"schema_version": "manual-watchlist-v1", "source_file": "data/manual_watchlist.json",
+            "items": items}
+
+
+def shared_market_ticker_domains(previous=None, candidate_pool=None, manual_watchlist=None):
     domains = {}
 
     def add(ticker, domain):
@@ -2511,12 +2539,14 @@ def shared_market_ticker_domains(previous=None, candidate_pool=None):
         add(row.get("ticker"), "crypto")
     for row in (candidate_pool or {}).get("candidates", []):
         add(row.get("ticker"), row.get("domain"))
+    for row in (manual_watchlist or {}).get("items", []):
+        add(row.get("ticker"), row.get("domain") or "ai")
     return {ticker: sorted(values) for ticker, values in domains.items()}
 
 
 def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None, expectations_by_ticker=None,
-                            candidate_pool=None):
-    ticker_domains = shared_market_ticker_domains(previous, candidate_pool)
+                            candidate_pool=None, manual_watchlist=None):
+    ticker_domains = shared_market_ticker_domains(previous, candidate_pool, manual_watchlist)
     benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI", "btc": "BTC-USD"}
     dashboard_symbols = set(MARKETS) | set(benchmark_symbols.values())
     requested_symbols = sorted(set(ticker_domains) | dashboard_symbols)
@@ -2593,6 +2623,35 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
                      "analyst_consensus": sum("analyst_consensus" in record.get("expectation_data", {}).get("available_input_groups", []) for record in securities.values()),
                      "short_interest": sum("positioning" in record.get("expectation_data", {}).get("available_input_groups", []) for record in securities.values())},
     }
+
+
+def build_manual_watchlist_output(manual_watchlist, market_data):
+    """Expose repository selections with the same shared readiness records used by the UI."""
+    output = []
+    for item in (manual_watchlist or {}).get("items", []):
+        ticker = item["ticker"]
+        domain = item.get("domain") or "ai"
+        snapshot = market_snapshot(market_data, ticker) or {}
+        readiness = (snapshot.get("watchlist_entry_readiness") or {}).get(domain, {})
+        decision = readiness.get("buy_decision") or {}
+        resistance = (snapshot.get("entry_inputs") or {}).get("resistance_level")
+        suggested = ({"low": round(resistance * .99, 2), "high": round(resistance * 1.01, 2),
+                      "reference": resistance,
+                      "basis": "Existing shared technical resistance entry reference."}
+                     if isinstance(resistance, (int, float)) and resistance > 0 else
+                     {"low": None, "high": None, "reference": None,
+                      "basis": "Unavailable: shared technical resistance is missing."})
+        output.append({**item, "watchlist_sources": ["Manual"],
+                       "data_status": snapshot.get("data_status") or "unavailable",
+                       "current_price": snapshot.get("current_price"),
+                       "price_date": snapshot.get("price_date"),
+                       "technical_entry_readiness_score": readiness.get("entry_timing_score"),
+                       "entry_stage": readiness.get("state"),
+                       "buy_status": decision.get("status"),
+                       "suggested_entry": suggested})
+    return {**manual_watchlist, "items": output,
+            "persistence": "Repository-managed entries remain until explicitly removed from data/manual_watchlist.json.",
+            "analysis": "Every entry uses the shared market-data and watchlist Entry Readiness pipeline."}
 
 
 def market_snapshot(market_data, ticker):
@@ -5030,6 +5089,7 @@ def build():
     previous = prior_data()
     run_at = datetime.now(timezone.utc)
     score_date = run_at.date()
+    manual_watchlist_config = load_manual_watchlist()
     ai_news_candidates = collect_ai_investment_news(run_at)
     ai_news = ai_news_candidates[:6]
     biotech_news_candidates = collect_biotech_investment_news(run_at)
@@ -5049,8 +5109,11 @@ def build():
     preliminary_candidates = discover_candidate_pool(
         previous.get("radar", {}).get("ai", []), previous.get("radar", {}).get("biotech", []),
         ai_reasoning_discovery)
-    market_data = build_market_data_layer(previous, run_at, candidate_pool=preliminary_candidates)
+    market_data = build_market_data_layer(
+        previous, run_at, candidate_pool=preliminary_candidates,
+        manual_watchlist=manual_watchlist_config)
     attach_watchlist_entry_readiness(market_data)
+    manual_watchlist = build_manual_watchlist_output(manual_watchlist_config, market_data)
     data_through = market_data_through(market_data) or previous.get("market_data_through")
     market_data["data_through"] = data_through
 
@@ -5143,6 +5206,7 @@ def build():
         "market_data": market_data, "ai_reasoning_discovery": ai_reasoning_discovery,
         "candidate_discovery": candidate_discovery,
         "company_quality": company_quality, "watchlists": watchlists,
+        "manual_watchlist": manual_watchlist,
         "watchlist_policy": {
             "membership": "Website Selected contains up to 20 current Radar, High Conviction, and Swing Trade names split into Top Entry Candidates and constructive Developing Setups; Manually Entered remains independent and user-controlled.",
             "website_selected_screen": list(CONSTRUCTIVE_WATCHLIST_STATUSES),
@@ -5154,7 +5218,7 @@ def build():
             "selection_diagnostics": getattr(build_strategy_watchlists, "last_diagnostics", {}),
             "persistence": "Only genuine Manual Add entries persist independently of daily JSON refreshes, and they are never removed by the technical-entry screen.",
             "market_data": "Prices and technical indicators reuse the shared market-data layer; no frontend quote provider is used.",
-            "manual_static_boundary": "A manually entered ticker already present in the shared daily market file is validated and analyzed immediately. Other format-valid tickers persist as pending without fabricated data because a static GitHub Pages browser cannot send its private localStorage selections into the server-side daily Action.",
+            "manual_static_boundary": "data/manual_watchlist.json is loaded before the shared market universe is built. Browser localStorage is a UI convenience; repository entries are the production source of truth.",
             "automatic_refresh": "Strategy-derived membership is added, combined, screened, ranked, and removed automatically; grouped display keeps at most 20 names as current strategy selections and technical readiness change.",
         },
         "commentary": dashboard_commentary,
@@ -5176,7 +5240,7 @@ def build():
         "source_health": source_health,
         "sections": production_section_status(data, source_health),
         "user_data_policy": {
-            "manual_watchlist": "Stored only in browser localStorage and never written or deleted by the daily generator.",
+            "manual_watchlist": "Ticker membership comes from data/manual_watchlist.json. Browser localStorage mirrors repository selections for UI convenience and the generator never deletes repository entries based on score or technical status.",
             "my_stock": "Buy price, shares, purchase date, strategy source, and custom targets remain browser-owned and are never written or deleted by the daily generator.",
         },
         "failure_policy": "Supplemental-source failures retain available current/stale core records. Schema validation and atomic replacement preserve the previous production JSON when a critical result is missing or malformed.",

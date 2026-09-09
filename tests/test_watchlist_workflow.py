@@ -1,8 +1,12 @@
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from scripts.update_news_dashboard import (WEBSITE_SELECTED_LIMIT, build_strategy_watchlists,
-                                           watch_rows, watchlist_selection_metrics)
+from scripts.update_news_dashboard import (WEBSITE_SELECTED_LIMIT, attach_watchlist_entry_readiness,
+                                           build_manual_watchlist_output, build_market_data_layer,
+                                           build_strategy_watchlists, load_manual_watchlist,
+                                           shared_market_ticker_domains, watch_rows,
+                                           watchlist_selection_metrics)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -114,6 +118,52 @@ class WatchlistWorkflowTests(unittest.TestCase):
         self.assertIn("seenManualTickers", script)
         self.assertIn("deduplicatedManualItems", script)
         self.assertIn("seenManualTickers.has(ticker)", script)
+
+    def test_repository_manual_tickers_enter_shared_market_and_readiness_pipeline(self):
+        manual = {"items": [
+            {"ticker": "TESTA", "company": "Test A", "domain": "ai", "source": "Manual"},
+            {"ticker": "TESTB", "company": "Test B", "domain": "ai", "source": "Manual"},
+        ]}
+        domains = shared_market_ticker_domains({}, {"candidates": []}, manual)
+        self.assertEqual(domains["TESTA"], ["ai"])
+        self.assertEqual(domains["TESTB"], ["ai"])
+
+        start = datetime(2025, 1, 1, tzinfo=timezone.utc)
+        def series(symbol, offset):
+            rows = [{"date": (start + timedelta(days=index)).date().isoformat(),
+                     "close": round(40 + offset + index * .04, 2),
+                     "volume": 1500 if index == 259 else 1000}
+                    for index in range(260)]
+            return {"symbol": symbol, "rows": rows, "source": "Test daily history", "currency": "USD"}
+
+        supplied = {ticker: series(ticker, offset) for ticker, offset in (
+            ("TESTA", 0), ("TESTB", 5), ("^GSPC", 10), ("QQQ", 12),
+            ("XBI", 8), ("BTC-USD", 15))}
+        market = build_market_data_layer(
+            {}, datetime(2026, 9, 9, tzinfo=timezone.utc), series_by_symbol=supplied,
+            market_caps={}, expectations_by_ticker={}, candidate_pool={"candidates": []},
+            manual_watchlist=manual)
+        attach_watchlist_entry_readiness(market)
+        output = build_manual_watchlist_output(manual, market)
+        for ticker in ("TESTA", "TESTB"):
+            snapshot = market["securities"][ticker]
+            readiness = snapshot["watchlist_entry_readiness"]["ai"]
+            self.assertIsNotNone(snapshot["current_price"])
+            self.assertIsNotNone(readiness["entry_timing_score"])
+            self.assertIsNotNone(readiness["state"])
+            self.assertIsNotNone(readiness["buy_decision"]["status"])
+            rendered = next(item for item in output["items"] if item["ticker"] == ticker)
+            self.assertEqual(rendered["watchlist_sources"], ["Manual"])
+            self.assertIsNotNone(rendered["suggested_entry"]["reference"])
+
+    def test_repository_manual_watchlist_is_the_production_source_of_truth(self):
+        config = load_manual_watchlist(ROOT / "data" / "manual_watchlist.json")
+        self.assertEqual({item["ticker"] for item in config["items"]}, {"BE", "FCX"})
+        self.assertTrue(all(item["repository_managed"] for item in config["items"]))
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        self.assertIn("data?.manual_watchlist?.items", script)
+        self.assertIn("repository_managed: true", script)
+        self.assertIn("!item.repository_managed || productionTickers.has", script)
 
     def test_updater_declares_persistent_user_selection_policy(self):
         updater = (ROOT / "scripts" / "update_news_dashboard.py").read_text()

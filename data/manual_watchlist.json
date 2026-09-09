@@ -1,0 +1,15 @@
+{
+  "schema_version": "manual-watchlist-v1",
+  "tickers": [
+    {
+      "ticker": "BE",
+      "company": "Bloom Energy",
+      "domain": "ai"
+    },
+    {
+      "ticker": "FCX",
+      "company": "Freeport-McMoRan",
+      "domain": "ai"
+    }
+  ]
+}

@@ -81,6 +81,25 @@ function initializeWatchlistState(data) {
     writeWatchlistState();
     try { localStorage.removeItem(LEGACY_WATCHLIST_STORAGE_KEY); } catch (_) { /* Browser storage may be disabled. */ }
   }
+  const productionItems = data?.manual_watchlist?.items || [];
+  const productionTickers = new Set(productionItems.map((item) => normalizedTicker(item.ticker)).filter(Boolean));
+  const retainedManualItems = watchlistState.manual_items.filter((item) =>
+    !item.repository_managed || productionTickers.has(normalizedTicker(item.ticker)));
+  let productionSynchronized = retainedManualItems.length !== watchlistState.manual_items.length;
+  watchlistState.manual_items = retainedManualItems;
+  for (const productionItem of productionItems) {
+    const ticker = normalizedTicker(productionItem.ticker);
+    if (!ticker) continue;
+    const existing = watchlistState.manual_items.find((item) => normalizedTicker(item.ticker) === ticker);
+    const synchronized = { ticker, company: productionItem.company || existing?.company || ticker,
+      domain: productionItem.domain || existing?.domain || "ai",
+      reason: existing?.reason || "Repository-selected for active technical monitoring.",
+      validation_status: productionItem.data_status === "current" ? "validated-shared-market-data" : "pending-market-data",
+      repository_managed: true, added_at: existing?.added_at || null };
+    if (existing) Object.assign(existing, synchronized);
+    else watchlistState.manual_items.push(synchronized);
+    productionSynchronized = true;
+  }
   const seenManualTickers = new Set();
   let normalizedManualStorage = false;
   const deduplicatedManualItems = watchlistState.manual_items.filter((item) => {
@@ -91,7 +110,7 @@ function initializeWatchlistState(data) {
     item.ticker = ticker;
     return true;
   });
-  if (normalizedManualStorage || deduplicatedManualItems.length !== watchlistState.manual_items.length) {
+  if (productionSynchronized || normalizedManualStorage || deduplicatedManualItems.length !== watchlistState.manual_items.length) {
     watchlistState.manual_items = deduplicatedManualItems;
     writeWatchlistState();
   }
