@@ -136,7 +136,8 @@ class AiTechnologyRadarTests(unittest.TestCase):
         }
         beneficiary = {"company": "Action Test", "ticker": "ACTN", "listing_status": "Public",
                        "evidence_ids": ["company-catalyst"]}
-        expected = {"base-building": ("Bottoming", "WATCH"),
+        expected = {"deterioration": ("Falling", "WAIT"),
+                    "base-building": ("Bottoming", "WATCH"),
                     "near-buy-zone": ("Reversal", "WATCH / SCALE IN"),
                     "buy-zone": ("Entry Zone", "BUY / SCALE IN"),
                     "breakout-confirmed": ("Breakout", "BUY"),

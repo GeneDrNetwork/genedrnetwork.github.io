@@ -4773,6 +4773,7 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
     acceleration_terms = ("accelerat", "increase", "growth", "grew", "raised", "record", "expand")
     catalyst_types = {"Financial Results", "Commercial Event", "Partnership / Investment", "Product / Platform"}
     action_by_entry_stage = {
+        "Falling": "WAIT",
         "Bottoming": "WATCH",
         "Entry Zone": "BUY / SCALE IN",
         "Reversal": "WATCH / SCALE IN",
@@ -4890,7 +4891,7 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                 "price_discovery_stage": beneficiary.get("price_discovery_stage") or "Missing",
                 "already_priced_in": beneficiary.get("already_priced_in") or "Missing",
                 "entry_stage": entry.get("stage") or "Unavailable",
-                "action": action_by_entry_stage.get(entry.get("stage"), "WATCH"),
+                "action": action_by_entry_stage.get(entry.get("stage"), "WAIT"),
                 "reasons": [], "trigger_types": [],
                 "trends": [], "source_events": [], "daily_return": daily_return,
                 "volume_vs_20d_average": volume_ratio,
