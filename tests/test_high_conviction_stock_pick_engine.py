@@ -209,6 +209,17 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         self.assertIn("Mountain Position", script)
         self.assertIn("Suggested Entry", script)
 
+    def test_frontend_uses_canonical_qualified_output_and_rechecks_gates(self):
+        from pathlib import Path
+        script = (Path(__file__).resolve().parents[1] / "assets" / "news-dashboard.js").read_text()
+        self.assertIn("function qualifiedHighConvictionRows(data, domain)", script)
+        self.assertIn("data.high_conviction_engine?.qualified?.[domain]", script)
+        self.assertIn('row.classification_key === "high-conviction"', script)
+        self.assertIn("row.proven_quality_eligible === true", script)
+        self.assertIn("(row.gates || []).every((gate) => gate.passed === true)", script)
+        self.assertIn('qualifiedHighConvictionRows(data, "ai")', script)
+        self.assertIn('qualifiedHighConvictionRows(data, "biotech")', script)
+
 
 if __name__ == "__main__":
     unittest.main()

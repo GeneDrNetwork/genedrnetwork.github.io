@@ -190,7 +190,7 @@ def annotate_high_conviction(rows_by_domain):
         "High Conviction requires a proven-quality bullish thesis that is confirmed by a multi-signal market uptrend; Radar discovery and Radar rank do not grant eligibility.",
         "The ranking favors newly confirmed moves in Confirmed Early or Lower Mountain positions with constructive entries and meaningful remaining upside, before raw Conviction Score.",
         "Proven-business, profitability, growth-durability, financial-strength, competitive-position, valuation, market-confirmation, and biotech binary/integrity gates can block High Conviction even when a total score is high.",
-        f"The current shortlist contains {classification_counts.get('🔥 High Conviction', 0)} fully High-Conviction names; lower classifications remain visible as serious candidates with unresolved conditions.",
+        f"The current main list contains {classification_counts.get('🔥 High Conviction', 0)} fully qualified High-Conviction names; candidates with an unresolved gate are excluded from the main list.",
         f"Entry timing remains separate from company selection: {', '.join(f'{count} {status}' for status, count in buy_counts.items() if status) or 'no status coverage'}.",
     ]
     return {"reasons": reasons, "engine_version": "dashboard-commentary-v2"}

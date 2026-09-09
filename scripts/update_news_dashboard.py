@@ -3409,6 +3409,10 @@ def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
                  "mountain_position": row.get("mountain_position")}
                 for domain, rows in (("ai", all_ai), ("biotech", all_biotech)) for row in rows]
     return selected, {"methodology": methodology, "coverage": coverage,
+                      # This is the canonical frontend contract. Keep the legacy
+                      # monthly_picks alias for downstream compatibility, but do
+                      # not make the UI infer qualification from that older key.
+                      "qualified": selected,
                       "entry_timing_ref": "entry_timing_engine",
                       "market_confirmation_tracking": tracking,
                       "selected_tickers": {domain: [row["ticker"] for row in rows] for domain, rows in selected.items()}}, entry_timing

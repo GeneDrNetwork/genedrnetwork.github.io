@@ -709,6 +709,14 @@ function renderHighConvictionDecision(row) {
   </section>`;
 }
 
+function qualifiedHighConvictionRows(data, domain) {
+  const canonical = data.high_conviction_engine?.qualified?.[domain];
+  const rows = Array.isArray(canonical) ? canonical : (data.monthly_picks?.[domain] || []);
+  return rows.filter((row) => row.classification_key === "high-conviction" &&
+    row.proven_quality_eligible === true &&
+    (row.gates || []).every((gate) => gate.passed === true));
+}
+
 function renderOpportunities(targetId, rows = []) {
   const isBiotech = targetId.includes("biotech");
   document.getElementById(targetId).innerHTML = rows.map((row) => {
@@ -1646,8 +1654,8 @@ function renderDashboard(data) {
   renderSafely(() => renderAiRadar(aiRadarRows(data)), "ai-radar");
   renderSafely(() => renderBiotechRadar(biotechRadarRows(data)), "biotech-radar");
   renderSafely(() => renderCryptoRadar(cryptoRadarRows(data)), "crypto-radar");
-  renderSafely(() => renderOpportunities("ai-opportunities", data.monthly_picks && data.monthly_picks.ai), "ai-opportunities");
-  renderSafely(() => renderOpportunities("biotech-opportunities", data.monthly_picks && data.monthly_picks.biotech), "biotech-opportunities");
+  renderSafely(() => renderOpportunities("ai-opportunities", qualifiedHighConvictionRows(data, "ai")), "ai-opportunities");
+  renderSafely(() => renderOpportunities("biotech-opportunities", qualifiedHighConvictionRows(data, "biotech")), "biotech-opportunities");
   renderSafely(() => renderSwingTrades(data.swing_trade_opportunities), "swing-opportunities");
   renderSafely(() => renderWatchlist(data), "my-watchlist");
   renderSafely(() => renderPendingOrders(), "pending-order-cards");
