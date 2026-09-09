@@ -669,6 +669,32 @@ function renderWhyThisStock(row) {
     <div class="opportunity-wide"><dt>Current Buy / Entry Status</dt><dd>${escapeHtml(why.buy_status || row.buy_decision?.status || "WAIT")}</dd></div></dl></section>`;
 }
 
+function renderHighConvictionDecision(row) {
+  const confirmation = row.market_confirmation || {};
+  const entry = row.high_conviction_entry || {};
+  const suggested = entry.suggested_entry || row.suggested_entry || {};
+  const upside = entry.remaining_upside || row.remaining_upside || {};
+  const currency = row.market_data?.currency || "USD";
+  const priceValue = (value) => value === null || value === undefined ? "Unavailable" : decisionPrice(value, currency);
+  const suggestedText = suggested.low === null || suggested.low === undefined || suggested.high === null || suggested.high === undefined
+    ? "Unavailable" : `${priceValue(suggested.low)} – ${priceValue(suggested.high)}`;
+  return `<section class="high-conviction-decision">
+    <div class="high-conviction-decision-heading"><span>Confirmed thesis and entry position</span><strong>${escapeHtml(entry.action || row.action || "WATCH")}</strong></div>
+    <dl class="high-conviction-decision-grid">
+      <div><dt>Conviction Score</dt><dd>${row.conviction_score === null || row.conviction_score === undefined ? "Missing" : `${escapeHtml(row.conviction_score)}/100`}</dd></div>
+      <div><dt>Market Confirmation</dt><dd>${escapeHtml(confirmation.status || "Insufficient Data")}${confirmation.score === null || confirmation.score === undefined ? "" : ` · ${escapeHtml(confirmation.score)}/100`}${confirmation.newly_confirmed ? " · Newly Confirmed" : ""}</dd></div>
+      <div><dt>Mountain Position</dt><dd>${escapeHtml(entry.mountain_position || row.mountain_position || "Unconfirmed")}</dd></div>
+      <div><dt>Remaining Upside</dt><dd>${upside.percent === null || upside.percent === undefined ? "Unavailable" : `${escapeHtml(upside.percent)}%`}<small>${escapeHtml(upside.basis || "")}</small></dd></div>
+      <div><dt>Entry Quality</dt><dd>${escapeHtml(entry.entry_quality || row.entry_quality || "Unavailable")}</dd></div>
+      <div><dt>Suggested Entry</dt><dd>${escapeHtml(suggestedText)}<small>${escapeHtml(suggested.basis || "")}</small></dd></div>
+      <div><dt>Stop / Invalidation</dt><dd>${escapeHtml(priceValue(entry.stop_invalidation ?? row.stop_invalidation))}</dd></div>
+      <div><dt>T1 / T2</dt><dd>${escapeHtml(priceValue(entry.target_1 ?? row.target_1))} / ${escapeHtml(priceValue(entry.target_2 ?? row.target_2))}</dd></div>
+      <div class="opportunity-wide"><dt>Confirmation Evidence</dt><dd>${escapeHtml((confirmation.evidence || []).join("; ") || confirmation.rationale || "Unavailable")}</dd></div>
+      <div class="opportunity-wide"><dt>Candidate Sources</dt><dd>${escapeHtml((row.candidate_sources || []).join(" · ") || "Current research universe")}</dd></div>
+    </dl>
+  </section>`;
+}
+
 function renderOpportunities(targetId, rows = []) {
   const isBiotech = targetId.includes("biotech");
   document.getElementById(targetId).innerHTML = rows.map((row) => {
@@ -683,10 +709,11 @@ function renderOpportunities(targetId, rows = []) {
     const score = row.final_score === null || row.final_score === undefined ? "Missing" : `${row.final_score}/100`;
     return `<details class="opportunity-card opportunity-${escapeHtml(row.classification_key || "unclassified")}"><summary class="opportunity-summary"><span class="opportunity-rank">${escapeHtml(row.rank)}</span>
       <div><div class="opportunity-top"><h4>${escapeHtml(companyTickerLabel(row))}</h4><span class="opportunity-classification">${escapeHtml(row.classification || "Classification missing")}</span></div>
-      <div class="opportunity-score-line"><strong>${escapeHtml(score)}</strong><span>${escapeHtml(row.data_completeness ?? "Missing")}% complete</span><span class="opportunity-timing-pill buy-status-${stageClass(decision.status_key)}">${escapeHtml(decision.status || "WAIT")}</span></div></div><span class="opportunity-expand" aria-hidden="true"></span></summary>
+      <div class="opportunity-score-line"><strong>${escapeHtml(score)}</strong><span>${escapeHtml(row.mountain_position || "Unconfirmed")}</span><span class="opportunity-timing-pill buy-status-${stageClass((row.high_conviction_entry || {}).action || row.action || "WATCH")}">${escapeHtml((row.high_conviction_entry || {}).action || row.action || "WATCH")}</span></div></div><span class="opportunity-expand" aria-hidden="true"></span></summary>
       <div class="opportunity-detail">
       ${renderWhyThisStock(row)}
       ${watchlistAction(row.ticker, row.company, "High Conviction", isBiotech ? "biotech" : "ai")}
+      ${renderHighConvictionDecision(row)}
       ${renderBuyDecision(row, isBiotech, decision)}
       <p class="opportunity-why"><strong>Why selected:</strong> ${escapeHtml(row.why_selected || row.thesis || "Missing")}</p>
       <ul class="opportunity-factors">${factors || "<li class=\"factor-missing\"><span>Factor scores</span><strong>Missing</strong></li>"}</ul>

@@ -5,6 +5,9 @@ from scripts.update_news_dashboard import (
     BIOTECH_CATALYSTS,
     build_ai_stock_picks,
     build_biotech_stock_picks,
+    build_high_conviction_candidate_universe,
+    high_conviction_market_confirmation,
+    proven_quality_sort_key,
     stock_pick_factor,
     weighted_stock_pick_score,
 )
@@ -83,6 +86,48 @@ def biotech_radar(binary_risk="High", status="Speculative Binary", integrity=Fal
 
 
 class HighConvictionStockPickEngineTests(unittest.TestCase):
+    def test_one_day_spike_alone_cannot_confirm_market_thesis(self):
+        record = market_record("TEST")
+        record["returns"] = {"daily": 25, "one_month": -8, "three_month": -12}
+        record["macd"] = {"histogram": -1, "improving": False}
+        record["relative_strength"]["qqq"] = {"one_month": -5, "three_month": -7}
+        result = high_conviction_market_confirmation(record, "ai")
+        self.assertFalse(result["confirmed"])
+        self.assertNotIn("Daily", " ".join(result["evidence"]))
+
+    def test_market_confirmation_is_required_for_high_conviction(self):
+        layer = market_layer("NVDA")
+        record = layer["securities"]["NVDA"]
+        record["current_price"] = 70
+        record["moving_averages"] = {"ma20": 80, "ma50": 90, "ma200": 85}
+        record["returns"] = {"daily": 15, "one_month": -8, "three_month": -12}
+        record["macd"] = {"histogram": -1, "improving": False}
+        record["relative_strength"]["qqq"] = {"one_month": -5, "three_month": -7}
+        row = build_ai_stock_picks(ai_radar(), layer, [],
+                                   quality_layer=quality_layer("ai", "NVDA"))[0]
+        gate = next(gate for gate in row["gates"] if gate["key"] == "market_confirmation")
+        self.assertFalse(gate["passed"])
+        self.assertNotEqual(row["classification_key"], "high-conviction")
+
+    def test_confirmed_early_ranks_above_extended_even_with_lower_score(self):
+        base = {"classification_key": "high-conviction", "gates": [], "company_quality": {},
+                "data_completeness": 100, "company": "Test", "market_confirmation": {"confirmed": True}}
+        early = {**base, "final_score": 82, "market_confirmation": {"confirmed": True, "newly_confirmed": True},
+                 "high_conviction_entry": {"mountain_position": "Confirmed Early", "entry_quality": "BEST ENTRY",
+                                           "remaining_upside": {"percent": 30}}}
+        extended = {**base, "final_score": 99,
+                    "high_conviction_entry": {"mountain_position": "Extended", "entry_quality": "DO NOT CHASE",
+                                              "remaining_upside": {"percent": 50}}}
+        self.assertLess(proven_quality_sort_key(early), proven_quality_sort_key(extended))
+
+    def test_broad_market_candidate_can_enter_review_without_radar_membership(self):
+        record = market_record("NEWC")
+        record["domains"] = ["ai"]
+        universe = build_high_conviction_candidate_universe(
+            {"candidates": []}, {"securities": {"NEWC": record}}, [], [])
+        candidate = next(row for row in universe if row["ticker"] == "NEWC")
+        self.assertIn("Broad Market Confirmation Screen", candidate["high_conviction_sources"])
+
     def test_ai_pick_passes_all_gates_for_high_conviction(self):
         row = build_ai_stock_picks(ai_radar(), market_layer("NVDA"), [],
                                    quality_layer=quality_layer("ai", "NVDA"))[0]
@@ -156,6 +201,13 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         score, completeness = weighted_stock_pick_score(factors)
         self.assertEqual(score, 80)
         self.assertEqual(completeness, 95)
+
+    def test_frontend_exposes_confirmation_and_mountain_fields(self):
+        from pathlib import Path
+        script = (Path(__file__).resolve().parents[1] / "assets" / "news-dashboard.js").read_text()
+        self.assertIn("Market Confirmation", script)
+        self.assertIn("Mountain Position", script)
+        self.assertIn("Suggested Entry", script)
 
 
 if __name__ == "__main__":

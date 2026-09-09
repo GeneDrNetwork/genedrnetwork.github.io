@@ -178,7 +178,8 @@ def annotate_high_conviction(rows_by_domain):
                 "supporting_evidence": (f"Business quality: {shorten(business.get('rationale'), 150)} Growth: {shorten(growth.get('rationale'), 150)} "
                                         f"Profitability/cash flow: {shorten(profit.get('rationale'), 150)} Competitive position: {shorten(moat.get('rationale'), 150)} "
                                         f"Valuation: {shorten(valuation.get('rationale'), 150)}"),
-                "relative_strength": f"{relative}. Ranking reflects proven-quality factors and gates; Radar is context only and commentary does not score stocks.",
+                "relative_strength": (f"{relative}. Market confirmation is {row.get('market_confirmation', {}).get('status', 'Unavailable')}; "
+                                      f"Mountain Position is {row.get('mountain_position', 'Unconfirmed')}. Radar is context only and commentary does not score stocks."),
                 "main_risk_or_missing": (f"The main unresolved condition is {missing.get('label')}: {missing.get('rationale')}" if missing else
                                          f"All current selection gates pass; the main documented invalidation is {clean(row.get('thesis_invalidation')).rstrip('.')}."),
                 "buy_status": f"Current buy status is {row.get('buy_decision', {}).get('status', 'WAIT')}. {row.get('buy_decision', {}).get('missing_condition', 'Entry condition unavailable')}",
@@ -186,9 +187,9 @@ def annotate_high_conviction(rows_by_domain):
     classification_counts = Counter(row.get("classification") for row in all_rows)
     buy_counts = Counter(row.get("buy_decision", {}).get("status") for row in all_rows)
     reasons = [
-        "High Conviction is a proven-quality, long-term Buy-and-Hold review; Radar discovery and Radar rank do not grant eligibility.",
-        "The ranking emphasizes reported business quality, sustained growth, profitability/free cash flow, financial strength, competitive position, and valuation. Radar contributes only limited long-term context.",
-        "Proven-business, profitability, growth-durability, financial-strength, competitive-position, valuation, and biotech binary/integrity gates can block High Conviction even when a total score is high.",
+        "High Conviction requires a proven-quality bullish thesis that is confirmed by a multi-signal market uptrend; Radar discovery and Radar rank do not grant eligibility.",
+        "The ranking favors newly confirmed moves in Confirmed Early or Lower Mountain positions with constructive entries and meaningful remaining upside, before raw Conviction Score.",
+        "Proven-business, profitability, growth-durability, financial-strength, competitive-position, valuation, market-confirmation, and biotech binary/integrity gates can block High Conviction even when a total score is high.",
         f"The current shortlist contains {classification_counts.get('🔥 High Conviction', 0)} fully High-Conviction names; lower classifications remain visible as serious candidates with unresolved conditions.",
         f"Entry timing remains separate from company selection: {', '.join(f'{count} {status}' for status, count in buy_counts.items() if status) or 'no status coverage'}.",
     ]

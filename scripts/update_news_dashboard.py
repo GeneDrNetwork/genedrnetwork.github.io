@@ -15,7 +15,7 @@ import subprocess
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from collections import defaultdict
+from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
@@ -2754,7 +2754,9 @@ def classify_stock_pick(domain, total_score, completeness, gates, expectation_st
         return "too-early"
     if expectation_state == "Data Insufficient" or total_score is None or completeness < 70:
         return "too-early"
-    required = core_gates + ("valuation",)
+    if gate_map.get("market_confirmation", {}).get("passed") is not True:
+        return "watch-setup"
+    required = core_gates + ("valuation", "market_confirmation", "remaining_upside")
     if domain == "biotech":
         required += ("binary_integrity",)
     if total_score >= 80 and completeness >= 80 and all(gate_map.get(key, {}).get("passed") is True for key in required):
@@ -2913,6 +2915,164 @@ def proven_quality_gates(company_quality, expectation, competitive_pass, competi
     ]
 
 
+MOUNTAIN_PRIORITY = {
+    "Confirmed Early": 0, "Lower Mountain": 1, "Mid Mountain": 2,
+    "Upper Mountain": 3, "Extended": 4, "Unconfirmed": 5,
+}
+
+
+def high_conviction_market_confirmation(snapshot, domain, previous=None, as_of=None):
+    """Require a multi-signal uptrend; a daily price spike is never a confirming input."""
+    previous = previous or {}
+    if not snapshot or snapshot.get("data_status") != "current":
+        return {
+            "confirmed": False, "status": "Insufficient Data", "score": None,
+            "newly_confirmed": False, "confirmed_on": previous.get("confirmed_on"),
+            "days_since_confirmation": None, "evidence": [],
+            "missing": ["current market record"],
+            "rationale": "Market confirmation cannot be established without a current shared-market record.",
+        }
+    price = snapshot.get("current_price")
+    averages = snapshot.get("moving_averages") or {}
+    returns = snapshot.get("returns") or {}
+    relative = (snapshot.get("relative_strength") or {}).get("qqq" if domain == "ai" else "xbi", {})
+    macd = snapshot.get("macd") or {}
+    inputs = snapshot.get("entry_inputs") or {}
+    checks = {
+        "Price above MA20": None if price is None or averages.get("ma20") is None else price > averages["ma20"],
+        "Price above MA50": None if price is None or averages.get("ma50") is None else price > averages["ma50"],
+        "Price above MA200": None if price is None or averages.get("ma200") is None else price > averages["ma200"],
+        "MA20 at/above MA50": None if averages.get("ma20") is None or averages.get("ma50") is None else averages["ma20"] >= averages["ma50"],
+        "Positive 1M/3M trend": None if returns.get("one_month") is None or returns.get("three_month") is None else returns["one_month"] > 0 and returns["three_month"] > 0,
+        "Improving MACD": None if macd.get("histogram") is None and macd.get("improving") is None else bool(macd.get("histogram", 0) > 0 or macd.get("improving") is True or macd.get("crossover") == "bullish"),
+        "Improving relative strength": None if relative.get("one_month") is None and relative.get("three_month") is None else any(value is not None and value > 0 for value in (relative.get("one_month"), relative.get("three_month"))),
+        "Constructive price/volume": None if inputs.get("up_down_volume_ratio_20d") is None and snapshot.get("volume_vs_20d_average") is None else bool((inputs.get("up_down_volume_ratio_20d") or 0) >= 1.1 or (snapshot.get("volume_vs_20d_average") or 0) >= 1.2),
+        "Confirmed resistance breakout": None if inputs.get("breakout_proximity_pct") is None or inputs.get("breakout_volume_ratio") is None else 0 <= inputs["breakout_proximity_pct"] <= 5 and inputs["breakout_volume_ratio"] >= 1.2,
+    }
+    available = {key: value for key, value in checks.items() if value is not None}
+    positive = [key for key, value in available.items() if value]
+    score = round(len(positive) / len(available) * 100) if available else None
+    trend_structure = bool(checks["Price above MA50"] and checks["Price above MA200"])
+    progression = bool(checks["Positive 1M/3M trend"] or checks["Improving MACD"] or checks["Confirmed resistance breakout"])
+    participation = bool(checks["Improving relative strength"] or checks["Constructive price/volume"])
+    confirmed = bool(trend_structure and progression and participation and len(positive) >= 4)
+    prior_confirmed = previous.get("confirmed") is True
+    newly_confirmed = bool(confirmed and not prior_confirmed and previous)
+    as_of_value = str(as_of or snapshot.get("price_date") or "")[:10] or None
+    confirmed_on = as_of_value if newly_confirmed else previous.get("confirmed_on") if confirmed else None
+    days_since = None
+    if confirmed and confirmed_on and as_of_value:
+        try:
+            days_since = (datetime.fromisoformat(as_of_value) - datetime.fromisoformat(confirmed_on)).days
+        except ValueError:
+            pass
+    missing = [key for key, value in checks.items() if value is None]
+    return {
+        "confirmed": confirmed, "status": "Confirmed" if confirmed else "Not Confirmed",
+        "score": score, "newly_confirmed": newly_confirmed, "confirmed_on": confirmed_on,
+        "days_since_confirmation": days_since, "evidence": positive, "missing": missing,
+        "rationale": (f"{len(positive)} of {len(available)} available multi-day trend, momentum, relative-strength, and price/volume checks are positive. "
+                      "Confirmation requires an uptrend plus progression and participation; daily return is deliberately excluded."),
+    }
+
+
+def remaining_upside_assessment(snapshot):
+    expectation = (snapshot or {}).get("expectation_data") or {}
+    target_upside = (expectation.get("valuation") or {}).get("target_upside_pct")
+    price = (snapshot or {}).get("current_price")
+    resistance = ((snapshot or {}).get("entry_inputs") or {}).get("resistance_level")
+    if isinstance(target_upside, (int, float)):
+        return {"percent": round(target_upside, 2), "basis": "Current analyst-consensus target upside from the shared expectation layer."}
+    if isinstance(price, (int, float)) and price > 0 and isinstance(resistance, (int, float)) and resistance > price:
+        return {"percent": round((resistance / price - 1) * 100, 2), "basis": "Upside to calculated technical resistance; analyst target data are unavailable."}
+    return {"percent": None, "basis": "Unavailable: neither reliable analyst target upside nor overhead technical resistance is available."}
+
+
+def high_conviction_entry_context(snapshot, confirmation, classification_key):
+    snapshot = snapshot or {}
+    price = snapshot.get("current_price")
+    averages = snapshot.get("moving_averages") or {}
+    returns = snapshot.get("returns") or {}
+    inputs = snapshot.get("entry_inputs") or {}
+    rsi = snapshot.get("rsi_14")
+    distance20 = (round((price / averages["ma20"] - 1) * 100, 2)
+                  if isinstance(price, (int, float)) and isinstance(averages.get("ma20"), (int, float)) and averages["ma20"] > 0 else None)
+    distance50 = (round((price / averages["ma50"] - 1) * 100, 2)
+                  if isinstance(price, (int, float)) and isinstance(averages.get("ma50"), (int, float)) and averages["ma50"] > 0 else None)
+    runup = returns.get("three_month")
+    proximity = inputs.get("breakout_proximity_pct")
+    volatility_range = inputs.get("range_63d_pct") or inputs.get("range_42d_pct")
+    ma20_extension_limit = (max(12, min(20, volatility_range * .5))
+                            if isinstance(volatility_range, (int, float)) else 12)
+    ma50_extension_limit = (max(18, min(28, volatility_range * .7))
+                            if isinstance(volatility_range, (int, float)) else 18)
+    breakout = (proximity is not None and inputs.get("breakout_volume_ratio") is not None and
+                0 <= proximity <= 5 and inputs["breakout_volume_ratio"] >= 1.2)
+    extended = any(value is True for value in (
+        distance20 is not None and distance20 > ma20_extension_limit,
+        distance50 is not None and distance50 > ma50_extension_limit,
+        runup is not None and runup > 40,
+        proximity is not None and proximity > 8,
+        rsi is not None and rsi >= 75,
+    ))
+    if not confirmation.get("confirmed"):
+        mountain = "Unconfirmed"
+    elif extended:
+        mountain = "Extended"
+    elif (confirmation.get("newly_confirmed") or breakout) and (runup is None or runup <= 20) and (distance20 is None or distance20 <= 8):
+        mountain = "Confirmed Early"
+    elif (runup is None or runup <= 20) and (distance20 is None or distance20 <= 8) and (distance50 is None or distance50 <= 12):
+        mountain = "Lower Mountain"
+    elif (runup is None or runup <= 40) and (distance50 is None or distance50 <= 18):
+        mountain = "Mid Mountain"
+    else:
+        mountain = "Upper Mountain"
+    entry_quality = {
+        "Confirmed Early": "BEST ENTRY", "Lower Mountain": "GOOD ENTRY",
+        "Mid Mountain": "ACCEPTABLE", "Upper Mountain": "WAIT FOR PULLBACK",
+        "Extended": "DO NOT CHASE", "Unconfirmed": "WAIT FOR CONFIRMATION",
+    }[mountain]
+    support_candidates = [value for value in (inputs.get("invalidation_level"), averages.get("ma20"), averages.get("ma50"))
+                          if isinstance(value, (int, float)) and isinstance(price, (int, float)) and 0 < value <= price]
+    pullback = max(support_candidates) if support_candidates else None
+    if mountain == "Confirmed Early" and isinstance(price, (int, float)):
+        anchor = price
+        entry_basis = "Current price is used because multi-signal confirmation is present and the move remains early."
+    elif mountain == "Lower Mountain" and isinstance(price, (int, float)):
+        anchor = pullback if pullback and price / pullback - 1 <= .08 else price
+        entry_basis = "Use the nearest current/MA support reference while the confirmed move remains in its lower stage."
+    elif pullback is not None:
+        anchor = pullback
+        entry_basis = "Wait for a controlled pullback toward the nearest calculated MA/support reference."
+    else:
+        anchor = None
+        entry_basis = "Unavailable: no reliable current or support-based entry reference is available."
+    suggested = ({"low": round(anchor * .99, 2), "high": round(anchor * 1.01, 2), "basis": entry_basis}
+                 if anchor else {"low": None, "high": None, "basis": entry_basis})
+    stop = inputs.get("invalidation_level")
+    resistance = inputs.get("resistance_level")
+    upside = remaining_upside_assessment(snapshot)
+    analyst_target = (round(price * (1 + upside["percent"] / 100), 2)
+                      if isinstance(price, (int, float)) and isinstance(upside.get("percent"), (int, float)) and upside["basis"].startswith("Current analyst") else None)
+    targets = [value for value in (resistance if isinstance(resistance, (int, float)) and resistance > (anchor or price or resistance) else None,
+                                   analyst_target if analyst_target and analyst_target > (anchor or price or analyst_target) else None) if value is not None]
+    targets = sorted(set(round(value, 2) for value in targets))
+    if classification_key != "high-conviction":
+        action = "WATCH" if confirmation.get("confirmed") else "PASS"
+    else:
+        action = {"Confirmed Early": "BUY", "Lower Mountain": "SCALE IN", "Mid Mountain": "WATCH",
+                  "Upper Mountain": "WAIT", "Extended": "WAIT", "Unconfirmed": "PASS"}[mountain]
+    return {
+        "mountain_position": mountain, "entry_quality": entry_quality,
+        "suggested_entry": suggested, "stop_invalidation": round(stop, 2) if isinstance(stop, (int, float)) else None,
+        "target_1": targets[0] if targets else None, "target_2": targets[1] if len(targets) > 1 else None,
+        "remaining_upside": upside, "action": action,
+        "basis": (f"3M move {runup if runup is not None else 'Missing'}%; price vs MA20 {distance20 if distance20 is not None else 'Missing'}%; "
+                  f"price vs MA50 {distance50 if distance50 is not None else 'Missing'}%; resistance proximity {proximity if proximity is not None else 'Missing'}%; "
+                  f"available 42/63-session range volatility {volatility_range if volatility_range is not None else 'Missing'}%; RSI {rsi if rsi is not None else 'Missing'}."),
+    }
+
+
 def proven_quality_sort_key(item):
     priority = {key: index for index, key in enumerate(
         ("high-conviction", "watch-setup", "too-early", "priced-in", "speculative-binary", "avoid"))}
@@ -2921,13 +3081,22 @@ def proven_quality_sort_key(item):
     gates_passed = sum(gate.get("passed") is True for gate in item.get("gates", [])
                        if gate.get("key") in quality_gate_keys)
     company_quality_score = (item.get("company_quality") or {}).get("company_quality_score") or 0
-    return (priority[item["classification_key"]], -gates_passed,
+    confirmation = item.get("market_confirmation") or {}
+    entry = item.get("high_conviction_entry") or {}
+    remaining = (entry.get("remaining_upside") or {}).get("percent")
+    return (priority[item["classification_key"]],
+            0 if confirmation.get("newly_confirmed") else 1,
+            MOUNTAIN_PRIORITY.get(entry.get("mountain_position"), 9),
+            {"BEST ENTRY": 0, "GOOD ENTRY": 1, "ACCEPTABLE": 2,
+             "WAIT FOR PULLBACK": 3, "DO NOT CHASE": 4, "WAIT FOR CONFIRMATION": 5}.get(entry.get("entry_quality"), 9),
+            -(remaining if isinstance(remaining, (int, float)) else -999), -gates_passed,
             -company_quality_score, -(item.get("data_completeness") or 0),
             -(item.get("final_score") or -1),
             item.get("company") or "")
 
 
-def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=None, quality_layer=None):
+def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=None, quality_layer=None,
+                         previous_confirmations=None, as_of=None):
     # The coverage universe may reuse Radar discovery, but Radar rank never grants
     # High-Conviction eligibility. Curated established businesses remain independently
     # considered even when they are absent from today's Radar output.
@@ -2949,7 +3118,10 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=Non
         best = max(links, key=lambda item: ((item[0].get("trend_strength") or -1), item[1].get("beneficiary_relevance") or -1)) if links else (None, None)
         radar, beneficiary = best
         snapshot = market_snapshot(market_data, ticker)
+        confirmation = high_conviction_market_confirmation(
+            snapshot, "ai", (previous_confirmations or {}).get(f"ai:{ticker}"), as_of)
         expectation = expectation_assessment(snapshot, "ai", 20)
+        remaining_upside = remaining_upside_assessment(snapshot)
         technical = market_timing_signal(snapshot, "ai")
         catalyst = ai_company_catalyst(links, ticker, candidate.get("catalyst"))
         radar_score = radar.get("trend_strength") if radar else None
@@ -2959,25 +3131,45 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=Non
                      if item.get("label") == "Competitive Moat"), {})
         moat_score = (round(moat["score"] / moat["weight"] * 100)
                       if moat.get("score") is not None and moat.get("weight") else None)
+        thesis_evidence = candidate.get("thesis_evidence") or []
+        confirmation_evidence = candidate.get("confirmation_evidence") or []
+        explicit_position_evidence = [item for item in thesis_evidence
+                                      if "Competitive Position" in (item.get("evidence_types") or [])]
+        external_competitive_score = (min(90, 65 + min(15, len(confirmation_evidence) * 5) +
+                                          (10 if explicit_position_evidence else 0))
+                                      if confirmation_evidence and explicit_position_evidence else None)
+        if moat_score is None:
+            moat_score = external_competitive_score
         competitive_parts = [value for value in (beneficiary_score, moat_score) if value is not None]
         competitive_score = round(sum(competitive_parts) / len(competitive_parts)) if competitive_parts else None
         competitive_available = 15 * len(competitive_parts) / 2
-        competitive_pass = bool(beneficiary and beneficiary_score is not None and beneficiary_score >= 70 and
-                                moat_score is not None and moat_score >= 65 and beneficiary.get("evidence_ids"))
+        radar_proof = bool(beneficiary and beneficiary_score is not None and beneficiary_score >= 70 and
+                           moat_score is not None and moat_score >= 65 and beneficiary.get("evidence_ids"))
+        non_radar_proof = bool(external_competitive_score is not None and external_competitive_score >= 75 and
+                               (company_quality or {}).get("company_quality_score", 0) >= 75)
+        competitive_pass = radar_proof or non_radar_proof
         competitive_rationale = (
-            f"Requires evidence-linked beneficiary relevance ≥70 and an explicit competitive-moat assessment ≥65; "
-            f"current values are {beneficiary_score if beneficiary_score is not None else 'Missing'} and {moat_score if moat_score is not None else 'Missing'}."
+            "Requires either evidence-linked beneficiary relevance plus an explicit moat assessment, or source-backed competitive-position thesis evidence, "
+            f"commercial confirmation evidence, and Company Quality ≥75. Current beneficiary relevance is {beneficiary_score if beneficiary_score is not None else 'Missing'}, "
+            f"competitive/moat score is {moat_score if moat_score is not None else 'Missing'}, and external confirmation count is {len(confirmation_evidence)}."
         )
         factors = proven_quality_factors(
             company_quality, competitive_score, competitive_available,
-            competitive_rationale, (beneficiary or {}).get("evidence_ids", []),
+            competitive_rationale, ((beneficiary or {}).get("evidence_ids", []) +
+                                    [item.get("source_link") for item in explicit_position_evidence + confirmation_evidence if item.get("source_link")]),
             radar_score, 5 * radar.get("data_completeness", 0) / 100 if radar else 0,
             (f"Radar supplies only 5% long-term trend context: {radar.get('trend')} has Trend Strength {radar_score}/100."
              if radar else "Missing: no evidence-linked long-term Radar context."),
             [radar.get("trend")] if radar else [], expectation)
         total_score, completeness = weighted_stock_pick_score(factors)
-        gates = proven_quality_gates(company_quality, expectation, competitive_pass, competitive_rationale)
+        gates = proven_quality_gates(company_quality, expectation, competitive_pass, competitive_rationale) + [
+            stock_pick_gate("market_confirmation", "Market Confirmation Gate", confirmation["confirmed"],
+                            confirmation["rationale"]),
+            stock_pick_gate("remaining_upside", "Meaningful Remaining Upside Gate",
+                            isinstance(remaining_upside.get("percent"), (int, float)) and remaining_upside["percent"] >= 15,
+                            f"Requires at least 15% reliable remaining upside; current value is {remaining_upside.get('percent') if remaining_upside.get('percent') is not None else 'Unavailable'}%. {remaining_upside['basis']}")]
         classification_key = classify_stock_pick("ai", total_score, completeness, gates, expectation.get("state"), radar)
+        entry_context = high_conviction_entry_context(snapshot, confirmation, classification_key)
         invalidation = radar.get("risks") if radar and not str(radar.get("risks", "")).startswith("Missing") else "Missing: no company-specific thesis invalidation is connected in current Radar evidence."
         why_selected = (f"Long-term quality review: Company Quality {(company_quality or {}).get('company_quality_score', 'Missing')}/100, "
                         f"reported annual revenue growth {quality_metric(company_quality, 'revenue_growth') if company_quality else 'Missing'}%, "
@@ -2989,13 +3181,23 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=Non
                         "classification": HIGH_CONVICTION_CLASSIFICATIONS[classification_key],
                         "why_selected": why_selected, "expectation_state": expectation.get("state"), "expectation": expectation,
                         "technical_entry_status": technical, "catalyst": catalyst["description"], "catalyst_evidence": catalyst,
+                        "conviction_score": total_score, "market_confirmation": confirmation,
+                        "high_conviction_entry": entry_context,
+                        "mountain_position": entry_context["mountain_position"],
+                        "remaining_upside": entry_context["remaining_upside"],
+                        "entry_quality": entry_context["entry_quality"],
+                        "suggested_entry": entry_context["suggested_entry"],
+                        "stop_invalidation": entry_context["stop_invalidation"],
+                        "target_1": entry_context["target_1"], "target_2": entry_context["target_2"],
                         "company_quality": compact_company_quality(company_quality),
                         "company_quality_ref": f"ai:{ticker}",
                         "selection_philosophy": "Proven Quality / Long-Term Buy and Hold",
                         "radar_role": "Context only; Radar rank does not determine High Conviction.",
                         "proven_quality_eligible": classification_key == "high-conviction",
-                        "action": stock_pick_action(classification_key), "thesis_invalidation": invalidation,
-                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-proven-quality-v2"})
+                        "action": entry_context["action"], "action_detail": stock_pick_action(classification_key),
+                        "thesis_invalidation": invalidation,
+                        "candidate_sources": candidate.get("high_conviction_sources") or candidate.get("discovery_sources") or ["Curated Research"],
+                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-market-confirmed-v3"})
     results.sort(key=proven_quality_sort_key)
     for rank, row in enumerate(results, 1):
         row["rank"] = rank
@@ -3012,7 +3214,7 @@ def biotech_timing_score(radar_row, as_of):
 
 
 def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
-                              candidate_pool=None, quality_layer=None):
+                              candidate_pool=None, quality_layer=None, previous_confirmations=None):
     source_rows = list(curated_rows)
     if candidate_pool:
         source_rows += [row for row in candidate_pool.get("candidates", []) if row.get("domain") == "biotech"]
@@ -3027,7 +3229,10 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
     for ticker in tickers:
         candidate = curated.get(ticker, company_identity(None, ticker)); radar = radar_by_ticker.get(ticker)
         snapshot = market_snapshot(market_data, ticker)
+        confirmation = high_conviction_market_confirmation(
+            snapshot, "biotech", (previous_confirmations or {}).get(f"biotech:{ticker}"), as_of)
         expectation = expectation_assessment(snapshot, "biotech", 20)
+        remaining_upside = remaining_upside_assessment(snapshot)
         technical = market_timing_signal(snapshot, "biotech")
         radar_score = round(radar["scientific_evidence_score"] / 30 * 100) if radar and radar.get("scientific_evidence_score") is not None else None
         impact_component = next((item for item in radar.get("score_components", []) if item.get("key") == "catalyst_impact_company_sensitivity"), {}) if radar else {}
@@ -3055,9 +3260,15 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
         binary_pass = bool(radar and radar.get("binary_risk") in ("Low", "Moderate") and
                            not radar.get("evidence_integrity_gate", {}).get("concern_identified") and radar.get("opportunity_status") != "Thesis Broken")
         gates = proven_quality_gates(company_quality, expectation, competitive_pass, competitive_rationale) + [
+            stock_pick_gate("market_confirmation", "Market Confirmation Gate", confirmation["confirmed"],
+                            confirmation["rationale"]),
+            stock_pick_gate("remaining_upside", "Meaningful Remaining Upside Gate",
+                            isinstance(remaining_upside.get("percent"), (int, float)) and remaining_upside["percent"] >= 15,
+                            f"Requires at least 15% reliable remaining upside; current value is {remaining_upside.get('percent') if remaining_upside.get('percent') is not None else 'Unavailable'}%. {remaining_upside['basis']}"),
             stock_pick_gate("binary_integrity", "Biotech Binary Risk / Evidence Integrity Gate", binary_pass,
                             f"Requires Low/Moderate binary risk and no integrity concern; current risk is {radar.get('binary_risk') if radar else 'Missing'}.")]
         classification_key = classify_stock_pick("biotech", total_score, completeness, gates, expectation.get("state"), radar)
+        entry_context = high_conviction_entry_context(snapshot, confirmation, classification_key)
         invalidation = radar.get("risks") if radar and radar.get("risks") else "Missing: no program-specific thesis invalidation is connected."
         why_selected = (f"Long-term quality review: Company Quality {(company_quality or {}).get('company_quality_score', 'Missing')}/100, "
                         f"reported annual revenue growth {quality_metric(company_quality, 'revenue_growth') if company_quality else 'Missing'}%, "
@@ -3069,49 +3280,137 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
                         "expectation_state": expectation.get("state"), "expectation": expectation,
                         "technical_entry_status": technical, "catalyst": radar.get("catalyst") if radar else candidate.get("catalyst", "Missing"),
                         "catalyst_timing": radar.get("expected_timing") if radar else "Missing",
+                        "conviction_score": total_score, "market_confirmation": confirmation,
+                        "high_conviction_entry": entry_context,
+                        "mountain_position": entry_context["mountain_position"],
+                        "remaining_upside": entry_context["remaining_upside"],
+                        "entry_quality": entry_context["entry_quality"],
+                        "suggested_entry": entry_context["suggested_entry"],
+                        "stop_invalidation": entry_context["stop_invalidation"],
+                        "target_1": entry_context["target_1"], "target_2": entry_context["target_2"],
                         "company_quality": compact_company_quality(company_quality),
                         "company_quality_ref": f"biotech:{ticker}",
                         "selection_philosophy": "Proven Quality / Long-Term Buy and Hold",
                         "radar_role": "Context only; Radar rank does not determine High Conviction.",
                         "proven_quality_eligible": classification_key == "high-conviction",
-                        "action": stock_pick_action(classification_key), "thesis_invalidation": invalidation,
+                        "action": entry_context["action"], "action_detail": stock_pick_action(classification_key),
+                        "thesis_invalidation": invalidation,
+                        "candidate_sources": candidate.get("high_conviction_sources") or candidate.get("discovery_sources") or ["Curated Research"],
                         "binary_risk": radar.get("binary_risk") if radar else "Missing", "radar_status": radar.get("opportunity_status") if radar else "Missing",
-                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-proven-quality-v2"})
+                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-market-confirmed-v3"})
     results.sort(key=proven_quality_sort_key)
     for rank, row in enumerate(results, 1):
         row["rank"] = rank
     return results
 
 
+def build_high_conviction_candidate_universe(candidate_pool, market_data, ai_radar, biotech_radar,
+                                             ai_news_section=None, biotech_news_section=None):
+    """Merge credible existing inputs without making Radar the promotion path."""
+    records = {}
+
+    def add(domain, company, ticker, source, evidence=None, base=None):
+        identity = company_identity(company, ticker)
+        ticker = identity.get("ticker")
+        if ticker in (None, "", "Missing", "Private", "N/A"):
+            return None
+        key = (domain, ticker)
+        row = records.setdefault(key, {**identity, "domain": domain, "high_conviction_sources": [],
+                                       "high_conviction_evidence": []})
+        if base:
+            row.update({field: value for field, value in base.items()
+                        if field not in ("high_conviction_sources", "high_conviction_evidence")})
+            row.update(identity)
+            row["domain"] = domain
+        if source not in row["high_conviction_sources"]:
+            row["high_conviction_sources"].append(source)
+        if evidence and evidence not in row["high_conviction_evidence"]:
+            row["high_conviction_evidence"].append(evidence)
+        return row
+
+    for row in (candidate_pool or {}).get("candidates", []):
+        domain = row.get("domain")
+        if domain in ("ai", "biotech"):
+            sources = row.get("discovery_sources") or ["Candidate Discovery"]
+            merged = add(domain, row.get("company"), row.get("ticker"), "Candidate Discovery", base=row)
+            if merged:
+                merged["high_conviction_evidence"].extend(
+                    {"discovery_source": source} for source in sources
+                    if {"discovery_source": source} not in merged["high_conviction_evidence"])
+    for radar in ai_radar or []:
+        for beneficiary in radar.get("beneficiary_records", []):
+            add("ai", beneficiary.get("company"), beneficiary.get("ticker"), "AI/Technology Radar",
+                {"trend": radar.get("trend"), "evidence_ids": beneficiary.get("evidence_ids", [])})
+    for radar in biotech_radar or []:
+        add("biotech", radar.get("company"), radar.get("ticker"), "Biotechnology Radar",
+            {"program": radar.get("program"), "catalyst": radar.get("catalyst")})
+    for domain, section in (("ai", ai_news_section), ("biotech", biotech_news_section)):
+        for story in list((section or {}).get("stories", [])) + list((section or {}).get("important_news_archive", [])):
+            identities = story.get("company_identities") or [company_identity(story.get("company"), story.get("ticker"))]
+            for identity in identities:
+                add(domain, identity.get("company"), identity.get("ticker"), "News / Catalyst",
+                    {"event_id": story.get("id"), "date": story.get("published_at"),
+                     "event_type": story.get("event_type"), "source_link": story.get("source_link")})
+    for ticker, snapshot in (market_data or {}).get("securities", {}).items():
+        for domain in snapshot.get("domains") or []:
+            if domain not in ("ai", "biotech"):
+                continue
+            confirmation = high_conviction_market_confirmation(snapshot, domain)
+            if confirmation.get("confirmed"):
+                add(domain, None, ticker, "Broad Market Confirmation Screen",
+                    {"price_date": snapshot.get("price_date"), "confirmation_score": confirmation.get("score")})
+    return list(records.values())
+
+
+def previous_confirmation_map(engine):
+    return {row.get("key"): row.get("market_confirmation", {})
+            for row in (engine or {}).get("market_confirmation_tracking", []) if row.get("key")}
+
+
 def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
-                                 candidate_pool=None, quality_layer=None, watchlists=None):
-    all_ai = build_ai_stock_picks(ai_radar, market_data, MONTHLY_PICKS["ai"], candidate_pool, quality_layer)
+                                 candidate_pool=None, quality_layer=None, watchlists=None,
+                                 previous_engine=None):
+    prior_confirmations = previous_confirmation_map(previous_engine)
+    all_ai = build_ai_stock_picks(ai_radar, market_data, MONTHLY_PICKS["ai"], candidate_pool, quality_layer,
+                                  prior_confirmations, as_of)
     all_biotech = build_biotech_stock_picks(
-        biotech_radar, market_data, MONTHLY_PICKS["biotech"], as_of, candidate_pool, quality_layer)
+        biotech_radar, market_data, MONTHLY_PICKS["biotech"], as_of, candidate_pool, quality_layer,
+        prior_confirmations)
     entry_timing = build_entry_timing_layer(all_ai, all_biotech, market_data, watchlists)
-    # Phase 7 annotates the already-ranked rows; it never reorders or rescores stock selection.
-    selected = {"ai": all_ai[:5], "biotech": all_biotech[:5]}
+    # Entry Timing annotates the market-confirmed ranking but cannot override thesis gates.
+    selected = {
+        "ai": [row for row in all_ai if row["classification_key"] == "high-conviction"][:5],
+        "biotech": [row for row in all_biotech if row["classification_key"] == "high-conviction"][:5],
+    }
     all_rows = all_ai + all_biotech
     counts = {label: sum(row["classification_key"] == key for row in all_rows)
               for key, label in HIGH_CONVICTION_CLASSIFICATIONS.items()}
     methodology = {
-        "engine_version": "high-conviction-proven-quality-v2", "factor_weights": HIGH_CONVICTION_FACTOR_WEIGHTS,
-        "selection_philosophy": "Proven Quality / Long-Term Buy and Hold",
+        "engine_version": "high-conviction-market-confirmed-v3", "factor_weights": HIGH_CONVICTION_FACTOR_WEIGHTS,
+        "selection_philosophy": "Confirmed bullish thesis with proven company quality and meaningful remaining upside.",
         "radar_separation": "Radar is an early-discovery system and may include pre-revenue or unconfirmed beneficiaries. Radar rank never grants High-Conviction eligibility and contributes only 5% long-term-outlook context.",
-        "candidate_policy": "Established curated companies and Radar-discovered candidates are both reviewed independently under the same proven-quality gates; discovery alone cannot advance a stock.",
+        "candidate_policy": "Radar, broad shared-market confirmation screening, current/archived News catalysts, and established research candidates are merged; source alone never grants eligibility.",
         "phase_6_integration": "Reported Company Quality, growth, profitability/free cash flow, balance-sheet strength, competitive-position evidence, and valuation determine eligibility and ranking.",
         "missing_data_policy": "Missing factor scores are excluded and weights are renormalized; missing inputs never become zero.",
-        "high_conviction_rule": "A total score of at least 80 and at least 80% data completeness are necessary but not sufficient; every applicable gate must pass.",
-        "gates": ["Proven Business Quality Gate", "Meaningful Earnings / Cash Flow Gate", "Sustained Growth Gate", "Financial Strength Gate", "Competitive Position Gate", "Valuation Gate", "Biotech Binary Risk / Evidence Integrity Gate"],
-        "timing_boundary": "Technical entry data remains available for display and the separate Entry Timing engine, but it does not select or rank long-term High Conviction companies.",
+        "high_conviction_rule": "A total score of at least 80, at least 80% completeness, and every applicable quality, valuation, market-confirmation, and biotech-integrity gate are required.",
+        "gates": ["Proven Business Quality Gate", "Meaningful Earnings / Cash Flow Gate", "Sustained Growth Gate", "Financial Strength Gate", "Competitive Position Gate", "Valuation Gate", "Market Confirmation Gate", "Meaningful Remaining Upside Gate", "Biotech Binary Risk / Evidence Integrity Gate"],
+        "ranking_policy": "For new purchases, newly confirmed stocks rank ahead of mature moves; Mountain Position, Entry Quality, remaining upside, then conviction determine order within a classification.",
+        "one_day_spike_policy": "Daily return is excluded from Market Confirmation; a one-day spike cannot satisfy the gate.",
         "classifications": list(HIGH_CONVICTION_CLASSIFICATIONS.values()),
     }
     coverage = {"ai_candidates": len(all_ai), "biotech_candidates": len(all_biotech),
                 "selected_ai": len(selected["ai"]), "selected_biotech": len(selected["biotech"]),
                 "fully_scored": sum(row["data_completeness"] == 100 for row in all_rows),
+                "market_confirmed": sum((row.get("market_confirmation") or {}).get("confirmed") is True for row in all_rows),
+                "newly_confirmed": sum((row.get("market_confirmation") or {}).get("newly_confirmed") is True for row in all_rows),
+                "candidate_source_counts": dict(Counter(source for row in all_rows for source in row.get("candidate_sources", []))),
                 "classification_counts": counts}
+    tracking = [{"key": f"{domain}:{row['ticker']}", "market_confirmation": row.get("market_confirmation"),
+                 "mountain_position": row.get("mountain_position")}
+                for domain, rows in (("ai", all_ai), ("biotech", all_biotech)) for row in rows]
     return selected, {"methodology": methodology, "coverage": coverage,
                       "entry_timing_ref": "entry_timing_engine",
+                      "market_confirmation_tracking": tracking,
                       "selected_tickers": {domain: [row["ticker"] for row in rows] for domain, rows in selected.items()}}, entry_timing
 
 
@@ -4787,11 +5086,16 @@ def build():
     crypto_radar = build_crypto_radar(
         run_at, market_data, previous.get("radar", {}).get("crypto", []))
     candidate_discovery = discover_candidate_pool(ai_radar, biotech_radar, ai_reasoning_discovery)
+    high_conviction_candidates = build_high_conviction_candidate_universe(
+        candidate_discovery, market_data, ai_radar, biotech_radar,
+        ai_news_section, biotech_news_section)
     company_quality = build_company_quality_layer(
-        candidate_discovery["candidates"], run_at, fetch_nasdaq_json,
+        high_conviction_candidates, run_at, fetch_nasdaq_json,
         previous.get("company_quality"))
     monthly_picks, high_conviction_engine, entry_timing_engine = build_high_conviction_engine(
-        ai_radar, biotech_radar, market_data, score_date, candidate_discovery, company_quality)
+        ai_radar, biotech_radar, market_data, score_date,
+        {"candidates": high_conviction_candidates}, company_quality,
+        previous_engine=previous.get("high_conviction_engine"))
     swing_trade_opportunities = build_swing_trade_engine(
         candidate_discovery, market_data, ai_radar, biotech_radar,
         ai_news_section, biotech_news_section,
