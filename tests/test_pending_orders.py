@@ -74,6 +74,20 @@ class PendingOrderWorkflowTests(unittest.TestCase):
         self.assertIn("window.confirm", self.script)
         self.assertIn("writePendingOrderState(); renderPendingOrders()", self.script)
 
+    def test_remove_is_visible_in_summary_and_isolated_to_pending_storage(self):
+        summary = self.script.split('class="pending-order-summary"', 1)[1].split('</summary>', 1)[0]
+        self.assertIn("pending-order-summary-remove", summary)
+        self.assertIn(">Remove</button>", summary)
+        self.assertIn('aria-label="Remove ${escapeHtml(row.ticker)} from Pending Orders"', summary)
+
+        remove_body = self.script.split("function removePendingOrder", 1)[1].split("const POSITION_STATUSES", 1)[0]
+        self.assertIn("state.orders = state.orders.filter", remove_body)
+        self.assertIn("writePendingOrderState()", remove_body)
+        self.assertNotIn("writeWatchlistState", remove_body)
+        self.assertNotIn("writePositionState", remove_body)
+        self.assertNotIn("watchlistState", remove_body)
+        self.assertNotIn("positionState", remove_body)
+
     def test_otoco_requires_complete_actionable_levels(self):
         self.assertIn("hasSuggestedEntry", self.script)
         self.assertIn("hasStop", self.script)
