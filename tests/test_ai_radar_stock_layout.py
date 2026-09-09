@@ -46,6 +46,14 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         self.assertIn("manual_market_context", script)
         self.assertIn("does not alter automatic Radar ranking", script)
 
+    def test_secondary_reacceleration_alert_surface_is_separate_from_main_radar(self):
+        page = (ROOT / "programs" / "genedrnews.html").read_text()
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        self.assertIn('id="ai-reacceleration-alerts"', page)
+        self.assertIn("function renderAiReaccelerationAlerts", script)
+        self.assertIn("data.radar.ai_reacceleration_alerts", script)
+        self.assertLess(page.index('id="ai-reacceleration-alerts"'), page.index('id="ai-radar"'))
+
 
 if __name__ == "__main__":
     unittest.main()

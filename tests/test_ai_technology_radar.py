@@ -1,4 +1,5 @@
 import unittest
+from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 
 from scripts.ai_reasoning_discovery import build_ai_reasoning_discovery
@@ -8,6 +9,7 @@ from scripts.update_news_dashboard import (
     ai_adoption_stage,
     ai_evidence_age,
     build_ai_radar,
+    build_ai_reacceleration_alerts,
     build_manual_radar_market_context,
     deduplicate_ai_radar_evidence,
     focus_ai_radar_companies,
@@ -37,6 +39,54 @@ def build_with_discovery(section, previous=None, run_at=RUN_AT):
 
 
 class AiTechnologyRadarTests(unittest.TestCase):
+    def test_reacceleration_alert_is_secondary_and_accepts_rerated_company(self):
+        linked_event = {
+            **evidence("known-1"), "age_band": "Fresh", "signal": "confirming",
+            "new_information": "Orders and backlog accelerated after a new customer deployment.",
+        }
+        beneficiary = {
+            "company": "Known AI Supplier", "ticker": "KNOWN", "listing_status": "Public",
+            "evidence_ids": ["known-1"], "price_discovery_stage": "Already Ran",
+            "already_priced_in": "YES", "radar_rank_score": 31,
+        }
+        rows = [{"trend": "Compute", "confirming_evidence": [linked_event],
+                 "beneficiary_records": [beneficiary]}]
+        market_data = {"securities": {"KNOWN": {
+            "current_price": 123.45, "price_date": "2026-08-28", "currency": "USD",
+            "data_status": "current",
+            "returns": {"daily": 6.2}, "volume_vs_20d_average": 2.1,
+            "macd": {"improving": True, "crossover": "bullish"},
+            "entry_inputs": {"breakout_volume_ratio": 1.5},
+            "watchlist_entry_readiness": {"ai": {"state_key": "breakout-confirmed",
+                "state": "Breakout Confirmed", "entry_guidance": "Breakout confirmed."}},
+        }}}
+        original = deepcopy(rows)
+        result = build_ai_reacceleration_alerts(rows, market_data)
+        self.assertEqual(result["alert_count"], 1)
+        alert = result["alerts"][0]
+        self.assertEqual(alert["ticker"], "KNOWN")
+        self.assertEqual(alert["entry_stage"], "Breakout")
+        self.assertEqual(alert["price_discovery_stage"], "Already Ran")
+        self.assertIn("Significant new catalyst/news", alert["trigger_types"])
+        self.assertIn("Abnormal price/volume acceleration", alert["trigger_types"])
+        self.assertIn("Renewed earnings/order/backlog acceleration", alert["trigger_types"])
+        self.assertIn("Technical breakout/reversal", alert["trigger_types"])
+        self.assertEqual(rows, original)
+
+    def test_reacceleration_does_not_inherit_unlinked_category_news(self):
+        rows = [{"trend": "Cooling", "confirming_evidence": [{
+            **evidence("unlinked-1", trend="Cooling"), "age_band": "Fresh", "signal": "confirming",
+        }], "beneficiary_records": [{
+            "company": "Cooling Candidate", "ticker": "COOL", "listing_status": "Public",
+            "evidence_ids": [], "price_discovery_stage": "Emerging", "already_priced_in": "NO",
+        }]}]
+        result = build_ai_reacceleration_alerts(rows, {"securities": {"COOL": {
+            "returns": {"daily": 1}, "volume_vs_20d_average": 1,
+            "data_status": "current",
+            "watchlist_entry_readiness": {"ai": {"state_key": "base-building"}},
+        }}})
+        self.assertEqual(result["alerts"], [])
+
     def test_manual_market_context_does_not_create_radar_scores(self):
         snapshot = {
             "ticker": "TEST", "current_price": 20, "returns": {"one_month": 2, "three_month": -4, "six_month": -8},

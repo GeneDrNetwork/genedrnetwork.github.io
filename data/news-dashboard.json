@@ -6652,6 +6652,42 @@
     ]
   },
   "radar": {
+    "ai_reacceleration_alerts": {
+      "alerts": [
+        {
+          "ticker": "NVDA",
+          "company": "NVIDIA",
+          "current_price": 230.36,
+          "price_date": "2026-09-04",
+          "currency": "USD",
+          "price_discovery_stage": "Emerging",
+          "already_priced_in": "NO",
+          "entry_stage": "Reversal",
+          "reasons": [
+            "Technical reversal is confirmed by improving momentum or breakout volume."
+          ],
+          "trigger_types": [
+            "Technical breakout/reversal"
+          ],
+          "trends": [
+            "Data Centers"
+          ],
+          "source_events": [],
+          "daily_return": 0.84,
+          "volume_vs_20d_average": 1.05
+        }
+      ],
+      "alert_count": 1,
+      "methodology": {
+        "scope": "Secondary alert surface for previously identified public AI beneficiaries.",
+        "selection_boundary": "Alerts do not alter, promote into, or rescore the main Early Discovery ranking.",
+        "news_trigger": "Company-linked confirming evidence aged 0\u20137 days with Importance Score of at least 80.",
+        "price_volume_trigger": "Daily gain of at least 4% with volume at least 1.5 times the 20-day average.",
+        "commercial_trigger": "Fresh company-linked evidence referencing earnings, orders, backlog, revenue, bookings, or guidance.",
+        "technical_trigger": "Reversal or Breakout Entry Stage with bullish/improving MACD or at least 1.2 times breakout volume.",
+        "missing_data": "Missing or stale market inputs do not trigger a market-based alert."
+      }
+    },
     "ai": [
       {
         "trend": "AI Models/Applications",

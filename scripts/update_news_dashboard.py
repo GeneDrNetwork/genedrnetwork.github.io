@@ -4404,6 +4404,115 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
 AI_RADAR_UNIQUE_COMPANY_TARGET = 24
 
 
+def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
+    """Find renewed momentum in known AI beneficiaries without altering Radar rank."""
+    alerts = {}
+    commercial_terms = ("order", "backlog", "earnings", "revenue", "guidance", "booking")
+    acceleration_terms = ("accelerat", "increase", "growth", "grew", "raised", "record", "expand")
+    catalyst_types = {"Financial Results", "Commercial Event", "Partnership / Investment", "Product / Platform"}
+    for row in rows or []:
+        evidence_by_id = {item.get("event_id"): item for item in row.get("confirming_evidence", [])
+                          if item.get("event_id")}
+        for beneficiary in row.get("beneficiary_records", []):
+            ticker = str(beneficiary.get("ticker") or "").upper()
+            if (not ticker or beneficiary.get("listing_status") != "Public" or
+                    ticker in ("PRIVATE", "N/A", "MISSING")):
+                continue
+            # Only company-linked evidence may create a news/commercial alert. Broad
+            # trend evidence must not be inherited by every beneficiary in a track.
+            linked_events = [evidence_by_id[event_id] for event_id in beneficiary.get("evidence_ids", [])
+                             if event_id in evidence_by_id and evidence_by_id[event_id].get("age_band") == "Fresh"]
+            snapshot = market_snapshot(market_data, ticker) or beneficiary.get("market_data") or {}
+            entry = radar_entry_stage(snapshot, "ai")
+            returns = snapshot.get("returns") or {}
+            daily_return = returns.get("daily")
+            volume_ratio = snapshot.get("volume_vs_20d_average")
+            macd_data = snapshot.get("macd") or {}
+            entry_inputs = snapshot.get("entry_inputs") or {}
+            market_current = snapshot.get("data_status") == "current"
+            reasons, trigger_types, source_events = [], [], []
+
+            significant = [event for event in linked_events
+                           if event.get("news_importance_score") is not None and
+                           event.get("news_importance_score") >= 80 and
+                           (event.get("event_type") in catalyst_types or event.get("new_information"))]
+            if significant:
+                event = max(significant, key=lambda item: item.get("news_importance_score") or 0)
+                detail = event.get("new_information") or event.get("headline") or "A significant new company catalyst was reported."
+                reasons.append(f"New catalyst/news ({event.get('news_importance_score')}/100): {detail}")
+                trigger_types.append("Significant new catalyst/news")
+                source_events.append({key: event.get(key) for key in
+                                      ("event_id", "headline", "event_date", "source", "source_link", "news_importance_score")})
+
+            if (market_current and daily_return is not None and volume_ratio is not None and
+                    daily_return >= 4 and volume_ratio >= 1.5):
+                reasons.append(f"Abnormal price/volume acceleration: {daily_return:+.1f}% daily move on {volume_ratio:.2f}× 20-day average volume.")
+                trigger_types.append("Abnormal price/volume acceleration")
+
+            commercial_events = []
+            for event in linked_events:
+                event_text = " ".join(str(event.get(key) or "") for key in
+                                      ("headline", "new_information", "event_type")).lower()
+                if (any(term in event_text for term in commercial_terms) and
+                        any(term in event_text for term in acceleration_terms)):
+                    commercial_events.append(event)
+            if commercial_events:
+                event = max(commercial_events, key=lambda item: item.get("news_importance_score") or 0)
+                reasons.append("Renewed commercial acceleration: fresh company evidence references earnings, orders, backlog, revenue, bookings, or guidance.")
+                trigger_types.append("Renewed earnings/order/backlog acceleration")
+                if not any(item.get("event_id") == event.get("event_id") for item in source_events):
+                    source_events.append({key: event.get(key) for key in
+                                          ("event_id", "headline", "event_date", "source", "source_link", "news_importance_score")})
+
+            technical_confirmation = (macd_data.get("crossover") == "bullish" or
+                                      macd_data.get("improving") is True or
+                                      (entry_inputs.get("breakout_volume_ratio") is not None and
+                                       entry_inputs.get("breakout_volume_ratio") >= 1.2))
+            if market_current and entry.get("stage") in ("Reversal", "Breakout") and technical_confirmation:
+                reasons.append(f"Technical {entry.get('stage').lower()} is confirmed by improving momentum or breakout volume.")
+                trigger_types.append("Technical breakout/reversal")
+
+            if not reasons:
+                continue
+            alert = alerts.setdefault(ticker, {
+                "ticker": ticker, "company": beneficiary.get("company") or ticker,
+                "current_price": snapshot.get("current_price"), "price_date": snapshot.get("price_date"),
+                "currency": snapshot.get("currency"),
+                "price_discovery_stage": beneficiary.get("price_discovery_stage") or "Missing",
+                "already_priced_in": beneficiary.get("already_priced_in") or "Missing",
+                "entry_stage": entry.get("stage") or "Unavailable", "reasons": [], "trigger_types": [],
+                "trends": [], "source_events": [], "daily_return": daily_return,
+                "volume_vs_20d_average": volume_ratio,
+            })
+            trend = row.get("trend")
+            if trend and trend not in alert["trends"]:
+                alert["trends"].append(trend)
+            for key, values in (("reasons", reasons), ("trigger_types", trigger_types)):
+                for value in values:
+                    if value not in alert[key]:
+                        alert[key].append(value)
+            known_event_ids = {item.get("event_id") for item in alert["source_events"]}
+            alert["source_events"].extend(item for item in source_events if item.get("event_id") not in known_event_ids)
+
+    priority = {"Significant new catalyst/news": 4, "Renewed earnings/order/backlog acceleration": 3,
+                "Abnormal price/volume acceleration": 2, "Technical breakout/reversal": 1}
+    ordered = sorted(alerts.values(), key=lambda item: (
+        -sum(priority.get(trigger, 0) for trigger in item["trigger_types"]),
+        -(item.get("daily_return") if item.get("daily_return") is not None else -999), item["ticker"]))
+    return {
+        "alerts": ordered[:limit], "alert_count": len(ordered),
+        "methodology": {
+            "scope": "Secondary alert surface for previously identified public AI beneficiaries.",
+            "selection_boundary": "Alerts do not alter, promote into, or rescore the main Early Discovery ranking.",
+            "news_trigger": "Company-linked confirming evidence aged 0–7 days with Importance Score of at least 80.",
+            "price_volume_trigger": "Daily gain of at least 4% with volume at least 1.5 times the 20-day average.",
+            "commercial_trigger": "Fresh company-linked evidence referencing earnings, orders, backlog, revenue, bookings, or guidance.",
+            "technical_trigger": "Reversal or Breakout Entry Stage with bullish/improving MACD or at least 1.2 times breakout volume.",
+            "missing_data": "Missing or stale market inputs do not trigger a market-based alert.",
+        },
+    }
+
+
 def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET):
     """Focus category-validated Radar beneficiaries to a globally unique company set."""
     rows = [dict(row) for row in rows or []]
@@ -4670,6 +4779,7 @@ def build():
     ai_radar_analysis_universe = build_ai_radar(
         ai_news_section, previous.get("radar", {}).get("ai", []), run_at,
         market_data, ai_reasoning_discovery)
+    ai_reacceleration_alerts = build_ai_reacceleration_alerts(ai_radar_analysis_universe, market_data)
     ai_radar, ai_radar_focus = focus_ai_radar_companies(ai_radar_analysis_universe)
     ai_reasoning_discovery.setdefault("production_trace", {})["radar_unique_company_focus"] = ai_radar_focus
     biotech_radar = build_biotech_radar(
@@ -4707,6 +4817,7 @@ def build():
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
         "radar": {"ai": ai_radar, "biotech": biotech_radar, "crypto": crypto_radar, "ai_focus": ai_radar_focus,
+                  "ai_reacceleration_alerts": ai_reacceleration_alerts,
                   "ai_manual_analysis_candidates": build_ai_manual_analysis_candidates(
                       ai_radar_analysis_universe, ai_radar),
                   "manual_market_context": build_manual_radar_market_context(market_data),

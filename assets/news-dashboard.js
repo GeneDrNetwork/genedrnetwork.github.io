@@ -323,6 +323,25 @@ function renderAiRadar(rows, targetId = "ai-radar") {
     </dl></details>`).join("") || `<p class="loading-state">No public AI or technology stocks have sufficient beneficiary evidence for this view.</p>`;
 }
 
+function renderAiReaccelerationAlerts(section = {}) {
+  const alerts = Array.isArray(section.alerts) ? section.alerts : [];
+  const target = document.getElementById("ai-reacceleration-alerts");
+  if (!target) return;
+  target.innerHTML = alerts.map((alert) => {
+    const price = alert.current_price === null || alert.current_price === undefined
+      ? "Price unavailable" : currentPriceLabel(alert.ticker, { current_price: alert.current_price, currency: alert.currency });
+    const reasons = Array.isArray(alert.reasons) && alert.reasons.length
+      ? alert.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")
+      : "<li>Alert reason unavailable.</li>";
+    return `<article class="reacceleration-card">
+      <div class="reacceleration-identity"><strong>${escapeHtml(alert.ticker || "Ticker missing")}</strong><small>${escapeHtml(alert.company || "Company missing")} · ${escapeHtml(price)}</small></div>
+      <div class="reacceleration-reason"><strong>Why alerted</strong><ul>${reasons}</ul></div>
+      <div class="reacceleration-stage"><small>Entry Stage</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(alert.entry_stage || "Unavailable")}</b></div>
+      <div class="reacceleration-context"><small>Price Discovery</small><span>${escapeHtml(alert.price_discovery_stage || "Missing")} · Priced In ${escapeHtml(alert.already_priced_in || "Missing")}</span></div>
+    </article>`;
+  }).join("") || `<p class="loading-state">No known AI beneficiary currently meets a re-acceleration trigger.</p>`;
+}
+
 function safeSourceUrl(value) {
   try {
     const url = new URL(String(value));
@@ -1560,6 +1579,7 @@ function renderDashboard(data) {
   renderDashboardCommentary(data.commentary);
   renderSafely(() => renderTopNews(data.top_investment_news && data.top_investment_news.ai_technology), "ai-top-news");
   renderSafely(() => renderBiotechNews(data.top_investment_news && data.top_investment_news.biotech_healthcare), "biotech-top-news");
+  renderSafely(() => renderAiReaccelerationAlerts(data.radar && data.radar.ai_reacceleration_alerts), "ai-reacceleration-alerts");
   renderSafely(() => renderAiRadar(aiRadarRows(data)), "ai-radar");
   renderSafely(() => renderBiotechRadar(biotechRadarRows(data)), "biotech-radar");
   renderSafely(() => renderCryptoRadar(cryptoRadarRows(data)), "crypto-radar");
