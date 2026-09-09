@@ -42,6 +42,9 @@ class AiTechnologyRadarTests(unittest.TestCase):
     def test_reacceleration_alert_is_secondary_and_accepts_rerated_company(self):
         linked_event = {
             **evidence("known-1"), "age_band": "Fresh", "signal": "confirming",
+            "company": "Known AI Supplier", "ticker": "KNOWN", "related_tickers": [],
+            "company_identities": [{"company": "Known AI Supplier", "ticker": "KNOWN",
+                                    "exchange": "", "listing_status": "Public"}],
             "new_information": "Orders and backlog accelerated after a new customer deployment.",
         }
         beneficiary = {
@@ -66,11 +69,14 @@ class AiTechnologyRadarTests(unittest.TestCase):
         alert = result["alerts"][0]
         self.assertEqual(alert["ticker"], "KNOWN")
         self.assertEqual(alert["entry_stage"], "Breakout")
+        self.assertEqual(alert["action"], "BUY")
         self.assertEqual(alert["price_discovery_stage"], "Already Ran")
         self.assertIn("Significant new catalyst/news", alert["trigger_types"])
         self.assertIn("Abnormal price/volume acceleration", alert["trigger_types"])
         self.assertIn("Renewed earnings/order/backlog acceleration", alert["trigger_types"])
         self.assertIn("Technical breakout/reversal", alert["trigger_types"])
+        self.assertEqual(alert["source_events"][0]["matched_ticker"], "KNOWN")
+        self.assertIn("Orders and backlog accelerated", alert["reacceleration_signal"])
         self.assertEqual(rows, original)
 
     def test_reacceleration_does_not_inherit_unlinked_category_news(self):
@@ -86,6 +92,63 @@ class AiTechnologyRadarTests(unittest.TestCase):
             "watchlist_entry_readiness": {"ai": {"state_key": "base-building"}},
         }}})
         self.assertEqual(result["alerts"], [])
+
+    def test_reacceleration_rejects_linked_id_when_event_ticker_is_different(self):
+        wrong_company_event = {
+            **evidence("wrong-company"), "age_band": "Fresh", "signal": "confirming",
+            "new_information": "NVIDIA orders and backlog accelerated materially.",
+        }
+        rows = [{"trend": "Compute", "confirming_evidence": [wrong_company_event],
+                 "beneficiary_records": [{
+                     "company": "Unrelated Supplier", "ticker": "OTHER", "listing_status": "Public",
+                     "evidence_ids": ["wrong-company"], "price_discovery_stage": "Emerging",
+                     "already_priced_in": "NO",
+                 }]}]
+        result = build_ai_reacceleration_alerts(rows, {"securities": {"OTHER": {
+            "current_price": 20, "data_status": "current", "returns": {"daily": 0, "one_month": -2},
+            "volume_vs_20d_average": 0.8, "moving_averages": {"ma20": 21},
+            "relative_strength": {"qqq": {"one_month": -3, "three_month": -1}},
+            "macd": {"improving": False}, "entry_inputs": {},
+            "watchlist_entry_readiness": {"ai": {"state_key": "base-building"}},
+        }}})
+        self.assertEqual(result["alerts"], [])
+
+    def test_bottoming_alone_does_not_qualify_reacceleration(self):
+        rows = [{"trend": "Compute", "confirming_evidence": [], "beneficiary_records": [{
+            "company": "Base Builder", "ticker": "BASE", "listing_status": "Public",
+            "evidence_ids": [], "price_discovery_stage": "Emerging", "already_priced_in": "NO",
+        }]}]
+        result = build_ai_reacceleration_alerts(rows, {"securities": {"BASE": {
+            "current_price": 20, "data_status": "current", "returns": {"daily": 0, "one_month": -1},
+            "volume_vs_20d_average": 0.9, "moving_averages": {"ma20": 21},
+            "relative_strength": {"qqq": {"one_month": -2, "three_month": -1}},
+            "macd": {"improving": True}, "entry_inputs": {},
+            "watchlist_entry_readiness": {"ai": {"state_key": "base-building"}},
+        }}})
+        self.assertEqual(result["alerts"], [])
+
+    def test_reacceleration_action_is_derived_from_entry_stage_only(self):
+        event = {
+            **evidence("company-catalyst"), "age_band": "Fresh", "signal": "confirming",
+            "company": "Action Test", "ticker": "ACTN", "related_tickers": [],
+            "company_identities": [{"company": "Action Test", "ticker": "ACTN",
+                                    "exchange": "", "listing_status": "Public"}],
+        }
+        beneficiary = {"company": "Action Test", "ticker": "ACTN", "listing_status": "Public",
+                       "evidence_ids": ["company-catalyst"]}
+        expected = {"base-building": ("Bottoming", "WATCH"),
+                    "near-buy-zone": ("Reversal", "WATCH / SCALE IN"),
+                    "buy-zone": ("Entry Zone", "BUY / SCALE IN"),
+                    "breakout-confirmed": ("Breakout", "BUY"),
+                    "extended": ("Extended", "DO NOT CHASE")}
+        for state_key, (stage, action) in expected.items():
+            market = {"securities": {"ACTN": {"data_status": "current", "returns": {},
+                "relative_strength": {"qqq": {}}, "moving_averages": {}, "entry_inputs": {},
+                "macd": {}, "watchlist_entry_readiness": {"ai": {"state_key": state_key}}}}}
+            alert = build_ai_reacceleration_alerts(
+                [{"trend": "Compute", "confirming_evidence": [event],
+                  "beneficiary_records": [beneficiary]}], market)["alerts"][0]
+            self.assertEqual((alert["entry_stage"], alert["action"]), (stage, action))
 
     def test_manual_market_context_does_not_create_radar_scores(self):
         snapshot = {

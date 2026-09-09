@@ -82,7 +82,8 @@
 .reacceleration-identity small, .reacceleration-stage small, .reacceleration-context small { display: block; margin-top: 3px; color: var(--dash-muted); font-size: .57rem; }
 .reacceleration-reason > strong { color: #58709a; font-size: .54rem; letter-spacing: .05em; text-transform: uppercase; }
 .reacceleration-reason ul { margin: 3px 0 0; padding-left: 15px; color: #3d516a; font-size: .63rem; line-height: 1.4; }
-.reacceleration-stage small, .reacceleration-context small { margin: 0 0 5px; font-weight: 800; text-transform: uppercase; }
+.reacceleration-reason p { margin: 4px 0 0; color: #3d516a; font-size: .63rem; line-height: 1.4; overflow-wrap: anywhere; }
+.reacceleration-stage small, .reacceleration-context small { margin: 0 0 5px; font-weight: 800; text-transform: uppercase; }.reacceleration-stage b + small { margin-top: 8px; }
 .reacceleration-context span { color: #40566f; font-size: .62rem; line-height: 1.35; overflow-wrap: anywhere; }
 .radar-column-labels, .radar-item summary { display: grid; grid-template-columns: minmax(155px,1.25fr) 100px 112px minmax(120px,.95fr) 96px minmax(92px,.75fr) 25px; gap: 13px; align-items: center; }
 .ai-labels, .ai-stock-radar-item summary { grid-template-columns: minmax(155px,1.25fr) 100px 112px minmax(120px,.95fr) 96px minmax(92px,.75fr) 25px; }

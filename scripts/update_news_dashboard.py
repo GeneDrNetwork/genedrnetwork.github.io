@@ -4772,6 +4772,27 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
     commercial_terms = ("order", "backlog", "earnings", "revenue", "guidance", "booking")
     acceleration_terms = ("accelerat", "increase", "growth", "grew", "raised", "record", "expand")
     catalyst_types = {"Financial Results", "Commercial Event", "Partnership / Investment", "Product / Platform"}
+    action_by_entry_stage = {
+        "Bottoming": "WATCH",
+        "Entry Zone": "BUY / SCALE IN",
+        "Reversal": "WATCH / SCALE IN",
+        "Breakout": "BUY",
+        "Extended": "DO NOT CHASE",
+    }
+
+    def event_tickers(event):
+        tickers = {str(event.get("ticker") or "").strip().upper()}
+        tickers.update(str(value or "").strip().upper() for value in event.get("related_tickers", []))
+        tickers.update(str(identity.get("ticker") or "").strip().upper()
+                       for identity in event.get("company_identities", []) if isinstance(identity, dict))
+        return {ticker for ticker in tickers if ticker and ticker not in ("PRIVATE", "N/A", "MISSING")}
+
+    def compact_source_event(event, ticker):
+        return {**{key: event.get(key) for key in
+                   ("event_id", "headline", "new_information", "event_date", "source", "source_link",
+                    "news_importance_score", "event_type", "ticker", "related_tickers", "company_identities")},
+                "matched_ticker": ticker}
+
     for row in rows or []:
         evidence_by_id = {item.get("event_id"): item for item in row.get("confirming_evidence", [])
                           if item.get("event_id")}
@@ -4783,28 +4804,32 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
             # Only company-linked evidence may create a news/commercial alert. Broad
             # trend evidence must not be inherited by every beneficiary in a track.
             linked_events = [evidence_by_id[event_id] for event_id in beneficiary.get("evidence_ids", [])
-                             if event_id in evidence_by_id and evidence_by_id[event_id].get("age_band") == "Fresh"]
+                             if event_id in evidence_by_id and evidence_by_id[event_id].get("age_band") == "Fresh"
+                             and ticker in event_tickers(evidence_by_id[event_id])]
             snapshot = market_snapshot(market_data, ticker) or beneficiary.get("market_data") or {}
             entry = radar_entry_stage(snapshot, "ai")
             returns = snapshot.get("returns") or {}
             daily_return = returns.get("daily")
+            one_month_return = returns.get("one_month")
             volume_ratio = snapshot.get("volume_vs_20d_average")
             macd_data = snapshot.get("macd") or {}
             entry_inputs = snapshot.get("entry_inputs") or {}
+            moving_averages = snapshot.get("moving_averages") or {}
+            price = snapshot.get("current_price")
+            relative = (snapshot.get("relative_strength") or {}).get("qqq", {})
             market_current = snapshot.get("data_status") == "current"
             reasons, trigger_types, source_events = [], [], []
 
             significant = [event for event in linked_events
                            if event.get("news_importance_score") is not None and
                            event.get("news_importance_score") >= 80 and
-                           (event.get("event_type") in catalyst_types or event.get("new_information"))]
+                           event.get("source_link") and event.get("event_type") in catalyst_types]
             if significant:
                 event = max(significant, key=lambda item: item.get("news_importance_score") or 0)
                 detail = event.get("new_information") or event.get("headline") or "A significant new company catalyst was reported."
-                reasons.append(f"New catalyst/news ({event.get('news_importance_score')}/100): {detail}")
+                reasons.append(f"Ticker-specific catalyst/news ({event.get('news_importance_score')}/100): {detail}")
                 trigger_types.append("Significant new catalyst/news")
-                source_events.append({key: event.get(key) for key in
-                                      ("event_id", "headline", "event_date", "source", "source_link", "news_importance_score")})
+                source_events.append(compact_source_event(event, ticker))
 
             if (market_current and daily_return is not None and volume_ratio is not None and
                     daily_return >= 4 and volume_ratio >= 1.5):
@@ -4823,16 +4848,38 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                 reasons.append("Renewed commercial acceleration: fresh company evidence references earnings, orders, backlog, revenue, bookings, or guidance.")
                 trigger_types.append("Renewed earnings/order/backlog acceleration")
                 if not any(item.get("event_id") == event.get("event_id") for item in source_events):
-                    source_events.append({key: event.get(key) for key in
-                                          ("event_id", "headline", "event_date", "source", "source_link", "news_importance_score")})
+                    source_events.append(compact_source_event(event, ticker))
 
-            technical_confirmation = (macd_data.get("crossover") == "bullish" or
-                                      macd_data.get("improving") is True or
-                                      (entry_inputs.get("breakout_volume_ratio") is not None and
-                                       entry_inputs.get("breakout_volume_ratio") >= 1.2))
+            technical_confirmation = (
+                (entry.get("stage") == "Reversal" and macd_data.get("crossover") == "bullish") or
+                (entry.get("stage") == "Breakout" and
+                 entry_inputs.get("breakout_volume_ratio") is not None and
+                 entry_inputs.get("breakout_volume_ratio") >= 1.2))
             if market_current and entry.get("stage") in ("Reversal", "Breakout") and technical_confirmation:
-                reasons.append(f"Technical {entry.get('stage').lower()} is confirmed by improving momentum or breakout volume.")
+                reasons.append(f"Technical {entry.get('stage').lower()} is confirmed by a bullish MACD crossover or breakout volume.")
                 trigger_types.append("Technical breakout/reversal")
+
+            relative_1m = relative.get("one_month")
+            relative_3m = relative.get("three_month")
+            improving_relative_strength = (market_current and relative_1m is not None and relative_1m > 0 and
+                                           (relative_3m is None or relative_1m > relative_3m))
+            if improving_relative_strength:
+                reasons.append(f"Relative strength is improving: 1M performance is {relative_1m:+.1f} percentage points versus QQQ"
+                               + (f", ahead of the 3M relative result of {relative_3m:+.1f}." if relative_3m is not None else "."))
+                trigger_types.append("Improving relative strength")
+
+            accumulation = entry_inputs.get("up_down_volume_ratio_20d")
+            constructive_price_volume = bool(
+                market_current and isinstance(price, (int, float)) and
+                isinstance(moving_averages.get("ma20"), (int, float)) and price > moving_averages["ma20"] and
+                one_month_return is not None and one_month_return > 0 and
+                ((accumulation is not None and accumulation >= 1.1) or
+                 (volume_ratio is not None and volume_ratio >= 1.2)))
+            if constructive_price_volume:
+                participation = (f"up/down volume {accumulation:.2f}×" if accumulation is not None and accumulation >= 1.1
+                                 else f"volume {volume_ratio:.2f}× its 20-day average")
+                reasons.append(f"Constructive price/volume: price is above MA20, the 1M return is {one_month_return:+.1f}%, and {participation}.")
+                trigger_types.append("Constructive price/volume")
 
             if not reasons:
                 continue
@@ -4842,7 +4889,9 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                 "currency": snapshot.get("currency"),
                 "price_discovery_stage": beneficiary.get("price_discovery_stage") or "Missing",
                 "already_priced_in": beneficiary.get("already_priced_in") or "Missing",
-                "entry_stage": entry.get("stage") or "Unavailable", "reasons": [], "trigger_types": [],
+                "entry_stage": entry.get("stage") or "Unavailable",
+                "action": action_by_entry_stage.get(entry.get("stage"), "WATCH"),
+                "reasons": [], "trigger_types": [],
                 "trends": [], "source_events": [], "daily_return": daily_return,
                 "volume_vs_20d_average": volume_ratio,
             })
@@ -4856,8 +4905,12 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
             known_event_ids = {item.get("event_id") for item in alert["source_events"]}
             alert["source_events"].extend(item for item in source_events if item.get("event_id") not in known_event_ids)
 
+    for alert in alerts.values():
+        alert["reacceleration_signal"] = " ".join(alert["reasons"][:2])
+
     priority = {"Significant new catalyst/news": 4, "Renewed earnings/order/backlog acceleration": 3,
-                "Abnormal price/volume acceleration": 2, "Technical breakout/reversal": 1}
+                "Abnormal price/volume acceleration": 3, "Technical breakout/reversal": 3,
+                "Improving relative strength": 2, "Constructive price/volume": 2}
     ordered = sorted(alerts.values(), key=lambda item: (
         -sum(priority.get(trigger, 0) for trigger in item["trigger_types"]),
         -(item.get("daily_return") if item.get("daily_return") is not None else -999), item["ticker"]))
@@ -4866,10 +4919,13 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
         "methodology": {
             "scope": "Secondary alert surface for previously identified public AI beneficiaries.",
             "selection_boundary": "Alerts do not alter, promote into, or rescore the main Early Discovery ranking.",
-            "news_trigger": "Company-linked confirming evidence aged 0–7 days with Importance Score of at least 80.",
+            "news_trigger": "Ticker-identity-matched confirming evidence aged 0–7 days, Importance Score of at least 80, a credible event type, and a source link.",
             "price_volume_trigger": "Daily gain of at least 4% with volume at least 1.5 times the 20-day average.",
             "commercial_trigger": "Fresh company-linked evidence referencing earnings, orders, backlog, revenue, bookings, or guidance.",
-            "technical_trigger": "Reversal or Breakout Entry Stage with bullish/improving MACD or at least 1.2 times breakout volume.",
+            "technical_trigger": "Reversal requires a bullish MACD crossover; Breakout requires at least 1.2 times breakout volume. Bottoming alone never qualifies.",
+            "relative_strength_trigger": "Positive 1M relative performance versus QQQ that is better than the available 3M relative result.",
+            "constructive_price_volume_trigger": "Price above MA20 with a positive 1M return plus accumulation-like or elevated volume.",
+            "action_policy": "Action is a display interpretation of Entry Stage only: Bottoming WATCH; Reversal WATCH / SCALE IN; Entry Zone BUY / SCALE IN; Breakout BUY; Extended DO NOT CHASE. Alert qualification does not imply a buy signal.",
             "missing_data": "Missing or stale market inputs do not trigger a market-based alert.",
         },
     }
