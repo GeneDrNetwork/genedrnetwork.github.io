@@ -237,3 +237,23 @@
   .pending-order-form, .pending-order-metrics, .pending-order-decision { grid-template-columns: 1fr; }.pending-order-form-actions, .pending-order-form-status, .pending-order-decision p { grid-column: auto; }.pending-order-summary { grid-template-columns: repeat(2,minmax(0,1fr)); }.pending-order-summary > span:nth-child(2), .pending-order-summary > span:nth-child(3), .pending-order-summary > span:nth-child(4), .pending-order-summary > span:nth-child(5) { display: block; }.pending-order-workflow { display: flex; flex-wrap: nowrap; overflow-x: auto; }.pending-order-workflow > span { display: block; }.pending-order-workflow > div { min-width: 102px; }.pending-order-form-actions { align-items: stretch; flex-direction: column; }.pending-order-form-actions button { width: 100%; }.position-form { grid-template-columns: 1fr; }.position-summary { grid-template-columns: 1fr 18px; }.position-summary > span:nth-child(2), .position-summary > span:nth-child(3), .position-summary > span:nth-child(4), .position-summary > span:nth-child(5) { display: none; }.position-metrics, .position-analysis-grid { grid-template-columns: 1fr; }.position-form-actions { align-items: stretch; flex-direction: column; }.position-form-actions button { width: 100%; }
   .ai-stock-radar-item .ai-stock-category { display: none; }
 }
+
+/* Watchlist decision strip: preserve distinct shared readiness, stage, status, and action fields. */
+.watchlist-summary { grid-template-columns: minmax(190px,1.2fr) repeat(4,minmax(100px,.65fr)) 20px; gap: 10px; }
+.watchlist-summary.manual-watchlist-summary { grid-template-columns: minmax(165px,1.05fr) repeat(4,minmax(95px,.62fr)) auto 18px; gap: 9px; }
+.watchlist-summary > span { min-width: 0; }
+.watchlist-summary > span > strong, .watchlist-summary > span > b { display: block; max-width: 100%; overflow-wrap: normal; word-break: normal; }
+
+@media (max-width: 1180px) {
+  .watchlist-summary, .watchlist-summary.manual-watchlist-summary { grid-template-columns: minmax(160px,1fr) repeat(4,minmax(88px,.62fr)) auto 18px; }
+  .watchlist-summary:not(.manual-watchlist-summary) { grid-template-columns: minmax(160px,1fr) repeat(4,minmax(88px,.62fr)) 18px; }
+  .watchlist-summary.manual-watchlist-summary > span:nth-child(2), .watchlist-summary.manual-watchlist-summary > span:nth-child(3), .watchlist-summary.manual-watchlist-summary > span:nth-child(4), .watchlist-summary.manual-watchlist-summary > span:nth-child(5) { display: block; }
+}
+
+@media (max-width: 820px) {
+  .watchlist-summary, .watchlist-summary.manual-watchlist-summary { position: relative; grid-template-columns: repeat(2,minmax(0,1fr)); padding-right: 42px; }
+  .watchlist-summary > .position-identity { grid-column: 1 / -1; }
+  .watchlist-summary > span:nth-child(2), .watchlist-summary > span:nth-child(3), .watchlist-summary > span:nth-child(4), .watchlist-summary > span:nth-child(5) { display: block; }
+  .watchlist-summary > .opportunity-expand { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); }
+  .watchlist-summary.manual-watchlist-summary .manual-watchlist-remove { grid-column: 1 / -1; width: fit-content; }
+}

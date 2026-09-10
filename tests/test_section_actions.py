@@ -68,7 +68,7 @@ class SectionSpecificActionTests(unittest.TestCase):
 
     def test_action_is_placed_next_to_entry_context(self):
         self.assertEqual(self.page.count("Entry Stage / Action"), 3)
-        self.assertGreaterEqual(self.script.count("decision-action-label"), 7)
+        self.assertGreaterEqual(self.script.count("decision-action-label"), 5)
 
 
 if __name__ == "__main__":

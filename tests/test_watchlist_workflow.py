@@ -108,10 +108,24 @@ class WatchlistWorkflowTests(unittest.TestCase):
     def test_manual_cards_expose_shared_score_stage_entry_and_visible_remove(self):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
         self.assertIn('class="watchlist-summary manual-watchlist-summary"', script)
-        for label in ("Current Price:", "Score", "Entry Readiness / Stage", "Buy Status", "Suggested Entry"):
+        for label in ("Current Price:", "Entry Readiness", "Entry Stage", "Buy Status", "Action"):
             self.assertIn(label, script)
         self.assertIn('class="watchlist-action watchlist-remove manual-watchlist-remove"', script)
         self.assertIn("event.stopPropagation(); removeWatchlistItem", script)
+
+    def test_watchlist_summary_separates_existing_stage_status_and_action(self):
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        styles = (ROOT / "assets" / "news-dashboard.css").read_text()
+        expected_order = ('<small>Entry Readiness</small>', '<small>Entry Stage</small>',
+                          '<small>Buy Status</small>', '<small>Action</small>')
+        for summary_class in ('watchlist-summary manual-watchlist-summary', 'watchlist-summary'):
+            summary = script.split(f'class="{summary_class}"', 1)[1].split('</summary>', 1)[0]
+            positions = [summary.index(label) for label in expected_order]
+            self.assertEqual(positions, sorted(positions))
+        self.assertIn("technical.entry_timing_state", script)
+        self.assertIn("extendedStage", script)
+        self.assertIn('extendedStage ? "EXTENDED / TOO LATE"', script)
+        self.assertIn("repeat(4,minmax(100px,.65fr))", styles)
 
     def test_manual_storage_is_normalized_and_deduplicated_on_load(self):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
