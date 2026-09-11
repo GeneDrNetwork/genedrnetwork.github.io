@@ -244,6 +244,11 @@
 .watchlist-summary > span { min-width: 0; }
 .watchlist-summary > span > strong, .watchlist-summary > span > b { display: block; max-width: 100%; overflow-wrap: normal; word-break: normal; }
 
+/* Shared ticker links preserve each section's typography while making the quote destination discoverable. */
+.ticker-link { color: inherit; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color .15s ease, text-decoration-color .15s ease; }
+.ticker-link:hover { color: var(--dash-blue); text-decoration-color: currentColor; }
+.ticker-link:focus-visible { color: var(--dash-blue); outline: 2px solid rgba(47,103,186,.28); outline-offset: 2px; border-radius: 2px; text-decoration-color: currentColor; }
+
 @media (max-width: 1180px) {
   .watchlist-summary, .watchlist-summary.manual-watchlist-summary { grid-template-columns: minmax(160px,1fr) repeat(4,minmax(88px,.62fr)) auto 18px; }
   .watchlist-summary:not(.manual-watchlist-summary) { grid-template-columns: minmax(160px,1fr) repeat(4,minmax(88px,.62fr)) 18px; }
