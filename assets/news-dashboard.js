@@ -330,11 +330,12 @@ function aiStockRadarRows(trends = []) {
       seen.add(key);
       const thesis = beneficiary.thesis_evidence?.[0]?.basis;
       const confirmation = beneficiary.confirmation_evidence?.[0]?.basis;
+      const companyNarrative = beneficiary.company_narrative || {};
       const category = `${trend.trend} · ${beneficiary.category || "Beneficiary"}`;
-      const whySelected = conciseRadarText(thesis || confirmation || `${beneficiary.company} is mapped as a ${beneficiary.category || "potential"} beneficiary of ${trend.trend} because the current industry-chain evidence connects it to this opportunity.`);
-      const riskUnproven = beneficiary.confirmation_missing
+      const whySelected = conciseRadarText(companyNarrative.why_selected || thesis || confirmation || `${beneficiary.company} is mapped as a ${beneficiary.category || "potential"} beneficiary of ${trend.trend} because the current industry-chain evidence connects it to this opportunity.`);
+      const riskUnproven = companyNarrative.risk_unproven || (beneficiary.confirmation_missing
         ? "Commercial confirmation remains incomplete; orders, customer adoption, guidance, or revenue evidence is still unproven."
-        : "Connected confirmation exists, but durability, revenue sensitivity, execution, and valuation still require monitoring.";
+        : "Connected confirmation exists, but durability, revenue sensitivity, execution, and valuation still require monitoring.");
       rows.push({ trend, beneficiary, ticker, category,
         opportunity_score: beneficiary.bottleneck_opportunity_score,
         multibagger_score: beneficiary.multibagger_potential_score,
@@ -361,6 +362,15 @@ function decisionNumber(value) {
   return Number.isFinite(number) ? number : null;
 }
 
+function hasValidCompanyCatalyst(row = {}) {
+  return row.catalyst_validation?.valid === true || row.catalyst_evidence?.valid === true ||
+    (row.catalyst?.credible === true && row.catalyst?.status === "COMPANY-SPECIFIC CATALYST");
+}
+
+function catalystStatus(row = {}) {
+  return hasValidCompanyCatalyst(row) ? "COMPANY-SPECIFIC CATALYST" : "THEME ONLY / UNVERIFIED";
+}
+
 function aiRadarAction(row = {}) {
   const stage = String(row.entry_stage?.stage || row.entry_stage || "Unavailable");
   const pricedIn = String(row.already_priced_in || "NO").toUpperCase();
@@ -370,6 +380,7 @@ function aiRadarAction(row = {}) {
   const readiness = decisionNumber(row.entry_stage?.entry_timing_score);
   if ((opportunity !== null && opportunity < 50) || (multibagger !== null && multibagger < 45)) return "PASS";
   if (stage === "Extended" || pricedIn === "YES") return "DO NOT CHASE";
+  if (!hasValidCompanyCatalyst(row)) return "WATCH / WAIT FOR VALID CATALYST";
   if (discovery === "Already Ran" || (pricedIn === "PARTIALLY" && stage === "Breakout")) return "WAIT FOR PULLBACK";
   if (stage === "Breakout") return opportunity !== null && opportunity >= 65 ? "BUY" : "WATCH";
   if (stage === "Entry Zone") return opportunity === null || multibagger === null ? "WATCH"
@@ -394,6 +405,7 @@ function biotechRadarAction(row = {}) {
   if (score !== null && score < 50) return "PASS";
   if (!evidencePassed || integrityConcern) return catalystAvailable ? "WAIT FOR CATALYST" : "PASS";
   if (stage === "Extended" || pricedIn === "YES") return "WAIT FOR PULLBACK";
+  if (!hasValidCompanyCatalyst(row)) return "WATCH / WAIT FOR VALID CATALYST";
   if (stage === "Entry Zone" || stage === "Breakout") return constrained ? "SMALL POSITION" : "BUY";
   if (stage === "Reversal") return constrained ? "SMALL POSITION" : "SCALE IN";
   if (stage === "Bottoming" || stage === "Falling") return catalystAvailable ? "WAIT FOR CATALYST" : "WATCH";
@@ -423,6 +435,7 @@ function renderAiRadar(rows, targetId = "ai-radar") {
   const stockRows = aiStockRadarRows(rows);
   document.getElementById(targetId).innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, opportunity_score, multibagger_score, price_discovery_stage, already_priced_in, entry_stage, why_selected, risk_unproven }) => {
     const action = aiRadarAction(beneficiary);
+    const companyNarrative = beneficiary.company_narrative || {};
     return `<details class="radar-item ai-stock-radar-item"><summary>
       <span class="ai-stock-identity"><strong>${tickerLink(ticker)}</strong><small>${escapeHtml(beneficiary.company)} · ${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
       ${renderScore(opportunity_score, "Bottleneck Opportunity")}${renderScore(multibagger_score, "Multibagger Potential")}
@@ -432,17 +445,21 @@ function renderAiRadar(rows, targetId = "ai-radar") {
       ${detailItem("Category / Beneficiary Type", category)}${detailItem("Discovery Maturity", beneficiary.opportunity_stage || "Missing")}
       ${detailItem("Price Discovery / Priced In", `${price_discovery_stage} · ${already_priced_in}. ${beneficiary.price_discovery_rationale || "Evidence unavailable."}`)}
       ${detailItem("Entry Stage", `${entry_stage}. ${beneficiary.entry_stage?.rationale || "Detailed technical evidence remains in Swing Trade Opportunity."}`)}${detailItem("Action", action)}
+      ${detailItem("Catalyst Validation", catalystStatus(beneficiary))}
+      ${detailItem("Company-Specific Catalyst", beneficiary.company_specific_catalyst || "Missing: no validated company-specific catalyst.", !beneficiary.company_specific_catalyst)}
+      ${detailItem("Industry / Theme Catalyst", beneficiary.industry_theme_catalyst || "Missing", !beneficiary.industry_theme_catalyst)}
       ${detailItem("Ranking Penalty", `${beneficiary.priced_in_penalty ?? 0} points applied to ranking and Multibagger Potential.`)}
       ${detailItem("Early-Opportunity Ranking", beneficiary.radar_rank_score === null || beneficiary.radar_rank_score === undefined ? "Missing" : `${beneficiary.radar_rank_score} / 100`)}
       ${detailItem("Beneficiary Relevance", beneficiary.beneficiary_relevance === null || beneficiary.beneficiary_relevance === undefined ? "Missing" : `${beneficiary.beneficiary_relevance} / 100 · ${beneficiary.data_completeness ?? "Missing"}% complete`)}
-      ${detailItem("What the Trend Means", trend.what_it_means)}${detailItem("Key Intelligence", trend.key_intelligence)}${detailItem("Demand Drivers", trend.demand_drivers)}${detailItem("Current Bottleneck", trend.current_bottleneck)}${detailItem("Next Likely Bottleneck", trend.next_likely_bottleneck)}
-      ${detailItem("Market Expectation / Priced In", trend.market_expectation, true)}${detailItem("What to Watch Next", trend.watch_next)}
+      ${detailItem("Company Evidence Completeness", `${beneficiary.company_evidence_completeness ?? 0}% · ${beneficiary.company_confirmation_confidence || "Low / Theme Only"}${beneficiary.company_score_cap ? ` · company-confirmation score cap ${beneficiary.company_score_cap}` : ""}`)}
+      ${detailItem("Shared Theme Context", trend.what_it_means)}${detailItem("Key Intelligence", companyNarrative.key_intelligence || "Missing / Not Yet Confirmed")}${detailItem("Demand Drivers / Company Position", companyNarrative.demand_drivers || "Missing / Not Yet Confirmed")}${detailItem("Current Bottleneck / Company Position", companyNarrative.current_bottleneck || "Missing / Not Yet Confirmed")}${detailItem("Next Likely Bottleneck / Company Position", companyNarrative.next_likely_bottleneck || "Missing / Not Yet Confirmed")}
+      ${detailItem("Market Expectation / Priced In", trend.market_expectation, true)}${detailItem("What to Watch Next", companyNarrative.watch_next || "Missing / Not Yet Confirmed")}
       ${renderMarketSnapshot(beneficiary.market_data, "qqq")}
       <div class="detail-item detail-wide"><dt>Thesis Evidence</dt><dd>${renderDiscoveryEvidence("Evidence", beneficiary.thesis_evidence || [], "Missing / logical beneficiary thesis has not been structured.")}</dd></div>
-      <div class="detail-item detail-wide"><dt>Confirmation Evidence</dt><dd>${renderDiscoveryEvidence("Evidence", beneficiary.confirmation_evidence || [], "Commercial confirmation is not yet connected.")}</dd></div>
+      <div class="detail-item detail-wide"><dt>Ticker-Specific Confirmation Evidence</dt><dd>${renderDiscoveryEvidence("Evidence", beneficiary.confirmation_evidence || [], "Missing / Not Yet Confirmed: no company-specific commercial evidence is connected.")}</dd></div>
       ${renderEarlyRadarBreakdown("Bottleneck Opportunity Score", beneficiary.bottleneck_score_components, beneficiary.early_discovery_completeness?.bottleneck_opportunity)}
       ${renderEarlyRadarBreakdown("Multibagger Potential Score", beneficiary.multibagger_score_components, beneficiary.early_discovery_completeness?.multibagger_potential)}
-      ${renderAiFactorBreakdown(trend)}${renderAiHorizons(trend.horizons)}${renderAiEvidence("Confirming Trend Evidence", trend.confirming_evidence)}${renderAiEvidence("Contradicting Trend Evidence", trend.contradicting_evidence)}${renderAiHistory(trend)}
+      ${renderAiHorizons(companyNarrative.horizons || {})}${renderAiEvidence("Shared Theme Evidence (not company confirmation)", trend.confirming_evidence)}${renderAiEvidence("Contradicting Trend Evidence", trend.contradicting_evidence)}${renderAiHistory(trend)}
       <div class="detail-item detail-wide"><dt>Active Monitoring</dt><dd>${watchlistAction(ticker, beneficiary.company, "Radar", "ai")}</dd></div>
     </dl></details>`;
   }).join("") || `<p class="loading-state">No public AI or technology stocks have sufficient beneficiary evidence for this view.</p>`;
@@ -456,10 +473,11 @@ function renderAiReaccelerationAlerts(section = {}) {
     const price = alert.current_price === null || alert.current_price === undefined
       ? "Price unavailable" : currentPriceLabel(alert.ticker, { current_price: alert.current_price, currency: alert.currency });
     const signal = alert.reacceleration_signal || (Array.isArray(alert.reasons) ? alert.reasons[0] : null) || "Alert reason unavailable.";
+    const action = hasValidCompanyCatalyst(alert) ? (alert.action || "WATCH") : "WATCH / WAIT FOR VALID CATALYST";
     return `<article class="reacceleration-card">
       <div class="reacceleration-identity"><strong>${tickerLink(alert.ticker)}</strong><small>${escapeHtml(alert.company || "Company missing")} · ${escapeHtml(price)}</small></div>
       <div class="reacceleration-reason"><strong>Re-Acceleration Signal</strong><p>${escapeHtml(signal)}</p></div>
-      <div class="reacceleration-stage"><small>Entry Stage</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(alert.entry_stage || "Unavailable")}</b><small>Action</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(alert.action || "WATCH")}</b></div>
+      <div class="reacceleration-stage"><small>Entry Stage</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(alert.entry_stage || "Unavailable")}</b><small>Catalyst</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(catalystStatus(alert))}</b><small>Action</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(action)}</b></div>
       <div class="reacceleration-context"><small>Price Discovery</small><span>${escapeHtml(alert.price_discovery_stage || "Missing")} · Priced In ${escapeHtml(alert.already_priced_in || "Missing")}</span></div>
     </article>`;
   }).join("") || `<p class="loading-state">No known AI beneficiary currently meets a re-acceleration trigger.</p>`;
@@ -617,6 +635,7 @@ function renderBiotechRadar(rows, targetId = "biotech-radar") {
       ${detailItem("Why Selected", row.why_important)}${detailItem("Risk / What Remains Unproven", row.risks)}
       ${detailItem("Price Discovery / Priced In", `${row.price_discovery_stage || "Emerging"} · ${row.already_priced_in || "NO"}. ${row.price_discovery_rationale || "Evidence unavailable."}`)}
       ${detailItem("Entry Stage", `${row.entry_stage?.stage || "Unavailable"}. ${row.entry_stage?.rationale || "Detailed technical evidence remains in Swing Trade Opportunity."}`)}${detailItem("Action", action)}
+      ${detailItem("Catalyst Validation", catalystStatus(row))}${detailItem("Company-Specific Catalyst", row.company_specific_catalyst || "Missing: no validated company-specific catalyst.", !row.company_specific_catalyst)}${detailItem("Industry / Theme Catalyst", row.industry_theme_catalyst || "Missing", !row.industry_theme_catalyst)}
       ${detailItem("Ranking Penalty", `${row.priced_in_penalty ?? 0} points applied to ranking and Multibagger Potential.`)}
       ${detailItem("Early-Opportunity Ranking", row.radar_rank_score === null || row.radar_rank_score === undefined ? "Missing" : `${row.radar_rank_score} / 100`)}
       ${detailItem("Clinical Evidence", row.clinical_evidence, String(row.clinical_evidence).startsWith("Missing"))}${detailItem("Upcoming Catalyst", row.upcoming_catalyst)}${detailItem("Previous Trial Results", row.previous_results, String(row.previous_results).startsWith("Missing"))}
@@ -819,6 +838,7 @@ function highConvictionAction(row = {}) {
   if (remainingUpside !== null && remainingUpside <= 0) return "PASS";
   if (mountain === "Extended") return "DO NOT CHASE";
   if (mountain === "Upper Mountain") return "WAIT FOR PULLBACK";
+  if (!hasValidCompanyCatalyst(row)) return "WATCH / WAIT FOR VALID CATALYST";
   if (mountain === "Mid Mountain") return entryQuality === "ACCEPTABLE" && remainingUpside !== null && remainingUpside >= 15 ? "SMALL SCALE IN" : "WATCH";
   if (remainingUpside === null) return "WATCH";
   if (mountain === "Lower Mountain") return "SCALE IN";
@@ -843,6 +863,9 @@ function renderHighConvictionDecision(row) {
       <div><dt>Mountain Position</dt><dd>${escapeHtml(entry.mountain_position || row.mountain_position || "Unconfirmed")}</dd></div>
       <div><dt>Remaining Upside</dt><dd>${upside.percent === null || upside.percent === undefined ? "Unavailable" : `${escapeHtml(upside.percent)}%`}<small>${escapeHtml(upside.basis || "")}</small></dd></div>
       <div><dt>Entry Quality</dt><dd>${escapeHtml(entry.entry_quality || row.entry_quality || "Unavailable")}</dd></div>
+      <div><dt>Catalyst Validation</dt><dd>${escapeHtml(catalystStatus(row))}</dd></div>
+      <div class="opportunity-wide"><dt>Company-Specific Catalyst</dt><dd>${escapeHtml(row.company_specific_catalyst || "Missing: no validated company-specific catalyst.")}</dd></div>
+      <div class="opportunity-wide"><dt>Industry / Theme Catalyst</dt><dd>${escapeHtml(row.industry_theme_catalyst || "Missing")}</dd></div>
       <div><dt>Suggested Entry</dt><dd>${escapeHtml(suggestedText)}<small>${escapeHtml(suggested.basis || "")}</small></dd></div>
       <div><dt>Stop / Invalidation</dt><dd>${escapeHtml(priceValue(entry.stop_invalidation ?? row.stop_invalidation))}</dd></div>
       <div><dt>T1 / T2</dt><dd>${escapeHtml(priceValue(entry.target_1 ?? row.target_1))} / ${escapeHtml(priceValue(entry.target_2 ?? row.target_2))}</dd></div>
@@ -902,7 +925,7 @@ function swingTradeAction(row = {}) {
   if (/Technical Deterioration/i.test(stage)) return "STOP OUT";
   if (/Failed Reversal/i.test(stage)) return "EXIT";
   if (technical.extended || stage === "Extended") return "TAKE PROFIT";
-  if (!catalystPassed) return "WATCH";
+  if (!catalystPassed) return "WATCH / WAIT FOR VALID CATALYST";
   if (stage === "Breakout") return (decisionNumber(technical.volume_vs_20d_average) ?? -1) >= 1.2 ? "BUY" : "HOLD";
   if (stage === "Entry Zone") return riskReward === null || riskReward < 1.5 ? "WATCH" : "BUY";
   if (stage === "Early Reversal") return row.stage_transition?.fresh_favorable_transition ? "SCALE IN" : "ENTER ON BREAKOUT";
@@ -914,7 +937,7 @@ function renderSwingTrades(section = {}) {
   const takeaways = section.take_home_messages || [];
   document.getElementById("swing-reasoning").innerHTML = reasoning.map((item) => `<p>${escapeHtml(item)}</p>`).join("") || `<p>No swing-trade strategy reasoning is available.</p>`;
   document.getElementById("swing-takeaways").innerHTML = takeaways.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || `<li>No qualifying swing-trade conclusions are available.</li>`;
-  const rows = section.opportunities || [];
+  const rows = [...(section.opportunities || []), ...(section.unverified_setups || [])];
   document.getElementById("swing-opportunities").innerHTML = rows.map((row) => {
     const technical = row.technical || {};
     const catalyst = row.catalyst || {};
@@ -927,7 +950,7 @@ function renderSwingTrades(section = {}) {
     const sourceUrl = safeSourceUrl(catalyst.source_link);
     const formatPrice = (value) => value === null || value === undefined ? "Unavailable" : decisionPrice(value, market.currency || "USD");
     const action = swingTradeAction(row);
-    return `<details class="swing-card"><summary class="swing-summary"><span class="opportunity-rank">${escapeHtml(row.rank)}</span><div><h4>${tickerPriceMarkup(row.ticker, market)}</h4><small>${escapeHtml(row.company)} · Technical ${escapeHtml(technical.technical_setup_score ?? "Missing")}/100</small><small class="swing-transition${transition.fresh_favorable_transition ? " swing-transition-fresh" : ""}">${escapeHtml(transitionLabel)}</small></div><span class="swing-state swing-state-${classKey(row.classification)}">${escapeHtml(row.classification)}<small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+    return `<details class="swing-card"><summary class="swing-summary"><span class="opportunity-rank">${escapeHtml(row.rank ?? "—")}</span><div><h4>${tickerPriceMarkup(row.ticker, market)}</h4><small>${escapeHtml(row.company)} · Technical ${escapeHtml(technical.technical_setup_score ?? "Missing")}/100</small><small class="swing-transition${transition.fresh_favorable_transition ? " swing-transition-fresh" : ""}">${escapeHtml(transitionLabel)}</small></div><span class="swing-state swing-state-${classKey(row.classification)}">${escapeHtml(row.classification)}<small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
       <div class="swing-detail"><section class="swing-why"><h4>Why This Swing Trade Opportunity</h4><ol>
         <li>${escapeHtml(why.why_chart_selected || "Technical selection reasoning unavailable.")}</li>
         <li>${escapeHtml(why.bottom_reversal_stage || "Bottom/reversal stage unavailable.")}</li>
@@ -939,7 +962,7 @@ function renderSwingTrades(section = {}) {
         <div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Decline from 52W High</dt><dd>${escapeHtml(formatChange(technical.drawdown_from_high_pct))}</dd></div><div><dt>Recent Low</dt><dd>${escapeHtml(formatPrice(technical.recent_low))}</dd></div><div><dt>Distance From Bottom</dt><dd>${escapeHtml(formatChange(technical.distance_from_bottom_pct))}</dd></div>
         <div><dt>Bottom Formation</dt><dd>${technical.bottom_stabilized ? "Stabilization rule passed" : "Still forming / not confirmed"}${technical.base_duration_sessions ? ` · ${escapeHtml(technical.base_duration_sessions)} sessions` : ""}</dd></div><div><dt>Early Reversal</dt><dd>${technical.early_reversal_confirmed ? "Confirmed by available momentum rules" : "Not yet confirmed"}</dd></div><div><dt>RSI / MACD</dt><dd>${escapeHtml(technical.rsi_14 ?? "Missing")} / ${escapeHtml(technical.macd?.histogram ?? "Missing")}</dd></div><div><dt>Volume vs 20D Average</dt><dd>${technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${escapeHtml(technical.volume_vs_20d_average)}x`}</dd></div>
         <div><dt>Support</dt><dd>${escapeHtml(formatPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatPrice(technical.resistance))}</dd></div><div><dt>Invalidation</dt><dd>${escapeHtml(formatPrice(technical.invalidation_level))}</dd></div><div><dt>Extended?</dt><dd>${technical.extended ? "Yes — do not chase" : "No"}</dd></div></dl>
-      <section class="swing-catalyst"><h5>Step 2 · Credible Catalyst Check</h5><p><strong>${escapeHtml(catalyst.event_type || "Catalyst")}</strong> · ${escapeHtml(catalyst.description || "Missing")}</p><p>Timing: ${escapeHtml(catalyst.timing || "Missing")} · Source: ${escapeHtml(catalyst.source || "Missing")}${catalyst.date ? ` · ${escapeHtml(catalyst.date)}` : ""}</p><p>${escapeHtml(catalyst.basis || "Missing")}</p>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read Source</a>` : ""}</section>
+      <section class="swing-catalyst"><h5>Step 2 · Credible Catalyst Check</h5><p><strong>${escapeHtml(catalyst.status || catalystStatus(row))}</strong></p><p><strong>Company-Specific Catalyst:</strong> ${escapeHtml(catalyst.company_specific_catalyst || "Missing: no validated company-specific catalyst.")}</p><p><strong>Industry / Theme Catalyst:</strong> ${escapeHtml(catalyst.industry_theme_catalyst || (!hasValidCompanyCatalyst(row) ? catalyst.description : null) || "Missing")}</p><p>Timing: ${escapeHtml(catalyst.timing || "Missing")} · Source: ${escapeHtml(catalyst.source || "Missing")}${catalyst.date ? ` · ${escapeHtml(catalyst.date)}` : ""}</p><p>${escapeHtml(catalyst.basis || catalyst.validation_reason || "Missing")}</p>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read Source</a>` : ""}</section>
       ${watchlistAction(row.ticker, row.company, "Swing Trade", row.domain || "ai")}</div></details>`;
   }).join("") || `<p class="loading-state">No stock currently passes both the technical-first screen and the credible-catalyst check.</p>`;
 }

@@ -8,6 +8,13 @@ High-Conviction classifications, and it does not promote Radar scores.
 from collections import Counter
 from datetime import date
 
+try:
+    from .catalyst_validation import (THEME_ONLY_STATUS, WAIT_FOR_CATALYST_ACTION,
+                                      company_catalyst_validation, company_evidence_source_priority)
+except ImportError:
+    from catalyst_validation import (THEME_ONLY_STATUS, WAIT_FOR_CATALYST_ACTION,
+                                     company_catalyst_validation, company_evidence_source_priority)
+
 
 SWING_STATES = ("Falling", "Bottoming", "Early Reversal", "Entry Zone", "Breakout",
                 "Extended", "Failed Reversal / Technical Deterioration")
@@ -284,19 +291,23 @@ def section_events(section):
     return list(section.get("stories", [])) + list(section.get("important_news_archive", []))
 
 
-def matching_news_catalyst(ticker, section):
+def matching_news_catalyst(ticker, section, company=None):
     matches = []
     for event in section_events(section):
-        tickers = {event.get("ticker"), *(event.get("related_tickers") or [])}
         source_link = event.get("source_link") or event.get("url")
-        if ticker in tickers and source_link and (event.get("news_importance_score") or 0) >= 65:
-            matches.append(event)
+        validation = company_catalyst_validation(event, ticker, company)
+        if validation["valid"] and source_link and (event.get("news_importance_score") or 0) >= 65:
+            matches.append((event, validation))
     if not matches:
         return None
-    event = max(matches, key=lambda row: (row.get("news_importance_score") or 0,
-                                          row.get("published_at") or row.get("date") or ""))
+    event, validation = max(matches, key=lambda pair: (company_evidence_source_priority(pair[0]),
+                                                       pair[0].get("news_importance_score") or 0,
+                                                       pair[0].get("published_at") or pair[0].get("date") or ""))
     return {
         "credible": True, "description": event.get("new_information") or event.get("headline"),
+        "status": validation["status"], "validation_reason": validation["reason"],
+        "company_specific_catalyst": event.get("new_information") or event.get("headline"),
+        "industry_theme_catalyst": None,
         "event_type": event.get("event_type"), "timing": event.get("published_at") or event.get("date"),
         "source": event.get("source"), "date": event.get("published_at") or event.get("date"),
         "source_link": event.get("source_link") or event.get("url"),
@@ -314,6 +325,9 @@ def biotech_radar_catalyst(ticker, rows):
     source = row["sources"][0]
     return {
         "credible": True, "description": row.get("catalyst"), "event_type": "Biotech Radar catalyst",
+        "status": "COMPANY-SPECIFIC CATALYST",
+        "validation_reason": "The source-backed Company → Program → Indication → Catalyst record directly identifies this company.",
+        "company_specific_catalyst": row.get("catalyst"), "industry_theme_catalyst": None,
         "timing": row.get("expected_timing"), "source": source.get("title") or source.get("name"),
         "date": source.get("date") or source.get("publication_date"),
         "source_link": source.get("url"), "importance_score": None,
@@ -323,6 +337,7 @@ def biotech_radar_catalyst(ticker, rows):
 
 def ai_radar_catalyst(ticker, rows):
     matches = []
+    theme_matches = []
     for row in rows or []:
         beneficiary = next((item for item in row.get("beneficiary_records", []) if item.get("ticker") == ticker), None)
         if not beneficiary:
@@ -330,13 +345,32 @@ def ai_radar_catalyst(ticker, rows):
         evidence_ids = set(beneficiary.get("evidence_ids", []))
         for event in row.get("confirming_evidence", []) + row.get("mixed_evidence", []):
             if event.get("event_id") in evidence_ids and event.get("source_link"):
-                matches.append((event, row.get("trend")))
+                validation = company_catalyst_validation(event, ticker, beneficiary.get("company"))
+                (matches if validation["valid"] else theme_matches).append((event, row.get("trend"), validation))
     if not matches:
-        return None
-    event, trend = max(matches, key=lambda item: (item[0].get("event_date") or "",
-                                                  item[0].get("news_importance_score") or 0))
+        if not theme_matches:
+            return None
+        event, trend, validation = max(theme_matches, key=lambda item: (
+            item[0].get("event_date") or "", item[0].get("news_importance_score") or 0))
+        return {
+            "credible": False, "description": THEME_ONLY_STATUS,
+            "status": THEME_ONLY_STATUS, "validation_reason": validation["reason"],
+            "company_specific_catalyst": None,
+            "industry_theme_catalyst": event.get("new_information") or event.get("headline"),
+            "event_type": event.get("event_type") or f"{trend} industry event",
+            "timing": event.get("event_date"), "source": event.get("source"),
+            "date": event.get("event_date"), "source_link": event.get("source_link"),
+            "importance_score": event.get("news_importance_score"),
+            "basis": validation["reason"],
+        }
+    event, trend, validation = max(matches, key=lambda item: (company_evidence_source_priority(item[0]),
+                                                              item[0].get("event_date") or "",
+                                                              item[0].get("news_importance_score") or 0))
     return {
         "credible": True, "description": event.get("new_information"),
+        "status": validation["status"], "validation_reason": validation["reason"],
+        "company_specific_catalyst": event.get("new_information") or event.get("headline"),
+        "industry_theme_catalyst": None,
         "event_type": event.get("event_type") or f"{trend} industry event", "timing": event.get("event_date"),
         "source": event.get("source"), "date": event.get("event_date"),
         "source_link": event.get("source_link"), "importance_score": event.get("news_importance_score"),
@@ -344,13 +378,16 @@ def ai_radar_catalyst(ticker, rows):
     }
 
 
-def catalyst_check(ticker, domain, ai_radar, biotech_radar, ai_news, biotech_news):
-    news = matching_news_catalyst(ticker, biotech_news if domain == "biotech" else ai_news)
+def catalyst_check(ticker, domain, ai_radar, biotech_radar, ai_news, biotech_news, company=None):
+    news = matching_news_catalyst(ticker, biotech_news if domain == "biotech" else ai_news, company)
     if news:
         return news
     return (biotech_radar_catalyst(ticker, biotech_radar) if domain == "biotech"
             else ai_radar_catalyst(ticker, ai_radar)) or {
                 "credible": False, "description": "Missing: no source-backed catalyst is connected.",
+                "status": THEME_ONLY_STATUS,
+                "validation_reason": f"No source directly identifies {company or ticker} or a clearly linked company event.",
+                "company_specific_catalyst": None, "industry_theme_catalyst": None,
                 "event_type": None, "timing": None, "source": None, "date": None,
                 "source_link": None, "importance_score": None,
                 "basis": "A technical setup alone cannot enter Swing Trade Opportunity.",
@@ -390,6 +427,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
             candidates.setdefault(ticker, candidate)
     evaluated_states = []
     qualified_records = []
+    unverified_setups = []
     technical_qualified = []
     tracking = []
     previous_stages = prior_stage_map(previous_section)
@@ -414,8 +452,19 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
             continue
         technical_qualified.append(ticker)
         catalyst = catalyst_check(ticker, domain, ai_radar, biotech_radar,
-                                  ai_news_section, biotech_news_section)
+                                  ai_news_section, biotech_news_section, candidate.get("company") or ticker)
         if not catalyst["credible"]:
+            unverified_setups.append({
+                "company": candidate.get("company") or ticker, "ticker": ticker,
+                "exchange": candidate.get("exchange", ""), "listing_status": candidate.get("listing_status", "Public"),
+                "domain": domain, "classification": technical["state"], "technical": technical,
+                "stage_transition": transition, "catalyst": catalyst,
+                "catalyst_validation": {"valid": False, "status": THEME_ONLY_STATUS,
+                                        "reason": catalyst.get("validation_reason")},
+                "action": WAIT_FOR_CATALYST_ACTION,
+                "market_data": {key: snapshot.get(key) for key in
+                                ("current_price", "price_date", "currency", "source", "data_status")},
+            })
             continue
         explanation = build_explanation(candidate.get("company") or ticker, technical, catalyst)
         evaluated_record = {
@@ -451,7 +500,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
     selected_names = ", ".join(row["ticker"] for row in opportunities[:4]) or "none"
     reasoning = [
         "Step 1 screens independently for a major decline, stabilization near a recent low, and an early reversal or entry-zone structure. Extended stocks are rejected.",
-        "Step 2 runs only after the technical screen and requires a dated, source-backed clinical, regulatory, corporate, commercial, or industry catalyst.",
+        "Step 2 runs only after the technical screen and requires a dated, source-backed company-specific clinical, regulatory, corporate, commercial, financial, product, project, or partnership catalyst; shared industry/theme evidence is insufficient.",
         "Fresh, multi-signal favorable transitions rank first; otherwise Early Reversal and Entry Zone rank ahead of Bottoming and Breakout.",
     ]
     fresh_selected = sum(row["stage_transition"]["fresh_favorable_transition"] for row in opportunities)
@@ -465,7 +514,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
     return {
         "methodology": {
             "engine_version": "swing-trade-opportunity-v1.1",
-            "strategy": "Falling → Bottoming → Early Reversal → Entry Zone → Breakout → Extended, followed by a separate credible-catalyst check.",
+            "strategy": "Falling → Bottoming → Early Reversal → Entry Zone → Breakout → Extended, followed by a separate company-specific catalyst check.",
             "selection_principle": "Early Technical Reversal + Credible Catalyst = Strong Swing Trade Opportunity",
             "state_priority": ["Fresh favorable transition", "Entry Zone", "Early Reversal", "Bottoming", "Breakout", "Extended"],
             "transition_confirmation": "A favorable transition needs multiple technical signals; a large one-day gain alone is insufficient.",
@@ -473,7 +522,8 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
             "independence": "This engine does not use High-Conviction classification and does not modify Radar or Watchlist outputs.",
         },
         "reasoning": reasoning, "take_home_messages": takeaways,
-        "opportunities": opportunities, "stage_tracking": tracking,
+        "opportunities": opportunities, "unverified_setups": unverified_setups,
+        "stage_tracking": tracking,
         "coverage": {"candidate_pool": len(candidates), "market_evaluated": len(evaluated_states),
                      "technical_qualified": len(technical_qualified), "catalyst_qualified": catalyst_qualified_count,
                      "selected": len(opportunities),

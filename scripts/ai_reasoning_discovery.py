@@ -481,6 +481,7 @@ def discover_ai_stocks(events, themes, listed_companies=None, diagnostics=None):
                         "listing_status": "Public", "resolution": company.get("resolution", "news_identity"),
                         "beneficiary_roles": [], "themes": [], "parent_tracks": [],
                         "related_industries": [], "technologies": [], "evidence_ids": [],
+                        "theme_evidence_ids": [], "company_evidence_ids": [],
                         "discovery_sources": [], "thesis_evidence": [], "confirmation_evidence": [],
                     })
                     if relation not in row["beneficiary_roles"]:
@@ -495,6 +496,10 @@ def discover_ai_stocks(events, themes, listed_companies=None, diagnostics=None):
                                 row[field].append(value)
                     if evidence_id and evidence_id not in row["evidence_ids"]:
                         row["evidence_ids"].append(evidence_id)
+                    if evidence_id and evidence_id not in row["theme_evidence_ids"]:
+                        row["theme_evidence_ids"].append(evidence_id)
+                    if event_validation["credible"] and evidence_id and evidence_id not in row["company_evidence_ids"]:
+                        row["company_evidence_ids"].append(evidence_id)
                     source = f"Category-validated news identity: {track}"
                     if source not in row["discovery_sources"]:
                         row["discovery_sources"].append(source)
@@ -507,7 +512,7 @@ def discover_ai_stocks(events, themes, listed_companies=None, diagnostics=None):
                     if thesis not in row["thesis_evidence"]:
                         row["thesis_evidence"].append(thesis)
                     confirmation_types = matching_signal_types(text, CONFIRMATION_SIGNAL_TERMS)
-                    if confirmation_types:
+                    if confirmation_types and event_validation["credible"]:
                         confirmation = evidence_record(
                             event, confirmation_types,
                             f"The source reports {', '.join(confirmation_types).lower()} associated with the thesis.",
@@ -557,6 +562,7 @@ def discover_ai_stocks(events, themes, listed_companies=None, diagnostics=None):
                     "resolution": company.get("resolution", "listed_company_profile"),
                     "beneficiary_roles": [], "themes": [], "parent_tracks": [],
                     "related_industries": [], "technologies": [], "evidence_ids": [],
+                    "theme_evidence_ids": [], "company_evidence_ids": [],
                     "discovery_sources": [], "thesis_evidence": [], "confirmation_evidence": [],
                 })
                 if role not in row["beneficiary_roles"]:
@@ -567,6 +573,9 @@ def discover_ai_stocks(events, themes, listed_companies=None, diagnostics=None):
                     for value in theme.get(field, []):
                         if value not in row[field]:
                             row[field].append(value)
+                for value in theme.get("evidence_ids", []):
+                    if value not in row["theme_evidence_ids"]:
+                        row["theme_evidence_ids"].append(value)
                 if track not in row["parent_tracks"]:
                     row["parent_tracks"].append(track)
                 source = f"Broad listed-company profile discovery: {track} ({', '.join(company['matched_terms'])})"

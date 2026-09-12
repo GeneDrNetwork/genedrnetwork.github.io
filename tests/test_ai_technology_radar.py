@@ -4,7 +4,9 @@ from datetime import datetime, timedelta, timezone
 
 from scripts.ai_reasoning_discovery import build_ai_reasoning_discovery
 from scripts.update_news_dashboard import (
+    AI_RADAR_TRACKS,
     AI_RADAR_FACTOR_WEIGHTS,
+    ai_company_narrative,
     ai_early_opportunity_scores,
     ai_adoption_stage,
     ai_evidence_age,
@@ -225,6 +227,60 @@ class AiTechnologyRadarTests(unittest.TestCase):
         self.assertIsNone(components["market_confirmation"]["score"])
         self.assertLess(compute["data_completeness"], 100)
         self.assertTrue(compute["confirming_evidence"])
+
+    def test_generic_theme_event_does_not_confirm_profile_matched_company(self):
+        event = evidence(
+            event_id="nvda-cooling", trend="Cooling", event_type="Financial Results",
+            information="NVIDIA revenue increased while it introduced liquid cooling for new AI systems.",
+        )
+        section = {"radar_evidence_interface": {"events": [event]}}
+        listed = [{
+            "company": "Vertiv Holdings", "ticker": "VRT", "exchange": "NYSE",
+            "listing_status": "Public", "industry": "Data center equipment",
+            "description": "Thermal management and liquid cooling solutions for data centers.",
+            "products": "Liquid cooling equipment", "market_cap": 45_000_000_000,
+            "profile_source": "Company filing", "source_link": "https://example.com/vertiv-filing",
+        }]
+        discovery = build_ai_reasoning_discovery(section, listed)
+        vrt_discovery = next(row for row in discovery["stock_candidates"] if row["ticker"] == "VRT")
+        self.assertEqual(vrt_discovery["theme_evidence_ids"], ["nvda-cooling"])
+        self.assertEqual(vrt_discovery["company_evidence_ids"], [])
+        self.assertEqual(vrt_discovery["confirmation_evidence"], [])
+
+        cooling = next(row for row in build_ai_radar(
+            section, [], RUN_AT, ai_reasoning_discovery=discovery) if row["trend"] == "Cooling")
+        vrt = next(row for row in cooling["beneficiary_records"] if row["ticker"] == "VRT")
+        self.assertFalse(vrt["catalyst_validation"]["valid"])
+        self.assertEqual(vrt["confirmation_evidence"], [])
+        self.assertIsNone(next(component for component in vrt["bottleneck_score_components"]
+                               if component["key"] == "revenue_exposure")["score"])
+        self.assertIsNone(next(component for component in vrt["bottleneck_score_components"]
+                               if component["key"] == "orders_earnings_inflection")["score"])
+        self.assertLessEqual(vrt["bottleneck_opportunity_score"], 74)
+        self.assertLessEqual(vrt["raw_multibagger_potential_score"], 74)
+        self.assertIn("Missing / Not Yet Confirmed", vrt["company_narrative"]["key_intelligence"])
+
+    def test_company_narratives_and_horizons_are_company_specific(self):
+        examples = [
+            ({"company": "ComputeCo", "ticker": "CMP", "category": "Direct",
+              "profile_matches": ["accelerator", "processor"], "thesis_evidence": [],
+              "company_specific_catalyst": "ComputeCo reported accelerator orders.",
+              "industry_theme_catalyst": "AI capex is expanding."}, "Compute"),
+            ({"company": "CoolingCo", "ticker": "CLG", "category": "Bottleneck/Picks-and-Shovels",
+              "profile_matches": ["liquid cooling", "thermal management"], "thesis_evidence": [],
+              "company_specific_catalyst": None, "industry_theme_catalyst": "Rack density is increasing."}, "Cooling"),
+            ({"company": "GridCo", "ticker": "GRD", "category": "Second-Order",
+              "profile_matches": ["grid infrastructure", "transmission"], "thesis_evidence": [],
+              "company_specific_catalyst": "GridCo raised transmission backlog guidance.",
+              "industry_theme_catalyst": "Data-center electricity demand is rising."}, "Grid/Energy/Materials"),
+        ]
+        narratives = [ai_company_narrative(company, track, AI_RADAR_TRACKS[track])
+                      for company, track in examples]
+        self.assertEqual(len({item["why_selected"] for item in narratives}), 3)
+        self.assertEqual(len({item["horizons"]["six_to_36_months"] for item in narratives}), 3)
+        self.assertIn("ComputeCo", narratives[0]["key_intelligence"])
+        self.assertIn("Missing / Not Yet Confirmed", narratives[1]["key_intelligence"])
+        self.assertIn("GridCo", narratives[2]["watch_next"])
 
     def test_physical_ai_pilots_do_not_become_mass_adoption(self):
         pilot = [evidence(trend="Physical AI / Robotics", event_type="Product / Platform",

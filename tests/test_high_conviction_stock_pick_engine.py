@@ -59,6 +59,7 @@ def quality_layer(domain, ticker):
 
 def ai_radar(ticker="NVDA"):
     event = {"event_id": "event-1", "event_date": "2026-08-28T12:00:00+00:00", "age_band": "fresh",
+             "ticker": ticker, "company": "NVIDIA" if ticker == "NVDA" else ticker,
              "news_importance_score": 95, "new_information": "Company raised current AI infrastructure guidance.",
              "event_type": "Financial Results", "source_link": "https://example.com/source"}
     return [{"trend": "Compute", "trend_strength": 90, "confidence": "High", "data_completeness": 100,

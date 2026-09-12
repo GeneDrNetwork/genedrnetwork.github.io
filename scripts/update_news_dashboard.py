@@ -25,6 +25,9 @@ try:
     from .ai_reasoning_discovery import (PROFILE_DISCOVERY_RULES, build_ai_reasoning_discovery,
                                          discover_ai_themes, market_cap_bucket, profile_match_details)
     from .company_quality import build_company_quality_layer
+    from .catalyst_validation import (THEME_ONLY_STATUS, WAIT_FOR_CATALYST_ACTION,
+                                      catalyst_fields, company_catalyst_validation,
+                                      company_evidence_source_priority)
     from .dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                        build_news_commentary, build_radar_commentary)
     from .entry_timing import (build_buy_decision, build_entry_timing_layer, calculate_entry_inputs,
@@ -34,6 +37,9 @@ except ImportError:
     from ai_reasoning_discovery import (PROFILE_DISCOVERY_RULES, build_ai_reasoning_discovery,
                                         discover_ai_themes, market_cap_bucket, profile_match_details)
     from company_quality import build_company_quality_layer
+    from catalyst_validation import (THEME_ONLY_STATUS, WAIT_FOR_CATALYST_ACTION,
+                                     catalyst_fields, company_catalyst_validation,
+                                     company_evidence_source_priority)
     from dashboard_commentary import (annotate_high_conviction, annotate_watchlists,
                                       build_news_commentary, build_radar_commentary)
     from entry_timing import (build_buy_decision, build_entry_timing_layer, calculate_entry_inputs,
@@ -1038,6 +1044,14 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
         "market_expectation": expectation_rationale,
         "positioning": positioning_rationale,
         "upcoming_catalyst": f"{item['catalyst']} — {item['expected_timing']}",
+        "catalyst_validation": {
+            "valid": bool(item.get("catalyst") and item.get("sources")),
+            "status": "COMPANY-SPECIFIC CATALYST" if item.get("catalyst") and item.get("sources") else THEME_ONLY_STATUS,
+            "reason": ("The source-backed Company → Program → Indication → Catalyst record directly identifies this company."
+                       if item.get("catalyst") and item.get("sources") else "No source-backed company/program catalyst is connected."),
+        },
+        "company_specific_catalyst": item.get("catalyst") if item.get("sources") else None,
+        "industry_theme_catalyst": None,
         "opportunity_status": status,
         "binary_risk": binary_risk,
         "binary_risk_rationale": binary_risk_rationale,
@@ -2249,9 +2263,19 @@ def ai_early_opportunity_scores(beneficiary):
          "score": early_score},
     ]
     raw_multibagger, multibagger_completeness = normalized_radar_score(multibagger_components)
+    company_catalyst_valid = (beneficiary.get("catalyst_validation") or {}).get("valid") is True
+    if not company_catalyst_valid:
+        bottleneck_score = min(74, bottleneck_score) if bottleneck_score is not None else None
+        raw_multibagger = min(74, raw_multibagger) if raw_multibagger is not None else None
     multibagger = None if raw_multibagger is None else max(0, raw_multibagger - discovery["priced_in_penalty"])
     raw_rank = None if bottleneck_score is None or raw_multibagger is None else round(bottleneck_score * .55 + raw_multibagger * .45)
     rank_score = None if raw_rank is None else max(0, raw_rank - discovery["priced_in_penalty"])
+    company_component_keys = {"bottleneck_supplier_position", "moat", "revenue_exposure",
+                              "orders_earnings_inflection", "evidence_quality"}
+    company_available = sum(component["weight"] for component in bottleneck_components
+                            if component["key"] in company_component_keys and component.get("score") is not None)
+    company_total = sum(component["weight"] for component in bottleneck_components
+                        if component["key"] in company_component_keys)
     return {
         "bottleneck_opportunity_score": bottleneck_score,
         "multibagger_potential_score": multibagger,
@@ -2268,10 +2292,45 @@ def ai_early_opportunity_scores(beneficiary):
             "bottleneck_opportunity": bottleneck_completeness,
             "multibagger_potential": multibagger_completeness,
         },
+        "company_evidence_completeness": round(company_available / company_total * 100) if company_total else 0,
+        "company_confirmation_confidence": ("High" if company_catalyst_valid and confirmation_score is not None else
+                                            "Medium" if company_catalyst_valid else "Low / Theme Only"),
+        "company_score_cap": None if company_catalyst_valid else 74,
         "missing_early_discovery_inputs": [item["label"] for item in bottleneck_components + multibagger_components
                                            if item.get("score") is None],
         "scoring_note": ("Bottleneck evidence is explicitly connected." if explicit_bottleneck else
                          "Explicit bottleneck or limited-supplier evidence is missing; Bottleneck Opportunity is capped below 50."),
+    }
+
+
+def ai_company_narrative(beneficiary, trend, config):
+    company = beneficiary.get("company") or beneficiary.get("ticker") or "This company"
+    ticker = beneficiary.get("ticker") or "Missing"
+    category = beneficiary.get("category") or "potential beneficiary"
+    matches = beneficiary.get("profile_matches") or []
+    position = ", ".join(matches[:4]) or "a category-relevant business profile"
+    company_catalyst = beneficiary.get("company_specific_catalyst")
+    theme_catalyst = beneficiary.get("industry_theme_catalyst")
+    thesis = (beneficiary.get("thesis_evidence") or [{}])[0].get("basis")
+    why = (f"{company} ({ticker}) is mapped as a {category} beneficiary of {trend} because its company profile "
+           f"documents {position}. " + (f"Recent company evidence adds: {company_catalyst}" if company_catalyst else
+                                        "Commercial benefit is not yet confirmed by ticker-specific evidence."))
+    return {
+        "why_selected": why if not thesis else f"{why} Profile basis: {thesis}",
+        "risk_unproven": (f"{company} has direct company evidence, but durability, revenue sensitivity, margins, execution, and valuation still require monitoring."
+                          if company_catalyst else
+                          f"Missing / Not Yet Confirmed for {company}: orders, backlog, customers, revenue exposure, guidance, earnings or management commentary directly tied to this theme."),
+        "key_intelligence": company_catalyst or "Missing / Not Yet Confirmed: no recent source directly documents company-specific commercial benefit.",
+        "demand_drivers": f"Shared {trend} demand is driven by {config['medium']} {company}'s specific exposure is its documented {position} position.",
+        "current_bottleneck": (f"For {company}, the relevant chain constraint is {config['current_bottleneck'].lower()}; the missing proof is whether it converts into company orders, revenue, or margin leverage."),
+        "next_likely_bottleneck": f"For {company}, monitor whether {config['next_bottleneck'].lower()} changes demand for its {position} offering.",
+        "watch_next": f"Look for {company}-named filings, earnings commentary, contracts, customers, backlog, guidance, capacity, revenue exposure, or margins.",
+        "horizons": {
+            "near_term": f"{company}: " + (company_catalyst or "obtain ticker-specific confirmation; theme evidence alone is insufficient."),
+            "six_to_36_months": f"{company}: verify that its {position} exposure produces repeatable revenue growth, orders, margins, or market-share gains.",
+            "three_to_10_years": f"{company}: sustain a defensible {position} role as the {trend} value chain evolves; loss of relevance invalidates the thesis.",
+        },
+        "theme_evidence_summary": theme_catalyst or "No separate current theme event is connected.",
     }
 
 
@@ -2427,12 +2486,16 @@ def discover_candidate_pool(ai_radar=None, biotech_radar=None, ai_reasoning_disc
             candidate["thesis_evidence"] = discovered.get("thesis_evidence", [])
             candidate["confirmation_evidence"] = discovered.get("confirmation_evidence", [])
             candidate["confirmation_missing"] = discovered.get("confirmation_missing", True)
+            candidate["theme_evidence_ids"] = discovered.get("theme_evidence_ids", discovered.get("evidence_ids", []))
+            candidate["company_evidence_ids"] = discovered.get("company_evidence_ids", [])
             candidate["discovery_method"] = discovered.get("discovery_method")
             candidate["profile_matches"] = discovered.get("profile_matches", [])
             candidate["profile_match_fields"] = discovered.get("profile_match_fields", [])
             candidate["profile_validation_strength"] = discovered.get("profile_validation_strength")
             candidate["market_cap"] = discovered.get("market_cap")
             candidate["market_cap_bucket"] = discovered.get("market_cap_bucket", "Unknown")
+            candidate["theme_evidence_ids"] = discovered.get("theme_evidence_ids", evidence_ids)
+            candidate["company_evidence_ids"] = discovered.get("company_evidence_ids", [])
 
     catalog = BIOTECH_LEADERS + BIOTECH_EMERGING
     active_biotech_trends = set()
@@ -2836,27 +2899,39 @@ def stock_pick_action(classification_key):
 
 def ai_company_catalyst(linked_rows, ticker, fallback=None):
     candidates = []
+    theme_candidates = []
     for radar, beneficiary in linked_rows:
         evidence_ids = set(beneficiary.get("evidence_ids", []))
         for evidence in radar.get("confirming_evidence", []) + radar.get("mixed_evidence", []):
-            if evidence.get("event_id") in evidence_ids and evidence.get("age_band") != "stale":
-                candidates.append(evidence)
+            if evidence.get("event_id") in evidence_ids and str(evidence.get("age_band") or "").lower() != "stale":
+                validation = company_catalyst_validation(evidence, ticker, beneficiary.get("company"))
+                (candidates if validation["valid"] else theme_candidates).append((evidence, validation))
     if candidates:
-        selected = max(candidates, key=lambda item: (
-            {"fresh": 3, "current": 2, "aging": 1}.get(item.get("age_band"), 0),
-            item.get("event_date") or "",
+        selected, validation = max(candidates, key=lambda pair: (
+            company_evidence_source_priority(pair[0]),
+            {"fresh": 3, "current": 2, "aging": 1}.get(str(pair[0].get("age_band") or "").lower(), 0),
+            pair[0].get("event_date") or "",
         ))
-        recency_score = {"fresh": 90, "current": 75, "aging": 50}.get(selected.get("age_band"))
+        recency_score = {"fresh": 90, "current": 75, "aging": 50}.get(str(selected.get("age_band") or "").lower())
         material_types = {"Financial Results", "Capacity / Contract", "M&A / Partnership",
                           "Regulatory", "Product Launch", "Commercial Event"}
         catalyst_score = min(100, recency_score + 5) if recency_score is not None and selected.get("event_type") in material_types else recency_score
         return {"description": selected.get("new_information") or fallback or "Missing",
                 "score": catalyst_score, "evidence_id": selected.get("event_id"),
                 "date": selected.get("event_date"), "source_link": selected.get("source_link"),
+                "valid": True, "status": validation["status"], "validation_reason": validation["reason"],
+                "company_specific_catalyst": selected.get("new_information") or selected.get("headline"),
+                "industry_theme_catalyst": None,
                 "score_basis": f"Independent catalyst-timing score based on {selected.get('age_band', 'unknown')} event recency"
                                f" and event type {selected.get('event_type') or 'Missing'}; News Importance is not used."}
-    return {"description": fallback or "Missing: no current company-specific News catalyst is connected.",
+    theme = max(theme_candidates, key=lambda pair: (
+        pair[0].get("news_importance_score") or 0, pair[0].get("event_date") or ""))[0] if theme_candidates else None
+    return {"description": THEME_ONLY_STATUS,
             "score": None, "evidence_id": None, "date": None, "source_link": None,
+            "valid": False, "status": THEME_ONLY_STATUS,
+            "validation_reason": f"No current source directly identifies {ticker}; broad industry/theme evidence cannot unlock an entry signal.",
+            "company_specific_catalyst": None,
+            "industry_theme_catalyst": ((theme or {}).get("new_information") or (theme or {}).get("headline") or fallback),
             "score_basis": "Missing: no current company-specific News catalyst is connected."}
 
 
@@ -3229,6 +3304,8 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=Non
                             f"Requires at least 15% reliable remaining upside; current value is {remaining_upside.get('percent') if remaining_upside.get('percent') is not None else 'Unavailable'}%. {remaining_upside['basis']}")]
         classification_key = classify_stock_pick("ai", total_score, completeness, gates, expectation.get("state"), radar)
         entry_context = high_conviction_entry_context(snapshot, confirmation, classification_key)
+        if not catalyst["valid"] and entry_context["action"] in ("BUY", "SCALE IN"):
+            entry_context["action"] = WAIT_FOR_CATALYST_ACTION
         invalidation = radar.get("risks") if radar and not str(radar.get("risks", "")).startswith("Missing") else "Missing: no company-specific thesis invalidation is connected in current Radar evidence."
         why_selected = (f"Long-term quality review: Company Quality {(company_quality or {}).get('company_quality_score', 'Missing')}/100, "
                         f"reported annual revenue growth {quality_metric(company_quality, 'revenue_growth') if company_quality else 'Missing'}%, "
@@ -3240,6 +3317,10 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=Non
                         "classification": HIGH_CONVICTION_CLASSIFICATIONS[classification_key],
                         "why_selected": why_selected, "expectation_state": expectation.get("state"), "expectation": expectation,
                         "technical_entry_status": technical, "catalyst": catalyst["description"], "catalyst_evidence": catalyst,
+                        "catalyst_validation": {"valid": catalyst["valid"], "status": catalyst["status"],
+                                                "reason": catalyst["validation_reason"]},
+                        "company_specific_catalyst": catalyst["company_specific_catalyst"],
+                        "industry_theme_catalyst": catalyst["industry_theme_catalyst"],
                         "conviction_score": total_score, "market_confirmation": confirmation,
                         "high_conviction_entry": entry_context,
                         "mountain_position": entry_context["mountain_position"],
@@ -3328,6 +3409,15 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
                             f"Requires Low/Moderate binary risk and no integrity concern; current risk is {radar.get('binary_risk') if radar else 'Missing'}.")]
         classification_key = classify_stock_pick("biotech", total_score, completeness, gates, expectation.get("state"), radar)
         entry_context = high_conviction_entry_context(snapshot, confirmation, classification_key)
+        biotech_catalyst_valid = bool(radar and radar.get("catalyst") and radar.get("sources"))
+        biotech_catalyst_validation = {
+            "valid": biotech_catalyst_valid,
+            "status": "COMPANY-SPECIFIC CATALYST" if biotech_catalyst_valid else THEME_ONLY_STATUS,
+            "reason": ("The source-backed Company → Program → Indication → Catalyst record directly identifies this company."
+                       if biotech_catalyst_valid else "No source-backed company/program catalyst is connected."),
+        }
+        if not biotech_catalyst_valid and entry_context["action"] in ("BUY", "SCALE IN"):
+            entry_context["action"] = WAIT_FOR_CATALYST_ACTION
         invalidation = radar.get("risks") if radar and radar.get("risks") else "Missing: no program-specific thesis invalidation is connected."
         why_selected = (f"Long-term quality review: Company Quality {(company_quality or {}).get('company_quality_score', 'Missing')}/100, "
                         f"reported annual revenue growth {quality_metric(company_quality, 'revenue_growth') if company_quality else 'Missing'}%, "
@@ -3339,6 +3429,9 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
                         "expectation_state": expectation.get("state"), "expectation": expectation,
                         "technical_entry_status": technical, "catalyst": radar.get("catalyst") if radar else candidate.get("catalyst", "Missing"),
                         "catalyst_timing": radar.get("expected_timing") if radar else "Missing",
+                        "catalyst_validation": biotech_catalyst_validation,
+                        "company_specific_catalyst": radar.get("catalyst") if biotech_catalyst_valid else None,
+                        "industry_theme_catalyst": None if biotech_catalyst_valid else candidate.get("catalyst"),
                         "conviction_score": total_score, "market_confirmation": confirmation,
                         "high_conviction_entry": entry_context,
                         "mountain_position": entry_context["mountain_position"],
@@ -3436,6 +3529,17 @@ def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
         biotech_radar, market_data, MONTHLY_PICKS["biotech"], as_of, candidate_pool, quality_layer,
         prior_confirmations)
     entry_timing = build_entry_timing_layer(all_ai, all_biotech, market_data, watchlists)
+    for row in all_ai + all_biotech:
+        validation = row.get("catalyst_validation") or {}
+        decision = row.get("buy_decision") or {}
+        if validation.get("valid") is not True and decision.get("ready_now"):
+            decision.update({
+                "status_key": "wait", "status": WAIT_FOR_CATALYST_ACTION, "ready_now": False,
+                "why_buy_now": "Not ready now: no validated company-specific catalyst is connected.",
+                "missing_condition": "A source must directly identify the company or a clearly linked company event.",
+            })
+            if (row.get("swing_trade") or {}).get("entry_zone"):
+                row["swing_trade"]["entry_zone"]["active"] = False
     # Entry Timing annotates the market-confirmed ranking but cannot override thesis gates.
     selected = {
         "ai": [row for row in all_ai if row["classification_key"] == "high-conviction"][:5],
@@ -4563,25 +4667,47 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
     for item in candidates.values():
         if not item["evidence_ids"]:
             continue
+        linked_events = [event for event in relevant_events if event.get("event_id") in item["evidence_ids"]]
+        validated_events = [(event, company_catalyst_validation(
+            event, item.get("ticker"), item.get("company"))) for event in linked_events]
+        declared_company_ids = set(item.get("company_evidence_ids", []))
+        company_events = [(event, validation) for event, validation in validated_events
+                          if validation["valid"] and (not declared_company_ids or event.get("event_id") in declared_company_ids)]
+        company_event, company_validation = (max(
+            company_events, key=lambda pair: (company_evidence_source_priority(pair[0]),
+                                               pair[0].get("news_importance_score") or 0,
+                                               pair[0].get("event_date") or ""))
+            if company_events else (None, {"valid": False, "status": THEME_ONLY_STATUS,
+                                           "reason": f"No current source directly identifies {item.get('company') or item.get('ticker')}."}))
+        theme_events = [event for event, validation in validated_events if not validation["valid"]]
+        theme_event = max(theme_events, key=lambda event: (
+            event.get("news_importance_score") or 0, event.get("event_date") or "")) if theme_events else None
         category = item["category"]
         components = [
             {"label": "Trend Exposure", "weight": 30, "score": {"Direct": 30, "Bottleneck/Picks-and-Shovels": 26, "Second-Order": 16, "Emerging": 18}[category]},
             {"label": "Bottleneck Position", "weight": 25, "score": 25 if category == "Bottleneck/Picks-and-Shovels" else None},
-            {"label": "Revenue Sensitivity", "weight": 20, "score": 20 if item["importance"] and any(
-                event.get("event_type") == "Financial Results" and event.get("event_id") in item["evidence_ids"] for event in relevant_events) else None},
+            {"label": "Revenue Sensitivity", "weight": 20, "score": 20 if company_event and
+                company_event.get("event_type") == "Financial Results" else None},
             {"label": "Competitive Moat", "weight": 15, "score": None},
-            {"label": "Evidence Quality", "weight": 10, "score": round(max(item["importance"]) / 10) if item["importance"] else 5},
+            {"label": "Evidence Quality", "weight": 10,
+             "score": round((company_event.get("news_importance_score") or 0) / 10) if company_event else
+                      (5 if item.get("thesis_evidence") else None)},
         ]
         available = [component for component in components if component["score"] is not None]
         relevance = round(sum(component["score"] for component in available) / sum(component["weight"] for component in available) * 100)
         security_market = market_snapshot(market_data, item["ticker"])
+        direct_event_ids = {event.get("event_id") for event, _ in company_events if event.get("event_id")}
+        direct_confirmation = [evidence for evidence in item.get("confirmation_evidence", [])
+                               if evidence.get("event_id") in direct_event_ids]
         results.append({key: item[key] for key in ("company", "ticker", "exchange", "listing_status")} | {
             "category": category, "beneficiary_relevance": relevance, "score_components": components,
             "data_completeness": sum(component["weight"] for component in available), "evidence_ids": item["evidence_ids"],
+            "theme_evidence_ids": item.get("theme_evidence_ids", item["evidence_ids"]),
+            "company_evidence_ids": sorted(direct_event_ids),
             "opportunity_stage": item.get("opportunity_stage", "Commercial Confirmation" if item["importance"] else "Emerging Trend"),
             "thesis_evidence": item.get("thesis_evidence", []),
-            "confirmation_evidence": item.get("confirmation_evidence", []),
-            "confirmation_missing": item.get("confirmation_missing", not bool(item.get("confirmation_evidence"))),
+            "confirmation_evidence": direct_confirmation,
+            "confirmation_missing": not bool(direct_confirmation),
             "classification_reason": item.get("classification_reason", "Legacy evidence-linked beneficiary; forward-looking evidence separation is unavailable."),
             "discovery_method": item.get("discovery_method", "news_identity"),
             "profile_matches": item.get("profile_matches", []),
@@ -4591,7 +4717,7 @@ def ai_beneficiaries(trend, relevant_events, market_data=None, ai_reasoning_disc
             "market_cap_bucket": item.get("market_cap_bucket", "Unknown"),
             "market_data": compact_market_snapshot(security_market),
             "expectation": expectation_assessment(security_market, "ai", 15),
-        })
+        } | catalyst_fields(company_event, theme_event, company_validation))
     ordered = sorted(results, key=lambda item: (-item["beneficiary_relevance"], item["company"]))
     selected = ordered[:AI_BENEFICIARIES_PER_TRACK]
     has_smaller = any(item.get("market_cap_bucket") in ("Mid", "Small/Emerging") for item in selected)
@@ -4693,6 +4819,7 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
         earnings_score = min(15, 10 + len(earnings_events)) if earnings_events else None
         for beneficiary in beneficiaries:
             beneficiary.update(ai_early_opportunity_scores(beneficiary))
+            beneficiary["company_narrative"] = ai_company_narrative(beneficiary, trend, config)
         expectation_context = aggregate_ai_expectation(beneficiaries)
         expectation_score = expectation_context["score"]
         beneficiary_market_scores = []
@@ -4804,9 +4931,11 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                 continue
             # Only company-linked evidence may create a news/commercial alert. Broad
             # trend evidence must not be inherited by every beneficiary in a track.
-            linked_events = [evidence_by_id[event_id] for event_id in beneficiary.get("evidence_ids", [])
-                             if event_id in evidence_by_id and evidence_by_id[event_id].get("age_band") == "Fresh"
-                             and ticker in event_tickers(evidence_by_id[event_id])]
+            all_linked_events = [evidence_by_id[event_id] for event_id in beneficiary.get("evidence_ids", [])
+                                 if event_id in evidence_by_id and evidence_by_id[event_id].get("age_band") == "Fresh"]
+            linked_events = [event for event in all_linked_events
+                             if company_catalyst_validation(event, ticker, beneficiary.get("company"))["valid"]]
+            theme_events = [event for event in all_linked_events if event not in linked_events]
             snapshot = market_snapshot(market_data, ticker) or beneficiary.get("market_data") or {}
             entry = radar_entry_stage(snapshot, "ai")
             returns = snapshot.get("returns") or {}
@@ -4826,7 +4955,8 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                            event.get("news_importance_score") >= 80 and
                            event.get("source_link") and event.get("event_type") in catalyst_types]
             if significant:
-                event = max(significant, key=lambda item: item.get("news_importance_score") or 0)
+                event = max(significant, key=lambda item: (
+                    company_evidence_source_priority(item), item.get("news_importance_score") or 0))
                 detail = event.get("new_information") or event.get("headline") or "A significant new company catalyst was reported."
                 reasons.append(f"Ticker-specific catalyst/news ({event.get('news_importance_score')}/100): {detail}")
                 trigger_types.append("Significant new catalyst/news")
@@ -4845,7 +4975,8 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                         any(term in event_text for term in acceleration_terms)):
                     commercial_events.append(event)
             if commercial_events:
-                event = max(commercial_events, key=lambda item: item.get("news_importance_score") or 0)
+                event = max(commercial_events, key=lambda item: (
+                    company_evidence_source_priority(item), item.get("news_importance_score") or 0))
                 reasons.append("Renewed commercial acceleration: fresh company evidence references earnings, orders, backlog, revenue, bookings, or guidance.")
                 trigger_types.append("Renewed earnings/order/backlog acceleration")
                 if not any(item.get("event_id") == event.get("event_id") for item in source_events):
@@ -4891,7 +5022,16 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                 "price_discovery_stage": beneficiary.get("price_discovery_stage") or "Missing",
                 "already_priced_in": beneficiary.get("already_priced_in") or "Missing",
                 "entry_stage": entry.get("stage") or "Unavailable",
-                "action": action_by_entry_stage.get(entry.get("stage"), "WAIT"),
+                "action": (action_by_entry_stage.get(entry.get("stage"), "WAIT") if linked_events
+                           else WAIT_FOR_CATALYST_ACTION),
+                "catalyst_validation": ({"valid": True, "status": "COMPANY-SPECIFIC CATALYST",
+                                         "reason": f"Fresh source evidence directly identifies {ticker}."}
+                                        if linked_events else {"valid": False, "status": THEME_ONLY_STATUS,
+                                                               "reason": f"No fresh source event directly identifies {ticker}."}),
+                "company_specific_catalyst": ((linked_events[0].get("new_information") or linked_events[0].get("headline"))
+                                              if linked_events else None),
+                "industry_theme_catalyst": ((theme_events[0].get("new_information") or theme_events[0].get("headline"))
+                                            if theme_events else None),
                 "reasons": [], "trigger_types": [],
                 "trends": [], "source_events": [], "daily_return": daily_return,
                 "volume_vs_20d_average": volume_ratio,
@@ -4926,7 +5066,7 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
             "technical_trigger": "Reversal requires a bullish MACD crossover; Breakout requires at least 1.2 times breakout volume. Bottoming alone never qualifies.",
             "relative_strength_trigger": "Positive 1M relative performance versus QQQ that is better than the available 3M relative result.",
             "constructive_price_volume_trigger": "Price above MA20 with a positive 1M return plus accumulation-like or elevated volume.",
-            "action_policy": "Action is a display interpretation of Entry Stage only: Bottoming WATCH; Reversal WATCH / SCALE IN; Entry Zone BUY / SCALE IN; Breakout BUY; Extended DO NOT CHASE. Alert qualification does not imply a buy signal.",
+            "action_policy": "Entry Stage may suggest an action only when a valid company-specific catalyst exists. Theme-only/unverified evidence is limited to WATCH / WAIT FOR VALID CATALYST.",
             "missing_data": "Missing or stale market inputs do not trigger a market-based alert.",
         },
     }
@@ -5019,6 +5159,9 @@ def ai_radar_methodology():
         "engine_version": "ai-technology-radar-v1", "factor_weights": AI_RADAR_FACTOR_WEIGHTS,
         "selection_philosophy": "Growth Opportunity Discovery",
         "early_discovery_policy": "A company may enter Radar from source-backed thesis evidence about technology, capability, capacity, customer exposure, supply-chain position, or competitive position. Orders, backlog, revenue, and earnings confirmation are not prerequisites.",
+        "evidence_separation_policy": "Shared theme evidence establishes demand or a value-chain constraint only. Ticker-specific evidence must directly name the company/ticker or a clearly linked company product, project, customer, contract, filing, financial result, partnership, regulatory event, or management statement.",
+        "company_confirmation_policy": "Revenue exposure, orders/backlog, earnings inflection, commercial confirmation, and company catalyst fields use ticker-specific evidence only. Missing proof remains Missing / Not Yet Confirmed; company filings, earnings material, and official sources receive selection priority.",
+        "theme_only_score_policy": "Theme-only beneficiaries remain discoverable, but company-confirmation confidence is labeled Low / Theme Only and company-dependent Opportunity, raw Multibagger, and ranking scores cannot exceed 74.",
         "high_conviction_boundary": "Radar identifies potential future beneficiaries; its Trend Strength, Opportunity Score, and rank never qualify a company for long-term High Conviction.",
         "trend_strength_policy": "Trend Strength uses available Structural, Demand, Bottleneck and Earnings factors. Missing factors are excluded, not scored as zero.",
         "opportunity_score_policy": "Opportunity Score requires current Expectation Gap/Valuation and trend-specific Market Confirmation evidence. Missing inputs remain missing rather than becoming zero.",

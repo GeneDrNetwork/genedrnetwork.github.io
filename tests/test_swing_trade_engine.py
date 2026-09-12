@@ -152,6 +152,29 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(result["opportunities"][0]["domain"], "ai")
         self.assertEqual(result["opportunities"][0]["classification"], "Early Reversal")
 
+    def test_nne_cannot_use_nvidia_theme_news_as_company_catalyst(self):
+        pool = {"candidates": [{"company": "Nano Nuclear Energy", "ticker": "NNE", "domain": "ai"}]}
+        market = {"securities": {"NNE": snapshot("early")}}
+        nvidia_event = {
+            "event_id": "nvidia-infrastructure", "event_date": "2026-09-10",
+            "ticker": "NVDA", "company": "NVIDIA", "related_tickers": [],
+            "company_identities": [{"company": "NVIDIA", "ticker": "NVDA"}],
+            "new_information": "NVIDIA and cloud partners announced a 2-gigawatt AI infrastructure buildout.",
+            "event_type": "Partnership / Transaction", "source_link": "https://example.com/nvidia",
+            "news_importance_score": 95,
+        }
+        radar = [{"trend": "Grid/Energy/Materials", "confirming_evidence": [nvidia_event],
+                  "mixed_evidence": [], "beneficiary_records": [{
+                      "company": "Nano Nuclear Energy", "ticker": "NNE",
+                      "evidence_ids": ["nvidia-infrastructure"]}]}]
+        result = build_swing_trade_engine(pool, market, radar, [])
+        self.assertEqual(result["opportunities"], [])
+        self.assertEqual(result["coverage"]["catalyst_qualified"], 0)
+        nne = result["unverified_setups"][0]
+        self.assertEqual(nne["ticker"], "NNE")
+        self.assertEqual(nne["catalyst"]["status"], "THEME ONLY / UNVERIFIED")
+        self.assertEqual(nne["action"], "WATCH / WAIT FOR VALID CATALYST")
+
     def test_entry_zone_is_prioritized_over_bottoming(self):
         pool = {"candidates": [
             {"company": "Bottom Bio", "ticker": "BOT", "domain": "biotech"},
