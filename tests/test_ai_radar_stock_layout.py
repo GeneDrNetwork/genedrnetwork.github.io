@@ -15,6 +15,17 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         self.assertNotIn("<span>Price</span>", page)
         self.assertEqual(page.count("<span>Final Rank / Score</span>"), 3)
 
+    def test_ai_references_and_strategy_logic_are_directly_below_title(self):
+        page = (ROOT / "programs" / "genedrnews.html").read_text()
+        title = page.index('id="ai-radar-title"')
+        references = page.index("Primary References", title)
+        logic = page.index("Strategy Logic", references)
+        commentary = page.index('id="ai-radar-summary-copy"', logic)
+        self.assertLess(title, references)
+        self.assertLess(references, logic)
+        self.assertLess(logic, commentary)
+        self.assertIn("scoring, thresholds, and classifications are our own", page)
+
     def test_frontend_flattens_existing_public_beneficiaries_without_rescoring(self):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
         self.assertIn("function aiStockRadarRows", script)

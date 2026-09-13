@@ -2383,6 +2383,18 @@ def radar_dynamic_final_score(row):
     return dynamic_alignment_score(story_score, setup, entry_score, upside_score, risk_score)
 
 
+def ai_radar_dynamic_final_score(row):
+    """Rank AI opportunity, technical alignment, and defined risk without reusing valuation."""
+    setup = row.get("strategy_technical_setup") or {}
+    story_score = row.get("radar_rank_score")
+    if story_score is None:
+        story_score = row.get("bottleneck_opportunity_score")
+    # Valuation headroom and the priced-in penalty already contribute to
+    # radar_rank_score. Passing them again as upside would double-count them.
+    invalidation_score = 80 if setup.get("invalidation_level") is not None else 45
+    return dynamic_alignment_score(story_score, setup, None, None, invalidation_score)
+
+
 def radar_action_pool_eligible(row, biotech=False):
     """Require model quality and a confirmed Radar entry; story strength alone cannot act."""
     setup = row.get("strategy_technical_setup") or {}
@@ -4963,7 +4975,7 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
         earnings_score = min(15, 10 + len(earnings_events)) if earnings_events else None
         for beneficiary in beneficiaries:
             beneficiary.update(ai_early_opportunity_scores(beneficiary))
-            beneficiary["dynamic_final_score"] = radar_dynamic_final_score(beneficiary)
+            beneficiary["dynamic_final_score"] = ai_radar_dynamic_final_score(beneficiary)
             beneficiary["actionable"] = radar_action_pool_eligible(beneficiary)
             beneficiary["pool"] = "Action Pool" if beneficiary["actionable"] else "Discovery Pool"
             beneficiary["company_narrative"] = ai_company_narrative(beneficiary, trend, config)
@@ -5243,14 +5255,14 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
     for item in appearances:
         ticker = item["beneficiary"].get("ticker")
         current = best_by_ticker.get(ticker)
-        item_key = (item["actionable"], item["selection_score"], item["beneficiary"].get("beneficiary_relevance", 0),
+        item_key = (item["selection_score"], item["beneficiary"].get("beneficiary_relevance", 0),
                     item["trend_strength"], item["trend"] or "")
-        current_key = ((current["actionable"], current["selection_score"], current["beneficiary"].get("beneficiary_relevance", 0),
+        current_key = ((current["selection_score"], current["beneficiary"].get("beneficiary_relevance", 0),
                         current["trend_strength"], current["trend"] or "") if current else None)
         if current_key is None or item_key > current_key:
             best_by_ticker[ticker] = item
     assigned = sorted(best_by_ticker.values(), key=lambda item: (
-        not item["actionable"], -item["selection_score"], -item["beneficiary"].get("beneficiary_relevance", 0),
+        -item["selection_score"], -item["beneficiary"].get("beneficiary_relevance", 0),
         item["beneficiary"].get("ticker") or ""))[:target]
     category_counts = defaultdict(int)
     for item in assigned:
@@ -5276,8 +5288,7 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
                      for prior in (previous_rows or []) for item in prior.get("beneficiary_records", [])
                      if item.get("ticker") and isinstance(item.get("dynamic_final_rank"), int)}
     ranked = sorted((item for row in focused_rows for item in row.get("beneficiary_records", [])),
-                    key=lambda item: (not item.get("actionable"),
-                                      -(item.get("dynamic_final_score") or -1), item.get("ticker") or ""))
+                    key=lambda item: (-(item.get("dynamic_final_score") or -1), item.get("ticker") or ""))
     for rank, beneficiary in enumerate(ranked, 1):
         beneficiary["dynamic_final_rank"] = rank
         prior = previous_rank.get(beneficiary.get("ticker"))
@@ -5297,7 +5308,7 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
         "action_pool_count": sum(item["beneficiary"].get("actionable") is True for item in assigned),
         "discovery_pool_count": sum(item["beneficiary"].get("actionable") is not True for item in assigned),
         "removed_tickers": sorted(before_unique - selected_tickers),
-        "policy": "The full existing universe is rescored on every refresh; Action Pool candidates rank first, followed by the strongest Discovery Pool candidates by Dynamic Final Score. The Top 20 unique public companies each receive their strongest category-specific Radar placement.",
+        "policy": "The full existing universe is rescored on every refresh; Dynamic Final Score determines rank independently of Action status. The Top 20 unique public companies each receive their strongest category-specific Radar placement.",
     }
     return focused_rows, diagnostics
 
@@ -5305,9 +5316,15 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
 def ai_radar_methodology():
     return {
         "engine_version": "ai-technology-radar-v1", "factor_weights": AI_RADAR_FACTOR_WEIGHTS,
+        "primary_references": ["Peter Lynch — One Up on Wall Street", "Jesse Stine — Superstocks",
+                               "William J. O'Neil — How to Make Money in Stocks",
+                               "Mark Minervini — Trade Like a Stock Market Wizard; Think & Trade Like a Champion",
+                               "Anna Coulling — A Complete Guide to Volume Price Analysis",
+                               "Stan Weinstein — Secrets for Profiting in Bull and Bear Markets"],
+        "code_attribution": "GeneDr Network implementation informed by common principles in the cited references; all scoring, thresholds, and classifications are original implementation choices, not the authors' exact formulas.",
         "selection_philosophy": "Growth Opportunity Discovery",
         "technical_setup_engine": "Radar = Base / Breakout. Action requires Mature Base → contraction → higher low → confirmed reversal → resistance break on >=1.2x volume; first bounce, volatile bottom, and pre-pivot reversal remain WATCH.",
-        "dynamic_final_rank": "The full existing AI/Technology universe is rescored every refresh; Action Pool candidates rank before Discovery Pool candidates, then Dynamic Final Score orders each pool using opportunity plus Radar-specific setup, entry quality, upside, risk/invalidation, and extension gates.",
+        "dynamic_final_rank": "The full existing AI/Technology universe is rescored every refresh. Rank is independent of Action and uses the already price-adjusted future opportunity score, Radar Base/Breakout setup, and explicit invalidation/risk; valuation headroom is not counted a second time. Action remains a separate gate.",
         "early_discovery_policy": "A company may enter Radar from source-backed thesis evidence about technology, capability, capacity, customer exposure, supply-chain position, or competitive position. Orders, backlog, revenue, and earnings confirmation are not prerequisites.",
         "evidence_separation_policy": "Shared theme evidence establishes demand or a value-chain constraint only. Ticker-specific evidence must directly name the company/ticker or a clearly linked company product, project, customer, contract, filing, financial result, partnership, regulatory event, or management statement.",
         "company_confirmation_policy": "Revenue exposure, orders/backlog, earnings inflection, commercial confirmation, and company catalyst fields use ticker-specific evidence only. Missing proof remains Missing / Not Yet Confirmed; company filings, earnings material, and official sources receive selection priority.",

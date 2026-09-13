@@ -11,10 +11,12 @@ from scripts.update_news_dashboard import (
     ai_adoption_stage,
     ai_evidence_age,
     build_ai_radar,
+    ai_radar_dynamic_final_score,
     build_ai_reacceleration_alerts,
     build_manual_radar_market_context,
     deduplicate_ai_radar_evidence,
     focus_ai_radar_companies,
+    radar_action_pool_eligible,
 )
 
 
@@ -232,7 +234,7 @@ class AiTechnologyRadarTests(unittest.TestCase):
         self.assertEqual({item["ticker"] for item in selected}, {"ONE", "TWO"})
         self.assertEqual(diagnostics["active_categories"], 1)
 
-    def test_global_focus_prioritizes_action_pool_over_higher_discovery_score(self):
+    def test_global_focus_ranks_by_score_independently_of_action(self):
         rows = [{"trend": "Compute", "trend_strength": 80, "data_completeness": 80,
                  "beneficiary_records": [
                      {"company": "Action", "ticker": "ACTION", "category": "Direct",
@@ -243,8 +245,26 @@ class AiTechnologyRadarTests(unittest.TestCase):
         focused, diagnostics = focus_ai_radar_companies(rows, target=2)
         selected = sorted((item for row in focused for item in row["beneficiary_records"]),
                           key=lambda item: item["dynamic_final_rank"])
-        self.assertEqual([item["ticker"] for item in selected], ["ACTION", "DISC"])
+        self.assertEqual([item["ticker"] for item in selected], ["DISC", "ACTION"])
         self.assertEqual(diagnostics["action_pool_count"], 1)
+
+    def test_ai_dynamic_score_does_not_count_valuation_twice(self):
+        setup = {"score": 80, "actionable": False, "invalidation_level": 90,
+                 "falling": False, "extended": False, "failed_reversal": False,
+                 "unavailable": False, "stage": "Mature Base"}
+        base = {"radar_rank_score": 75, "bottleneck_opportunity_score": 80,
+                "strategy_technical_setup": setup}
+        cheap = {**base, "expectation": {"score": 15, "maximum": 15}}
+        expensive = {**base, "expectation": {"score": 1, "maximum": 15}}
+        self.assertEqual(ai_radar_dynamic_final_score(cheap),
+                         ai_radar_dynamic_final_score(expensive))
+
+    def test_extended_ai_candidate_cannot_become_action_from_story_strength(self):
+        row = {"bottleneck_opportunity_score": 99, "multibagger_potential_score": 99,
+               "already_priced_in": "NO", "catalyst_validation": {"valid": True},
+               "strategy_technical_setup": {"actionable": True, "extended": True,
+                                            "falling": False, "failed_reversal": False}}
+        self.assertFalse(radar_action_pool_eligible(row))
 
     def test_default_ai_focus_displays_top_twenty_from_larger_scan(self):
         rows = [{"trend": "Compute", "trend_strength": 80, "data_completeness": 80,
