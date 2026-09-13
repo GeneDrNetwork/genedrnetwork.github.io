@@ -213,6 +213,19 @@ class AiTechnologyRadarTests(unittest.TestCase):
         self.assertEqual(diagnostics["unique_companies_after"], 24)
         self.assertLessEqual(tickers.count("SHARED"), 1)
 
+    def test_default_ai_focus_displays_top_twenty_from_larger_scan(self):
+        rows = [{"trend": "Compute", "trend_strength": 80, "data_completeness": 80,
+                 "beneficiary_records": [
+                     {"company": f"Company {index}", "ticker": f"T{index:02d}",
+                      "category": "Direct", "beneficiary_relevance": 90,
+                      "dynamic_final_score": 100 - index}
+                     for index in range(25)]}]
+        focused, diagnostics = focus_ai_radar_companies(rows)
+        selected = [item for row in focused for item in row["beneficiary_records"]]
+        self.assertEqual(len(selected), 20)
+        self.assertEqual(diagnostics["unique_companies_before"], 25)
+        self.assertEqual([item["dynamic_final_rank"] for item in selected], list(range(1, 21)))
+
     def test_builds_all_tracks_and_keeps_missing_factors_missing(self):
         section = {"radar_evidence_interface": {"events": [evidence(second_order=["Data Centers"])]}}
         rows = build_ai_radar(section, [], RUN_AT)

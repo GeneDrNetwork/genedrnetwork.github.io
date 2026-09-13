@@ -139,6 +139,10 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(row["catalyst"]["source_link"], "https://example.com/clinical")
         self.assertIn("Why", "Why This Swing Trade Opportunity")
         self.assertIn("why_chart_selected", row["why_this_swing_trade_opportunity"])
+        self.assertEqual(row["technical"]["strategy_setup"]["engine"],
+                         "Swing Trade = Wave Bottom / Reversal / Upswing")
+        self.assertIsNotNone(row["dynamic_final_score"])
+        self.assertEqual(row["dynamic_final_rank"], 1)
 
     def test_non_biotech_company_can_qualify_from_source_backed_news(self):
         pool = {"candidates": [{"company": "Test Technology", "ticker": "TEST", "domain": "ai"}]}

@@ -38,6 +38,36 @@ def average(values):
     return round(sum(values) / len(values)) if values else None
 
 
+def swing_dynamic_final_score(technical, catalyst, transition=None):
+    """Swing rank is technical-first; catalyst is a small secondary confirmation."""
+    technical = technical or {}
+    current, support, resistance = (technical.get(key) for key in
+                                    ("current_price", "support", "resistance"))
+    risk = current - support if all(isinstance(value, (int, float)) for value in (current, support)) and current > support else None
+    reward = resistance - current if all(isinstance(value, (int, float)) for value in (current, resistance)) and resistance > current else None
+    reward_risk = reward / risk if risk and reward is not None else None
+    reward_score = (100 if reward_risk is not None and reward_risk >= 3 else
+                    85 if reward_risk is not None and reward_risk >= 2 else
+                    65 if reward_risk is not None and reward_risk >= 1.5 else
+                    35 if reward_risk is not None else None)
+    stage_score = {"Entry Zone": 95, "Early Reversal": 88, "Bottoming": 65,
+                   "Breakout": 78, "Falling": 15, "Extended": 10,
+                   "Failed Reversal / Technical Deterioration": 0}.get(technical.get("state"), 40)
+    catalyst_score = ((catalyst or {}).get("importance_score")
+                      if (catalyst or {}).get("credible") else 30)
+    parts = [(technical.get("technical_setup_score"), 60), (stage_score, 15),
+             (reward_score, 20), (catalyst_score, 5)]
+    available = [(value, weight) for value, weight in parts if isinstance(value, (int, float))]
+    score = sum(value * weight for value, weight in available) / sum(weight for _, weight in available) if available else None
+    if score is not None and (transition or {}).get("fresh_favorable_transition"):
+        score += 15
+    if technical.get("state") in ("Falling", "Failed Reversal / Technical Deterioration"):
+        score -= 25
+    if technical.get("extended") or technical.get("state") == "Extended":
+        score -= 30
+    return None if score is None else max(0, min(100, round(score)))
+
+
 def technical_setup(snapshot):
     snapshot = snapshot or {}
     price = snapshot.get("current_price")
@@ -439,8 +469,15 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
         domain = candidate.get("domain") or (snapshot.get("domains") or ["ai"])[0]
         transition = stage_transition(previous_stages.get(ticker), technical, domain)
         technical["state"] = transition["current_stage"]
+        technical["strategy_setup"] = {
+            "engine": "Swing Trade = Wave Bottom / Reversal / Upswing",
+            "stage": technical["state"], "score": technical.get("technical_setup_score"),
+            "actionable": technical.get("qualified_step_1") is True,
+            "rationale": "Recurring range/wave structure is evaluated first; fundamentals, growth, and catalysts are secondary confirmation.",
+        }
         if transition["failed_reversal"]:
             technical["qualified_step_1"] = False
+            technical["strategy_setup"]["actionable"] = False
         tracking.append({
             "ticker": ticker, "company": candidate.get("company") or ticker, "domain": domain,
             "stage": technical["state"], "as_of": technical.get("price_date"),
@@ -454,7 +491,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
         catalyst = catalyst_check(ticker, domain, ai_radar, biotech_radar,
                                   ai_news_section, biotech_news_section, candidate.get("company") or ticker)
         if not catalyst["credible"]:
-            unverified_setups.append({
+            unverified_record = {
                 "company": candidate.get("company") or ticker, "ticker": ticker,
                 "exchange": candidate.get("exchange", ""), "listing_status": candidate.get("listing_status", "Public"),
                 "domain": domain, "classification": technical["state"], "technical": technical,
@@ -464,7 +501,10 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
                 "action": WAIT_FOR_CATALYST_ACTION,
                 "market_data": {key: snapshot.get(key) for key in
                                 ("current_price", "price_date", "currency", "source", "data_status")},
-            })
+            }
+            unverified_record["dynamic_final_score"] = swing_dynamic_final_score(
+                technical, catalyst, transition)
+            unverified_setups.append(unverified_record)
             continue
         explanation = build_explanation(candidate.get("company") or ticker, technical, catalyst)
         evaluated_record = {
@@ -483,18 +523,28 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
             (catalyst.get("importance_score") if catalyst.get("importance_score") is not None else 75) * .2)
         evaluated_record["selection_score_note"] = (
             "Used only to order candidates that independently passed both steps; it cannot rescue a failed technical setup or missing catalyst.")
+        evaluated_record["dynamic_final_score"] = swing_dynamic_final_score(
+            technical, catalyst, transition)
         qualified_records.append(evaluated_record)
     catalyst_qualified_count = len(qualified_records)
-    opportunities = list(qualified_records)
-    opportunities.sort(key=lambda item: (
-                                         0 if item["stage_transition"]["fresh_favorable_transition"] else 1,
-                                         FAVORABLE_TRANSITION_PRIORITY.get(
-                                             (item["stage_transition"]["previous_stage"], item["stage_transition"]["current_stage"]), 9),
-                                         STATE_PRIORITY[item["classification"]],
-                                         -item["selection_score"], item["ticker"]))
+    previous_ranks = {row.get("ticker"): row.get("dynamic_final_rank")
+                      for row in list((previous_section or {}).get("opportunities", [])) +
+                      list((previous_section or {}).get("unverified_setups", []))
+                      if row.get("ticker") and isinstance(row.get("dynamic_final_rank"), int)}
+    all_ranked = sorted(qualified_records + unverified_setups,
+                        key=lambda item: (-(item.get("dynamic_final_score") or -1),
+                                          0 if item["stage_transition"].get("fresh_favorable_transition") else 1,
+                                          STATE_PRIORITY[item["classification"]], item["ticker"]))
+    for rank, row in enumerate(all_ranked, 1):
+        row["dynamic_final_rank"] = rank
+        prior_rank = previous_ranks.get(row.get("ticker"))
+        row["prior_dynamic_final_rank"] = prior_rank
+        row["rank_movement"] = None if prior_rank is None else prior_rank - rank
+    opportunities = sorted(qualified_records, key=lambda item: item["dynamic_final_rank"])
+    unverified_setups.sort(key=lambda item: item["dynamic_final_rank"])
     opportunities = opportunities[:limit]
-    for rank, row in enumerate(opportunities, 1):
-        row["rank"] = rank
+    for row in opportunities:
+        row["rank"] = row["dynamic_final_rank"]
     state_counts = Counter(evaluated_states)
     selected_states = Counter(row["classification"] for row in opportunities)
     selected_names = ", ".join(row["ticker"] for row in opportunities[:4]) or "none"
@@ -515,7 +565,8 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
         "methodology": {
             "engine_version": "swing-trade-opportunity-v1.1",
             "strategy": "Falling → Bottoming → Early Reversal → Entry Zone → Breakout → Extended, followed by a separate company-specific catalyst check.",
-            "selection_principle": "Early Technical Reversal + Credible Catalyst = Strong Swing Trade Opportunity",
+            "technical_setup_engine": "Swing Trade = Wave Bottom / Reversal / Upswing; technical setup drives 95% of Dynamic Final Score inputs when reward/risk is available, while catalyst quality is limited to 5% secondary confirmation.",
+            "selection_principle": "Technical wave/reversal quality determines Dynamic Final Rank; a validated company catalyst is secondary confirmation and is still required before an entry action advances beyond WATCH.",
             "state_priority": ["Fresh favorable transition", "Entry Zone", "Early Reversal", "Bottoming", "Breakout", "Extended"],
             "transition_confirmation": "A favorable transition needs multiple technical signals; a large one-day gain alone is insufficient.",
             "missing_data_policy": "Missing values remain missing and cannot satisfy either selection step.",

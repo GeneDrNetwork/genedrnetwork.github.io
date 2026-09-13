@@ -136,6 +136,10 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         self.assertGreaterEqual(row["final_score"], 80)
         self.assertEqual(row["data_completeness"], 100)
         self.assertTrue(all(gate["passed"] for gate in row["gates"]))
+        self.assertEqual(row["strategy_technical_setup"]["engine"],
+                         "High Conviction = Uptrend / Pullback / Continuation")
+        self.assertIsNotNone(row["dynamic_final_score"])
+        self.assertEqual(row["dynamic_final_rank"], 1)
 
     def test_total_score_cannot_override_expectation_gate(self):
         row = build_ai_stock_picks(ai_radar(), market_layer("NVDA", crowded=True), [],
