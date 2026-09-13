@@ -50,12 +50,9 @@ def swing_dynamic_final_score(technical, catalyst, transition=None):
                     85 if reward_risk is not None and reward_risk >= 2 else
                     65 if reward_risk is not None and reward_risk >= 1.5 else
                     35 if reward_risk is not None else None)
-    stage_score = {"Entry Zone": 95, "Early Reversal": 88, "Bottoming": 65,
-                   "Breakout": 78, "Falling": 15, "Extended": 10,
-                   "Failed Reversal / Technical Deterioration": 0}.get(technical.get("state"), 40)
     catalyst_score = ((catalyst or {}).get("importance_score")
                       if (catalyst or {}).get("credible") else 30)
-    parts = [(technical.get("technical_setup_score"), 60), (stage_score, 15),
+    parts = [(technical.get("technical_setup_score"), 75),
              (reward_score, 20), (catalyst_score, 5)]
     available = [(value, weight) for value, weight in parts if isinstance(value, (int, float))]
     score = sum(value * weight for value, weight in available) / sum(weight for _, weight in available) if available else None
@@ -90,6 +87,11 @@ def technical_setup(snapshot):
     major_decline = any(major_decline_signals)
     tight_range = inputs.get("tight_range_20d_pct")
     base_sessions = inputs.get("base_duration_sessions")
+    base_range = inputs.get("base_range_pct")
+    range_transitions = inputs.get("range_zone_transitions_63d")
+    established_wave = bool(base_sessions in (42, 63) and base_range is not None and
+                            12 <= base_range <= (20 if base_sessions == 42 else 25) and
+                            range_transitions is not None and range_transitions >= 2)
     stabilized = bool(
         distance_bottom is not None and distance_bottom <= 30 and
         (base_sessions in (42, 63) or (tight_range is not None and tight_range <= 28)))
@@ -119,17 +121,18 @@ def technical_setup(snapshot):
         state = "Extended"
     elif breakout:
         state = "Breakout"
-    elif major_decline and stabilized and reversal_signal and momentum_usable and above_ma20 and near_ma50:
+    elif established_wave and stabilized and reversal_signal and momentum_usable and above_ma20 and near_ma50:
         state = "Entry Zone"
-    elif major_decline and stabilized and reversal_signal and momentum_usable and near_ma20:
+    elif established_wave and stabilized and reversal_signal and momentum_usable and near_ma20:
         state = "Early Reversal"
-    elif major_decline and not stabilized and not reversal_signal and (price_vs_ma20 is None or price_vs_ma20 < 0):
+    elif not stabilized and not reversal_signal and (price_vs_ma20 is None or price_vs_ma20 < 0):
         state = "Falling"
     else:
         state = "Bottoming"
 
-    decline_score = (100 if drawdown is not None and -60 <= drawdown <= -20 else
-                     80 if major_decline else 25 if drawdown is not None else None)
+    wave_score = (100 if established_wave and base_range is not None and base_range >= 15 else
+                  85 if established_wave else 40 if base_sessions in (42, 63) else
+                  20 if base_range is not None else None)
     bottom_score = (100 if stabilized and distance_bottom is not None and distance_bottom <= 15 else
                     80 if stabilized else 45 if distance_bottom is not None and distance_bottom <= 30 else
                     20 if distance_bottom is not None else None)
@@ -141,12 +144,14 @@ def technical_setup(snapshot):
                    30 if state == "Falling" else 10)
     volume_ratio = snapshot.get("volume_vs_20d_average")
     accumulation = inputs.get("up_down_volume_ratio_20d")
+    contraction = inputs.get("volume_contraction_ratio")
+    higher_low = inputs.get("higher_low_confirmed") is True
     volume_score = average([
         90 if volume_ratio is not None and .8 <= volume_ratio <= 1.5 else 65 if volume_ratio is not None else None,
         100 if accumulation is not None and accumulation >= 1.3 else 75 if accumulation is not None and accumulation >= 1 else 40 if accumulation is not None else None,
     ])
     components = [
-        ("Major Decline", decline_score, 20), ("Bottom / Stabilization", bottom_score, 25),
+        ("Established Wave / Range", wave_score, 20), ("Bottom / Stabilization", bottom_score, 25),
         ("Early Reversal", reversal_score, 25), ("Entry / Extension", entry_score, 20),
         ("Volume", volume_score, 10),
     ]
@@ -156,22 +161,36 @@ def technical_setup(snapshot):
     support_values = [value for value in (inputs.get("recent_low_63d"), inputs.get("base_low"), ma50)
                       if value is not None and price is not None and value < price]
     support = max(support_values) if support_values else None
+    risk = price - support if price is not None and support is not None and price > support else None
+    resistance = inputs.get("resistance_level")
+    reward = resistance - price if price is not None and resistance is not None and resistance > price else None
+    reward_risk = round(reward / risk, 2) if risk and reward is not None else None
+    near_support = bool(distance_bottom is not None and distance_bottom <= 15 and
+                        (price_vs_ma50 is None or price_vs_ma50 <= 8))
+    selling_exhaustion = bool((contraction is not None and contraction <= .95) or
+                              (accumulation is not None and accumulation >= 1))
+    confirmed_reversal = bool(reversal_signal and momentum_usable and above_ma20 and higher_low)
     invalidation = inputs.get("invalidation_level") or support
-    qualified = bool(major_decline and stabilized and state != "Extended" and available >= 60)
+    qualified = bool(established_wave and near_support and selling_exhaustion and
+                     confirmed_reversal and state in ("Early Reversal", "Entry Zone") and
+                     reward_risk is not None and reward_risk >= 1.5 and not extended and available >= 60)
     return {
         "state": state, "technical_setup_score": score, "data_completeness": available,
         "qualified_step_1": qualified, "major_decline_confirmed": major_decline,
-        "bottom_stabilized": stabilized, "early_reversal_confirmed": reversal_signal and momentum_usable,
+        "bottom_stabilized": stabilized, "established_wave": established_wave,
+        "near_support": near_support, "selling_exhaustion": selling_exhaustion,
+        "higher_low_confirmed": higher_low, "early_reversal_confirmed": confirmed_reversal,
         "current_price": price, "ma20": ma20, "ma50": ma50,
         "price_vs_ma20_pct": price_vs_ma20, "price_vs_ma50_pct": price_vs_ma50,
         "fifty_two_week_high": inputs.get("fifty_two_week_high"),
         "drawdown_from_high_pct": drawdown, "recent_low": inputs.get("recent_low_63d"),
         "distance_from_bottom_pct": distance_bottom, "bottom_range_20d_pct": tight_range,
-        "base_duration_sessions": base_sessions, "rsi_14": rsi, "macd": macd,
+        "base_duration_sessions": base_sessions, "range_zone_transitions_63d": range_transitions,
+        "rsi_14": rsi, "macd": macd,
         "returns": returns, "relative_strength": snapshot.get("relative_strength") or {},
         "volume_vs_20d_average": volume_ratio, "up_down_volume_ratio_20d": accumulation,
         "support": round(support, 4) if support is not None else None,
-        "resistance": inputs.get("resistance_level"),
+        "resistance": resistance, "reward_risk_to_resistance": reward_risk,
         "breakout_proximity_pct": proximity, "extended": extended,
         "invalidation_level": round(invalidation, 4) if invalidation is not None else None,
         "components": [{"label": label, "score": value, "weight": weight,
@@ -549,7 +568,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
     selected_states = Counter(row["classification"] for row in opportunities)
     selected_names = ", ".join(row["ticker"] for row in opportunities[:4]) or "none"
     reasoning = [
-        "Step 1 screens independently for a major decline, stabilization near a recent low, and an early reversal or entry-zone structure. Extended stocks are rejected.",
+        "Step 1 requires a major decline, established 42/63-session wave, proximity to support, selling exhaustion, a higher-low reversal above MA20, and at least 1.5:1 reward/risk to resistance. Bottoming, Falling, Breakout-without-room, and Extended stocks are rejected.",
         "Step 2 runs only after the technical screen and requires a dated, source-backed company-specific clinical, regulatory, corporate, commercial, financial, product, project, or partnership catalyst; shared industry/theme evidence is insufficient.",
         "Fresh, multi-signal favorable transitions rank first; otherwise Early Reversal and Entry Zone rank ahead of Bottoming and Breakout.",
     ]
@@ -564,9 +583,9 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
     return {
         "methodology": {
             "engine_version": "swing-trade-opportunity-v1.1",
-            "strategy": "Falling → Bottoming → Early Reversal → Entry Zone → Breakout → Extended, followed by a separate company-specific catalyst check.",
+            "strategy": "Established Range/Wave → Near Support → Selling Exhaustion → Higher-Low Reversal → Upswing, followed by a separate company-specific catalyst check.",
             "technical_setup_engine": "Swing Trade = Wave Bottom / Reversal / Upswing; technical setup drives 95% of Dynamic Final Score inputs when reward/risk is available, while catalyst quality is limited to 5% secondary confirmation.",
-            "selection_principle": "Technical wave/reversal quality determines Dynamic Final Rank; a validated company catalyst is secondary confirmation and is still required before an entry action advances beyond WATCH.",
+            "selection_principle": "Technical wave/reversal quality and >=1.5:1 reward/risk determine qualification and Dynamic Final Rank; a validated company catalyst is secondary confirmation and is still required before an entry action advances beyond WATCH.",
             "state_priority": ["Fresh favorable transition", "Entry Zone", "Early Reversal", "Bottoming", "Breakout", "Extended"],
             "transition_confirmation": "A favorable transition needs multiple technical signals; a large one-day gain alone is insufficient.",
             "missing_data_policy": "Missing values remain missing and cannot satisfy either selection step.",

@@ -90,6 +90,7 @@ class EntryTimingEngineTests(unittest.TestCase):
         self.assertIsNotNone(inputs["recent_low_63d"])
         self.assertIsNotNone(inputs["drawdown_from_fifty_two_week_high_pct"])
         self.assertIsNotNone(inputs["distance_from_recent_low_pct"])
+        self.assertGreaterEqual(inputs["range_zone_transitions_63d"], 2)
 
     def test_layer_preserves_candidate_order_and_reuses_watchlist_record(self):
         ai_rows = [{"ticker": "A", "gates": [{"key": key, "label": key, "passed": True}

@@ -14,6 +14,7 @@ BASE_WEIGHTS = {"revenue_growth": 15, "earnings_growth": 15, "margin_trend": 15,
 DOMAIN_WEIGHTS = {
     "ai": {"trend_exposure": 10, "earnings_sensitivity": 10},
     "biotech": {"cash_runway": 10, "lead_asset_dependence": 5, "pipeline_diversification": 5},
+    "growth": {},
 }
 
 
@@ -163,7 +164,7 @@ def score_company_quality(candidate, raw, run_at):
         exposure = max((link.get("exposure_score") for link in links if link.get("exposure_score") is not None), default=None)
         component("trend_exposure", exposure, [{"radar_links": links}], "Qualitative exposure reuses evidence-linked Radar exposure; not a claimed revenue percentage.")
         component("earnings_sensitivity", None, [], "Missing: no verified AI segment earnings sensitivity; never inferred from company name or a trend label.")
-    else:
+    elif domain == "biotech":
         component("cash_runway", threshold_score(metrics["cash_runway"]["value"], [(36, 100), (24, 85), (18, 65), (12, 40), (6, 20), (-math.inf, 5)]),
                   [metrics["cash_runway"]], metrics["cash_runway"]["method"])
         component("lead_asset_dependence", None, [], "Missing: connected Radar programs are not a verified full-company asset-dependence assessment.")

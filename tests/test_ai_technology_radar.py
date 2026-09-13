@@ -232,6 +232,20 @@ class AiTechnologyRadarTests(unittest.TestCase):
         self.assertEqual({item["ticker"] for item in selected}, {"ONE", "TWO"})
         self.assertEqual(diagnostics["active_categories"], 1)
 
+    def test_global_focus_prioritizes_action_pool_over_higher_discovery_score(self):
+        rows = [{"trend": "Compute", "trend_strength": 80, "data_completeness": 80,
+                 "beneficiary_records": [
+                     {"company": "Action", "ticker": "ACTION", "category": "Direct",
+                      "beneficiary_relevance": 70, "dynamic_final_score": 65, "actionable": True},
+                     {"company": "Discovery", "ticker": "DISC", "category": "Direct",
+                      "beneficiary_relevance": 95, "dynamic_final_score": 90, "actionable": False},
+                 ]}]
+        focused, diagnostics = focus_ai_radar_companies(rows, target=2)
+        selected = sorted((item for row in focused for item in row["beneficiary_records"]),
+                          key=lambda item: item["dynamic_final_rank"])
+        self.assertEqual([item["ticker"] for item in selected], ["ACTION", "DISC"])
+        self.assertEqual(diagnostics["action_pool_count"], 1)
+
     def test_default_ai_focus_displays_top_twenty_from_larger_scan(self):
         rows = [{"trend": "Compute", "trend_strength": 80, "data_completeness": 80,
                  "beneficiary_records": [

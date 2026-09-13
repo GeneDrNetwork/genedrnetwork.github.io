@@ -94,6 +94,33 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
     current_volume = volumes[-1] if volumes else None
     volume_20 = average(volumes[-20:], 12) if len(volumes) >= 20 else None
     breakout_volume = round(current_volume / volume_20, 2) if current_volume is not None and volume_20 else None
+    recent_20_low = min(closes[-20:]) if len(closes) >= 20 else None
+    prior_20_low = min(closes[-40:-20]) if len(closes) >= 40 else None
+    higher_low = bool(recent_20_low is not None and prior_20_low is not None and
+                      recent_20_low >= prior_20_low * 1.005)
+    ma20_prior = average(closes[-30:-10], 20) if len(closes) >= 30 else None
+    ma50_prior = average(closes[-70:-20], 50) if len(closes) >= 70 else None
+    ma20 = moving_averages.get("ma20")
+    ma50 = moving_averages.get("ma50")
+    ma20_slope = round((ma20 / ma20_prior - 1) * 100, 2) if ma20 and ma20_prior else None
+    ma50_slope = round((ma50 / ma50_prior - 1) * 100, 2) if ma50 and ma50_prior else None
+    short_term_high = max(closes[-11:-1]) if len(closes) >= 11 else None
+    short_term_high_reclaimed = bool(short_term_high is not None and current >= short_term_high)
+    recent_breakout_attempt = bool(resistance and len(closes) >= 5 and max(closes[-5:]) > resistance)
+    failed_breakout = bool(recent_breakout_attempt and resistance and current < resistance * .98)
+    range_values = closes[-63:] if len(closes) >= 63 else closes[-42:] if len(closes) >= 42 else []
+    range_transitions = None
+    if range_values and max(range_values) > min(range_values):
+        low, high = min(range_values), max(range_values)
+        lower_zone, upper_zone = low + (high - low) * .25, high - (high - low) * .25
+        last_zone = None
+        range_transitions = 0
+        for value in range_values:
+            zone = -1 if value <= lower_zone else 1 if value >= upper_zone else None
+            if zone is not None:
+                if last_zone is not None and zone != last_zone:
+                    range_transitions += 1
+                last_zone = zone
     support_candidates = [value for value in (base_low, moving_averages.get("ma50"))
                           if value is not None and value < current]
     invalidation = max(support_candidates) if support_candidates else None
@@ -111,6 +138,14 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
         "volume_contraction_ratio": contraction, "up_down_volume_ratio_20d": accumulation,
         "resistance_level": round(resistance, 4) if resistance else None,
         "breakout_proximity_pct": breakout_pct, "breakout_volume_ratio": breakout_volume,
+        "recent_low_20d": round(recent_20_low, 4) if recent_20_low else None,
+        "prior_low_20d": round(prior_20_low, 4) if prior_20_low else None,
+        "higher_low_confirmed": higher_low,
+        "ma20_slope_10d_pct": ma20_slope, "ma50_slope_20d_pct": ma50_slope,
+        "short_term_high_10d": round(short_term_high, 4) if short_term_high else None,
+        "short_term_high_reclaimed": short_term_high_reclaimed,
+        "recent_breakout_attempt": recent_breakout_attempt, "failed_breakout": failed_breakout,
+        "range_zone_transitions_63d": range_transitions,
         "invalidation_level": round(invalidation, 4) if invalidation else None,
         "macd_improving": macd_record.get("improving"), "macd_crossover": macd_record.get("crossover"),
         "methodology": {
@@ -119,6 +154,10 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
             "invalidation": "Closest available support below price from the detected base low and MA50; omitted when neither is below price.",
             "decline_and_bottom": "Major-decline context uses the current close versus the trailing 252-session high; distance from the bottom uses the trailing 63-session low.",
             "volume": "Last-10-session average versus the preceding 20 sessions; accumulation compares up-day and down-day volume over 20 sessions.",
+            "higher_low": "The trailing 20-session closing low must be at least 0.5% above the preceding 20-session closing low.",
+            "ma_slopes": "MA20 compares with the equivalent 20-session average ending 10 sessions ago; MA50 compares with the equivalent average ending 20 sessions ago.",
+            "failed_breakout": "A close more than 2% below prior resistance after any of the last five closes exceeded that resistance.",
+            "range_transitions": "Counts alternating visits between the lower and upper quartiles of the trailing 63-session close range (42 sessions when 63 are unavailable).",
         },
     }
 

@@ -196,6 +196,11 @@ function biotechRadarRows(data) {
   return [];
 }
 
+function growthRadarRows(data) {
+  if (Array.isArray(data.radar?.growth)) return data.radar.growth;
+  return [];
+}
+
 function cryptoRadarRows(data) {
   if (Array.isArray(data.radar?.crypto)) return data.radar.crypto;
   return [];
@@ -454,6 +459,8 @@ function cryptoRadarAction(row = {}) {
 
 function renderAiRadar(rows, targetId = "ai-radar") {
   const stockRows = aiStockRadarRows(rows).slice(0, 20);
+  const actionCount = stockRows.filter(({ beneficiary }) => beneficiary.pool === "Action Pool").length;
+  if (targetId === "ai-radar") setText("ai-radar-pool-status", actionCount ? `${actionCount} Action · ${stockRows.length - actionCount} Discovery` : `No current Action entry · ${stockRows.length} Discovery`);
   document.getElementById(targetId).innerHTML = stockRows.map(({ trend, beneficiary, ticker, category, opportunity_score, multibagger_score, price_discovery_stage, already_priced_in, entry_stage, why_selected, risk_unproven }) => {
     const action = aiRadarAction(beneficiary);
     const companyNarrative = beneficiary.company_narrative || {};
@@ -463,6 +470,7 @@ function renderAiRadar(rows, targetId = "ai-radar") {
       <span><b class="radar-stage-pill">${escapeHtml(price_discovery_stage)}</b></span><span><b class="radar-stage-pill priced-${classKey(already_priced_in)}">${escapeHtml(already_priced_in)}</b></span><span><b class="radar-stage-pill entry-${classKey(entry_stage)}">${escapeHtml(entry_stage)}</b><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid ai-stock-details">
       ${detailItem("Why Selected", why_selected)}${detailItem("Risk / What Remains Unproven", risk_unproven)}
+      ${detailItem("Discovery / Action Pool", beneficiary.pool || "Discovery Pool")}
       ${detailItem("Category / Beneficiary Type", category)}${detailItem("Discovery Maturity", beneficiary.opportunity_stage || "Missing")}
       ${detailItem("Price Discovery / Priced In", `${price_discovery_stage} · ${already_priced_in}. ${beneficiary.price_discovery_rationale || "Evidence unavailable."}`)}
       ${detailItem("Entry Stage", `${entry_stage}. ${beneficiary.entry_stage?.rationale || "Detailed technical evidence remains in Swing Trade Opportunity."}`)}${detailItem("Action", action)}
@@ -646,9 +654,47 @@ function renderSources(sources = [], scoreAsOf) {
     <p>Score as of ${escapeHtml(scoreAsOf)}.</p></dd></div>`;
 }
 
+function renderGrowthRadar(rows, diagnostics = {}, targetId = "growth-radar") {
+  const rankedRows = [...rows].sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER));
+  const actionCount = Number(diagnostics.action_pool_count || 0);
+  if (targetId === "growth-radar") {
+    setText("growth-radar-summary-copy", `${diagnostics.total_stocks_scanned ?? 0} stocks scanned → ${diagnostics.initial_screen_pass ?? 0} passed the initial liquidity/data screen → ${diagnostics.opportunity_growth_screen_pass ?? 0} entered the qualified Growth Opportunities pool.`);
+    renderNumberedMessages("growth-radar-takeaways", actionCount
+      ? [`${actionCount} candidate${actionCount === 1 ? "" : "s"} currently pass both opportunity-quality and Radar technical-entry gates.`, `${diagnostics.discovery_pool_count ?? 0} additional qualified candidates remain in the Discovery Pool.`, "Action Pool candidates rank before Discovery Pool candidates; no BUY is inferred from opportunity quality alone."]
+      : ["No Growth Opportunities candidate currently passes the full entry-alignment gate.", `${diagnostics.discovery_pool_count ?? 0} qualified candidates remain in the Discovery Pool.`, "No BUY candidate was manufactured; wait for a mature base and confirmed reversal or breakout."]);
+  }
+  const target = document.getElementById(targetId);
+  if (!target) return;
+  target.innerHTML = rankedRows.map((row) => {
+    const setup = row.strategy_technical_setup || {};
+    const metrics = row.reported_metrics || {};
+    const sourceLinks = (row.sources || []).map((source) => {
+      const url = safeSourceUrl(source.url);
+      const label = source.name || source.title || "Evidence source";
+      return url ? `<li><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>` : `<li>${escapeHtml(label)}</li>`;
+    }).join("");
+    return `<details class="radar-item growth-radar-item"><summary>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(row.sector)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      ${renderScore(row.opportunity_score, "Growth Opportunity")}${renderScore(row.growth_acceleration_score, "Growth Acceleration")}
+      <span><b class="radar-stage-pill">${escapeHtml(row.pool)}</b></span><span><b class="radar-stage-pill">${escapeHtml(setup.stage || "Unavailable")}</b></span><span><b class="decision-action">${escapeHtml(row.action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
+    </summary><dl class="detail-grid growth-details">
+      ${detailItem("Why Selected", row.why_selected)}${detailItem("Risk / What Remains Unproven", row.risk_unproven)}
+      ${detailItem("Primary Group", `Growth Opportunities · ${row.sector} · ${row.industry}`)}${detailItem("Pool / Action", `${row.pool} · ${row.action}`)}
+      ${detailItem("Dynamic Final Rank", `${dynamicRankLabel(row)} · ${row.dynamic_final_score ?? "Missing"} / 100`)}${detailItem("Radar Technical Setup", `${setup.stage || "Unavailable"} · ${setup.score ?? "Missing"} / 100. ${setup.rationale || "Missing"}`)}
+      ${detailItem("Fundamental Quality", row.fundamental_quality_score === null || row.fundamental_quality_score === undefined ? "Missing" : `${row.fundamental_quality_score} / 100`)}${detailItem("Catalyst / Earnings Growth", row.catalyst_growth_score === null || row.catalyst_growth_score === undefined ? "Missing / Not Yet Confirmed" : `${row.catalyst_growth_score} / 100`)}
+      ${detailItem("Relative Strength", row.relative_strength_score === null || row.relative_strength_score === undefined ? "Missing" : `${row.relative_strength_score} / 100 versus S&P 500`)}${detailItem("Remaining Upside", row.remaining_upside_score === null || row.remaining_upside_score === undefined ? "Missing" : `${row.remaining_upside_score} / 100`)}
+      ${detailItem("Reported Growth", `Revenue ${metrics.revenue_growth ?? "Missing"}% · Earnings ${metrics.earnings_growth ?? "Missing"}% · Margin trend ${metrics.margin_trend ?? "Missing"} pts`)}${detailItem("Data Completeness", `${row.data_completeness ?? "Missing"}%`)}
+      ${renderMarketSnapshot(row.market_data, "sp500")}
+      <div class="detail-item detail-wide radar-sources"><dt>Evidence Sources</dt><dd><ul>${sourceLinks || "<li>No current source link available.</li>"}</ul></dd></div>
+    </dl></details>`;
+  }).join("") || `<p class="loading-state">No company passed the current broad-universe Growth Opportunities qualification screen.</p>`;
+}
+
 function renderBiotechRadar(rows, targetId = "biotech-radar") {
   const rankedRows = [...rows].sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER)
     || (b.dynamic_final_score ?? b.radar_rank_score ?? -1) - (a.dynamic_final_score ?? a.radar_rank_score ?? -1));
+  const actionCount = rankedRows.filter((row) => row.pool === "Action Pool").length;
+  if (targetId === "biotech-radar") setText("biotech-radar-pool-status", actionCount ? `${actionCount} Action · ${rankedRows.length - actionCount} Discovery` : `No current Action entry · ${rankedRows.length} Discovery`);
   document.getElementById(targetId).innerHTML = rankedRows.map((row) => {
     const action = biotechRadarAction(row);
     return `<details class="radar-item biotech-radar-item"><summary>
@@ -658,6 +704,7 @@ function renderBiotechRadar(rows, targetId = "biotech-radar") {
     </summary><dl class="detail-grid biotech-details">
       ${detailItemMarkup("Company → Program → Indication → Catalyst", `${escapeHtml(row.company)} (${tickerPriceMarkup(row.ticker, row.market_data)}) → ${escapeHtml(row.program)} → ${escapeHtml(row.indication)} → ${escapeHtml(row.catalyst)}`)}
       ${detailItem("Why Selected", row.why_important)}${detailItem("Risk / What Remains Unproven", row.risks)}
+      ${detailItem("Discovery / Action Pool", row.pool || "Discovery Pool")}
       ${detailItem("Price Discovery / Priced In", `${row.price_discovery_stage || "Emerging"} · ${row.already_priced_in || "NO"}. ${row.price_discovery_rationale || "Evidence unavailable."}`)}
       ${detailItem("Entry Stage", `${row.entry_stage?.stage || "Unavailable"}. ${row.entry_stage?.rationale || "Detailed technical evidence remains in Swing Trade Opportunity."}`)}${detailItem("Action", action)}
       ${detailItem("Catalyst Validation", catalystStatus(row))}${detailItem("Company-Specific Catalyst", row.company_specific_catalyst || "Missing: no validated company-specific catalyst.", !row.company_specific_catalyst)}${detailItem("Industry / Theme Catalyst", row.industry_theme_catalyst || "Missing", !row.industry_theme_catalyst)}
@@ -730,9 +777,11 @@ function radarAnalysisMatches(data, ticker) {
   ai.sort((a, b) => (b.beneficiary.radar_rank_score ?? -1) - (a.beneficiary.radar_rank_score ?? -1));
   const biotech = (data.radar?.biotech || []).filter((row) => normalizedTicker(row.ticker) === ticker)
     .sort((a, b) => (b.radar_rank_score ?? -1) - (a.radar_rank_score ?? -1));
+  const growth = (data.radar?.growth || []).filter((row) => normalizedTicker(row.ticker) === ticker)
+    .sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER));
   const crypto = (data.radar?.crypto || []).filter((row) => normalizedTicker(row.ticker) === ticker)
     .sort((a, b) => (b.radar_rank_score ?? -1) - (a.radar_rank_score ?? -1));
-  return { ai, biotech, crypto };
+  return { ai, growth, biotech, crypto };
 }
 
 function renderMarketOnlyRadarAnalysis(ticker, domain, context) {
@@ -741,7 +790,7 @@ function renderMarketOnlyRadarAnalysis(ticker, domain, context) {
   const priced = context?.already_priced_in || "Unavailable";
   const entry = context?.entry_stage?.stage || "Unavailable";
   document.getElementById("radar-analyze-details").innerHTML = `<details class="radar-item ai-stock-radar-item"><summary>
-    <span class="ai-stock-identity"><strong>${tickerLink(ticker)}</strong><small>${escapeHtml(currentPriceLabel(ticker, market) || "Price unavailable")} · ${escapeHtml(domain === "biotech" ? "Biotechnology" : "AI / Technology")}</small></span>
+    <span class="ai-stock-identity"><strong>${tickerLink(ticker)}</strong><small>${escapeHtml(currentPriceLabel(ticker, market) || "Price unavailable")} · ${escapeHtml(domain === "biotech" ? "Biotechnology" : domain === "growth" ? "Growth Opportunities" : "AI / Technology")}</small></span>
     ${renderScore(null, "Opportunity Score")}${renderScore(null, "Multibagger Potential")}
     <span><b class="radar-stage-pill">${escapeHtml(discovery)}</b></span><span><b class="radar-stage-pill">${escapeHtml(priced)}</b></span><span><b class="radar-stage-pill">${escapeHtml(entry)}</b></span><span class="expand-control" aria-hidden="true">+</span>
   </summary><dl class="detail-grid"><div class="detail-item detail-wide"><dt>Evidence Boundary</dt><dd>${escapeHtml(context?.score_note || "No company-specific Radar thesis is connected, so Opportunity and Multibagger scores remain missing.")}</dd></div>
@@ -753,8 +802,8 @@ function renderRadarAnalysis(data, ticker, requestedDomain) {
   const matches = radarAnalysisMatches(data, ticker);
   const market = sharedMarketSecurities[ticker];
   let domain = requestedDomain;
-  if (domain === "auto") domain = matches.crypto.length ? "crypto" : matches.biotech.length ? "biotech" : matches.ai.length ? "ai" :
-    (market?.domains?.includes("crypto") ? "crypto" : market?.domains?.includes("biotech") ? "biotech" : "ai");
+  if (domain === "auto") domain = matches.crypto.length ? "crypto" : matches.biotech.length ? "biotech" : matches.ai.length ? "ai" : matches.growth.length ? "growth" :
+    (market?.domains?.includes("crypto") ? "crypto" : market?.domains?.includes("biotech") ? "biotech" : market?.domains?.includes("growth") ? "growth" : "ai");
   const result = document.getElementById("radar-analyze-result");
   const status = document.getElementById("radar-analyze-status");
   result.hidden = false;
@@ -765,6 +814,15 @@ function renderRadarAnalysis(data, ticker, requestedDomain) {
     renderNumberedMessages("radar-analyze-takeaways", [conciseRadarText(why), `The ranking penalty is ${beneficiary.priced_in_penalty ?? 0} points; this manual review does not alter automatic Radar ranking.`, beneficiary.confirmation_missing ? "Commercial confirmation remains unproven; monitor orders, backlog, customers, guidance, or revenue evidence." : "Commercial confirmation is connected, but durability and valuation still require monitoring."]);
     renderAiRadar([{ ...trend, beneficiary_records: [beneficiary] }], "radar-analyze-details");
     status.textContent = `${ticker} analyzed with existing AI/Technology Radar evidence. It was not added to automatic rankings.`;
+    status.className = "radar-analyze-status is-success";
+    return;
+  }
+  if (domain === "growth" && matches.growth.length) {
+    const row = matches.growth[0];
+    setText("radar-analyze-summary", `${row.company} (${ticker}) is in the ${row.pool}. Growth Opportunity is ${row.opportunity_score ?? "Missing"}/100 and Dynamic Final Score is ${row.dynamic_final_score ?? "Missing"}/100; the Radar setup is ${row.strategy_technical_setup?.stage || "Unavailable"}.`);
+    renderNumberedMessages("radar-analyze-takeaways", [conciseRadarText(row.why_selected), row.risk_unproven, "This review uses the broad-market Growth Opportunities model and does not alter automatic rankings."]);
+    renderGrowthRadar([row], data.radar?.growth_diagnostics || {}, "radar-analyze-details");
+    status.textContent = `${ticker} analyzed with existing Growth Opportunities evidence. It was not added to automatic rankings.`;
     status.className = "radar-analyze-status is-success";
     return;
   }
@@ -1413,6 +1471,8 @@ function positionCompany(ticker, data) {
   }
   const biotech = (data.radar?.biotech || []).find((row) => normalizedTicker(row.ticker) === key);
   if (biotech?.company) return biotech.company;
+  const growth = (data.radar?.growth || []).find((row) => normalizedTicker(row.ticker) === key);
+  if (growth?.company) return growth.company;
   for (const trend of data.radar?.ai || []) {
     const beneficiary = (trend.beneficiary_records || []).find((row) => normalizedTicker(row.ticker) === key);
     if (beneficiary?.company) return beneficiary.company;
@@ -1432,6 +1492,10 @@ function positionStrategyEvidence(ticker, sources, data) {
   for (const row of data.radar?.biotech || []) if (normalizedTicker(row.ticker) === key) matches.Radar.push({
     row, thesis: row.why_important || row.clinical_evidence, invalidation: row.risks,
     catalyst: `${row.catalyst || "Catalyst unavailable"}${row.expected_timing ? ` · ${row.expected_timing}` : ""}`, domain: "biotech",
+  });
+  for (const row of data.radar?.growth || []) if (normalizedTicker(row.ticker) === key) matches.Radar.push({
+    row, thesis: row.why_selected, invalidation: row.risk_unproven,
+    catalyst: row.catalyst_growth_score === null || row.catalyst_growth_score === undefined ? "Growth catalyst missing" : `Growth catalyst score ${row.catalyst_growth_score}/100`, domain: "growth",
   });
   for (const domain of ["ai", "biotech"]) for (const row of data.monthly_picks?.[domain] || []) if (normalizedTicker(row.ticker) === key) matches["High Conviction"].push({
     row, thesis: row.why_this_stock?.summary || row.why_selected, invalidation: row.thesis_invalidation,
@@ -1893,12 +1957,13 @@ function renderDashboard(data) {
   setText("market-data-through", formatMarketDataThrough(data.market_data_through || data.market_data?.data_through));
   setText("ai-news-summary-copy", data.summaries && data.summaries.ai);
   setText("biotech-news-summary-copy", data.summaries && data.summaries.biotech);
-  setText("ai-summary", data.summaries && data.summaries.ai); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("crypto-summary", data.summaries && data.summaries.crypto); setText("market-movers", data.summaries && data.summaries.market_movers);
+  setText("ai-summary", data.summaries && data.summaries.ai); setText("growth-summary", data.summaries && data.summaries.growth); setText("biotech-summary", data.summaries && data.summaries.biotech); setText("crypto-summary", data.summaries && data.summaries.crypto); setText("market-movers", data.summaries && data.summaries.market_movers);
   renderDashboardCommentary(data.commentary);
   renderSafely(() => renderTopNews(data.top_investment_news && data.top_investment_news.ai_technology), "ai-top-news");
   renderSafely(() => renderBiotechNews(data.top_investment_news && data.top_investment_news.biotech_healthcare), "biotech-top-news");
   renderSafely(() => renderAiReaccelerationAlerts(data.radar && data.radar.ai_reacceleration_alerts), "ai-reacceleration-alerts");
   renderSafely(() => renderAiRadar(aiRadarRows(data)), "ai-radar");
+  renderSafely(() => renderGrowthRadar(growthRadarRows(data), data.radar && data.radar.growth_diagnostics), "growth-radar");
   renderSafely(() => renderBiotechRadar(biotechRadarRows(data)), "biotech-radar");
   renderSafely(() => renderCryptoRadar(cryptoRadarRows(data)), "crypto-radar");
   renderSafely(() => renderOpportunities("ai-opportunities", qualifiedHighConvictionRows(data, "ai")), "ai-opportunities");

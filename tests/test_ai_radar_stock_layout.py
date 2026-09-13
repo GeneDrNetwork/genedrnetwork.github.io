@@ -13,7 +13,7 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         positions = [page.index(label) for label in labels]
         self.assertEqual(positions, sorted(positions))
         self.assertNotIn("<span>Price</span>", page)
-        self.assertEqual(page.count("<span>Final Rank / Score</span>"), 2)
+        self.assertEqual(page.count("<span>Final Rank / Score</span>"), 3)
 
     def test_frontend_flattens_existing_public_beneficiaries_without_rescoring(self):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
@@ -39,6 +39,15 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
         self.assertIn("function renderBiotechRadar(rows, targetId", script)
         self.assertIn('class="radar-item biotech-radar-item"', script)
+
+    def test_growth_radar_is_between_ai_and_biotech_and_has_separate_renderer(self):
+        page = (ROOT / "programs" / "genedrnews.html").read_text()
+        script = (ROOT / "assets" / "news-dashboard.js").read_text()
+        self.assertLess(page.index('id="ai-radar-title"'), page.index('id="growth-radar-title"'))
+        self.assertLess(page.index('id="growth-radar-title"'), page.index('id="biotech-radar-title"'))
+        self.assertIn("function renderGrowthRadar", script)
+        self.assertIn("action_pool_count", script)
+        self.assertIn("No BUY candidate was manufactured", script)
 
     def test_manual_analysis_and_separate_radar_commentary_are_present(self):
         page = (ROOT / "programs" / "genedrnews.html").read_text()

@@ -23,8 +23,8 @@ class BiotechCatalystRadarTests(unittest.TestCase):
 
     def test_live_radar_is_hierarchical_and_keeps_outputs_distinct(self):
         rows = build_biotech_radar(date(2026, 8, 27))
-        self.assertEqual([row["radar_rank_score"] for row in rows], sorted(
-            (row["radar_rank_score"] for row in rows), reverse=True))
+        self.assertEqual([row["dynamic_final_rank"] for row in rows], list(range(1, len(rows) + 1)))
+        self.assertEqual([not row["actionable"] for row in rows], sorted(not row["actionable"] for row in rows))
         self.assertTrue(all(row["engine_version"] == "biotech-radar-v1" for row in rows))
         self.assertTrue(all(len(row["score_components"]) == 5 for row in rows))
         self.assertTrue(all(row.get("company") and row.get("program") and row.get("indication") and row.get("catalyst") for row in rows))

@@ -6,6 +6,7 @@ from scripts.strategy_technical import (
     radar_base_breakout_setup,
 )
 from scripts.swing_trade import swing_dynamic_final_score
+from scripts.update_news_dashboard import radar_action_pool_eligible
 
 
 def market_snapshot(**overrides):
@@ -17,7 +18,11 @@ def market_snapshot(**overrides):
         "macd": {"histogram": .3, "improving": True, "crossover": "bullish"},
         "entry_inputs": {
             "base_duration_sessions": 63, "base_range_pct": 15,
-            "breakout_proximity_pct": -2, "breakout_volume_ratio": 1.0,
+            "tight_range_20d_pct": 8, "volume_contraction_ratio": .8,
+            "up_down_volume_ratio_20d": 1.2, "higher_low_confirmed": True,
+            "ma20_slope_10d_pct": 2, "ma50_slope_20d_pct": 3,
+            "short_term_high_reclaimed": True, "recent_low_20d": 96,
+            "breakout_proximity_pct": 2, "breakout_volume_ratio": 1.4,
             "invalidation_level": 94, "recent_low_63d": 82,
         },
     }
@@ -26,10 +31,18 @@ def market_snapshot(**overrides):
 
 
 class StrategyTechnicalSetupTests(unittest.TestCase):
-    def test_radar_requires_mature_base_before_confirmed_reversal(self):
+    def test_radar_requires_complete_sequence_before_action(self):
         confirmed = radar_base_breakout_setup(market_snapshot())
-        self.assertEqual(confirmed["stage"], "Confirmed Reversal")
+        self.assertEqual(confirmed["stage"], "Early Uptrend / Breakout")
         self.assertTrue(confirmed["actionable"])
+
+        before_pivot = market_snapshot(entry_inputs={
+            **market_snapshot()["entry_inputs"],
+            "breakout_proximity_pct": -2, "breakout_volume_ratio": 1.0,
+        })
+        awaiting = radar_base_breakout_setup(before_pivot)
+        self.assertEqual(awaiting["stage"], "Confirmed Reversal")
+        self.assertFalse(awaiting["actionable"])
 
         first_bounce = market_snapshot(entry_inputs={
             "base_duration_sessions": None, "base_range_pct": None,
@@ -49,7 +62,7 @@ class StrategyTechnicalSetupTests(unittest.TestCase):
         self.assertEqual(result["stage"], "Early Uptrend / Breakout")
         self.assertTrue(result["breakout_confirmed"])
 
-    def test_high_conviction_accepts_middle_of_established_uptrend(self):
+    def test_high_conviction_established_uptrend_waits_for_resumption(self):
         snapshot = market_snapshot(
             current_price=125,
             moving_averages={"ma20": 114, "ma50": 108, "ma200": 82},
@@ -58,14 +71,16 @@ class StrategyTechnicalSetupTests(unittest.TestCase):
         )
         result = high_conviction_continuation_setup(snapshot)
         self.assertEqual(result["stage"], "Established Uptrend")
-        self.assertTrue(result["actionable"])
+        self.assertFalse(result["actionable"])
         self.assertFalse(result["extended"])
 
     def test_high_conviction_favors_pullback_support_and_resumption(self):
         result = high_conviction_continuation_setup(market_snapshot(
             current_price=108,
             moving_averages={"ma20": 106, "ma50": 104, "ma200": 80},
-            entry_inputs={"recent_low_63d": 96, "invalidation_level": 103},
+            entry_inputs={"recent_low_63d": 96, "recent_low_20d": 103,
+                          "higher_low_confirmed": True, "ma50_slope_20d_pct": 2,
+                          "short_term_high_reclaimed": True, "invalidation_level": 103},
             macd={"histogram": .2, "improving": True, "crossover": "bullish"},
         ))
         self.assertEqual(result["stage"], "Trend Resumption")
@@ -127,6 +142,17 @@ class StrategyTechnicalSetupTests(unittest.TestCase):
         no_catalyst = {"credible": False, "importance_score": None}
         self.assertGreater(swing_dynamic_final_score(strong, no_catalyst),
                            swing_dynamic_final_score(weak, weak_catalyst))
+
+    def test_radar_action_pool_requires_entry_and_company_catalyst(self):
+        row = {
+            "strategy_technical_setup": radar_base_breakout_setup(market_snapshot()),
+            "bottleneck_opportunity_score": 75, "multibagger_potential_score": 70,
+            "catalyst_validation": {"valid": True}, "already_priced_in": "NO",
+        }
+        self.assertTrue(radar_action_pool_eligible(row))
+        self.assertFalse(radar_action_pool_eligible({**row, "catalyst_validation": {"valid": False}}))
+        self.assertFalse(radar_action_pool_eligible({
+            **row, "strategy_technical_setup": radar_base_breakout_setup({})}))
 
 
 if __name__ == "__main__":

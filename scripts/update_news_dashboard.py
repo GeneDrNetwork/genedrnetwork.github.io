@@ -32,6 +32,9 @@ try:
                                        build_news_commentary, build_radar_commentary)
     from .entry_timing import (build_buy_decision, build_entry_timing_layer, calculate_entry_inputs,
                                compact_entry_timing, score_entry_timing)
+    from .growth_opportunities import (build_growth_opportunities,
+                                        select_growth_deep_analysis_universe,
+                                        select_growth_market_universe)
     from .swing_trade import build_swing_trade_engine
     from .strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                      radar_base_breakout_setup)
@@ -46,6 +49,9 @@ except ImportError:
                                       build_news_commentary, build_radar_commentary)
     from entry_timing import (build_buy_decision, build_entry_timing_layer, calculate_entry_inputs,
                               compact_entry_timing, score_entry_timing)
+    from growth_opportunities import (build_growth_opportunities,
+                                       select_growth_deep_analysis_universe,
+                                       select_growth_market_universe)
     from swing_trade import build_swing_trade_engine
     from strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                     radar_base_breakout_setup)
@@ -702,7 +708,7 @@ def attach_watchlist_entry_readiness(market_data):
     """Reuse Phase 7 technical scoring for automatic and browser-manual Watchlist rows."""
     for snapshot in (market_data or {}).get("securities", {}).values():
         readiness = {}
-        for domain in ("ai", "biotech", "crypto"):
+        for domain in ("ai", "growth", "biotech", "crypto"):
             timing = score_entry_timing(snapshot, domain, {
                 "passed": True,
                 "rationale": "A Website Selected or user-manual Watchlist entry is being evaluated for timing only.",
@@ -1092,6 +1098,8 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
     result.update(early_opportunity)
     result["strategy_technical_setup"] = radar_base_breakout_setup(security_market_record)
     result["dynamic_final_score"] = radar_dynamic_final_score(result)
+    result["actionable"] = radar_action_pool_eligible(result, biotech=True)
+    result["pool"] = "Action Pool" if result["actionable"] else "Discovery Pool"
     result["why_changed"] = biotech_radar_why_changed(previous, result)
     prior_history = list(previous.get("score_history", [])) if previous else []
     snapshot = {
@@ -1125,7 +1133,8 @@ def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None, ma
             key = (item.get("ticker"), item.get("program"), item.get("indication"), item.get("catalyst"))
             eligible.append(score_biotech_catalyst(
                 item, as_of, biotech_news_section, previous_by_key.get(key), market_data))
-    eligible.sort(key=lambda item: (-(item.get("dynamic_final_score") or -1),
+    eligible.sort(key=lambda item: (not item.get("actionable"),
+                                    -(item.get("dynamic_final_score") or -1),
                                     -(item["radar_rank_score"] or -1),
                                     -(item["biotech_opportunity_score"] or -1),
                                     item["expected_timing"], item["ticker"]))
@@ -1141,8 +1150,8 @@ def radar_methodology():
     return {
         "engine_version": "biotech-radar-v1",
         "selection_philosophy": "Growth Opportunity Discovery",
-        "technical_setup_engine": "Radar = Base / Breakout. Mature Base → Confirmed Reversal → Early Uptrend / Breakout is favored; a first bounce or volatile bottom remains non-actionable.",
-        "dynamic_final_rank": "Recalculated on every refresh from the existing opportunity score, Radar-specific technical setup, entry quality, upside, invalidation/risk, and extension state.",
+        "technical_setup_engine": "Radar = Base / Breakout. Mature Base → contraction → higher low → confirmed reversal → resistance break on >=1.2x volume; only the confirmed Early Uptrend / Breakout stage is actionable.",
+        "dynamic_final_rank": "Recalculated on every refresh from the existing opportunity score, Radar-specific technical setup, entry quality, upside, invalidation/risk, and extension state; Action Pool candidates rank before Discovery Pool candidates.",
         "high_conviction_boundary": "Biotech Radar may include pre-revenue or binary development-stage companies. Radar status and score never qualify a company for long-term High Conviction.",
         "horizon": "Potentially valuation-changing catalysts expected within the next 183 days (approximately six months).",
         "weights": BIOTECH_RADAR_WEIGHTS,
@@ -1720,6 +1729,9 @@ def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
                 "listing_status": "Public", "resolution": "Nasdaq listed-company universe",
                 "sector": str(row.get("sector") or ""), "industry": str(row.get("industry") or ""),
                 "country": str(row.get("country") or ""), "market_cap": market_cap,
+                "last_price": parse_market_number(row.get("lastsale")),
+                "daily_volume": parse_market_number(row.get("volume")),
+                "daily_change_pct": parse_market_number(row.get("pctchange")),
                 "profile_source": "Nasdaq listed-company screener",
                 "source_link": f"https://www.nasdaq.com/market-activity/stocks/{ticker.lower()}",
                 "source_date": run_at.isoformat(timespec="seconds"),
@@ -2371,6 +2383,24 @@ def radar_dynamic_final_score(row):
     return dynamic_alignment_score(story_score, setup, entry_score, upside_score, risk_score)
 
 
+def radar_action_pool_eligible(row, biotech=False):
+    """Require model quality and a confirmed Radar entry; story strength alone cannot act."""
+    setup = row.get("strategy_technical_setup") or {}
+    opportunity = row.get("biotech_opportunity_score" if biotech else "bottleneck_opportunity_score")
+    multibagger = row.get("multibagger_potential_score")
+    base = bool(
+        setup.get("actionable") is True and not setup.get("falling") and
+        not setup.get("failed_reversal") and not setup.get("extended") and
+        (row.get("catalyst_validation") or {}).get("valid") is True and
+        row.get("already_priced_in") != "YES" and
+        isinstance(opportunity, (int, float)) and opportunity >= 60 and
+        isinstance(multibagger, (int, float)) and multibagger >= 50)
+    if not biotech:
+        return base
+    return bool(base and (row.get("evidence_gate") or {}).get("passed") is True and
+                not (row.get("evidence_integrity_gate") or {}).get("concern_identified"))
+
+
 def biotech_multibagger_scores(item, opportunity_score, scientific_score, catalyst_impact,
                                expectation, timing_score, market_snapshot_record, news_evidence):
     discovery = radar_price_discovery(market_snapshot_record, expectation)
@@ -2637,6 +2667,8 @@ def shared_market_ticker_domains(previous=None, candidate_pool=None, manual_watc
             add(beneficiary.get("ticker"), "ai")
     for row in (previous or {}).get("radar", {}).get("crypto", []):
         add(row.get("ticker"), "crypto")
+    for row in (previous or {}).get("radar", {}).get("growth", []):
+        add(row.get("ticker"), "growth")
     for row in (candidate_pool or {}).get("candidates", []):
         add(row.get("ticker"), row.get("domain"))
     for row in (manual_watchlist or {}).get("items", []):
@@ -2645,7 +2677,8 @@ def shared_market_ticker_domains(previous=None, candidate_pool=None, manual_watc
 
 
 def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None, expectations_by_ticker=None,
-                            candidate_pool=None, manual_watchlist=None):
+                            candidate_pool=None, manual_watchlist=None,
+                            defer_expectation_domains=None):
     ticker_domains = shared_market_ticker_domains(previous, candidate_pool, manual_watchlist)
     benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI", "btc": "BTC-USD"}
     dashboard_symbols = set(MARKETS) | set(benchmark_symbols.values())
@@ -2665,8 +2698,12 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
     if market_caps is None:
         market_caps = fetch_market_caps(set(ticker_domains))
     if expectations_by_ticker is None:
+        deferred = set(defer_expectation_domains or [])
+        expectation_tickers = {
+            ticker for ticker, domains in ticker_domains.items()
+            if not ticker.endswith("-USD") and not set(domains).issubset(deferred)}
         expectations_by_ticker = {} if supplied_series else fetch_expectation_inputs(
-            {ticker for ticker in ticker_domains if not ticker.endswith("-USD")}, run_at)
+            expectation_tickers, run_at)
     benchmarks = {
         name: calculate_market_technicals(symbol, series_by_symbol.get(symbol, {"rows": []}))
         for name, symbol in benchmark_symbols.items()
@@ -2723,6 +2760,34 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
                      "analyst_consensus": sum("analyst_consensus" in record.get("expectation_data", {}).get("available_input_groups", []) for record in securities.values()),
                      "short_interest": sum("positioning" in record.get("expectation_data", {}).get("available_input_groups", []) for record in securities.values())},
     }
+
+
+def attach_deferred_expectations(market_data, candidates, run_at):
+    """Fetch expensive expectation inputs only after the technical shortlist."""
+    securities = (market_data or {}).get("securities") or {}
+    tickers = {row.get("ticker") for row in candidates or [] if row.get("ticker") in securities}
+    raw = fetch_expectation_inputs(tickers, run_at) if tickers else {}
+    for ticker in tickers:
+        record = securities[ticker]
+        expectation = build_expectation_record(ticker, raw.get(ticker), record, run_at)
+        if record.get("market_cap") is None and expectation.get("valuation", {}).get("market_cap") is not None:
+            record["market_cap"] = expectation["valuation"]["market_cap"]
+            record["missing_fields"] = [field for field in record.get("missing_fields", [])
+                                        if field != "market_cap"]
+        record["expectation_data"] = expectation
+    coverage = (market_data or {}).setdefault("coverage", {})
+    coverage["expectation_current"] = sum(
+        record.get("expectation_data", {}).get("data_status") == "current"
+        for record in securities.values())
+    coverage["valuation"] = sum(
+        "valuation" in record.get("expectation_data", {}).get("available_input_groups", [])
+        for record in securities.values())
+    coverage["analyst_consensus"] = sum(
+        "analyst_consensus" in record.get("expectation_data", {}).get("available_input_groups", [])
+        for record in securities.values())
+    coverage["short_interest"] = sum(
+        "positioning" in record.get("expectation_data", {}).get("available_input_groups", [])
+        for record in securities.values())
 
 
 def build_manual_watchlist_output(manual_watchlist, market_data):
@@ -3620,7 +3685,7 @@ def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
     methodology = {
         "engine_version": "high-conviction-market-confirmed-v3", "factor_weights": HIGH_CONVICTION_FACTOR_WEIGHTS,
         "selection_philosophy": "Confirmed bullish thesis with proven company quality and meaningful remaining upside.",
-        "technical_setup_engine": "High Conviction = Uptrend / Pullback / Continuation. Established Uptrend → Healthy Pullback → Higher Low / Support Hold → Trend Resumption is favored; an entry in the middle of a strong long-term uptrend may remain valid.",
+        "technical_setup_engine": "High Conviction = Uptrend / Pullback / Continuation. Action requires Established Uptrend → Healthy Pullback → rising-MA50 Higher Low / Support Hold → momentum-backed prior-10-session-high reclaim.",
         "dynamic_final_rank": "Recalculated on every refresh from validated fundamental/conviction evidence, the High-Conviction continuation setup, entry quality, remaining upside, invalidation/risk, and extension state.",
         "radar_separation": "Radar is an early-discovery system and may include pre-revenue or unconfirmed beneficiaries. Radar rank never grants High-Conviction eligibility and contributes only 5% long-term-outlook context.",
         "candidate_policy": "Radar, broad shared-market confirmation screening, current/archived News catalysts, and established research candidates are merged; source alone never grants eligibility.",
@@ -3700,6 +3765,11 @@ def production_section_status(data, source_health):
         },
         "ai_technology_radar": {"refreshed": True, "trend_count": len(ai_rows),
                                  "unique_public_companies": len(ai_companies)},
+        "growth_opportunities_radar": {
+            "refreshed": True,
+            "qualified_count": len((data.get("radar") or {}).get("growth") or []),
+            "action_pool_count": ((data.get("radar") or {}).get("growth_diagnostics") or {}).get("action_pool_count", 0),
+        },
         "biotechnology_radar": {"refreshed": True, "opportunity_count": len((data.get("radar") or {}).get("biotech") or [])},
         "crypto_stablecoin_radar": {"refreshed": True, "opportunity_count": len((data.get("radar") or {}).get("crypto") or [])},
         "high_conviction": {"refreshed": True, "opportunity_count": sum(len(rows) for rows in (data.get("monthly_picks") or {}).values())},
@@ -4894,6 +4964,8 @@ def build_ai_radar(ai_news_section, previous_rows, run_at, market_data=None, ai_
         for beneficiary in beneficiaries:
             beneficiary.update(ai_early_opportunity_scores(beneficiary))
             beneficiary["dynamic_final_score"] = radar_dynamic_final_score(beneficiary)
+            beneficiary["actionable"] = radar_action_pool_eligible(beneficiary)
+            beneficiary["pool"] = "Action Pool" if beneficiary["actionable"] else "Discovery Pool"
             beneficiary["company_narrative"] = ai_company_narrative(beneficiary, trend, config)
         expectation_context = aggregate_ai_expectation(beneficiaries)
         expectation_score = expectation_context["score"]
@@ -5160,6 +5232,7 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
                 "trend": row.get("trend"), "trend_strength": row.get("trend_strength") or 0,
                 "trend_completeness": row.get("data_completeness") or 0,
                 "beneficiary": beneficiary,
+                "actionable": beneficiary.get("actionable") is True,
                 "selection_score": (beneficiary.get("dynamic_final_score") if beneficiary.get("dynamic_final_score") is not None else
                                     beneficiary.get("radar_rank_score") if beneficiary.get("radar_rank_score") is not None else
                                     round(relevance * .65 + (row.get("trend_strength") or 0) * .25 +
@@ -5170,14 +5243,14 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
     for item in appearances:
         ticker = item["beneficiary"].get("ticker")
         current = best_by_ticker.get(ticker)
-        item_key = (item["selection_score"], item["beneficiary"].get("beneficiary_relevance", 0),
+        item_key = (item["actionable"], item["selection_score"], item["beneficiary"].get("beneficiary_relevance", 0),
                     item["trend_strength"], item["trend"] or "")
-        current_key = ((current["selection_score"], current["beneficiary"].get("beneficiary_relevance", 0),
+        current_key = ((current["actionable"], current["selection_score"], current["beneficiary"].get("beneficiary_relevance", 0),
                         current["trend_strength"], current["trend"] or "") if current else None)
         if current_key is None or item_key > current_key:
             best_by_ticker[ticker] = item
     assigned = sorted(best_by_ticker.values(), key=lambda item: (
-        -item["selection_score"], -item["beneficiary"].get("beneficiary_relevance", 0),
+        not item["actionable"], -item["selection_score"], -item["beneficiary"].get("beneficiary_relevance", 0),
         item["beneficiary"].get("ticker") or ""))[:target]
     category_counts = defaultdict(int)
     for item in assigned:
@@ -5203,7 +5276,8 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
                      for prior in (previous_rows or []) for item in prior.get("beneficiary_records", [])
                      if item.get("ticker") and isinstance(item.get("dynamic_final_rank"), int)}
     ranked = sorted((item for row in focused_rows for item in row.get("beneficiary_records", [])),
-                    key=lambda item: (-(item.get("dynamic_final_score") or -1), item.get("ticker") or ""))
+                    key=lambda item: (not item.get("actionable"),
+                                      -(item.get("dynamic_final_score") or -1), item.get("ticker") or ""))
     for rank, beneficiary in enumerate(ranked, 1):
         beneficiary["dynamic_final_rank"] = rank
         prior = previous_rank.get(beneficiary.get("ticker"))
@@ -5220,8 +5294,10 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
         "companies_per_category": {row["trend"]: len(row.get("beneficiary_records", [])) for row in focused_rows},
         "size_mix": dict(sorted(size_mix.items())),
         "selected_tickers": sorted(selected_tickers),
+        "action_pool_count": sum(item["beneficiary"].get("actionable") is True for item in assigned),
+        "discovery_pool_count": sum(item["beneficiary"].get("actionable") is not True for item in assigned),
         "removed_tickers": sorted(before_unique - selected_tickers),
-        "policy": "The full existing universe is rescored on every refresh; the Top 20 unique public companies are selected globally by Dynamic Final Score, and each receives its strongest category-specific Radar placement.",
+        "policy": "The full existing universe is rescored on every refresh; Action Pool candidates rank first, followed by the strongest Discovery Pool candidates by Dynamic Final Score. The Top 20 unique public companies each receive their strongest category-specific Radar placement.",
     }
     return focused_rows, diagnostics
 
@@ -5230,8 +5306,8 @@ def ai_radar_methodology():
     return {
         "engine_version": "ai-technology-radar-v1", "factor_weights": AI_RADAR_FACTOR_WEIGHTS,
         "selection_philosophy": "Growth Opportunity Discovery",
-        "technical_setup_engine": "Radar = Base / Breakout. Mature Base → Confirmed Reversal → Early Uptrend / Breakout is favored; a first bounce or volatile bottom is not a confirmed entry.",
-        "dynamic_final_rank": "The full existing AI/Technology universe is rescored every refresh; the dashboard shows the Top 20 by opportunity plus Radar-specific setup, entry quality, upside, risk/invalidation, and extension gates.",
+        "technical_setup_engine": "Radar = Base / Breakout. Action requires Mature Base → contraction → higher low → confirmed reversal → resistance break on >=1.2x volume; first bounce, volatile bottom, and pre-pivot reversal remain WATCH.",
+        "dynamic_final_rank": "The full existing AI/Technology universe is rescored every refresh; Action Pool candidates rank before Discovery Pool candidates, then Dynamic Final Score orders each pool using opportunity plus Radar-specific setup, entry quality, upside, risk/invalidation, and extension gates.",
         "early_discovery_policy": "A company may enter Radar from source-backed thesis evidence about technology, capability, capacity, customer exposure, supply-chain position, or competitive position. Orders, backlog, revenue, and earnings confirmation are not prerequisites.",
         "evidence_separation_policy": "Shared theme evidence establishes demand or a value-chain constraint only. Ticker-specific evidence must directly name the company/ticker or a clearly linked company product, project, customer, contract, filing, financial result, partnership, regulatory event, or management statement.",
         "company_confirmation_policy": "Revenue exposure, orders/backlog, earnings inflection, commercial confirmation, and company catalyst fields use ticker-specific evidence only. Missing proof remains Missing / Not Yet Confirmed; company filings, earnings material, and official sources receive selection priority.",
@@ -5259,7 +5335,7 @@ def build_manual_radar_market_context(market_data):
     context = {}
     for ticker, snapshot in (market_data or {}).get("securities", {}).items():
         context[ticker] = {}
-        for domain, maximum in (("ai", 15), ("biotech", 20), ("crypto", 5)):
+        for domain, maximum in (("ai", 15), ("growth", 15), ("biotech", 20), ("crypto", 5)):
             expectation = expectation_assessment(snapshot, domain, maximum)
             discovery = radar_price_discovery(snapshot, expectation)
             context[ticker][domain] = {
@@ -5383,9 +5459,21 @@ def build():
     preliminary_candidates = discover_candidate_pool(
         previous.get("radar", {}).get("ai", []), previous.get("radar", {}).get("biotech", []),
         ai_reasoning_discovery)
+    specialized_preliminary = {row.get("ticker") for row in preliminary_candidates.get("candidates", [])
+                               if row.get("domain") in ("ai", "biotech")}
+    specialized_preliminary.update(
+        row.get("ticker") for row in COMPANY_REGISTRY
+        if row.get("listing_status") == "Public" and row.get("domain") in ("ai", "biotech", "both"))
+    specialized_preliminary.update(
+        company_identity(row.get("company"), row.get("ticker")).get("ticker")
+        for row in BIOTECH_LEADERS + BIOTECH_EMERGING + BIOTECH_CATALYSTS)
+    growth_technical_universe, growth_screen_diagnostics = select_growth_market_universe(
+        listed_companies, specialized_preliminary,
+        fallback_rows=previous.get("radar", {}).get("growth", []))
+    market_candidates = {"candidates": preliminary_candidates.get("candidates", []) + growth_technical_universe}
     market_data = build_market_data_layer(
-        previous, run_at, candidate_pool=preliminary_candidates,
-        manual_watchlist=manual_watchlist_config)
+        previous, run_at, candidate_pool=market_candidates,
+        manual_watchlist=manual_watchlist_config, defer_expectation_domains={"growth"})
     attach_watchlist_entry_readiness(market_data)
     manual_watchlist = build_manual_watchlist_output(manual_watchlist_config, market_data)
     data_through = market_data_through(market_data) or previous.get("market_data_through")
@@ -5425,6 +5513,16 @@ def build():
     ai_reasoning_discovery.setdefault("production_trace", {})["radar_unique_company_focus"] = ai_radar_focus
     biotech_radar = build_biotech_radar(
         score_date, biotech_news_section, previous.get("radar", {}).get("biotech", []), market_data)
+    specialized_current = specialized_preliminary | {
+        beneficiary.get("ticker")
+        for radar_row in ai_radar_analysis_universe
+        for beneficiary in radar_row.get("beneficiary_records", [])
+    } | {row.get("ticker") for row in biotech_radar}
+    growth_pattern_candidates = [row for row in growth_technical_universe
+                                 if row.get("ticker") not in specialized_current]
+    growth_quality_candidates, growth_pattern_diagnostics = select_growth_deep_analysis_universe(
+        growth_pattern_candidates, market_data)
+    attach_deferred_expectations(market_data, growth_quality_candidates, run_at)
     crypto_radar = build_crypto_radar(
         run_at, market_data, previous.get("radar", {}).get("crypto", []))
     candidate_discovery = discover_candidate_pool(ai_radar, biotech_radar, ai_reasoning_discovery)
@@ -5432,8 +5530,14 @@ def build():
         candidate_discovery, market_data, ai_radar, biotech_radar,
         ai_news_section, biotech_news_section)
     company_quality = build_company_quality_layer(
-        high_conviction_candidates, run_at, fetch_nasdaq_json,
+        high_conviction_candidates + growth_quality_candidates, run_at, fetch_nasdaq_json,
         previous.get("company_quality"))
+    growth_radar, growth_radar_diagnostics = build_growth_opportunities(
+        growth_quality_candidates, market_data, company_quality,
+        previous.get("radar", {}).get("growth", []), specialized_current)
+    growth_radar_diagnostics = {**growth_screen_diagnostics, **growth_pattern_diagnostics,
+                                **growth_radar_diagnostics,
+                                "specialized_tickers_excluded": len(specialized_current)}
     monthly_picks, high_conviction_engine, entry_timing_engine = build_high_conviction_engine(
         ai_radar, biotech_radar, market_data, score_date,
         {"candidates": high_conviction_candidates}, company_quality,
@@ -5452,18 +5556,41 @@ def build():
         "high_conviction": high_conviction_commentary,
     }
 
+    # The full Growth shortlist is evaluated during generation, but only displayed
+    # candidates belong in the browser payload. Preserve every security used by an
+    # existing strategy, watchlist, or manual workflow.
+    visible_growth_tickers = {row.get("ticker") for row in growth_radar}
+    market_records = market_data.get("securities", {})
+    market_data["securities"] = {
+        ticker: record for ticker, record in market_records.items()
+        if ticker in visible_growth_tickers or any(domain != "growth" for domain in record.get("domains", []))
+    }
+    market_data.setdefault("coverage", {})["deep_screen_current"] = sum(
+        record.get("data_status") == "current" for record in market_records.values())
+    market_data["coverage"]["retained_for_frontend"] = len(market_data["securities"])
+    quality_records = company_quality.get("records", {})
+    company_quality["records"] = {
+        key: record for key, record in quality_records.items()
+        if record.get("domain") != "growth" or record.get("ticker") in visible_growth_tickers
+    }
+    company_quality.setdefault("coverage", {})["deep_screen_records"] = len(quality_records)
+    company_quality["coverage"]["retained_for_frontend"] = len(company_quality["records"])
+
     data = {
         "updated_at": run_at.isoformat(timespec="seconds"),
         "market_data_through": data_through,
         "top_investment_news": {"ai_technology": ai_news_section, "biotech_healthcare": biotech_news_section},
         "summaries": {"ai": summarize(ai_news, "AI"), "biotech": summarize(biotech_news, "biotech"),
+                      "growth": (f"{growth_radar_diagnostics['action_pool_count']} actionable and "
+                                 f"{growth_radar_diagnostics['discovery_pool_count']} discovery candidates passed the broad-universe Growth Opportunities funnel."),
                       "crypto": f"{len(crypto_radar)} source-backed crypto assets and public-company beneficiaries are ranked for early opportunity and remaining upside.",
                       "market": summarize(market_news, "market"), "market_movers": market_movers},
         "takeaways": takeaways[:8],
         "ai": {"infrastructure_leaders": AI_INFRASTRUCTURE, "platform_leaders": AI_PLATFORMS,
                "emerging": AI_EMERGING, "demand_drivers": DEMAND_DRIVERS},
         "biotech": {"leaders": BIOTECH_LEADERS, "emerging": BIOTECH_EMERGING},
-        "radar": {"ai": ai_radar, "biotech": biotech_radar, "crypto": crypto_radar, "ai_focus": ai_radar_focus,
+        "radar": {"ai": ai_radar, "growth": growth_radar, "growth_diagnostics": growth_radar_diagnostics,
+                  "biotech": biotech_radar, "crypto": crypto_radar, "ai_focus": ai_radar_focus,
                   "ai_reacceleration_alerts": ai_reacceleration_alerts,
                   "ai_manual_analysis_candidates": build_ai_manual_analysis_candidates(
                       ai_radar_analysis_universe, ai_radar),
@@ -5507,6 +5634,7 @@ def build():
         "biotech_news_candidates": len(biotech_news_candidates),
         "listed_company_universe": len(listed_companies),
         "profiled_ai_companies": len(profiled_companies),
+        "growth_market_shortlist": len(growth_quality_candidates),
     }
     data["production_pipeline"] = {
         "schema_version": "investment-intelligence-daily-v1",

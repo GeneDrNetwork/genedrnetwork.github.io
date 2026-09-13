@@ -10,7 +10,7 @@ def snapshot(state="entry"):
     proximity = -5
     volume = 1.0
     if state == "early":
-        price, ma20, ma50 = 96, 98, 105
+        price, ma20, ma50 = 99, 98, 108
     elif state == "bottoming":
         price, ma20, ma50 = 93, 98, 105
         macd = {"histogram": -.3, "previous_histogram": -.2, "improving": False, "crossover": None}
@@ -28,11 +28,13 @@ def snapshot(state="entry"):
         "entry_inputs": {
             "fifty_two_week_high": 165, "fifty_two_week_low": 80,
             "drawdown_from_fifty_two_week_high_pct": -39.4,
-            "recent_low_63d": 89, "distance_from_recent_low_pct": distance,
-            "tight_range_20d_pct": 12, "base_duration_sessions": 42,
-            "up_down_volume_ratio_20d": 1.4, "resistance_level": 100,
+            "recent_low_63d": 92, "distance_from_recent_low_pct": distance,
+            "tight_range_20d_pct": 12, "base_duration_sessions": 42, "base_range_pct": 18,
+            "range_zone_transitions_63d": 3,
+            "volume_contraction_ratio": .8, "up_down_volume_ratio_20d": 1.4,
+            "higher_low_confirmed": True, "resistance_level": 115,
             "breakout_proximity_pct": proximity, "breakout_volume_ratio": volume,
-            "invalidation_level": 89,
+            "invalidation_level": 92,
         },
     }
 
@@ -190,7 +192,8 @@ class SwingTradeEngineTests(unittest.TestCase):
             {**biotech_radar()[0], "ticker": "ENT"},
         ]
         result = build_swing_trade_engine(pool, market, [], radar)
-        self.assertEqual([row["ticker"] for row in result["opportunities"]], ["ENT", "BOT"])
+        self.assertEqual([row["ticker"] for row in result["opportunities"]], ["ENT"])
+        self.assertEqual(result["coverage"]["technical_qualified"], 1)
 
     def test_fresh_confirmed_transition_ranks_ahead_of_static_entry_zone(self):
         pool = {"candidates": [
