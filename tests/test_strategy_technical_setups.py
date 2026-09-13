@@ -84,6 +84,41 @@ class StrategyTechnicalSetupTests(unittest.TestCase):
             dynamic_alignment_score(95, extended, 30, 80, 40),
         )
 
+    def test_falling_and_unavailable_radar_setups_are_gated_and_penalized(self):
+        falling = radar_base_breakout_setup(market_snapshot(
+            current_price=70,
+            moving_averages={"ma20": 75, "ma50": 80, "ma200": 85},
+            returns={"one_month": -12, "three_month": -25, "six_month": -35},
+            macd={"histogram": -.5, "improving": False, "crossover": None},
+            entry_inputs={"base_duration_sessions": None, "base_range_pct": None},
+        ))
+        unavailable = radar_base_breakout_setup({})
+        confirmed = radar_base_breakout_setup(market_snapshot())
+        self.assertEqual(falling["stage"], "Falling")
+        self.assertFalse(falling["actionable"])
+        self.assertEqual(unavailable["stage"], "Unavailable")
+        self.assertFalse(unavailable["actionable"])
+        self.assertGreater(confirmed["score"], falling["score"])
+        self.assertGreater(
+            dynamic_alignment_score(80, confirmed, 85, 70, 80),
+            dynamic_alignment_score(95, unavailable, 20, 70, 45),
+        )
+
+    def test_failed_reversal_is_not_actionable_and_is_penalized(self):
+        failed = radar_base_breakout_setup(market_snapshot(
+            current_price=94,
+            moving_averages={"ma20": 98, "ma50": 92, "ma200": 80},
+            macd={"histogram": -.4, "improving": False, "crossover": None},
+        ))
+        confirmed = radar_base_breakout_setup(market_snapshot())
+        self.assertEqual(failed["stage"], "Failed Reversal")
+        self.assertTrue(failed["failed_reversal"])
+        self.assertFalse(failed["actionable"])
+        self.assertGreater(
+            dynamic_alignment_score(80, confirmed, 85, 70, 80),
+            dynamic_alignment_score(95, failed, 15, 70, 80),
+        )
+
     def test_swing_dynamic_score_is_technical_first(self):
         strong = {"state": "Early Reversal", "technical_setup_score": 90,
                   "current_price": 100, "support": 90, "resistance": 125, "extended": False}

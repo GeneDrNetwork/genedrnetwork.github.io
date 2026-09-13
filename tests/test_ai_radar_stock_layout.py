@@ -13,6 +13,7 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         positions = [page.index(label) for label in labels]
         self.assertEqual(positions, sorted(positions))
         self.assertNotIn("<span>Price</span>", page)
+        self.assertEqual(page.count("<span>Final Rank / Score</span>"), 2)
 
     def test_frontend_flattens_existing_public_beneficiaries_without_rescoring(self):
         script = (ROOT / "assets" / "news-dashboard.js").read_text()
@@ -23,6 +24,9 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         self.assertIn("aiStockRadarRows(rows).slice(0, 20)", script)
         self.assertIn("dynamicRankLabel", script)
         self.assertIn("Radar Technical Setup", script)
+        self.assertIn("beneficiary.dynamic_final_rank", script)
+        self.assertIn("rankedRows", script)
+        self.assertIn("Final ${escapeHtml(beneficiary.dynamic_final_score", script)
         self.assertIn('beneficiary.listing_status !== "Public"', script)
         self.assertIn("beneficiary.opportunity_stage", script)
         self.assertIn("beneficiary.thesis_evidence", script)

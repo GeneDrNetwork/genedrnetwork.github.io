@@ -194,7 +194,7 @@ class AiTechnologyRadarTests(unittest.TestCase):
         self.assertGreater(early["radar_rank_score"], ran["radar_rank_score"])
         self.assertGreater(early["multibagger_potential_score"], ran["multibagger_potential_score"])
 
-    def test_global_focus_targets_unique_companies_and_preserves_categories(self):
+    def test_global_focus_targets_unique_companies(self):
         rows = []
         for category_index in range(10):
             beneficiaries = []
@@ -209,9 +209,28 @@ class AiTechnologyRadarTests(unittest.TestCase):
         tickers = [item["ticker"] for row in focused for item in row["beneficiary_records"]]
         self.assertEqual(len(tickers), 24)
         self.assertEqual(len(set(tickers)), 24)
-        self.assertEqual(len(focused), 10)
         self.assertEqual(diagnostics["unique_companies_after"], 24)
         self.assertLessEqual(tickers.count("SHARED"), 1)
+
+    def test_global_focus_does_not_reserve_a_slot_for_a_weaker_category(self):
+        rows = [
+            {"trend": "Strong", "trend_strength": 90, "data_completeness": 100,
+             "beneficiary_records": [
+                 {"company": "One", "ticker": "ONE", "category": "Direct", "beneficiary_relevance": 90,
+                  "dynamic_final_score": 90},
+                 {"company": "Two", "ticker": "TWO", "category": "Direct", "beneficiary_relevance": 85,
+                  "dynamic_final_score": 80},
+             ]},
+            {"trend": "Weak", "trend_strength": 40, "data_completeness": 100,
+             "beneficiary_records": [
+                 {"company": "Three", "ticker": "THREE", "category": "Direct", "beneficiary_relevance": 90,
+                  "dynamic_final_score": 20},
+             ]},
+        ]
+        focused, diagnostics = focus_ai_radar_companies(rows, target=2)
+        selected = [item for row in focused for item in row["beneficiary_records"]]
+        self.assertEqual({item["ticker"] for item in selected}, {"ONE", "TWO"})
+        self.assertEqual(diagnostics["active_categories"], 1)
 
     def test_default_ai_focus_displays_top_twenty_from_larger_scan(self):
         rows = [{"trend": "Compute", "trend_strength": 80, "data_completeness": 80,

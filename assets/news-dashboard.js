@@ -345,7 +345,8 @@ function aiStockRadarRows(trends = []) {
         why_selected: whySelected, risk_unproven: riskUnproven });
     }
   }
-  return rows.sort((a, b) => (b.beneficiary.dynamic_final_score ?? b.beneficiary.radar_rank_score ?? -1) - (a.beneficiary.dynamic_final_score ?? a.beneficiary.radar_rank_score ?? -1)
+  return rows.sort((a, b) => (a.beneficiary.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.beneficiary.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER)
+    || (b.beneficiary.dynamic_final_score ?? b.beneficiary.radar_rank_score ?? -1) - (a.beneficiary.dynamic_final_score ?? a.beneficiary.radar_rank_score ?? -1)
     || (b.opportunity_score ?? -1) - (a.opportunity_score ?? -1)
     || a.ticker.localeCompare(b.ticker));
 }
@@ -389,7 +390,9 @@ function aiRadarAction(row = {}) {
   const readiness = decisionNumber(row.entry_stage?.entry_timing_score);
   if ((opportunity !== null && opportunity < 50) || (multibagger !== null && multibagger < 45)) return "PASS";
   if (setup?.falling) return "WAIT";
+  if (setup?.failed_reversal) return "WAIT";
   if (setup?.extended) return "DO NOT CHASE";
+  if (setup?.unavailable) return "WATCH / WAIT FOR CONFIRMATION";
   if (stage === "Extended" || pricedIn === "YES") return "DO NOT CHASE";
   if (!hasValidCompanyCatalyst(row)) return "WATCH / WAIT FOR VALID CATALYST";
   if (setup && setup.actionable !== true) return "WATCH / WAIT FOR CONFIRMATION";
@@ -418,7 +421,9 @@ function biotechRadarAction(row = {}) {
   if (score !== null && score < 50) return "PASS";
   if (!evidencePassed || integrityConcern) return catalystAvailable ? "WAIT FOR CATALYST" : "PASS";
   if (setup?.falling) return "WAIT";
+  if (setup?.failed_reversal) return "WAIT";
   if (setup?.extended) return "WAIT FOR PULLBACK";
+  if (setup?.unavailable) return "WATCH / WAIT FOR CONFIRMATION";
   if (stage === "Extended" || pricedIn === "YES") return "WAIT FOR PULLBACK";
   if (!hasValidCompanyCatalyst(row)) return "WATCH / WAIT FOR VALID CATALYST";
   if (setup && setup.actionable !== true) return "WATCH / WAIT FOR CONFIRMATION";
@@ -453,7 +458,7 @@ function renderAiRadar(rows, targetId = "ai-radar") {
     const action = aiRadarAction(beneficiary);
     const companyNarrative = beneficiary.company_narrative || {};
     return `<details class="radar-item ai-stock-radar-item"><summary>
-      <span class="opportunity-rank">${escapeHtml(dynamicRankLabel(beneficiary))}</span><span class="ai-stock-identity"><strong>${tickerLink(ticker)}</strong><small>${escapeHtml(beneficiary.company)} · ${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(beneficiary))}<small>Final ${escapeHtml(beneficiary.dynamic_final_score ?? "Missing")}/100</small></span><span class="ai-stock-identity"><strong>${tickerLink(ticker)}</strong><small>${escapeHtml(beneficiary.company)} · ${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
       ${renderScore(opportunity_score, "Bottleneck Opportunity")}${renderScore(multibagger_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(price_discovery_stage)}</b></span><span><b class="radar-stage-pill priced-${classKey(already_priced_in)}">${escapeHtml(already_priced_in)}</b></span><span><b class="radar-stage-pill entry-${classKey(entry_stage)}">${escapeHtml(entry_stage)}</b><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid ai-stock-details">
@@ -642,10 +647,12 @@ function renderSources(sources = [], scoreAsOf) {
 }
 
 function renderBiotechRadar(rows, targetId = "biotech-radar") {
-  document.getElementById(targetId).innerHTML = rows.map((row) => {
+  const rankedRows = [...rows].sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER)
+    || (b.dynamic_final_score ?? b.radar_rank_score ?? -1) - (a.dynamic_final_score ?? a.radar_rank_score ?? -1));
+  document.getElementById(targetId).innerHTML = rankedRows.map((row) => {
     const action = biotechRadarAction(row);
     return `<details class="radar-item biotech-radar-item"><summary>
-      <span class="opportunity-rank">${escapeHtml(dynamicRankLabel(row))}</span><span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
       ${renderScore(row.biotech_opportunity_score ?? row.opportunity_score, "Biotech Opportunity")}${renderScore(row.multibagger_potential_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(row.price_discovery_stage || "Emerging")}</b></span><span><b class="radar-stage-pill priced-${classKey(row.already_priced_in || "NO")}">${escapeHtml(row.already_priced_in || "NO")}</b></span><span><b class="radar-stage-pill entry-${classKey(row.entry_stage?.stage || "Unavailable")}">${escapeHtml(row.entry_stage?.stage || "Unavailable")}</b><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid biotech-details">

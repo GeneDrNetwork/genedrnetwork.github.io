@@ -2359,7 +2359,9 @@ def radar_dynamic_final_score(row):
                     if isinstance(expectation_score, (int, float)) and expectation_max else None)
     entry_score = (95 if setup.get("stage") == "Early Uptrend / Breakout" else
                    85 if setup.get("stage") == "Confirmed Reversal" else
-                   55 if setup.get("stage") == "Mature Base" else 20)
+                   55 if setup.get("stage") == "Mature Base" else
+                   20 if setup.get("stage") == "Volatile Bottom / First Bounce" else
+                   15 if setup.get("stage") == "Failed Reversal" else 10)
     invalidation_score = 80 if setup.get("invalidation_level") is not None else 45
     catalyst_score = 85 if (row.get("catalyst_validation") or {}).get("valid") is True else 30
     risk_score = round((invalidation_score + catalyst_score) / 2)
@@ -5164,36 +5166,22 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
                                           min(100, row.get("data_completeness") or 0) * .10, 2)),
             })
     before_unique = {item["beneficiary"].get("ticker") for item in appearances}
-    by_trend = defaultdict(list)
+    best_by_ticker = {}
     for item in appearances:
-        by_trend[item["trend"]].append(item)
-    for candidates in by_trend.values():
-        candidates.sort(key=lambda item: (-item["selection_score"],
-                                          -item["beneficiary"].get("beneficiary_relevance", 0),
-                                          item["beneficiary"].get("company", "")))
-
-    assigned, used_tickers, category_counts = [], set(), defaultdict(int)
-    # Protect sparse but valid categories first, then let evidence strength allocate
-    # the remaining slots. A ticker receives one primary Radar category.
-    category_order = sorted(by_trend, key=lambda trend: (len(by_trend[trend]),
-                                                         -by_trend[trend][0]["selection_score"], trend))
-    for trend in category_order:
-        candidate = next((item for item in by_trend[trend]
-                          if item["beneficiary"].get("ticker") not in used_tickers), None)
-        if not candidate:
-            continue
-        assigned.append(candidate); used_tickers.add(candidate["beneficiary"].get("ticker")); category_counts[trend] += 1
-
-    remaining = [item for item in appearances if item["beneficiary"].get("ticker") not in used_tickers]
-    while remaining and len(assigned) < target:
-        candidate = max(remaining, key=lambda item: (
-            item["selection_score"] - max(0, category_counts[item["trend"]] - 2) * 2.5,
-            item["beneficiary"].get("beneficiary_relevance", 0),
-            -category_counts[item["trend"]],
-            item["beneficiary"].get("company", "")))
-        ticker = candidate["beneficiary"].get("ticker")
-        assigned.append(candidate); used_tickers.add(ticker); category_counts[candidate["trend"]] += 1
-        remaining = [item for item in remaining if item["beneficiary"].get("ticker") != ticker]
+        ticker = item["beneficiary"].get("ticker")
+        current = best_by_ticker.get(ticker)
+        item_key = (item["selection_score"], item["beneficiary"].get("beneficiary_relevance", 0),
+                    item["trend_strength"], item["trend"] or "")
+        current_key = ((current["selection_score"], current["beneficiary"].get("beneficiary_relevance", 0),
+                        current["trend_strength"], current["trend"] or "") if current else None)
+        if current_key is None or item_key > current_key:
+            best_by_ticker[ticker] = item
+    assigned = sorted(best_by_ticker.values(), key=lambda item: (
+        -item["selection_score"], -item["beneficiary"].get("beneficiary_relevance", 0),
+        item["beneficiary"].get("ticker") or ""))[:target]
+    category_counts = defaultdict(int)
+    for item in assigned:
+        category_counts[item["trend"]] += 1
 
     assignment = {item["beneficiary"].get("ticker"): item["trend"] for item in assigned}
     selected_tickers = set(assignment)
@@ -5233,7 +5221,7 @@ def focus_ai_radar_companies(rows, target=AI_RADAR_UNIQUE_COMPANY_TARGET, previo
         "size_mix": dict(sorted(size_mix.items())),
         "selected_tickers": sorted(selected_tickers),
         "removed_tickers": sorted(before_unique - selected_tickers),
-        "policy": "The full existing universe is rescored on every refresh; the Top 20 public companies receive one strongest category-specific Radar placement, with sparse active categories protected before remaining slots are allocated by Dynamic Final Score.",
+        "policy": "The full existing universe is rescored on every refresh; the Top 20 unique public companies are selected globally by Dynamic Final Score, and each receives its strongest category-specific Radar placement.",
     }
     return focused_rows, diagnostics
 

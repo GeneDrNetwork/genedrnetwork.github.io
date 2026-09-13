@@ -36,6 +36,7 @@ def radar_base_breakout_setup(snapshot):
     volume = _number(inputs.get("breakout_volume_ratio"))
     distance20 = _distance(price, _number(mas.get("ma20")))
     distance50 = _distance(price, _number(mas.get("ma50")))
+    unavailable = price is None or _number(mas.get("ma20")) is None or _number(mas.get("ma50")) is None
     falling = bool(price and mas.get("ma50") and mas.get("ma20") and
                    price < mas["ma50"] and mas["ma20"] < mas["ma50"] and
                    _number(macd.get("histogram")) is not None and macd["histogram"] < 0)
@@ -49,8 +50,15 @@ def radar_base_breakout_setup(snapshot):
     confirmed_reversal = bool(mature_base and price and mas.get("ma20") and price >= mas["ma20"] and momentum_confirmed)
     breakout = bool(mature_base and confirmed_reversal and proximity is not None and 0 <= proximity <= 5 and
                     volume is not None and volume >= 1.2)
-    if falling:
+    failed_reversal = bool(not unavailable and mature_base and price < mas["ma20"] and
+                           _number(macd.get("histogram")) is not None and macd["histogram"] < 0 and
+                           macd.get("improving") is not True)
+    if unavailable:
+        stage = "Unavailable"
+    elif falling:
         stage = "Falling"
+    elif failed_reversal:
+        stage = "Failed Reversal"
     elif extended:
         stage = "Extended"
     elif breakout:
@@ -69,17 +77,20 @@ def radar_base_breakout_setup(snapshot):
         85 if _number(returns.get("one_month")) is not None and returns["one_month"] > 0 else 40 if _number(returns.get("one_month")) is not None else None,
     ])
     score = _average([base_score, momentum_score, breakout_score, trend_score])
-    if stage == "Extended":
-        score = min(score or 0, 35)
-    elif stage == "Falling":
+    if stage == "Unavailable":
+        score = 0
+    elif stage in ("Falling", "Failed Reversal"):
         score = min(score or 0, 25)
+    elif stage == "Extended":
+        score = min(score or 0, 35)
     return {
         "engine": "Radar = Base / Breakout", "stage": stage, "score": _bounded(score),
         "actionable": stage in ("Confirmed Reversal", "Early Uptrend / Breakout"),
         "mature_base": mature_base, "confirmed_reversal": confirmed_reversal,
         "breakout_confirmed": breakout, "extended": extended, "falling": falling,
+        "failed_reversal": failed_reversal, "unavailable": unavailable,
         "entry_quality": ("Strong" if breakout else "Constructive" if confirmed_reversal else
-                          "Wait" if mature_base else "Unconfirmed"),
+                          "Unavailable" if unavailable else "Wait" if mature_base else "Unconfirmed"),
         "invalidation_level": inputs.get("invalidation_level"),
         "rationale": (f"{stage}. A confirmed entry requires a 42/63-session mature base plus momentum confirmation; "
                       "a first bounce or volatile bottom is not actionable."),
@@ -162,4 +173,10 @@ def dynamic_alignment_score(story_score, technical_setup, entry_score=None, upsi
         score -= 20
     if setup.get("extended"):
         score -= 25
+    if setup.get("failed_reversal"):
+        score -= 20
+    if setup.get("unavailable"):
+        score -= 25
+    if setup.get("stage") == "Volatile Bottom / First Bounce":
+        score -= 8
     return _bounded(score - classification_penalty)
