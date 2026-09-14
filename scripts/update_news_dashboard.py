@@ -949,6 +949,22 @@ def biotech_binary_risk(item, scientific_score, catalyst_impact, integrity_conce
     return level, rationale
 
 
+def biotech_technical_overlay(snapshot, setup):
+    """Expose distinct trend, relative-strength, volume, and entry evidence."""
+    snapshot, setup = snapshot or {}, setup or {}
+    relative_xbi = ((snapshot.get("relative_strength") or {}).get("xbi") or {}).get("three_month")
+    breakout_volume = (snapshot.get("entry_inputs") or {}).get("breakout_volume_ratio")
+    return {
+        "trend_confirmed": setup.get("primary_trend_confirmed") is True,
+        "relative_strength_xbi_3m_pct": relative_xbi,
+        "relative_strength_confirmed": isinstance(relative_xbi, (int, float)) and relative_xbi > 0,
+        "breakout_volume_ratio": breakout_volume,
+        "volume_confirmed": isinstance(breakout_volume, (int, float)) and breakout_volume >= 1.2,
+        "entry_confirmed": setup.get("actionable") is True,
+        "invalidation_defined": setup.get("invalidation_level") is not None,
+    }
+
+
 def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None, market_data=None):
     timing_score, timing_rationale, timing_missing = timing_component(item, as_of)
     prior_points, prior_rationale = item["components"]["prior_evidence"]
@@ -961,7 +977,8 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
     expectation_missing = expectation_points == 0 and expectation_rationale.lower().startswith("missing")
     expectation_score = None if expectation_missing else round(expectation_points / 15 * 20)
     security_market_record = market_snapshot(market_data, item.get("ticker"))
-    expectation = expectation_assessment(security_market_record, "biotech", 20)
+    expectation = expectation_assessment(
+        security_market_record, "biotech", 20, exclude_conventional_earnings=True)
     if expectation["score"] is not None:
         expectation_score = expectation["score"]
         expectation_rationale = expectation["rationale"]
@@ -1097,6 +1114,8 @@ def score_biotech_catalyst(item, as_of, biotech_news_section=None, previous=None
     })
     result.update(early_opportunity)
     result["strategy_technical_setup"] = radar_base_breakout_setup(security_market_record)
+    result["biotech_technical_overlay"] = biotech_technical_overlay(
+        security_market_record, result["strategy_technical_setup"])
     result["dynamic_final_score"] = radar_dynamic_final_score(result)
     result["actionable"] = radar_action_pool_eligible(result, biotech=True)
     result["pool"] = "Action Pool" if result["actionable"] else "Discovery Pool"
@@ -1133,8 +1152,7 @@ def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None, ma
             key = (item.get("ticker"), item.get("program"), item.get("indication"), item.get("catalyst"))
             eligible.append(score_biotech_catalyst(
                 item, as_of, biotech_news_section, previous_by_key.get(key), market_data))
-    eligible.sort(key=lambda item: (not item.get("actionable"),
-                                    -(item.get("dynamic_final_score") or -1),
+    eligible.sort(key=lambda item: (-(item.get("dynamic_final_score") or -1),
                                     -(item["radar_rank_score"] or -1),
                                     -(item["biotech_opportunity_score"] or -1),
                                     item["expected_timing"], item["ticker"]))
@@ -1149,9 +1167,12 @@ def build_biotech_radar(as_of, biotech_news_section=None, previous_rows=None, ma
 def radar_methodology():
     return {
         "engine_version": "biotech-radar-v1",
-        "selection_philosophy": "Growth Opportunity Discovery",
+        "selection_philosophy": "Biotech Catalyst Opportunity Discovery",
+        "primary_references": ["T. Ayers Pelz — The Biotech Trader Handbook, 2nd Edition", "William J. O'Neil — How to Make Money in Stocks", "Mark Minervini — Trade Like a Stock Market Wizard", "Anna Coulling — A Complete Guide to Volume Price Analysis"],
+        "strategy_logic": "Rank science and clinical differentiation, trial/regulatory status, company-specific catalyst, probability-adjusted opportunity, commercial potential, competition, cash/dilution evidence, priced-in risk, and a trend/relative-strength/volume/entry overlay. Rank measures relative opportunity; Action independently requires the complete evidence and technical confirmation gates.",
+        "code_attribution": "GeneDr Network implementation informed by common principles in the cited references; scoring, thresholds, classifications, and combined gates are original and are not the authors' formulas.",
         "technical_setup_engine": "Radar = Base / Breakout. Mature Base → contraction → higher low → confirmed reversal → resistance break on >=1.2x volume; only the confirmed Early Uptrend / Breakout stage is actionable.",
-        "dynamic_final_rank": "Recalculated on every refresh from the existing opportunity score, Radar-specific technical setup, entry quality, upside, invalidation/risk, and extension state; Action Pool candidates rank before Discovery Pool candidates.",
+        "dynamic_final_rank": "Recalculated on every refresh from the existing probability-adjusted Biotech Radar rank score and the Radar-specific technical setup. Rank is independent of Action; catalyst, valuation, and entry inputs already represented by those domains are not added a second time.",
         "high_conviction_boundary": "Biotech Radar may include pre-revenue or binary development-stage companies. Radar status and score never qualify a company for long-term High Conviction.",
         "horizon": "Potentially valuation-changing catalysts expected within the next 183 days (approximately six months).",
         "weights": BIOTECH_RADAR_WEIGHTS,
@@ -1159,7 +1180,7 @@ def radar_methodology():
         "evidence_gate": "Scientific Evidence below 18/30 cannot be High Conviction. High Conviction additionally requires Scientific Evidence of at least 24/30, 75% completeness, and High confidence.",
         "integrity_gate": "Explicit credibility or data-integrity concerns cap evidence confidence at Low.",
         "news_boundary": "Biotech News is retained as dated confirming, mixed, or contradicting evidence. News importance never sets a Radar factor or Opportunity Score.",
-        "market_data_policy": "XBI price trend supplies up to 10 of 15 Sector Trend points; security price/volume technicals supply up to 5 of 10 Timing & Technicals points. Phase 5B supplies Expectation Gap from current valuation, run-up, analyst-revision and short-interest inputs. Options IV and advanced capital-flow data remain excluded.",
+        "market_data_policy": "XBI price trend supplies up to 10 of 15 Sector Trend points; security trend/relative-strength inputs supply up to 5 of 10 Timing & Technicals points, while the separate setup records breakout volume and entry confirmation. Biotech Expectation Gap may use target headroom, price run-up, and positioning, but conventional P/E and EPS revisions are excluded. Options IV and advanced capital-flow data remain excluded.",
         "binary_risk": "Low / Moderate / High / Extreme uses available evidence uncertainty and catalyst magnitude; missing company valuation sensitivity or portfolio dependence prevents a Low classification.",
         "status_policy": ["High Conviction", "Evidence-Supported / High Impact", "Monitoring", "Speculative Binary", "High Downside Risk", "Thesis Broken"],
         "early_discovery_ranking": "Biotech Opportunity remains separate from Multibagger Potential. Final Radar ordering combines the two and subtracts an explicit 0–25 Already-Ran / Priced-In penalty.",
@@ -1955,7 +1976,7 @@ def build_expectation_record(ticker, raw, market_record, run_at):
     return record
 
 
-def expectation_assessment(snapshot, domain, maximum):
+def expectation_assessment(snapshot, domain, maximum, exclude_conventional_earnings=False):
     record = (snapshot or {}).get("expectation_data") if snapshot else None
     if not record or record.get("data_status") != "current":
         return {"state": "Data Insufficient", "score": None, "maximum": maximum, "coverage": 0,
@@ -1976,7 +1997,9 @@ def expectation_assessment(snapshot, domain, maximum):
         elif target_upside <= 0:
             crowded += 2; signals.append(f"analyst target implies {target_upside:.1f}% upside")
     forward_pe = valuation.get("forward_pe")
-    if forward_pe is not None:
+    # Conventional earnings valuation is not a valid requirement for the
+    # development-stage biotech model. Preserve it for the other equity models.
+    if forward_pe is not None and not exclude_conventional_earnings:
         high_threshold = 50 if domain == "ai" else 40
         if forward_pe >= high_threshold:
             crowded += 1; signals.append(f"forward P/E is {forward_pe:.1f}x")
@@ -1993,7 +2016,7 @@ def expectation_assessment(snapshot, domain, maximum):
         elif three_month <= -10:
             underpriced += 1; signals.append(f"three-month return is {three_month:.1f}%")
     net_revisions = analysts.get("net_revisions_4w")
-    if net_revisions is not None:
+    if net_revisions is not None and not exclude_conventional_earnings:
         if net_revisions >= 2 and (target_upside is None or target_upside >= 0):
             underpriced += 1; signals.append(f"four-week net EPS revisions are +{net_revisions}")
         elif net_revisions <= -2 and three_month is not None and three_month > 0:
@@ -2362,25 +2385,14 @@ def ai_company_narrative(beneficiary, trend, config):
 
 
 def radar_dynamic_final_score(row):
-    """Combine opportunity evidence with Radar's base/breakout setup on every refresh."""
+    """Rank biotech opportunity and its technical overlay without duplicate inputs."""
     setup = row.get("strategy_technical_setup") or {}
-    expectation = row.get("expectation") or {}
-    expectation_score = expectation.get("score")
-    expectation_max = expectation.get("maximum") or 15
-    upside_score = (round(expectation_score / expectation_max * 100)
-                    if isinstance(expectation_score, (int, float)) and expectation_max else None)
-    entry_score = (95 if setup.get("stage") == "Early Uptrend / Breakout" else
-                   85 if setup.get("stage") == "Confirmed Reversal" else
-                   55 if setup.get("stage") == "Mature Base" else
-                   20 if setup.get("stage") == "Volatile Bottom / First Bounce" else
-                   15 if setup.get("stage") == "Failed Reversal" else 10)
-    invalidation_score = 80 if setup.get("invalidation_level") is not None else 45
-    catalyst_score = 85 if (row.get("catalyst_validation") or {}).get("valid") is True else 30
-    risk_score = round((invalidation_score + catalyst_score) / 2)
     story_score = row.get("radar_rank_score")
     if story_score is None:
-        story_score = row.get("bottleneck_opportunity_score", row.get("biotech_opportunity_score", row.get("opportunity_score")))
-    return dynamic_alignment_score(story_score, setup, entry_score, upside_score, risk_score)
+        story_score = row.get("biotech_opportunity_score", row.get("opportunity_score"))
+    # radar_rank_score already includes clinical/catalyst opportunity, expectation
+    # headroom, timing and priced-in risk. The setup is the distinct entry overlay.
+    return dynamic_alignment_score(story_score, setup)
 
 
 def ai_radar_dynamic_final_score(row):
@@ -2409,7 +2421,13 @@ def radar_action_pool_eligible(row, biotech=False):
         isinstance(multibagger, (int, float)) and multibagger >= 50)
     if not biotech:
         return base
-    return bool(base and (row.get("evidence_gate") or {}).get("passed") is True and
+    overlay = row.get("biotech_technical_overlay") or {}
+    return bool(base and overlay.get("trend_confirmed") is True and
+                overlay.get("relative_strength_confirmed") is True and
+                overlay.get("volume_confirmed") is True and
+                overlay.get("entry_confirmed") is True and
+                overlay.get("invalidation_defined") is True and
+                (row.get("evidence_gate") or {}).get("passed") is True and
                 not (row.get("evidence_integrity_gate") or {}).get("concern_identified"))
 
 

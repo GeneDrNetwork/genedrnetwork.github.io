@@ -1,11 +1,16 @@
 import unittest
 from datetime import date, timedelta
+from unittest.mock import patch
 
 from scripts.update_news_dashboard import (
     BIOTECH_CATALYSTS,
     BIOTECH_RADAR_WEIGHTS,
     MRNA_VALIDATION_CASE,
+    biotech_technical_overlay,
     build_biotech_radar,
+    expectation_assessment,
+    radar_action_pool_eligible,
+    radar_dynamic_final_score,
     score_biotech_catalyst,
 )
 
@@ -24,7 +29,8 @@ class BiotechCatalystRadarTests(unittest.TestCase):
     def test_live_radar_is_hierarchical_and_keeps_outputs_distinct(self):
         rows = build_biotech_radar(date(2026, 8, 27))
         self.assertEqual([row["dynamic_final_rank"] for row in rows], list(range(1, len(rows) + 1)))
-        self.assertEqual([not row["actionable"] for row in rows], sorted(not row["actionable"] for row in rows))
+        self.assertEqual([row["dynamic_final_score"] for row in rows],
+                         sorted((row["dynamic_final_score"] for row in rows), reverse=True))
         self.assertTrue(all(row["engine_version"] == "biotech-radar-v1" for row in rows))
         self.assertTrue(all(len(row["score_components"]) == 5 for row in rows))
         self.assertTrue(all(row.get("company") and row.get("program") and row.get("indication") and row.get("catalyst") for row in rows))
@@ -33,6 +39,82 @@ class BiotechCatalystRadarTests(unittest.TestCase):
         self.assertTrue(all(row["price_discovery_stage"] in
                             ("Early Discovery", "Emerging", "Re-rating Underway", "Already Ran") for row in rows))
         self.assertTrue(all(row["already_priced_in"] in ("NO", "PARTIALLY", "YES") for row in rows))
+
+    def test_rank_is_independent_of_action_label(self):
+        def scored(item, *_args, **_kwargs):
+            is_action = item["ticker"] == "NTLA"
+            score = 50 if is_action else 90 if item["ticker"] == "BEAM" else 30
+            return {**item, "actionable": is_action, "pool": "Action Pool" if is_action else "Discovery Pool",
+                    "dynamic_final_score": score, "radar_rank_score": score,
+                    "biotech_opportunity_score": score}
+
+        with patch("scripts.update_news_dashboard.score_biotech_catalyst", side_effect=scored):
+            rows = build_biotech_radar(date(2026, 8, 27))
+        self.assertEqual(rows[0]["ticker"], "BEAM")
+        self.assertEqual(rows[0]["pool"], "Discovery Pool")
+        self.assertGreater(next(row["dynamic_final_rank"] for row in rows if row["ticker"] == "NTLA"), 1)
+
+    def test_biotech_action_requires_rs_volume_entry_and_invalidation(self):
+        row = {
+            "biotech_opportunity_score": 80, "multibagger_potential_score": 70,
+            "already_priced_in": "NO", "catalyst_validation": {"valid": True},
+            "evidence_gate": {"passed": True}, "evidence_integrity_gate": {"concern_identified": False},
+            "strategy_technical_setup": {"actionable": True, "falling": False,
+                                         "failed_reversal": False, "extended": False},
+            "biotech_technical_overlay": {
+                "trend_confirmed": True, "relative_strength_confirmed": True,
+                "volume_confirmed": True, "entry_confirmed": True,
+                "invalidation_defined": True},
+        }
+        self.assertTrue(radar_action_pool_eligible(row, biotech=True))
+        row["biotech_technical_overlay"]["relative_strength_confirmed"] = False
+        self.assertFalse(radar_action_pool_eligible(row, biotech=True))
+
+    def test_technical_overlay_separates_trend_rs_volume_and_entry(self):
+        setup = {"primary_trend_confirmed": True, "actionable": True,
+                 "invalidation_level": 42}
+        snapshot = {"relative_strength": {"xbi": {"three_month": 7}},
+                    "entry_inputs": {"breakout_volume_ratio": 1.4}}
+        overlay = biotech_technical_overlay(snapshot, setup)
+        self.assertTrue(all(overlay[key] for key in (
+            "trend_confirmed", "relative_strength_confirmed", "volume_confirmed",
+            "entry_confirmed", "invalidation_defined")))
+
+    def test_dynamic_score_does_not_count_catalyst_or_valuation_twice(self):
+        setup = {"score": 80, "actionable": False, "stage": "Mature Base"}
+        base = {"radar_rank_score": 75, "strategy_technical_setup": setup}
+        duplicated_inputs = {**base, "expectation": {"score": 20, "maximum": 20},
+                             "catalyst_validation": {"valid": True}}
+        self.assertEqual(radar_dynamic_final_score(base),
+                         radar_dynamic_final_score(duplicated_inputs))
+
+    def test_biotech_expectation_excludes_pe_and_eps_revision_signals(self):
+        snapshot = {"expectation_data": {
+            "data_status": "current",
+            "available_input_groups": ["valuation", "price_run_up", "analyst_consensus"],
+            "valuation": {"forward_pe": 5},
+            "price_run_up": {"three_month_pct": 0},
+            "analyst_consensus": {"net_revisions_4w": 10},
+            "short_interest": {}, "sources": [],
+        }}
+        biotech = expectation_assessment(
+            snapshot, "biotech", 20, exclude_conventional_earnings=True)
+        conventional_equity = expectation_assessment(snapshot, "ai", 20)
+        other_biotech_workflow = expectation_assessment(snapshot, "biotech", 20)
+        self.assertEqual(biotech["state"], "Fairly Priced")
+        self.assertEqual(biotech["score"], 11)
+        self.assertEqual(conventional_equity["state"], "Underpriced")
+        self.assertEqual(other_biotech_workflow["state"], "Underpriced")
+        self.assertGreater(conventional_equity["score"], biotech["score"])
+
+    def test_biotech_methodology_is_presented_next_to_section(self):
+        with open("programs/genedrnews.html", encoding="utf-8") as handle:
+            page = handle.read()
+        biotech_start = page.index('id="biotech-radar-title"')
+        crypto_start = page.index('id="crypto-radar-title"')
+        biotech_section = page[biotech_start:crypto_start]
+        self.assertIn("T. Ayers Pelz", biotech_section)
+        self.assertIn("Conventional P/E and EPS are not required", biotech_section)
 
     def test_missing_inputs_are_not_zero(self):
         beam = next(row for row in build_biotech_radar(date(2026, 8, 27)) if row["ticker"] == "BEAM")
