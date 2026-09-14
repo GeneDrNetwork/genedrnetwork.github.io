@@ -13,7 +13,7 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         positions = [page.index(label) for label in labels]
         self.assertEqual(positions, sorted(positions))
         self.assertNotIn("<span>Price</span>", page)
-        self.assertEqual(page.count("<span>Final Rank / Score</span>"), 3)
+        self.assertEqual(page.count("<span>Final Rank / Score</span>"), 4)
 
     def test_ai_references_and_strategy_logic_are_directly_below_title(self):
         page = (ROOT / "programs" / "genedrnews.html").read_text()

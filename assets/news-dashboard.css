@@ -87,7 +87,7 @@
 .reacceleration-context span { color: #40566f; font-size: .62rem; line-height: 1.35; overflow-wrap: anywhere; }
 .radar-column-labels, .radar-item summary { display: grid; grid-template-columns: minmax(155px,1.25fr) 100px 112px minmax(120px,.95fr) 96px minmax(92px,.75fr) 25px; gap: 13px; align-items: center; }
 .ai-labels, .ai-stock-radar-item summary, .growth-labels, .growth-radar-item summary, .biotech-labels, .biotech-radar-item summary { grid-template-columns: 70px minmax(155px,1.25fr) 100px 112px minmax(120px,.95fr) 96px minmax(92px,.75fr) 25px; }
-.crypto-labels, .crypto-radar-item summary { grid-template-columns: minmax(155px,1.25fr) 100px 112px minmax(120px,.95fr) 96px minmax(92px,.75fr) 25px; }
+.crypto-labels, .crypto-radar-item summary { grid-template-columns: 70px minmax(155px,1.25fr) 100px 112px minmax(120px,.95fr) 96px minmax(92px,.75fr) 25px; }
 .ai-radar-item, .ai-radar-item summary, .ai-labels { width: 100%; min-width: 0; box-sizing: border-box; }
 .strategy-reference-block { margin: 10px 0 14px; padding: 12px 14px; border: 1px solid #dce5ee; border-radius: 8px; background: #f8fafc; color: #40556d; }
 .strategy-reference-block p { margin: 0; font-size: .68rem; line-height: 1.5; }

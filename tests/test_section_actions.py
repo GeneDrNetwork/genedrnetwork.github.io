@@ -26,7 +26,7 @@ class SectionSpecificActionTests(unittest.TestCase):
             self.assertIn(value, ai)
         for value in ("binary_risk", "evidence_gate", "evidence_integrity_gate", "cash_runway_dilution", "probability_of_success", "WAIT FOR CATALYST", "SMALL POSITION"):
             self.assertIn(value, biotech)
-        for value in ("crypto_opportunity_score", "relative_strength?.btc", "multibagger_potential_score", "WAIT FOR PULLBACK", "DO NOT CHASE"):
+        for value in ("crypto_opportunity_score", "row.actionable", "multibagger_potential_score", "WAIT FOR PULLBACK", "DO NOT CHASE"):
             self.assertIn(value, crypto)
 
     def test_high_conviction_uses_confirmation_mountain_and_entry_quality(self):

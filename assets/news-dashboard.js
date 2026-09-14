@@ -444,15 +444,11 @@ function cryptoRadarAction(row = {}) {
   const discovery = String(row.price_discovery_stage || "");
   const opportunity = decisionNumber(row.crypto_opportunity_score);
   const multibagger = decisionNumber(row.multibagger_potential_score);
-  const btcRelative = decisionNumber(row.market_data?.relative_strength?.btc?.one_month);
-  const isBitcoin = normalizedTicker(row.ticker) === "BTC-USD";
   if ((opportunity !== null && opportunity < 50) || (multibagger !== null && multibagger < 45)) return "PASS";
   if (stage === "Extended" || pricedIn === "YES") return "DO NOT CHASE";
   if (discovery === "Already Ran" || (pricedIn === "PARTIALLY" && stage === "Breakout")) return "WAIT FOR PULLBACK";
-  if (stage === "Breakout") return isBitcoin || (btcRelative !== null && btcRelative >= 0) ? "BUY" : "WATCH";
-  if (stage === "Entry Zone") return opportunity === null || multibagger === null ? "WATCH"
-    : opportunity >= 70 && multibagger >= 65 ? "BUY" : "SCALE IN";
-  if (stage === "Reversal") return isBitcoin || (btcRelative !== null && btcRelative >= 0) ? "SCALE IN" : "WATCH";
+  if (row.actionable === true) return stage === "Reversal" || stage === "Entry Zone" ? "SCALE IN" : "BUY";
+  if (stage === "Breakout" || stage === "Entry Zone" || stage === "Reversal") return "WATCH / WAIT FOR CONFIRMATION";
   if (stage === "Bottoming") return "WATCH";
   return stage === "Falling" ? "WAIT" : "WATCH";
 }
@@ -732,17 +728,22 @@ function renderBiotechRadar(rows, targetId = "biotech-radar") {
 }
 
 function renderCryptoRadar(rows, targetId = "crypto-radar") {
-  document.getElementById(targetId).innerHTML = rows.map((row) => {
+  const rankedRows = [...rows].sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER));
+  const actionCount = rankedRows.filter((row) => row.pool === "Action Pool").length;
+  if (targetId === "crypto-radar") setText("crypto-radar-pool-status", actionCount ? `${actionCount} Action · ${rankedRows.length - actionCount} Discovery` : `No current Action entry · ${rankedRows.length} Discovery`);
+  document.getElementById(targetId).innerHTML = rankedRows.map((row) => {
     const action = cryptoRadarAction(row);
     return `<details class="radar-item crypto-radar-item"><summary>
-      <span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
       ${renderScore(row.crypto_opportunity_score, "Crypto Opportunity")}${renderScore(row.multibagger_potential_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(row.price_discovery_stage || "Emerging")}</b></span><span><b class="radar-stage-pill priced-${classKey(row.already_priced_in || "NO")}">${escapeHtml(row.already_priced_in || "NO")}</b></span><span><b class="radar-stage-pill entry-${classKey(row.entry_stage?.stage || "Unavailable")}">${escapeHtml(row.entry_stage?.stage || "Unavailable")}</b><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid crypto-details">
       ${detailItemMarkup("Asset / Company", `${escapeHtml(row.company)} (${tickerPriceMarkup(row.ticker, row.market_data)}) · ${escapeHtml(row.asset_type || "Type missing")}`)}
       ${detailItem("Thesis", row.thesis)}${detailItem("Major Catalysts", row.catalysts)}${detailItem("Major Risks", row.risks)}
       ${detailItem("Price Discovery / Priced In", `${row.price_discovery_stage || "Emerging"} · ${row.already_priced_in || "NO"}. ${row.price_discovery_rationale || "Evidence unavailable."}`)}
-      ${detailItem("Entry Stage", `${row.entry_stage?.stage || "Unavailable"}. ${row.entry_stage?.rationale || "Detailed technical evidence is unavailable."}`)}${detailItem("Action", action)}
+      ${detailItem("Discovery / Action Pool", row.pool || "Discovery Pool")}${detailItem("Action", action)}
+      ${detailItem("Dynamic Final Rank", `${dynamicRankLabel(row)} · ${row.dynamic_final_score ?? "Missing"} / 100`)}${detailItem("Entry Stage", `${row.entry_stage?.stage || "Unavailable"}. ${row.entry_stage?.rationale || "Detailed technical evidence is unavailable."}`)}
+      ${detailItem("Crypto Technical Overlay", `${row.crypto_technical_overlay?.stage || "Unavailable"} · ${row.crypto_technical_overlay?.score ?? "Missing"} / 100. Trend ${row.crypto_technical_overlay?.trend_score ?? "Missing"}; momentum ${row.crypto_technical_overlay?.momentum_score ?? "Missing"}; BTC-relative strength ${row.crypto_technical_overlay?.relative_strength_score ?? "Missing"}; volume ${row.crypto_technical_overlay?.volume_score ?? "Missing"}; entry ${row.crypto_technical_overlay?.entry_score ?? "Missing"}.`)}
       ${detailItem("Ranking Penalty", `${row.priced_in_penalty ?? 0} points applied to ranking and Multibagger Potential.`)}
       ${detailItem("Early-Opportunity Ranking", row.radar_rank_score === null || row.radar_rank_score === undefined ? "Missing" : `${row.radar_rank_score} / 100`)}
       ${detailItem("Data Completeness / Confidence", `${row.data_completeness ?? "Missing"}% / ${row.confidence || "Missing"}`)}
@@ -782,7 +783,7 @@ function radarAnalysisMatches(data, ticker) {
   const growth = (data.radar?.growth || []).filter((row) => normalizedTicker(row.ticker) === ticker)
     .sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER));
   const crypto = (data.radar?.crypto || []).filter((row) => normalizedTicker(row.ticker) === ticker)
-    .sort((a, b) => (b.radar_rank_score ?? -1) - (a.radar_rank_score ?? -1));
+    .sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER));
   return { ai, growth, biotech, crypto };
 }
 

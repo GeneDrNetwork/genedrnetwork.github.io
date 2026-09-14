@@ -2110,6 +2110,98 @@ def normalized_radar_score(components):
     return round(points / weight * 100), weight
 
 
+def crypto_technical_overlay(snapshot, ticker):
+    """Combine existing trend, momentum, BTC-relative, volume, and entry evidence."""
+    snapshot = snapshot or {}
+    readiness = ((snapshot.get("watchlist_entry_readiness") or {}).get("crypto") or {})
+    price = snapshot.get("current_price")
+    averages = snapshot.get("moving_averages") or {}
+    macd = snapshot.get("macd") or {}
+    inputs = snapshot.get("entry_inputs") or {}
+    ma50, ma200 = averages.get("ma50"), averages.get("ma200")
+    trend_score = None if not all(isinstance(value, (int, float)) for value in (price, ma50, ma200)) else (
+        90 if price > ma50 > ma200 else 65 if price > ma200 else 25)
+    histogram = macd.get("histogram")
+    momentum_score = None if not isinstance(histogram, (int, float)) else (
+        90 if macd.get("crossover") == "bullish" else 75 if histogram > 0 else
+        55 if macd.get("improving") is True else 25)
+    relative = ((snapshot.get("relative_strength") or {}).get("btc") or {})
+    relative_values = [relative.get(key) for key in ("one_month", "three_month")
+                       if isinstance(relative.get(key), (int, float))]
+    relative_average = round(sum(relative_values) / len(relative_values), 2) if relative_values else (
+        0 if ticker == "BTC-USD" else None)
+    relative_score = None if relative_average is None else (
+        90 if relative_average >= 10 else 80 if relative_average >= 5 else
+        65 if relative_average >= 0 else 40 if relative_average >= -5 else 20)
+    contraction = inputs.get("volume_contraction_ratio")
+    accumulation = inputs.get("up_down_volume_ratio_20d")
+    breakout_volume = inputs.get("breakout_volume_ratio")
+    volume_signals = []
+    if isinstance(contraction, (int, float)):
+        volume_signals.append(90 if contraction <= .9 else 65 if contraction <= 1.1 else 30)
+    if isinstance(accumulation, (int, float)):
+        volume_signals.append(90 if accumulation >= 1.2 else 70 if accumulation >= 1 else 35)
+    if isinstance(breakout_volume, (int, float)):
+        volume_signals.append(95 if breakout_volume >= 1.2 else 60 if breakout_volume >= 1 else 30)
+    volume_score = round(sum(volume_signals) / len(volume_signals)) if volume_signals else None
+    entry_score = readiness.get("entry_timing_score")
+    parts = [(trend_score, 25), (momentum_score, 20), (relative_score, 20),
+             (volume_score, 15), (entry_score, 20)]
+    available = [(value, weight) for value, weight in parts if isinstance(value, (int, float))]
+    score = (round(sum(value * weight for value, weight in available) /
+                   sum(weight for _, weight in available)) if available else None)
+    state_key = readiness.get("state_key")
+    stage = radar_entry_stage(snapshot, "crypto").get("stage")
+    unavailable = score is None or stage == "Unavailable"
+    falling = state_key == "deterioration" or stage == "Falling"
+    extended = state_key == "extended" or stage == "Extended"
+    failed = inputs.get("failed_breakout") is True
+    actionable = bool(readiness.get("actionable") is True and not falling and not extended and not failed)
+    return {
+        "engine": "Crypto = Trend / Momentum / Relative Strength / Volume / Entry",
+        "stage": stage, "score": score, "actionable": actionable,
+        "trend_score": trend_score, "momentum_score": momentum_score,
+        "relative_strength_score": relative_score,
+        "relative_strength_btc_average_pct": relative_average,
+        "volume_score": volume_score, "entry_score": entry_score,
+        "invalidation_level": readiness.get("invalidation_level"),
+        "falling": falling, "extended": extended, "failed_reversal": failed,
+        "unavailable": unavailable,
+        "rationale": (f"{stage}. Technical overlay uses primary trend, momentum, BTC-relative strength, "
+                      "volume behavior, and the existing entry-timing engine; missing inputs remain excluded."),
+    }
+
+
+def crypto_dynamic_final_score(row):
+    """Rank crypto opportunity plus its technical overlay without equity-only inputs."""
+    story_score = row.get("raw_radar_rank_score")
+    if story_score is None:
+        story_score = row.get("radar_rank_score", row.get("crypto_opportunity_score"))
+    return dynamic_alignment_score(
+        story_score, row.get("crypto_technical_overlay") or {},
+        classification_penalty=row.get("priced_in_penalty") or 0)
+
+
+def crypto_action_pool_eligible(row):
+    """Require opportunity quality and a complete current crypto entry confirmation."""
+    setup = row.get("crypto_technical_overlay") or {}
+    factors = {item.get("key"): item.get("score_100") for item in row.get("score_components", [])}
+    return bool(
+        setup.get("actionable") is True and not setup.get("falling") and
+        not setup.get("failed_reversal") and not setup.get("extended") and
+        setup.get("invalidation_level") is not None and
+        isinstance(setup.get("momentum_score"), (int, float)) and setup["momentum_score"] >= 55 and
+        isinstance(setup.get("relative_strength_score"), (int, float)) and setup["relative_strength_score"] >= 60 and
+        isinstance(setup.get("volume_score"), (int, float)) and setup["volume_score"] >= 55 and
+        isinstance(factors.get("liquidity"), (int, float)) and factors["liquidity"] >= 60 and
+        row.get("already_priced_in") != "YES" and
+        isinstance(row.get("crypto_opportunity_score"), (int, float)) and
+        row["crypto_opportunity_score"] >= 60 and
+        isinstance(row.get("multibagger_potential_score"), (int, float)) and
+        row["multibagger_potential_score"] >= 50 and
+        (row.get("data_completeness") or 0) >= 60)
+
+
 def build_crypto_radar(run_at, market_data, previous_rows=None):
     """Build a distinct crypto/stablecoin Radar using source-backed factor evidence."""
     previous_by_ticker = {row.get("ticker"): row for row in (previous_rows or [])}
@@ -2205,11 +2297,12 @@ def build_crypto_radar(run_at, market_data, previous_rows=None):
             if key not in seen_sources:
                 unique_sources.append({**source, "title": source.get("title") or source.get("source")})
                 seen_sources.add(key)
-        rows.append({
+        row = {
             **candidate, "crypto_opportunity_score": opportunity_score,
             "multibagger_potential_score": multibagger,
             "raw_multibagger_potential_score": raw_multibagger,
-            "radar_rank_score": rank_score, "price_discovery_stage": discovery["price_discovery_stage"],
+            "raw_radar_rank_score": raw_rank, "radar_rank_score": rank_score,
+            "price_discovery_stage": discovery["price_discovery_stage"],
             "already_priced_in": discovery["already_priced_in"], "priced_in_penalty": penalty,
             "price_discovery_rationale": discovery["rationale"],
             "entry_stage": radar_entry_stage(snapshot, "crypto"),
@@ -2224,21 +2317,42 @@ def build_crypto_radar(run_at, market_data, previous_rows=None):
             "score_history": (history + [score_snapshot])[-60:],
             "why_changed": ("Initial Crypto & Stablecoin Radar V1 baseline." if not prior else
                             "Scores refreshed from the shared market/expectation layer; source-backed thesis inputs are unchanged unless their evidence record changes."),
+        }
+        row["crypto_technical_overlay"] = crypto_technical_overlay(snapshot, ticker)
+        row["dynamic_final_score"] = crypto_dynamic_final_score(row)
+        row["actionable"] = crypto_action_pool_eligible(row)
+        row["pool"] = "Action Pool" if row["actionable"] else "Discovery Pool"
+        rows.append(row)
+    rows.sort(key=lambda row: (-(row.get("dynamic_final_score") or -1),
+                               -(row.get("radar_rank_score") or -1), row["ticker"]))
+    for rank, row in enumerate(rows, 1):
+        row["dynamic_final_rank"] = rank
+        prior_rank = previous_by_ticker.get(row["ticker"], {}).get("dynamic_final_rank")
+        row["prior_dynamic_final_rank"] = prior_rank
+        row["rank_movement"] = None if not isinstance(prior_rank, int) else prior_rank - rank
+        row["score_history"][-1].update({
+            "dynamic_final_score": row["dynamic_final_score"],
+            "dynamic_final_rank": rank,
+            "pool": row["pool"],
         })
-    return sorted(rows, key=lambda row: (-(row.get("radar_rank_score") or -1), row["ticker"]))
+    return rows
 
 
 def crypto_radar_methodology():
     return {
         "engine_version": "crypto-stablecoin-radar-v1",
+        "primary_references": ["Michael Covel — Trend Following", "John J. Murphy — Technical Analysis of the Financial Markets", "Martin Pring — Technical Analysis Explained", "Anna Coulling — A Complete Guide to Volume Price Analysis", "Stan Weinstein — Secrets for Profiting in Bull and Bear Markets"],
+        "strategy_logic": "Rank adoption/network strength, institutional demand, cycle/liquidity, regulatory and catalyst conditions, ecosystem importance, priced-in upside/risk, and a trend/momentum/BTC-relative-strength/volume/entry overlay. Rank is independent of Action; Action requires a complete current technical entry and defined invalidation.",
+        "code_attribution": "GeneDr Network implementation informed by common principles in the cited references; scoring, thresholds, classifications, and combined gates are original and are not the authors' formulas.",
         "weights": CRYPTO_RADAR_WEIGHTS,
         "scope": "Focused crypto/stablecoin assets and public companies with material adoption exposure; this is not a broad token screener.",
         "missing_data": "Unavailable network activity, fees, valuation, token economics, or regulatory evidence remains missing and is excluded from normalized scores.",
         "priced_in_penalty": "The shared 0–25 Already-Ran / Priced-In penalty is subtracted from Multibagger Potential and final Radar ranking.",
-        "ranking": "60% Crypto Opportunity + 40% raw Multibagger Potential − shared priced-in penalty.",
+        "ranking": "The existing 60% Crypto Opportunity + 40% raw Multibagger composite supplies the opportunity domain; Dynamic Final Score adds the distinct crypto technical overlay and applies the shared priced-in penalty once. Action remains an independent gate.",
+        "asset_type_boundary": "Native crypto never uses equity P/E or EPS rules. Related public companies may use their existing company valuation and analyst evidence.",
         "price_discovery_stages": ["Early Discovery", "Emerging", "Re-rating Underway", "Already Ran"],
         "priced_in_states": ["NO", "PARTIALLY", "YES"],
-        "entry_stage_boundary": "Falling / Bottoming / Reversal / Entry Zone / Breakout / Extended reuses the shared technical engine.",
+        "entry_stage_boundary": "Falling / Bottoming / Reversal / Entry Zone / Breakout / Extended reuses the shared technical engine. Action additionally requires opportunity >=60, Multibagger >=50, >=60% evidence completeness, a confirmed entry, defined invalidation, and no Falling, Failed, Extended, or fully priced-in state.",
     }
 
 
