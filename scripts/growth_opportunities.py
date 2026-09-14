@@ -13,6 +13,8 @@ except ImportError:
 GROWTH_TECHNICAL_SCAN_LIMIT = 360
 GROWTH_DEEP_ANALYSIS_LIMIT = 120
 GROWTH_DISPLAY_LIMIT = 12
+GROWTH_EMERGING_LANE_SHARE = .25
+GROWTH_EMERGING_MARKET_CAP_MAX = 5_000_000_000
 
 
 def _number(value):
@@ -27,6 +29,25 @@ def _band(value, bands):
     if value is None:
         return None
     return next(score for minimum, score in bands if value >= minimum)
+
+
+def _sector_round_robin(rows, limit, excluded_tickers=None):
+    """Select liquid candidates across sectors without changing the input screen."""
+    excluded = set(excluded_tickers or [])
+    by_sector = {}
+    for row in sorted(rows, key=lambda item: (-item["dollar_volume_proxy"],
+                                               -(item.get("market_cap") or 0), item["ticker"])):
+        if row["ticker"] not in excluded:
+            by_sector.setdefault(row.get("sector") or "Unclassified", []).append(row)
+    selected = []
+    sectors = sorted(by_sector)
+    sector_index = 0
+    while len(selected) < limit and sectors:
+        sector = sectors[sector_index % len(sectors)]
+        selected.append(by_sector[sector].pop(0))
+        sectors = [name for name in sectors if by_sector[name]]
+        sector_index += 1
+    return selected
 
 
 def select_growth_market_universe(listed_companies, excluded_tickers=None,
@@ -59,21 +80,15 @@ def select_growth_market_universe(listed_companies, excluded_tickers=None,
         eligible.append({**company, "domain": "growth", "listing_status": "Public",
                          "dollar_volume_proxy": round(price * volume, 2)})
 
-    # Keep deeper requests bounded while sampling liquid candidates across sectors.
-    by_sector = {}
-    for row in sorted(eligible, key=lambda item: (-item["dollar_volume_proxy"],
-                                                  -(item.get("market_cap") or 0), item["ticker"])):
-        by_sector.setdefault(row.get("sector") or "Unclassified", []).append(row)
-    selected = []
-    sector_index = 0
-    sectors = sorted(by_sector)
-    while len(selected) < limit and sectors:
-        sector = sectors[sector_index % len(sectors)]
-        rows = by_sector[sector]
-        if rows:
-            selected.append(rows.pop(0))
-        sectors = [name for name in sectors if by_sector[name]]
-        sector_index += 1
+    # Reserve one bounded lane for smaller/emerging companies so a pure
+    # dollar-volume ordering does not systematically remove potential new leaders.
+    emerging_target = min(limit, max(1, round(limit * GROWTH_EMERGING_LANE_SHARE))) if limit else 0
+    emerging_eligible = [row for row in eligible
+                         if (row.get("market_cap") or math.inf) <= GROWTH_EMERGING_MARKET_CAP_MAX]
+    emerging_selected = _sector_round_robin(emerging_eligible, emerging_target)
+    selected_tickers = {row["ticker"] for row in emerging_selected}
+    broad_selected = _sector_round_robin(eligible, max(0, limit - len(emerging_selected)), selected_tickers)
+    selected = broad_selected + emerging_selected
 
     if not selected and fallback_rows:
         selected = [{key: row.get(key) for key in
@@ -86,7 +101,10 @@ def select_growth_market_universe(listed_companies, excluded_tickers=None,
         "initial_screen_pass": len(eligible),
         "technical_scan_candidates": len(selected),
         "initial_screen": "Operating U.S.-listed common stock; price >= $3; market cap >= $300M; daily volume >= 100K; dollar-volume proxy >= $2M; sector and industry present.",
-        "technical_scan_sampling": "Up to 360 liquid names are sampled round-robin by sector and ordered within each sector by dollar-volume proxy; only price/volume history is requested at this stage.",
+        "technical_scan_sampling": "Up to 360 liquid names are sampled round-robin by sector. A 25% lane is reserved for otherwise-qualified companies at or below $5B market cap, and the remaining lane uses the full eligible universe; each lane is ordered by dollar-volume proxy. Only price/volume history is requested at this stage.",
+        "emerging_lane_target": emerging_target,
+        "emerging_lane_selected": len(emerging_selected),
+        "emerging_lane_market_cap_max": GROWTH_EMERGING_MARKET_CAP_MAX,
         "rejection_counts": rejection_counts,
     }
 
@@ -186,6 +204,18 @@ def _relative_strength_score(snapshot):
     return round(sum(scores) / len(scores)) if scores else None
 
 
+def _institutional_demand_score(snapshot):
+    ratio = _number(((snapshot or {}).get("entry_inputs") or {}).get("up_down_volume_ratio_20d"))
+    return _band(ratio, [(1.5, 95), (1.2, 80), (1, 65), (.8, 45), (-math.inf, 20)])
+
+
+def _market_demand_score(snapshot):
+    relative = _relative_strength_score(snapshot)
+    institutional = _institutional_demand_score(snapshot)
+    values = [value for value in (relative, institutional) if value is not None]
+    return (round(sum(values) / len(values)) if values else None, relative, institutional)
+
+
 def _upside_score(snapshot):
     target = (((snapshot or {}).get("expectation_data") or {}).get("valuation") or {}).get("target_upside_pct")
     return _band(target, [(30, 95), (20, 85), (10, 70), (0, 50), (-10, 25), (-math.inf, 10)])
@@ -200,9 +230,37 @@ def _weighted_score(parts):
             round(sum(weight for _, weight in available)))
 
 
+def _entry_risk_reward(snapshot, setup):
+    """Score entry economics separately from chart-pattern confirmation."""
+    price = _number((snapshot or {}).get("current_price"))
+    invalidation = _number((setup or {}).get("invalidation_level"))
+    valuation = (((snapshot or {}).get("expectation_data") or {}).get("valuation") or {})
+    target = _number(valuation.get("one_year_target"))
+    target_upside = _number(valuation.get("target_upside_pct"))
+    if target is None and price is not None and target_upside is not None:
+        target = price * (1 + target_upside / 100)
+    risk_pct = None
+    reward_risk = None
+    if price is not None and price > 0 and invalidation is not None and 0 < invalidation < price:
+        risk = price - invalidation
+        risk_pct = round(risk / price * 100, 2)
+        if target is not None and target > price:
+            reward_risk = round((target - price) / risk, 2)
+    risk_score = _band(-risk_pct if risk_pct is not None else None,
+                       [(-6, 95), (-10, 80), (-12, 65), (-18, 40), (-math.inf, 20)])
+    reward_score = _band(reward_risk, [(3, 100), (2, 85), (1.5, 70), (1, 45), (-math.inf, 20)])
+    values = [value for value in (risk_score, reward_score) if value is not None]
+    return {
+        "entry_risk_pct": risk_pct,
+        "reward_risk_ratio": reward_risk,
+        "entry_quality_score": round(sum(values) / len(values)) if values else None,
+        "target_price": round(target, 2) if target is not None else None,
+    }
+
+
 def build_growth_opportunities(candidates, market_data, quality_layer, previous_rows=None,
                                excluded_tickers=None, display_limit=GROWTH_DISPLAY_LIMIT):
-    """Create distinct Discovery and Action pools, prioritizing Action in final rank."""
+    """Create distinct Discovery and Action pools, then rank overall alignment."""
     excluded = {str(ticker or "").upper() for ticker in (excluded_tickers or [])}
     previous = {row.get("ticker"): row for row in (previous_rows or [])}
     evaluated = []
@@ -219,28 +277,26 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
         fundamental = (quality or {}).get("company_quality_score")
         growth = _growth_score(quality)
         catalyst, catalyst_inputs = _catalyst_score(snapshot, quality)
-        relative = _relative_strength_score(snapshot)
+        market_demand, relative, institutional_demand = _market_demand_score(snapshot)
         upside = _upside_score(snapshot)
         opportunity, completeness = _weighted_score([
-            (fundamental, 30), (growth, 30), (catalyst, 15), (relative, 15), (upside, 10),
+            (fundamental, 30), (growth, 30), (catalyst, 15), (market_demand, 15), (upside, 10),
         ])
         setup = radar_base_breakout_setup(snapshot)
-        balance = _quality_component(quality, "balance_sheet").get("score")
-        risk_score = round(sum(value for value in (balance, 80 if setup.get("invalidation_level") is not None else 45)
-                               if value is not None) /
-                           len([value for value in (balance, 80 if setup.get("invalidation_level") is not None else 45)
-                                if value is not None]))
-        entry_score = (95 if setup.get("breakout_confirmed") else
-                       65 if setup.get("confirmed_reversal") else
-                       45 if setup.get("mature_base") else 20)
-        dynamic = dynamic_alignment_score(opportunity, setup, entry_score, upside, risk_score)
+        entry = _entry_risk_reward(snapshot, setup)
+        # Opportunity already contains company quality and remaining upside. Keep
+        # setup confirmation and entry economics as separate, non-duplicated domains.
+        dynamic = dynamic_alignment_score(opportunity, setup, entry["entry_quality_score"])
         discovery = bool(
             opportunity is not None and opportunity >= 60 and fundamental is not None and fundamental >= 55 and
             (quality or {}).get("data_status") == "current" and (quality or {}).get("data_completeness", 0) >= 50 and
-            ((growth is not None and growth >= 55) or (relative is not None and relative >= 60)))
+            ((growth is not None and growth >= 55) or (market_demand is not None and market_demand >= 60)))
         action = bool(
             discovery and opportunity >= 65 and fundamental >= 60 and setup.get("actionable") is True and
             not setup.get("falling") and not setup.get("failed_reversal") and not setup.get("extended") and
+            relative is not None and relative >= 60 and
+            entry["entry_risk_pct"] is not None and entry["entry_risk_pct"] <= 12 and
+            entry["reward_risk_ratio"] is not None and entry["reward_risk_ratio"] >= 1.5 and
             ((growth is not None and growth >= 65) or (catalyst is not None and catalyst >= 65)))
         if not discovery:
             continue
@@ -251,6 +307,12 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
             risks.append(f"Technical entry is {setup.get('stage')}; confirmation is still required.")
         if catalyst is None or catalyst < 65:
             risks.append("A strong current earnings/revision catalyst is not yet confirmed.")
+        if relative is None or relative < 60:
+            risks.append("Relative-strength confirmation versus the S&P 500 is missing or below the Action gate.")
+        if entry["entry_risk_pct"] is None or entry["reward_risk_ratio"] is None:
+            risks.append("A defined invalidation and positive target are required to verify entry risk/reward.")
+        elif entry["entry_risk_pct"] > 12 or entry["reward_risk_ratio"] < 1.5:
+            risks.append("The current entry does not meet the <=12% risk and >=1.5x reward/risk gate.")
         if completeness < 100:
             risks.append(f"Growth score completeness is {completeness}%.")
         old = previous.get(ticker, {})
@@ -262,7 +324,9 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
             "action": "ACTIONABLE REVIEW" if action else "WATCH / WAIT FOR CONFIRMATION",
             "opportunity_score": opportunity, "fundamental_quality_score": fundamental,
             "growth_acceleration_score": growth, "catalyst_growth_score": catalyst,
-            "relative_strength_score": relative, "remaining_upside_score": upside,
+            "relative_strength_score": relative, "institutional_demand_score": institutional_demand,
+            "market_demand_score": market_demand, "remaining_upside_score": upside,
+            **entry,
             "dynamic_final_score": dynamic, "data_completeness": completeness,
             "strategy_technical_setup": setup,
             "market_data": {key: value for key, value in snapshot.items()
@@ -272,12 +336,12 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
                                  ("revenue_growth", "earnings_growth", "margin_trend", "free_cash_flow", "net_cash")},
             "catalyst_inputs": catalyst_inputs,
             "why_selected": (f"{candidate.get('company') or ticker} passed the broad-universe liquidity/data screen and "
-                             f"has {opportunity}/100 combined growth opportunity quality with {relative if relative is not None else 'missing'}/100 relative strength."),
+                             f"has {opportunity}/100 combined growth opportunity quality with {market_demand if market_demand is not None else 'missing'}/100 market demand confirmation."),
             "risk_unproven": " ".join(risks) or "No defined alignment gate is currently missing; monitor invalidation and new evidence.",
             "sources": [source for source in (quality or {}).get("sources", [])] + expectation.get("sources", []),
             "prior_dynamic_final_rank": old.get("dynamic_final_rank"),
         })
-    evaluated.sort(key=lambda row: (not row["actionable"], -(row.get("dynamic_final_score") or -1),
+    evaluated.sort(key=lambda row: (-(row.get("dynamic_final_score") or -1),
                                     -(row.get("opportunity_score") or -1), row["ticker"]))
     displayed = evaluated[:display_limit]
     for rank, row in enumerate(displayed, 1):
@@ -293,6 +357,9 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
         "display_limit": display_limit,
         "actionable_tickers": [row["ticker"] for row in evaluated if row["actionable"]],
         "discovery_tickers": [row["ticker"] for row in evaluated if not row["actionable"]],
-        "ranking_policy": "Action Pool first, then Dynamic Final Score. Discovery candidates are never promoted into Action by opportunity quality alone.",
+        "ranking_policy": "Dynamic Final Score ranks overall opportunity, strategy-specific pattern confirmation, and entry economics. Action is an independent gate and is not hard-sorted ahead of Discovery; Discovery candidates are never promoted into Action by rank alone.",
         "no_action_policy": "If Action Pool count is zero, the UI states that no current entry passed rather than manufacturing a BUY candidate.",
+        "action_entry_gate": "Action requires Discovery quality, Opportunity >=65, Fundamental >=60, a confirmed Radar breakout, S&P 500 relative strength >=60, entry risk <=12%, reward/risk >=1.5x, and Growth or Catalyst >=65; Falling, Failed Reversal, Extended, first-bounce, and unconfirmed bases remain WATCH.",
+        "primary_references": ["Jesse Stine — Superstocks", "William J. O'Neil — How to Make Money in Stocks", "Mark Minervini — Trade Like a Stock Market Wizard", "Mark Minervini — Think & Trade Like a Champion", "Peter Lynch — One Up on Wall Street", "Philip Fisher — Common Stocks and Uncommon Profits", "Stan Weinstein — Secrets for Profiting in Bull and Bear Markets"],
+        "code_attribution": "GeneDr Network implementation informed by common principles in the cited references; scoring, thresholds, classifications, and combined gates are original and are not the authors' formulas.",
     }
