@@ -31,11 +31,10 @@ class SectionSpecificActionTests(unittest.TestCase):
 
     def test_high_conviction_uses_backend_action_with_entry_safety_overlays(self):
         body = self.body("highConvictionAction", "renderHighConvictionDecision")
-        for value in ("row.actionable", "mountain_position", "Lower Mountain", "Upper Mountain", "Extended"):
+        for value in ("row.action", "mountain_position", "Near Peak", "DO NOT CHASE"):
             self.assertIn(value, body)
-        self.assertIn('mountain === "Lower Mountain"', body)
-        self.assertIn('? "SCALE IN" : "BUY"', body)
         self.assertNotIn("market_confirmation", body)
+        self.assertNotIn("WAIT FOR PULLBACK", body)
 
     def test_reacceleration_retains_its_existing_alert_action(self):
         self.assertIn("alert.action || \"WATCH\"", self.script)

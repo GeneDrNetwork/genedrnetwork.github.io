@@ -9,6 +9,7 @@ from scripts.update_news_dashboard import (
     build_biotech_stock_picks,
     build_high_conviction_candidate_universe,
     high_conviction_rank_eligible,
+    high_conviction_entry_context,
     high_conviction_market_confirmation,
     proven_quality_factors,
     proven_quality_sort_key,
@@ -127,7 +128,7 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
                 "data_completeness": 100, "company": "Test", "market_confirmation": {"confirmed": True}}
         early = {**base, "final_score": 82, "dynamic_final_score": 82,
                  "market_confirmation": {"confirmed": True, "newly_confirmed": True},
-                 "high_conviction_entry": {"mountain_position": "Confirmed Early", "entry_quality": "BEST ENTRY",
+                 "high_conviction_entry": {"mountain_position": "Base", "entry_quality": "BEST ENTRY",
                                            "remaining_upside": {"percent": 30}}}
         extended = {**base, "final_score": 99, "dynamic_final_score": 99,
                     "high_conviction_entry": {"mountain_position": "Extended", "entry_quality": "DO NOT CHASE",
@@ -241,10 +242,11 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
     def test_technical_setup_changes_action_but_not_dynamic_quality_score(self):
         base = {
             "classification_key": "high-conviction", "final_score": 91,
-            "market_confirmation": {"confirmed": True},
+            "market_confirmation": {"confirmed": True, "score": 80},
             "catalyst_validation": {"valid": True}, "stop_invalidation": 80,
             "remaining_upside": {"percent": 20},
-            "high_conviction_entry": {"mountain_position": "Confirmed Early"},
+            "high_conviction_entry": {"mountain_position": "Lower Mountain",
+                                      "entry_quality": "GOOD ENTRY"},
         }
         constructive = market_record("GOOD")
         constructive.update({
@@ -262,12 +264,63 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         self.assertEqual(good_row["dynamic_final_score"], weak_row["dynamic_final_score"])
         self.assertNotEqual(good_row["actionable"], weak_row["actionable"])
 
+    def test_mountain_position_uses_requested_six_level_vocabulary(self):
+        expected = {
+            20: "Base", 40: "Lower Mountain", 55: "Mid-Mountain Lower Half",
+            70: "Mid-Mountain Upper Half", 85: "Upper Mountain", 95: "Near Peak",
+        }
+        for position, label in expected.items():
+            snapshot = market_record("TEST")
+            snapshot["fifty_two_week_position"] = position
+            entry = high_conviction_entry_context(
+                snapshot, {"confirmed": True, "score": 80}, "high-conviction")
+            self.assertEqual(entry["mountain_position"], label)
+
+    def test_action_requires_lower_position_upside_and_multi_signal_confirmation(self):
+        snapshot = market_record("TEST")
+        snapshot.update({
+            "moving_averages": {"ma20": 99, "ma50": 95, "ma200": 85},
+            "entry_inputs": {"ma50_slope_20d_pct": 3,
+                             "higher_low_confirmed": True,
+                             "short_term_high_reclaimed": True},
+            "returns": {"one_month": 5, "three_month": 15},
+        })
+        base = {
+            "classification_key": "high-conviction", "final_score": 91,
+            "market_confirmation": {"confirmed": True, "score": 80,
+                                    "newly_confirmed": True, "evidence": ["a", "b", "c", "d"]},
+            "catalyst_validation": {"valid": True}, "stop_invalidation": 80,
+            "remaining_upside": {"percent": 20},
+            "high_conviction_entry": {"mountain_position": "Lower Mountain",
+                                      "entry_quality": "GOOD ENTRY"},
+        }
+        actionable = dict(base)
+        attach_high_conviction_dynamic_score(actionable, snapshot)
+        self.assertTrue(actionable["actionable"])
+        self.assertEqual(actionable["action"], "SCALE IN")
+        self.assertIn("newly confirmed", actionable["why_now"])
+        for field, value in (("remaining_upside", {"percent": 10}),
+                             ("high_conviction_entry", {"mountain_position": "Upper Mountain",
+                                                        "entry_quality": "WAIT FOR PULLBACK"}),
+                             ("market_confirmation", {"confirmed": True, "score": 40})):
+            row = {**base, field: value}
+            attach_high_conviction_dynamic_score(row, snapshot)
+            self.assertFalse(row["actionable"])
+            self.assertEqual(row["action"], "WAIT")
+
     def test_frontend_exposes_confirmation_and_mountain_fields(self):
         from pathlib import Path
         script = (Path(__file__).resolve().parents[1] / "assets" / "news-dashboard.js").read_text()
         self.assertIn("Market Confirmation", script)
         self.assertIn("Mountain Position", script)
-        self.assertIn("Suggested Entry", script)
+        self.assertIn("Why High Conviction", script)
+        self.assertIn("Why Now", script)
+        self.assertIn("Current Price + Suggested Entry", script)
+        self.assertIn("Stop / Invalidation", script)
+        self.assertIn("T1 / T2", script)
+        self.assertIn("data-high-conviction-analysis-card", script)
+        self.assertIn('tickerAnchor.closest("[data-high-conviction-analysis-card]")', script)
+        self.assertIn("highConvictionCard.open = true", script)
 
     def test_frontend_uses_canonical_ranked_output_and_backend_action(self):
         from pathlib import Path

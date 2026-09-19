@@ -920,12 +920,9 @@ function highConvictionAction(row = {}) {
   const entry = row.high_conviction_entry || {};
   const setup = row.strategy_technical_setup;
   const mountain = String(entry.mountain_position || row.mountain_position || "Unconfirmed");
+  if (setup?.extended || mountain === "Near Peak") return "DO NOT CHASE";
   if (setup?.falling) return "WAIT";
-  if (setup?.extended) return "DO NOT CHASE";
-  if (mountain === "Extended") return "DO NOT CHASE";
-  if (mountain === "Upper Mountain") return "WAIT FOR PULLBACK";
-  if (row.actionable === true) return mountain === "Lower Mountain" ? "SCALE IN" : "BUY";
-  return "WAIT";
+  return ["BUY", "SCALE IN", "WAIT", "DO NOT CHASE"].includes(row.action) ? row.action : "WAIT";
 }
 
 function renderHighConvictionDecision(row) {
@@ -939,8 +936,10 @@ function renderHighConvictionDecision(row) {
   const suggestedText = suggested.low === null || suggested.low === undefined || suggested.high === null || suggested.high === undefined
     ? "Unavailable" : `${priceValue(suggested.low)} – ${priceValue(suggested.high)}`;
   return `<section class="high-conviction-decision">
-    <div class="high-conviction-decision-heading"><span>Confirmed thesis and entry position</span><strong>${escapeHtml(action)}</strong></div>
+    <div class="high-conviction-decision-heading"><span>High Conviction decision layer · Rank ≠ Action</span><strong>${escapeHtml(action)}</strong></div>
     <dl class="high-conviction-decision-grid">
+      <div class="opportunity-wide"><dt>Why High Conviction</dt><dd>${escapeHtml(row.why_high_conviction || row.why_selected || "Missing")}</dd></div>
+      <div class="opportunity-wide"><dt>Why Now</dt><dd>${escapeHtml(row.why_now || "Missing")}</dd></div>
       <div><dt>Conviction Score</dt><dd>${row.conviction_score === null || row.conviction_score === undefined ? "Missing" : `${escapeHtml(row.conviction_score)}/100`}</dd></div>
       <div><dt>Market Confirmation</dt><dd>${escapeHtml(confirmation.status || "Insufficient Data")}${confirmation.score === null || confirmation.score === undefined ? "" : ` · ${escapeHtml(confirmation.score)}/100`}${confirmation.newly_confirmed ? " · Newly Confirmed" : ""}</dd></div>
       <div><dt>Mountain Position</dt><dd>${escapeHtml(entry.mountain_position || row.mountain_position || "Unconfirmed")}</dd></div>
@@ -951,9 +950,10 @@ function renderHighConvictionDecision(row) {
       <div><dt>Catalyst Validation</dt><dd>${escapeHtml(catalystStatus(row))}</dd></div>
       <div class="opportunity-wide"><dt>Company-Specific Catalyst</dt><dd>${escapeHtml(row.company_specific_catalyst || "Missing: no validated company-specific catalyst.")}</dd></div>
       <div class="opportunity-wide"><dt>Industry / Theme Catalyst</dt><dd>${escapeHtml(row.industry_theme_catalyst || "Missing")}</dd></div>
-      <div><dt>Suggested Entry</dt><dd>${escapeHtml(suggestedText)}<small>${escapeHtml(suggested.basis || "")}</small></dd></div>
+      <div><dt>Current Price + Suggested Entry</dt><dd>${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Unavailable")} · ${escapeHtml(suggestedText)}<small>${escapeHtml(suggested.basis || "")}</small></dd></div>
       <div><dt>Stop / Invalidation</dt><dd>${escapeHtml(priceValue(entry.stop_invalidation ?? row.stop_invalidation))}</dd></div>
       <div><dt>T1 / T2</dt><dd>${escapeHtml(priceValue(entry.target_1 ?? row.target_1))} / ${escapeHtml(priceValue(entry.target_2 ?? row.target_2))}</dd></div>
+      <div><dt>Action</dt><dd><strong>${escapeHtml(action)}</strong></dd></div>
       <div class="opportunity-wide"><dt>Confirmation Evidence</dt><dd>${escapeHtml((confirmation.evidence || []).join("; ") || confirmation.rationale || "Unavailable")}</dd></div>
       <div class="opportunity-wide"><dt>Candidate Sources</dt><dd>${escapeHtml((row.candidate_sources || []).join(" · ") || "Current research universe")}</dd></div>
     </dl>
@@ -976,17 +976,15 @@ function renderOpportunities(targetId, rows = []) {
     const entry = row.entry_timing || {};
     const entryFactors = (entry.factors || []).map((factor) => `<li class="${factor.missing ? "factor-missing" : ""}"><span>${escapeHtml(factor.label)}</span><strong>${factor.score === null || factor.score === undefined ? "Missing" : `${escapeHtml(factor.score)}/100`}</strong><small>${escapeHtml(factor.rationale)}</small></li>`).join("");
     const entryGates = (entry.gates || []).map((gate) => `<li class="gate-${gate.passed === true ? "pass" : gate.passed === false ? "fail" : "missing"}" title="${escapeHtml(gate.rationale)}"><span aria-hidden="true">${gate.passed === true ? "✓" : gate.passed === false ? "×" : "—"}</span>${escapeHtml(gate.label)}</li>`).join("");
-    const decision = buyDecisionFor(row);
     const action = highConvictionAction(row);
     const score = row.final_score === null || row.final_score === undefined ? "Missing" : `${row.final_score}/100`;
-    return `<details class="opportunity-card opportunity-${escapeHtml(row.classification_key || "unclassified")}"><summary class="opportunity-summary"><span class="opportunity-rank">${escapeHtml(dynamicRankLabel(row))}</span>
+    return `<details class="opportunity-card opportunity-${escapeHtml(row.classification_key || "unclassified")}" data-high-conviction-analysis-card data-ticker="${escapeHtml(row.ticker)}"><summary class="opportunity-summary" title="Open detailed analysis"><span class="opportunity-rank">${escapeHtml(dynamicRankLabel(row))}</span>
       <div><div class="opportunity-top"><h4>${companyTickerMarkup(row)}</h4><span class="opportunity-classification">${escapeHtml(row.classification || "Classification missing")}</span></div>
       <div class="opportunity-score-line"><strong>${escapeHtml(score)}</strong><span>${escapeHtml(row.mountain_position || "Unconfirmed")}</span><span class="opportunity-timing-pill buy-status-${stageClass(action)}">${escapeHtml(action)}</span></div></div><span class="opportunity-expand" aria-hidden="true"></span></summary>
       <div class="opportunity-detail">
       ${renderWhyThisStock(row)}
       ${watchlistAction(row.ticker, row.company, "High Conviction", isBiotech ? "biotech" : "ai")}
       ${renderHighConvictionDecision(row)}
-      ${renderBuyDecision(row, isBiotech, decision)}
       <p class="opportunity-why"><strong>Why selected:</strong> ${escapeHtml(row.why_selected || row.thesis || "Missing")}</p>
       <ul class="opportunity-factors">${factors || "<li class=\"factor-missing\"><span>Factor scores</span><strong>Missing</strong></li>"}</ul>
       <dl><div><dt>Company Quality</dt><dd><strong>${quality.company_quality_score === null || quality.company_quality_score === undefined ? "Missing" : `${escapeHtml(quality.company_quality_score)}/100`}</strong> · ${escapeHtml(quality.data_completeness ?? 0)}% complete · ${escapeHtml(quality.confidence || "Low")} confidence${quality.latest_period_end ? ` · period ${escapeHtml(quality.latest_period_end)}` : ""}</dd></div><div><dt>Expectation state</dt><dd>${escapeHtml(row.expectation_state || row.expectation?.state || "Data Insufficient")}</dd></div><div><dt>Technical / entry status</dt><dd><strong>${escapeHtml(technical.signal || "Insufficient Data")}</strong> · ${escapeHtml(technical.rationale || "Market inputs missing.")}</dd></div>${isBiotech ? "" : `<div><dt>Catalyst</dt><dd>${escapeHtml(row.catalyst || "Missing")}${row.catalyst_timing ? ` · ${escapeHtml(row.catalyst_timing)}` : ""}</dd></div>`}<div><dt>Action</dt><dd>${escapeHtml(action)}</dd></div><div class="opportunity-wide"><dt>Thesis invalidation</dt><dd>${escapeHtml(row.thesis_invalidation || "Missing")}</dd></div></dl>
@@ -1827,6 +1825,13 @@ function removeWatchlistItem(ticker) {
 document.addEventListener("click", (event) => {
   const tickerAnchor = event.target.closest("a.ticker-link");
   if (tickerAnchor) {
+    const highConvictionCard = tickerAnchor.closest("[data-high-conviction-analysis-card]");
+    if (highConvictionCard && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      event.stopPropagation();
+      highConvictionCard.open = true;
+      return;
+    }
     event.stopPropagation();
     return;
   }

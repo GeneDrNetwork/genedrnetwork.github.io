@@ -3399,6 +3399,7 @@ def high_conviction_entry_context(snapshot, confirmation, classification_key):
     distance50 = (round((price / averages["ma50"] - 1) * 100, 2)
                   if isinstance(price, (int, float)) and isinstance(averages.get("ma50"), (int, float)) and averages["ma50"] > 0 else None)
     runup = returns.get("three_month")
+    fifty_two_week_position = snapshot.get("fifty_two_week_position")
     proximity = inputs.get("breakout_proximity_pct")
     volatility_range = inputs.get("range_63d_pct") or inputs.get("range_42d_pct")
     ma20_extension_limit = (max(12, min(20, volatility_range * .5))
@@ -3414,30 +3415,49 @@ def high_conviction_entry_context(snapshot, confirmation, classification_key):
         proximity is not None and proximity > 8,
         rsi is not None and rsi >= 75,
     ))
-    if not confirmation.get("confirmed"):
-        mountain = "Unconfirmed"
+    # Mountain Position is a price-location description, not an Action or rank.
+    # Prefer the objective 52-week range position; use recent trend/extension
+    # evidence only when that shared input is unavailable.
+    if isinstance(fifty_two_week_position, (int, float)):
+        if fifty_two_week_position <= 25:
+            mountain = "Base"
+        elif fifty_two_week_position <= 45:
+            mountain = "Lower Mountain"
+        elif fifty_two_week_position <= 60:
+            mountain = "Mid-Mountain Lower Half"
+        elif fifty_two_week_position <= 75:
+            mountain = "Mid-Mountain Upper Half"
+        elif fifty_two_week_position <= 90:
+            mountain = "Upper Mountain"
+        else:
+            mountain = "Near Peak"
+    elif extended and ((runup or 0) > 55 or (rsi or 0) >= 78):
+        mountain = "Near Peak"
     elif extended:
-        mountain = "Extended"
-    elif (confirmation.get("newly_confirmed") or breakout) and (runup is None or runup <= 20) and (distance20 is None or distance20 <= 8):
-        mountain = "Confirmed Early"
-    elif (runup is None or runup <= 20) and (distance20 is None or distance20 <= 8) and (distance50 is None or distance50 <= 12):
+        mountain = "Upper Mountain"
+    elif (confirmation.get("newly_confirmed") or breakout) and (runup is None or runup <= 12):
+        mountain = "Base"
+    elif (runup is None or runup <= 20) and (distance50 is None or distance50 <= 12):
         mountain = "Lower Mountain"
+    elif (runup is None or runup <= 30) and (distance50 is None or distance50 <= 15):
+        mountain = "Mid-Mountain Lower Half"
     elif (runup is None or runup <= 40) and (distance50 is None or distance50 <= 18):
-        mountain = "Mid Mountain"
+        mountain = "Mid-Mountain Upper Half"
     else:
         mountain = "Upper Mountain"
-    entry_quality = {
-        "Confirmed Early": "BEST ENTRY", "Lower Mountain": "GOOD ENTRY",
-        "Mid Mountain": "ACCEPTABLE", "Upper Mountain": "WAIT FOR PULLBACK",
-        "Extended": "DO NOT CHASE", "Unconfirmed": "WAIT FOR CONFIRMATION",
-    }[mountain]
+    entry_quality = ("WAIT FOR CONFIRMATION" if not confirmation.get("confirmed") else {
+        "Base": "BEST ENTRY", "Lower Mountain": "GOOD ENTRY",
+        "Mid-Mountain Lower Half": "ACCEPTABLE",
+        "Mid-Mountain Upper Half": "WAIT",
+        "Upper Mountain": "WAIT FOR PULLBACK", "Near Peak": "DO NOT CHASE",
+    }[mountain])
     support_candidates = [value for value in (inputs.get("invalidation_level"), averages.get("ma20"), averages.get("ma50"))
                           if isinstance(value, (int, float)) and isinstance(price, (int, float)) and 0 < value <= price]
     pullback = max(support_candidates) if support_candidates else None
-    if mountain == "Confirmed Early" and isinstance(price, (int, float)):
+    if mountain == "Base" and confirmation.get("confirmed") and isinstance(price, (int, float)):
         anchor = price
-        entry_basis = "Current price is used because multi-signal confirmation is present and the move remains early."
-    elif mountain == "Lower Mountain" and isinstance(price, (int, float)):
+        entry_basis = "Current price is used because multi-signal confirmation is present while price remains near the base of its 52-week range."
+    elif mountain == "Lower Mountain" and confirmation.get("confirmed") and isinstance(price, (int, float)):
         anchor = pullback if pullback and price / pullback - 1 <= .08 else price
         entry_basis = "Use the nearest current/MA support reference while the confirmed move remains in its lower stage."
     elif pullback is not None:
@@ -3456,11 +3476,10 @@ def high_conviction_entry_context(snapshot, confirmation, classification_key):
     targets = [value for value in (resistance if isinstance(resistance, (int, float)) and resistance > (anchor or price or resistance) else None,
                                    analyst_target if analyst_target and analyst_target > (anchor or price or analyst_target) else None) if value is not None]
     targets = sorted(set(round(value, 2) for value in targets))
-    if classification_key != "high-conviction":
-        action = "WATCH" if confirmation.get("confirmed") else "PASS"
+    if mountain == "Near Peak":
+        action = "DO NOT CHASE"
     else:
-        action = {"Confirmed Early": "BUY", "Lower Mountain": "SCALE IN", "Mid Mountain": "WATCH",
-                  "Upper Mountain": "WAIT", "Extended": "WAIT", "Unconfirmed": "PASS"}[mountain]
+        action = "WAIT"
     return {
         "mountain_position": mountain, "entry_quality": entry_quality,
         "suggested_entry": suggested, "stop_invalidation": round(stop, 2) if isinstance(stop, (int, float)) else None,
@@ -3468,6 +3487,7 @@ def high_conviction_entry_context(snapshot, confirmation, classification_key):
         "remaining_upside": upside, "action": action,
         "basis": (f"3M move {runup if runup is not None else 'Missing'}%; price vs MA20 {distance20 if distance20 is not None else 'Missing'}%; "
                   f"price vs MA50 {distance50 if distance50 is not None else 'Missing'}%; resistance proximity {proximity if proximity is not None else 'Missing'}%; "
+                  f"52-week position {fifty_two_week_position if fifty_two_week_position is not None else 'Missing'}%; "
                   f"available 42/63-session range volatility {volatility_range if volatility_range is not None else 'Missing'}%; RSI {rsi if rsi is not None else 'Missing'}."),
     }
 
@@ -3486,13 +3506,47 @@ def high_conviction_action_eligible(row):
     setup = row.get("strategy_technical_setup") or {}
     confirmation = row.get("market_confirmation") or {}
     upside = (row.get("remaining_upside") or {}).get("percent")
+    entry = row.get("high_conviction_entry") or {}
     return bool(
         row.get("classification_key") == "high-conviction" and
-        confirmation.get("confirmed") is True and setup.get("actionable") is True and
+        confirmation.get("confirmed") is True and
+        isinstance(confirmation.get("score"), (int, float)) and confirmation["score"] >= 60 and
+        setup.get("actionable") is True and
         not setup.get("falling") and not setup.get("extended") and
+        entry.get("mountain_position") in ("Base", "Lower Mountain") and
+        entry.get("entry_quality") in ("BEST ENTRY", "GOOD ENTRY") and
         (row.get("catalyst_validation") or {}).get("valid") is True and
         row.get("stop_invalidation") is not None and
-        isinstance(upside, (int, float)) and upside > 0)
+        isinstance(upside, (int, float)) and upside >= 15)
+
+
+def high_conviction_why_now(row):
+    confirmation = row.get("market_confirmation") or {}
+    entry = row.get("high_conviction_entry") or {}
+    setup = row.get("strategy_technical_setup") or {}
+    upside = (row.get("remaining_upside") or {}).get("percent")
+    action = row.get("action") or "WAIT"
+    evidence_count = len(confirmation.get("evidence") or [])
+    if action in ("BUY", "SCALE IN"):
+        recency = "newly confirmed" if confirmation.get("newly_confirmed") else "confirmed"
+        return (f"{action}: the market move is {recency} with {evidence_count} confirming signals, "
+                f"the setup is {setup.get('stage', 'Unavailable')}, Mountain Position is {entry.get('mountain_position', 'Missing')}, "
+                f"and remaining upside is {upside if upside is not None else 'Missing'}% with a defined invalidation level.")
+    if action == "DO NOT CHASE":
+        return (f"DO NOT CHASE: Mountain Position is {entry.get('mountain_position', 'Near Peak')} or the setup is extended; "
+                "wait for price to return toward a support-based entry without changing the fundamental rank.")
+    missing = []
+    if confirmation.get("confirmed") is not True:
+        missing.append("multi-signal market confirmation")
+    if setup.get("actionable") is not True:
+        missing.append("trend resumption")
+    if entry.get("mountain_position") not in ("Base", "Lower Mountain"):
+        missing.append("a lower Mountain Position")
+    if not isinstance(upside, (int, float)) or upside < 15:
+        missing.append("at least 15% documented remaining upside")
+    if row.get("classification_key") != "high-conviction":
+        missing.append("the strict High Conviction evidence/completeness threshold")
+    return "WAIT: the quality rank remains intact, but Action still requires " + ", ".join(missing or ["the complete entry gate"]) + "."
 
 
 def attach_high_conviction_dynamic_score(row, snapshot):
@@ -3509,10 +3563,14 @@ def attach_high_conviction_dynamic_score(row, snapshot):
     row["final_ranking_score"] = row["dynamic_final_score"]
     row["actionable"] = high_conviction_action_eligible(row)
     row["pool"] = "Action Pool" if row["actionable"] else "Ranked Watch"
-    action = ("SCALE IN" if row["actionable"] and
-              (row.get("high_conviction_entry") or {}).get("mountain_position") == "Lower Mountain"
-              else "BUY" if row["actionable"] else "WAIT")
+    mountain = (row.get("high_conviction_entry") or {}).get("mountain_position")
+    action = ("SCALE IN" if row["actionable"] and mountain == "Lower Mountain"
+              else "BUY" if row["actionable"] and mountain == "Base"
+              else "DO NOT CHASE" if mountain == "Near Peak" or setup.get("extended")
+              else "WAIT")
     row["action"] = action
+    row["why_high_conviction"] = row.get("why_selected") or "Missing: long-term quality rationale is unavailable."
+    row["why_now"] = high_conviction_why_now(row)
     if row.get("high_conviction_entry") is not None:
         row["high_conviction_entry"]["action"] = action
 
