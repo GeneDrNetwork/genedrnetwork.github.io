@@ -917,24 +917,15 @@ function renderWhyThisStock(row) {
 }
 
 function highConvictionAction(row = {}) {
-  const confirmation = row.market_confirmation || {};
   const entry = row.high_conviction_entry || {};
   const setup = row.strategy_technical_setup;
   const mountain = String(entry.mountain_position || row.mountain_position || "Unconfirmed");
-  const entryQuality = String(entry.entry_quality || row.entry_quality || "Unavailable").toUpperCase();
-  const remainingUpside = decisionNumber((entry.remaining_upside || row.remaining_upside || {}).percent);
-  if (confirmation.confirmed !== true || mountain === "Unconfirmed") return "PASS";
-  if (remainingUpside !== null && remainingUpside <= 0) return "PASS";
   if (setup?.falling) return "WAIT";
   if (setup?.extended) return "DO NOT CHASE";
   if (mountain === "Extended") return "DO NOT CHASE";
   if (mountain === "Upper Mountain") return "WAIT FOR PULLBACK";
-  if (!hasValidCompanyCatalyst(row)) return "WATCH / WAIT FOR VALID CATALYST";
-  if (setup && setup.actionable !== true) return "WATCH / WAIT FOR CONFIRMATION";
-  if (mountain === "Mid Mountain") return entryQuality === "ACCEPTABLE" && remainingUpside !== null && remainingUpside >= 15 ? "SMALL SCALE IN" : "WATCH";
-  if (remainingUpside === null) return "WATCH";
-  if (mountain === "Lower Mountain") return "SCALE IN";
-  return mountain === "Confirmed Early" ? "BUY" : "WATCH";
+  if (row.actionable === true) return mountain === "Lower Mountain" ? "SCALE IN" : "BUY";
+  return "WAIT";
 }
 
 function renderHighConvictionDecision(row) {
@@ -972,9 +963,7 @@ function renderHighConvictionDecision(row) {
 function qualifiedHighConvictionRows(data, domain) {
   const canonical = data.high_conviction_engine?.qualified?.[domain];
   const rows = Array.isArray(canonical) ? canonical : (data.monthly_picks?.[domain] || []);
-  return rows.filter((row) => row.classification_key === "high-conviction" &&
-    row.proven_quality_eligible === true &&
-    (row.gates || []).every((gate) => gate.passed === true));
+  return rows.filter((row) => row.high_conviction_rank_eligible === true);
 }
 
 function renderOpportunities(targetId, rows = []) {

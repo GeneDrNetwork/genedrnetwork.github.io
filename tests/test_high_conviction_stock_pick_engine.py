@@ -3,10 +3,14 @@ from datetime import date
 
 from scripts.update_news_dashboard import (
     BIOTECH_CATALYSTS,
+    HIGH_CONVICTION_FACTOR_WEIGHTS,
+    attach_high_conviction_dynamic_score,
     build_ai_stock_picks,
     build_biotech_stock_picks,
     build_high_conviction_candidate_universe,
+    high_conviction_rank_eligible,
     high_conviction_market_confirmation,
+    proven_quality_factors,
     proven_quality_sort_key,
     stock_pick_factor,
     weighted_stock_pick_score,
@@ -96,7 +100,7 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         self.assertFalse(result["confirmed"])
         self.assertNotIn("Daily", " ".join(result["evidence"]))
 
-    def test_market_confirmation_is_required_for_high_conviction(self):
+    def test_market_confirmation_controls_action_not_quality_rank(self):
         layer = market_layer("NVDA")
         record = layer["securities"]["NVDA"]
         record["current_price"] = 70
@@ -108,18 +112,27 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
                                    quality_layer=quality_layer("ai", "NVDA"))[0]
         gate = next(gate for gate in row["gates"] if gate["key"] == "market_confirmation")
         self.assertFalse(gate["passed"])
-        self.assertNotEqual(row["classification_key"], "high-conviction")
+        self.assertEqual(row["classification_key"], "high-conviction")
+        self.assertFalse(row["actionable"])
+        self.assertEqual(row["action"], "WAIT")
 
-    def test_confirmed_early_ranks_above_extended_even_with_lower_score(self):
+    def test_watch_setup_remains_ranked_without_becoming_actionable(self):
+        self.assertTrue(high_conviction_rank_eligible("high-conviction"))
+        self.assertTrue(high_conviction_rank_eligible("watch-setup"))
+        for classification in ("too-early", "priced-in", "speculative-binary", "avoid"):
+            self.assertFalse(high_conviction_rank_eligible(classification))
+
+    def test_long_term_quality_rank_is_not_reordered_by_entry_position(self):
         base = {"classification_key": "high-conviction", "gates": [], "company_quality": {},
                 "data_completeness": 100, "company": "Test", "market_confirmation": {"confirmed": True}}
-        early = {**base, "final_score": 82, "market_confirmation": {"confirmed": True, "newly_confirmed": True},
+        early = {**base, "final_score": 82, "dynamic_final_score": 82,
+                 "market_confirmation": {"confirmed": True, "newly_confirmed": True},
                  "high_conviction_entry": {"mountain_position": "Confirmed Early", "entry_quality": "BEST ENTRY",
                                            "remaining_upside": {"percent": 30}}}
-        extended = {**base, "final_score": 99,
+        extended = {**base, "final_score": 99, "dynamic_final_score": 99,
                     "high_conviction_entry": {"mountain_position": "Extended", "entry_quality": "DO NOT CHASE",
                                               "remaining_upside": {"percent": 50}}}
-        self.assertLess(proven_quality_sort_key(early), proven_quality_sort_key(extended))
+        self.assertLess(proven_quality_sort_key(extended), proven_quality_sort_key(early))
 
     def test_broad_market_candidate_can_enter_review_without_radar_membership(self):
         record = market_record("NEWC")
@@ -134,11 +147,11 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
                                    quality_layer=quality_layer("ai", "NVDA"))[0]
         self.assertEqual(row["classification_key"], "high-conviction")
         self.assertGreaterEqual(row["final_score"], 80)
-        self.assertEqual(row["data_completeness"], 100)
+        self.assertEqual(row["data_completeness"], 80)
         self.assertTrue(all(gate["passed"] for gate in row["gates"]))
         self.assertEqual(row["strategy_technical_setup"]["engine"],
                          "High Conviction = Uptrend / Pullback / Continuation")
-        self.assertIsNotNone(row["dynamic_final_score"])
+        self.assertEqual(row["dynamic_final_score"], row["final_score"])
         self.assertEqual(row["dynamic_final_rank"], 1)
 
     def test_total_score_cannot_override_expectation_gate(self):
@@ -170,8 +183,9 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
             candidate_pool=pool, quality_layer=quality_layer("ai", "NVDA"))
         nvda = next(row for row in rows if row["ticker"] == "NVDA")
         self.assertEqual(next(factor for factor in nvda["factor_scores"]
-                              if factor["key"] == "long_term_outlook")["weight"], 5)
+                              if factor["key"] == "growth_runway")["weight"], 15)
         self.assertNotIn("radar_conviction", {factor["key"] for factor in nvda["factor_scores"]})
+        self.assertNotIn("business_quality", {factor["key"] for factor in nvda["factor_scores"]})
         self.assertIn("AVGO", {row["ticker"] for row in rows})
 
     def test_news_importance_does_not_directly_set_catalyst_score(self):
@@ -195,17 +209,58 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
 
     def test_missing_factor_is_excluded_not_scored_as_zero(self):
         factors = [
-            stock_pick_factor("business_quality", 80, "available"),
-            stock_pick_factor("sustained_growth", 80, "available"),
-            stock_pick_factor("profitability_cash_flow", 80, "available"),
-            stock_pick_factor("financial_strength", 80, "available"),
-            stock_pick_factor("competitive_advantage", 80, "available"),
-            stock_pick_factor("long_term_outlook", 80, "available"),
-            stock_pick_factor("valuation", None, "missing"),
+            stock_pick_factor("moat_competitive_advantage", 80, "available"),
+            stock_pick_factor("management_capital_allocation", None, "missing"),
+            stock_pick_factor("earnings_cash_flow_quality", 80, "available"),
+            stock_pick_factor("balance_sheet_strength", 80, "available"),
+            stock_pick_factor("return_on_invested_capital", None, "missing"),
+            stock_pick_factor("growth_runway", 80, "available"),
+            stock_pick_factor("valuation_margin_of_safety", 80, "available"),
+            stock_pick_factor("compounding_potential", None, "missing"),
+            stock_pick_factor("downside_risk", None, "missing"),
         ]
         score, completeness = weighted_stock_pick_score(factors)
         self.assertEqual(score, 80)
-        self.assertEqual(completeness, 95)
+        self.assertEqual(completeness, 80)
+
+    def test_factor_model_has_distinct_domains_and_missing_inputs_stay_missing(self):
+        self.assertEqual(sum(HIGH_CONVICTION_FACTOR_WEIGHTS.values()), 100)
+        factors = proven_quality_factors(
+            quality_layer("ai", "NVDA")["records"]["ai:NVDA"],
+            90, 15, "Documented moat.", ["https://example.com/moat"],
+            85, 5, "Documented runway.", ["https://example.com/runway"],
+            {"score": 80, "maximum": 100, "coverage": 4,
+             "rationale": "Fair value.", "sources": []})
+        by_key = {factor["key"]: factor for factor in factors}
+        for key in ("management_capital_allocation", "return_on_invested_capital",
+                    "compounding_potential", "downside_risk"):
+            self.assertTrue(by_key[key]["missing"])
+            self.assertIsNone(by_key[key]["score"])
+        self.assertNotIn("business_quality", by_key)
+
+    def test_technical_setup_changes_action_but_not_dynamic_quality_score(self):
+        base = {
+            "classification_key": "high-conviction", "final_score": 91,
+            "market_confirmation": {"confirmed": True},
+            "catalyst_validation": {"valid": True}, "stop_invalidation": 80,
+            "remaining_upside": {"percent": 20},
+            "high_conviction_entry": {"mountain_position": "Confirmed Early"},
+        }
+        constructive = market_record("GOOD")
+        constructive.update({
+            "moving_averages": {"ma20": 99, "ma50": 95, "ma200": 85},
+            "entry_inputs": {"ma50_slope_20d_pct": 3,
+                             "higher_low_confirmed": True,
+                             "short_term_high_reclaimed": True},
+            "returns": {"one_month": 5, "three_month": 15},
+        })
+        weak = {**constructive, "current_price": 70,
+                "moving_averages": {"ma20": 80, "ma50": 90, "ma200": 95}}
+        good_row, weak_row = dict(base), dict(base)
+        attach_high_conviction_dynamic_score(good_row, constructive)
+        attach_high_conviction_dynamic_score(weak_row, weak)
+        self.assertEqual(good_row["dynamic_final_score"], weak_row["dynamic_final_score"])
+        self.assertNotEqual(good_row["actionable"], weak_row["actionable"])
 
     def test_frontend_exposes_confirmation_and_mountain_fields(self):
         from pathlib import Path
@@ -214,16 +269,25 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         self.assertIn("Mountain Position", script)
         self.assertIn("Suggested Entry", script)
 
-    def test_frontend_uses_canonical_qualified_output_and_rechecks_gates(self):
+    def test_frontend_uses_canonical_ranked_output_and_backend_action(self):
         from pathlib import Path
         script = (Path(__file__).resolve().parents[1] / "assets" / "news-dashboard.js").read_text()
         self.assertIn("function qualifiedHighConvictionRows(data, domain)", script)
         self.assertIn("data.high_conviction_engine?.qualified?.[domain]", script)
-        self.assertIn('row.classification_key === "high-conviction"', script)
-        self.assertIn("row.proven_quality_eligible === true", script)
-        self.assertIn("(row.gates || []).every((gate) => gate.passed === true)", script)
+        self.assertIn("row.high_conviction_rank_eligible === true", script)
+        self.assertNotIn("(row.gates || []).every((gate) => gate.passed === true)", script)
+        self.assertIn("row.actionable === true", script)
         self.assertIn('qualifiedHighConvictionRows(data, "ai")', script)
         self.assertIn('qualifiedHighConvictionRows(data, "biotech")', script)
+
+    def test_page_discloses_references_and_rank_action_separation(self):
+        from pathlib import Path
+        page = (Path(__file__).resolve().parents[1] / "programs" / "genedrnews.html").read_text()
+        block = page.split('aria-label="High Conviction references and strategy logic"', 1)[1]
+        for name in ("Warren Buffett", "Charlie Munger", "Benjamin Graham", "Peter Lynch",
+                     "Philip Fisher", "Howard Marks"):
+            self.assertIn(name, block)
+        self.assertIn("Rank #1 may remain WAIT", block)
 
 
 if __name__ == "__main__":

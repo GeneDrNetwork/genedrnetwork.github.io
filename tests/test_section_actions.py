@@ -29,12 +29,13 @@ class SectionSpecificActionTests(unittest.TestCase):
         for value in ("crypto_opportunity_score", "row.actionable", "multibagger_potential_score", "WAIT FOR PULLBACK", "DO NOT CHASE"):
             self.assertIn(value, crypto)
 
-    def test_high_conviction_uses_confirmation_mountain_and_entry_quality(self):
+    def test_high_conviction_uses_backend_action_with_entry_safety_overlays(self):
         body = self.body("highConvictionAction", "renderHighConvictionDecision")
-        for value in ("market_confirmation", "mountain_position", "entry_quality", "remaining_upside", "Confirmed Early", "Lower Mountain", "Upper Mountain", "Extended"):
+        for value in ("row.actionable", "mountain_position", "Lower Mountain", "Upper Mountain", "Extended"):
             self.assertIn(value, body)
         self.assertIn('mountain === "Lower Mountain"', body)
-        self.assertIn('return "SCALE IN"', body)
+        self.assertIn('? "SCALE IN" : "BUY"', body)
+        self.assertNotIn("market_confirmation", body)
 
     def test_reacceleration_retains_its_existing_alert_action(self):
         self.assertIn("alert.action || \"WATCH\"", self.script)

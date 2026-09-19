@@ -3062,9 +3062,15 @@ def attach_market_context(rows, market_data, domain, rank_opportunities=False):
 
 
 HIGH_CONVICTION_FACTOR_WEIGHTS = {
-    "business_quality": 20, "sustained_growth": 20, "profitability_cash_flow": 20,
-    "financial_strength": 15, "competitive_advantage": 15,
-    "long_term_outlook": 5, "valuation": 5,
+    "moat_competitive_advantage": 15,
+    "management_capital_allocation": 5,
+    "earnings_cash_flow_quality": 20,
+    "balance_sheet_strength": 15,
+    "return_on_invested_capital": 5,
+    "growth_runway": 15,
+    "valuation_margin_of_safety": 15,
+    "compounding_potential": 5,
+    "downside_risk": 5,
 }
 
 HIGH_CONVICTION_CLASSIFICATIONS = {
@@ -3122,9 +3128,7 @@ def classify_stock_pick(domain, total_score, completeness, gates, expectation_st
         return "too-early"
     if expectation_state == "Data Insufficient" or total_score is None or completeness < 70:
         return "too-early"
-    if gate_map.get("market_confirmation", {}).get("passed") is not True:
-        return "watch-setup"
-    required = core_gates + ("valuation", "market_confirmation", "remaining_upside")
+    required = core_gates + ("valuation",)
     if domain == "biotech":
         required += ("binary_integrity",)
     if total_score >= 80 and completeness >= 80 and all(gate_map.get(key, {}).get("passed") is True for key in required):
@@ -3141,6 +3145,11 @@ def stock_pick_action(classification_key):
         "speculative-binary": "Speculative only; do not treat the total score as sufficient for normal position sizing.",
         "avoid": "Avoid until new source-backed evidence repairs the thesis and clears the integrity gate.",
     }[classification_key]
+
+
+def high_conviction_rank_eligible(classification_key):
+    """Admit validated quality candidates to the rank without promoting their Action."""
+    return classification_key in ("high-conviction", "watch-setup")
 
 
 def ai_company_catalyst(linked_rows, ticker, fallback=None):
@@ -3213,8 +3222,6 @@ def proven_quality_factors(company_quality, competitive_score, competitive_avail
                            outlook_evidence, expectation):
     """Score long-term business quality independently from Radar opportunity rank."""
     sources = [source.get("url") for source in (company_quality or {}).get("sources", []) if source.get("url")]
-    company_score = (company_quality or {}).get("company_quality_score")
-    company_completeness = (company_quality or {}).get("data_completeness", 0)
     growth_components = [quality_component(company_quality, key)
                          for key in ("revenue_growth", "earnings_growth", "margin_trend")]
     growth_available = [item for item in growth_components if item.get("score") is not None]
@@ -3226,37 +3233,55 @@ def proven_quality_factors(company_quality, competitive_score, competitive_avail
     profit_score = (round(sum(100 if value > 0 else 15 for value in profit_values) / len(profit_values))
                     if profit_values else None)
     balance = quality_component(company_quality, "balance_sheet")
+    fcf_component = quality_component(company_quality, "free_cash_flow")
+    earnings_cash_values = [value for value in (profit_score, fcf_component.get("score"))
+                            if isinstance(value, (int, float))]
+    earnings_cash_score = (round(sum(earnings_cash_values) / len(earnings_cash_values))
+                           if earnings_cash_values else None)
+    growth_runway_values = [value for value in (growth_score, outlook_score)
+                            if isinstance(value, (int, float))]
+    growth_runway_score = (round(sum(growth_runway_values) / len(growth_runway_values))
+                           if growth_runway_values else None)
     expectation_score = (round(expectation["score"] / expectation["maximum"] * 100)
                          if expectation.get("score") is not None else None)
     return [
         stock_pick_factor(
-            "business_quality", company_score,
-            f"Reported Company Quality is {company_score if company_score is not None else 'Missing'}/100 with {company_completeness}% completeness and {(company_quality or {}).get('confidence', 'Missing')} confidence.",
-            sources, 20 * company_completeness / 100),
+            "moat_competitive_advantage", competitive_score, competitive_rationale,
+            competitive_evidence, competitive_available),
         stock_pick_factor(
-            "sustained_growth", growth_score,
-            "Annual revenue growth, earnings growth, and operating-margin trend are evaluated from reported statements; this is a two-period durability check, not a full-cycle claim. "
-            "Available component scores: " +
-            (", ".join(f"{item.get('key')} {item.get('score')}/100" for item in growth_available) or "Missing") + ".",
-            sources, 20 * len(growth_available) / 3),
+            "management_capital_allocation", None,
+            "Missing: no source-backed management quality and multi-period capital-allocation record is connected; it is not inferred from share price or aggregate Company Quality.",
+            sources),
         stock_pick_factor(
-            "profitability_cash_flow", profit_score,
-            f"Latest annual net income is {net_income if net_income is not None else 'Missing'} and free cash flow is {free_cash_flow if free_cash_flow is not None else 'Missing'} in provider units; positive reported earnings and/or cash flow are required.",
-            sources, 20 * len(profit_values) / 2),
+            "earnings_cash_flow_quality", earnings_cash_score,
+            f"Latest annual net income is {net_income if net_income is not None else 'Missing'} and free cash flow is {free_cash_flow if free_cash_flow is not None else 'Missing'} in provider units; the score combines reported profitability direction and FCF-margin quality without reusing aggregate Company Quality.",
+            sources, 20 * len(earnings_cash_values) / 2),
         stock_pick_factor(
-            "financial_strength", balance.get("score"),
+            "balance_sheet_strength", balance.get("score"),
             balance.get("rationale", "Missing: no current reported balance-sheet assessment."),
             sources, 15 * balance.get("available_weight", 0) / max(balance.get("weight", 20), 1)),
         stock_pick_factor(
-            "competitive_advantage", competitive_score, competitive_rationale,
-            competitive_evidence, competitive_available),
+            "return_on_invested_capital", None,
+            "Missing: the current statement layer does not provide a reliable multi-period NOPAT and invested-capital series; ROIC is not approximated from incomplete inputs.",
+            sources),
         stock_pick_factor(
-            "long_term_outlook", outlook_score, outlook_rationale,
-            outlook_evidence, outlook_available),
+            "growth_runway", growth_runway_score,
+            "Reported revenue, earnings and margin trends are combined with separately sourced long-term outlook evidence in one domain to avoid double weighting. " +
+            (", ".join(f"{item.get('key')} {item.get('score')}/100" for item in growth_available) or "Reported growth is Missing") + f". {outlook_rationale}",
+            sources + list(outlook_evidence or []),
+            15 * min(1, ((len(growth_available) / 3) * .8 + (outlook_available / 5 if outlook_available else 0) * .2))),
         stock_pick_factor(
-            "valuation", expectation_score, expectation.get("rationale", "Missing."),
+            "valuation_margin_of_safety", expectation_score, expectation.get("rationale", "Missing."),
             [source.get("url") for source in expectation.get("sources", []) if source.get("url")],
-            5 * min(1, expectation.get("coverage", 0) / 4)),
+            15 * min(1, expectation.get("coverage", 0) / 4)),
+        stock_pick_factor(
+            "compounding_potential", None,
+            "Missing: durable reinvestment returns and a sufficiently long incremental-return record are not connected; existing growth and moat scores are not counted again.",
+            sources),
+        stock_pick_factor(
+            "downside_risk", None,
+            "Missing: no independent normalized permanent-capital-loss or scenario-loss estimate is connected; balance sheet and valuation are not counted a second time.",
+            sources),
     ]
 
 
@@ -3293,12 +3318,6 @@ def proven_quality_gates(company_quality, expectation, competitive_pass, competi
         stock_pick_gate("valuation", "Valuation Gate", valuation_pass,
                         f"Requires Underpriced or Fairly Priced; current state is {expectation.get('state')}."),
     ]
-
-
-MOUNTAIN_PRIORITY = {
-    "Confirmed Early": 0, "Lower Mountain": 1, "Mid Mountain": 2,
-    "Upper Mountain": 3, "Extended": 4, "Unconfirmed": 5,
-}
 
 
 def high_conviction_market_confirmation(snapshot, domain, previous=None, as_of=None):
@@ -3454,47 +3473,48 @@ def high_conviction_entry_context(snapshot, confirmation, classification_key):
 
 
 def proven_quality_sort_key(item):
-    priority = {key: index for index, key in enumerate(
-        ("high-conviction", "watch-setup", "too-early", "priced-in", "speculative-binary", "avoid"))}
-    quality_gate_keys = {"proven_business", "profitability", "growth_durability",
-                         "financial_strength", "competitive_position", "valuation"}
-    gates_passed = sum(gate.get("passed") is True for gate in item.get("gates", [])
-                       if gate.get("key") in quality_gate_keys)
-    company_quality_score = (item.get("company_quality") or {}).get("company_quality_score") or 0
-    confirmation = item.get("market_confirmation") or {}
-    entry = item.get("high_conviction_entry") or {}
-    remaining = (entry.get("remaining_upside") or {}).get("percent")
     dynamic = item.get("dynamic_final_score")
     dynamic_prefix = (0, -dynamic) if isinstance(dynamic, (int, float)) else (1, 0)
-    return (*dynamic_prefix, priority[item["classification_key"]],
-            0 if confirmation.get("newly_confirmed") else 1,
-            MOUNTAIN_PRIORITY.get(entry.get("mountain_position"), 9),
-            {"BEST ENTRY": 0, "GOOD ENTRY": 1, "ACCEPTABLE": 2,
-             "WAIT FOR PULLBACK": 3, "DO NOT CHASE": 4, "WAIT FOR CONFIRMATION": 5}.get(entry.get("entry_quality"), 9),
-            -(remaining if isinstance(remaining, (int, float)) else -999), -gates_passed,
-            -company_quality_score, -(item.get("data_completeness") or 0),
+    return (*dynamic_prefix,
             -(item.get("final_score") or -1),
+            -(item.get("data_completeness") or 0),
             item.get("company") or "")
+
+
+def high_conviction_action_eligible(row):
+    """Keep long-term quality rank independent from the technical entry decision."""
+    setup = row.get("strategy_technical_setup") or {}
+    confirmation = row.get("market_confirmation") or {}
+    upside = (row.get("remaining_upside") or {}).get("percent")
+    return bool(
+        row.get("classification_key") == "high-conviction" and
+        confirmation.get("confirmed") is True and setup.get("actionable") is True and
+        not setup.get("falling") and not setup.get("extended") and
+        (row.get("catalyst_validation") or {}).get("valid") is True and
+        row.get("stop_invalidation") is not None and
+        isinstance(upside, (int, float)) and upside > 0)
 
 
 def attach_high_conviction_dynamic_score(row, snapshot):
     setup = high_conviction_continuation_setup(snapshot)
-    entry_quality_score = {"Best": 95, "Good": 85, "Acceptable": 70, "Wait": 25}.get(
-        setup.get("entry_quality"), 25)
-    upside = (row.get("remaining_upside") or {}).get("percent")
-    upside_score = min(100, max(0, round(upside * 3))) if isinstance(upside, (int, float)) else None
-    invalidation_score = 85 if row.get("stop_invalidation") is not None else 45
-    catalyst_evidence_score = (row.get("catalyst_evidence") or {}).get("score")
-    catalyst_score = (catalyst_evidence_score if isinstance(catalyst_evidence_score, (int, float)) else
-                      80 if (row.get("catalyst_validation") or {}).get("valid") is True else 25)
-    risk_score = round((invalidation_score + catalyst_score) / 2)
-    penalty = {"high-conviction": 0, "watch-setup": 12, "too-early": 22,
-               "priced-in": 30, "speculative-binary": 30, "avoid": 50}.get(
-                   row.get("classification_key"), 20)
+    penalty = {"high-conviction": 0, "watch-setup": 5, "too-early": 15,
+               "priced-in": 15, "speculative-binary": 30, "avoid": 50}.get(
+                   row.get("classification_key"), 15)
     row["strategy_technical_setup"] = setup
-    row["dynamic_final_score"] = dynamic_alignment_score(
-        row.get("final_score"), setup, entry_quality_score, upside_score, risk_score, penalty)
+    # High Conviction rank measures long-term quality. Technical setup, entry,
+    # catalyst timing and invalidation are Action overlays and are not reweighted.
+    score = row.get("final_score")
+    row["dynamic_final_score"] = (max(0, min(100, round(score - penalty)))
+                                  if isinstance(score, (int, float)) else None)
     row["final_ranking_score"] = row["dynamic_final_score"]
+    row["actionable"] = high_conviction_action_eligible(row)
+    row["pool"] = "Action Pool" if row["actionable"] else "Ranked Watch"
+    action = ("SCALE IN" if row["actionable"] and
+              (row.get("high_conviction_entry") or {}).get("mountain_position") == "Lower Mountain"
+              else "BUY" if row["actionable"] else "WAIT")
+    row["action"] = action
+    if row.get("high_conviction_entry") is not None:
+        row["high_conviction_entry"]["action"] = action
 
 
 def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=None, quality_layer=None,
@@ -3602,10 +3622,11 @@ def build_ai_stock_picks(ai_radar, market_data, curated_rows, candidate_pool=Non
                         "selection_philosophy": "Proven Quality / Long-Term Buy and Hold",
                         "radar_role": "Context only; Radar rank does not determine High Conviction.",
                         "proven_quality_eligible": classification_key == "high-conviction",
+                        "high_conviction_rank_eligible": high_conviction_rank_eligible(classification_key),
                         "action": entry_context["action"], "action_detail": stock_pick_action(classification_key),
                         "thesis_invalidation": invalidation,
                         "candidate_sources": candidate.get("high_conviction_sources") or candidate.get("discovery_sources") or ["Curated Research"],
-                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-market-confirmed-v3"})
+                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-quality-rank-v4"})
         attach_high_conviction_dynamic_score(results[-1], snapshot)
     results.sort(key=proven_quality_sort_key)
     for rank, row in enumerate(results, 1):
@@ -3714,11 +3735,12 @@ def build_biotech_stock_picks(biotech_radar, market_data, curated_rows, as_of,
                         "selection_philosophy": "Proven Quality / Long-Term Buy and Hold",
                         "radar_role": "Context only; Radar rank does not determine High Conviction.",
                         "proven_quality_eligible": classification_key == "high-conviction",
+                        "high_conviction_rank_eligible": high_conviction_rank_eligible(classification_key),
                         "action": entry_context["action"], "action_detail": stock_pick_action(classification_key),
                         "thesis_invalidation": invalidation,
                         "candidate_sources": candidate.get("high_conviction_sources") or candidate.get("discovery_sources") or ["Curated Research"],
                         "binary_risk": radar.get("binary_risk") if radar else "Missing", "radar_status": radar.get("opportunity_status") if radar else "Missing",
-                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-market-confirmed-v3"})
+                        "market_data": compact_market_snapshot(snapshot), "engine_version": "high-conviction-quality-rank-v4"})
         attach_high_conviction_dynamic_score(results[-1], snapshot)
     results.sort(key=proven_quality_sort_key)
     for rank, row in enumerate(results, 1):
@@ -3818,26 +3840,29 @@ def build_high_conviction_engine(ai_radar, biotech_radar, market_data, as_of,
             })
             if (row.get("swing_trade") or {}).get("entry_zone"):
                 row["swing_trade"]["entry_zone"]["active"] = False
-    # Entry Timing annotates the market-confirmed ranking but cannot override thesis gates.
+    # Entry Timing annotates the quality ranking but cannot reorder it or override thesis gates.
     selected = {
-        "ai": [row for row in all_ai if row["classification_key"] == "high-conviction"][:5],
-        "biotech": [row for row in all_biotech if row["classification_key"] == "high-conviction"][:5],
+        "ai": [row for row in all_ai if row.get("high_conviction_rank_eligible") is True][:5],
+        "biotech": [row for row in all_biotech if row.get("high_conviction_rank_eligible") is True][:5],
     }
     all_rows = all_ai + all_biotech
     counts = {label: sum(row["classification_key"] == key for row in all_rows)
               for key, label in HIGH_CONVICTION_CLASSIFICATIONS.items()}
     methodology = {
-        "engine_version": "high-conviction-market-confirmed-v3", "factor_weights": HIGH_CONVICTION_FACTOR_WEIGHTS,
-        "selection_philosophy": "Confirmed bullish thesis with proven company quality and meaningful remaining upside.",
+        "engine_version": "high-conviction-quality-rank-v4", "factor_weights": HIGH_CONVICTION_FACTOR_WEIGHTS,
+        "selection_philosophy": "Long-term business quality, compounding potential, valuation discipline, and downside awareness; technical timing is an Action overlay only.",
+        "primary_references": ["Warren Buffett — Berkshire Hathaway shareholder letters", "Charlie Munger — Poor Charlie's Almanack", "Benjamin Graham — The Intelligent Investor", "Peter Lynch — One Up on Wall Street", "Philip Fisher — Common Stocks and Uncommon Profits", "Howard Marks — The Most Important Thing"],
+        "strategy_logic": "Rank moat, management/capital allocation, earnings and cash-flow quality, balance sheet, ROIC, growth runway, valuation/margin of safety, compounding potential, and downside risk. Missing distinct evidence stays missing rather than being recreated from overlapping factors. Action separately applies the Uptrend/Pullback/Continuation entry gate.",
+        "code_attribution": "GeneDr Network implementation informed by common principles in the cited references; scoring, thresholds, classifications, and combined gates are original and are not the authors' formulas.",
         "technical_setup_engine": "High Conviction = Uptrend / Pullback / Continuation. Action requires Established Uptrend → Healthy Pullback → rising-MA50 Higher Low / Support Hold → momentum-backed prior-10-session-high reclaim.",
-        "dynamic_final_rank": "Recalculated on every refresh from validated fundamental/conviction evidence, the High-Conviction continuation setup, entry quality, remaining upside, invalidation/risk, and extension state.",
-        "radar_separation": "Radar is an early-discovery system and may include pre-revenue or unconfirmed beneficiaries. Radar rank never grants High-Conviction eligibility and contributes only 5% long-term-outlook context.",
+        "dynamic_final_rank": "Recalculated on every refresh from long-term quality evidence only. Technical setup, market confirmation, entry quality, catalyst timing and invalidation do not alter rank; they determine Action separately.",
+        "radar_separation": "Radar is an early-discovery system and may include pre-revenue or unconfirmed beneficiaries. Radar rank never grants High-Conviction eligibility; evidence-linked Radar context is only a limited input within Growth Runway.",
         "candidate_policy": "Radar, broad shared-market confirmation screening, current/archived News catalysts, and established research candidates are merged; source alone never grants eligibility.",
-        "phase_6_integration": "Reported Company Quality, growth, profitability/free cash flow, balance-sheet strength, competitive-position evidence, and valuation determine eligibility and ranking.",
+        "phase_6_integration": "Reported growth, earnings/free-cash-flow quality, balance-sheet strength, competitive-position evidence, long-term runway, and valuation determine eligibility and ranking. Aggregate Company Quality is a gate, not a duplicate scored factor.",
         "missing_data_policy": "Missing factor scores are excluded and weights are renormalized; missing inputs never become zero.",
-        "high_conviction_rule": "A total score of at least 80, at least 80% completeness, and every applicable quality, valuation, market-confirmation, and biotech-integrity gate are required.",
+        "high_conviction_rule": "A total score of at least 80, at least 80% completeness, and every applicable long-term quality, valuation, and biotech-integrity gate are required for the strict High Conviction classification. Quality candidates that clear the core evidence gates but remain Watch / Setup Forming stay visible in rank with that classification; market confirmation and remaining upside apply to Action timing only.",
         "gates": ["Proven Business Quality Gate", "Meaningful Earnings / Cash Flow Gate", "Sustained Growth Gate", "Financial Strength Gate", "Competitive Position Gate", "Valuation Gate", "Market Confirmation Gate", "Meaningful Remaining Upside Gate", "Biotech Binary Risk / Evidence Integrity Gate"],
-        "ranking_policy": "Dynamic Final Rank combines validated conviction/fundamentals, the Uptrend/Pullback/Continuation setup, entry quality, remaining upside, invalidation/risk, and extension penalties; failed or unconfirmed technical entries are lowered to WAIT rather than rescued by a strong story.",
+        "ranking_policy": "Dynamic Final Rank measures validated long-term quality and valuation alignment. A technically unconfirmed or Extended Rank #1 remains visible as WAIT or DO NOT CHASE rather than being removed or reordered.",
         "one_day_spike_policy": "Daily return is excluded from Market Confirmation; a one-day spike cannot satisfy the gate.",
         "classifications": list(HIGH_CONVICTION_CLASSIFICATIONS.values()),
     }
