@@ -995,22 +995,11 @@ function renderOpportunities(targetId, rows = []) {
 
 function swingTradeAction(row = {}) {
   const technical = row.technical || {};
-  const catalystPassed = row.catalyst?.credible === true;
   const stage = String(row.classification || technical.state || "Unavailable");
-  const current = decisionNumber(technical.current_price);
-  const support = decisionNumber(technical.support);
-  const resistance = decisionNumber(technical.resistance);
-  const risk = current !== null && support !== null && current > support ? current - support : null;
-  const reward = current !== null && resistance !== null && resistance > current ? resistance - current : null;
-  const riskReward = risk && reward !== null ? reward / risk : null;
-  if (/Technical Deterioration/i.test(stage)) return "STOP OUT";
-  if (/Failed Reversal/i.test(stage)) return "EXIT";
-  if (technical.extended || stage === "Extended") return "TAKE PROFIT";
-  if (!catalystPassed) return "WATCH / WAIT FOR VALID CATALYST";
-  if (stage === "Breakout") return (decisionNumber(technical.volume_vs_20d_average) ?? -1) >= 1.2 ? "BUY" : "HOLD";
-  if (stage === "Entry Zone") return riskReward === null || riskReward < 1.5 ? "WATCH" : "BUY";
-  if (stage === "Early Reversal") return row.stage_transition?.fresh_favorable_transition ? "SCALE IN" : "ENTER ON BREAKOUT";
-  return "WATCH";
+  if (technical.extended || stage === "Extended") return "DO NOT CHASE";
+  if (/Technical Deterioration|Failed Reversal|Falling/i.test(stage)) return "WATCH";
+  return ["BUY", "SCALE IN", "WATCH", "DO NOT CHASE", "WATCH / WAIT FOR VALID CATALYST"].includes(row.action)
+    ? row.action : "WATCH";
 }
 
 function renderSwingTrades(section = {}) {
@@ -1018,7 +1007,10 @@ function renderSwingTrades(section = {}) {
   const takeaways = section.take_home_messages || [];
   document.getElementById("swing-reasoning").innerHTML = reasoning.map((item) => `<p>${escapeHtml(item)}</p>`).join("") || `<p>No swing-trade strategy reasoning is available.</p>`;
   document.getElementById("swing-takeaways").innerHTML = takeaways.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || `<li>No qualifying swing-trade conclusions are available.</li>`;
-  const rows = [...(section.opportunities || []), ...(section.unverified_setups || [])];
+  const rows = (Array.isArray(section.ranked_setups)
+    ? [...section.ranked_setups]
+    : [...(section.opportunities || []), ...(section.unverified_setups || []), ...(section.watch_setups || [])])
+    .sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER));
   document.getElementById("swing-opportunities").innerHTML = rows.map((row) => {
     const technical = row.technical || {};
     const catalyst = row.catalyst || {};
@@ -1039,10 +1031,10 @@ function renderSwingTrades(section = {}) {
         <li>${escapeHtml(why.catalyst_support || "Catalyst support unavailable.")}</li>
         <li>${escapeHtml(why.invalidation || "Invalidation condition unavailable.")}</li>
       </ol></section>
-      <dl class="swing-technical-grid"><div><dt>Dynamic Final Rank</dt><dd>${escapeHtml(dynamicRankLabel(row))} · ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</dd></div><div><dt>Strategy Setup</dt><dd>${escapeHtml(technical.strategy_setup?.engine || "Swing Trade = Wave Bottom / Reversal / Upswing")}</dd></div><div><dt>Stage Change</dt><dd>${escapeHtml(transitionLabel)}</dd></div><div><dt>Action</dt><dd><strong>${escapeHtml(action)}</strong></dd></div><div><dt>Transition Evidence</dt><dd>${escapeHtml((transition.signals || []).join("; ") || "No fresh transition evidence available.")}</dd></div><div><dt>Current Price</dt><dd>${escapeHtml(formatPrice(technical.current_price))}</dd></div><div><dt>MA20 / MA50</dt><dd>${escapeHtml(formatPrice(technical.ma20))} / ${escapeHtml(formatPrice(technical.ma50))}</dd></div>
+      <dl class="swing-technical-grid"><div><dt>Dynamic Final Rank</dt><dd>${escapeHtml(dynamicRankLabel(row))} · ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</dd></div><div><dt>Strategy Setup</dt><dd>${escapeHtml(technical.strategy_setup?.engine || "Swing Trade = Wave Bottom / Reversal / Upswing")}</dd></div><div><dt>Primary Pattern</dt><dd>${escapeHtml(technical.pattern || "Unclassified / Insufficient Pattern Evidence")}<small>${escapeHtml((technical.recognized_patterns || []).map((item) => `${item.name}: ${item.evidence}`).join("; ") || technical.pattern_policy || "Pattern evidence unavailable.")}</small></dd></div><div><dt>Stage Change</dt><dd>${escapeHtml(transitionLabel)}</dd></div><div><dt>Action</dt><dd><strong>${escapeHtml(action)}</strong></dd></div><div><dt>Transition Evidence</dt><dd>${escapeHtml((transition.signals || []).join("; ") || "No fresh transition evidence available.")}</dd></div><div><dt>Current Price</dt><dd>${escapeHtml(formatPrice(technical.current_price))}</dd></div><div><dt>MA20 / MA50</dt><dd>${escapeHtml(formatPrice(technical.ma20))} / ${escapeHtml(formatPrice(technical.ma50))}</dd></div>
         <div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Decline from 52W High</dt><dd>${escapeHtml(formatChange(technical.drawdown_from_high_pct))}</dd></div><div><dt>Recent Low</dt><dd>${escapeHtml(formatPrice(technical.recent_low))}</dd></div><div><dt>Distance From Bottom</dt><dd>${escapeHtml(formatChange(technical.distance_from_bottom_pct))}</dd></div>
-        <div><dt>Bottom Formation</dt><dd>${technical.bottom_stabilized ? "Stabilization rule passed" : "Still forming / not confirmed"}${technical.base_duration_sessions ? ` · ${escapeHtml(technical.base_duration_sessions)} sessions` : ""}</dd></div><div><dt>Early Reversal</dt><dd>${technical.early_reversal_confirmed ? "Confirmed by available momentum rules" : "Not yet confirmed"}</dd></div><div><dt>RSI / MACD</dt><dd>${escapeHtml(technical.rsi_14 ?? "Missing")} / ${escapeHtml(technical.macd?.histogram ?? "Missing")}</dd></div><div><dt>Volume vs 20D Average</dt><dd>${technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "Unavailable" : `${escapeHtml(technical.volume_vs_20d_average)}x`}</dd></div>
-        <div><dt>Support</dt><dd>${escapeHtml(formatPrice(technical.support))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(formatPrice(technical.resistance))}</dd></div><div><dt>Invalidation</dt><dd>${escapeHtml(formatPrice(technical.invalidation_level))}</dd></div><div><dt>Extended?</dt><dd>${technical.extended ? "Yes — do not chase" : "No"}</dd></div></dl>
+        <div><dt>Bottom Formation</dt><dd>${technical.bottom_stabilized ? "Stabilization rule passed" : "Still forming / not confirmed"}${technical.base_duration_sessions ? ` · ${escapeHtml(technical.base_duration_sessions)} sessions` : ""}</dd></div><div><dt>Early Reversal</dt><dd>${technical.early_reversal_confirmed ? "Confirmed by available momentum rules" : "Not yet confirmed"}</dd></div><div><dt>Momentum / Relative Strength</dt><dd>${escapeHtml(technical.momentum_relative_strength?.score ?? "Missing")}/100 · benchmark ${escapeHtml(technical.momentum_relative_strength?.benchmark || "Missing")} · RS ${escapeHtml(technical.momentum_relative_strength?.relative_strength_score ?? "Missing")}/100</dd></div><div><dt>Volume Evidence</dt><dd>${escapeHtml([technical.volume_state?.accumulation ? "Accumulation" : null, technical.volume_state?.contraction ? "Contraction" : null, technical.volume_state?.breakout_confirmation ? "Breakout confirmed" : null, technical.volume_state?.distribution_warning ? "Distribution warning" : null, technical.volume_state?.exhaustion_warning ? "Exhaustion warning" : null].filter(Boolean).join(" · ") || "No confirmed volume state")} · ${technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "volume ratio unavailable" : `${escapeHtml(technical.volume_vs_20d_average)}x 20D`}</dd></div>
+        <div><dt>Support</dt><dd>${escapeHtml(formatPrice(technical.support))}</dd></div><div><dt>Target / Resistance</dt><dd>${escapeHtml(formatPrice(technical.resistance))}</dd></div><div><dt>Invalidation</dt><dd>${escapeHtml(formatPrice(technical.invalidation_level))}</dd></div><div><dt>Reward / Risk</dt><dd>${technical.reward_risk_to_resistance === null || technical.reward_risk_to_resistance === undefined ? "Unavailable" : `${escapeHtml(technical.reward_risk_to_resistance)}:1`}</dd></div><div><dt>Extended?</dt><dd>${technical.extended ? "Yes — DO NOT CHASE" : "No"}</dd></div></dl>
       <section class="swing-catalyst"><h5>Step 2 · Credible Catalyst Check</h5><p><strong>${escapeHtml(catalyst.status || catalystStatus(row))}</strong></p><p><strong>Company-Specific Catalyst:</strong> ${escapeHtml(catalyst.company_specific_catalyst || "Missing: no validated company-specific catalyst.")}</p><p><strong>Industry / Theme Catalyst:</strong> ${escapeHtml(catalyst.industry_theme_catalyst || (!hasValidCompanyCatalyst(row) ? catalyst.description : null) || "Missing")}</p><p>Timing: ${escapeHtml(catalyst.timing || "Missing")} · Source: ${escapeHtml(catalyst.source || "Missing")}${catalyst.date ? ` · ${escapeHtml(catalyst.date)}` : ""}</p><p>${escapeHtml(catalyst.basis || catalyst.validation_reason || "Missing")}</p>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read Source</a>` : ""}</section>
       ${watchlistAction(row.ticker, row.company, "Swing Trade", row.domain || "ai")}</div></details>`;
   }).join("") || `<p class="loading-state">No stock currently passes both the technical-first screen and the credible-catalyst check.</p>`;

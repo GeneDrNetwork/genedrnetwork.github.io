@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.swing_trade import build_swing_trade_engine, stage_transition, technical_setup
+from scripts.swing_trade import build_swing_trade_engine, stage_transition, swing_action, technical_setup
 
 
 def snapshot(state="entry"):
@@ -144,6 +144,8 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(row["technical"]["strategy_setup"]["engine"],
                          "Swing Trade = Wave Bottom / Reversal / Upswing")
         self.assertIsNotNone(row["dynamic_final_score"])
+        self.assertEqual(row["selection_score"], row["dynamic_final_score"])
+        self.assertIn("no second weighting", row["selection_score_note"])
         self.assertEqual(row["dynamic_final_rank"], 1)
 
     def test_non_biotech_company_can_qualify_from_source_backed_news(self):
@@ -223,6 +225,57 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertIn("transition.previous_stage", script)
         self.assertIn("since change", script)
         self.assertIn("swing-transition", script)
+
+    def test_constructive_watch_setups_remain_ranked_when_no_buy_exists(self):
+        market = {"securities": {"TEST": snapshot("bottoming")}}
+        result = build_swing_trade_engine(candidates(), market, [], biotech_radar())
+        self.assertEqual(result["opportunities"], [])
+        self.assertGreaterEqual(len(result["ranked_setups"]), 1)
+        row = result["ranked_setups"][0]
+        self.assertEqual(row["ticker"], "TEST")
+        self.assertEqual(row["pool"], "Ranked Watch")
+        self.assertEqual(row["action"], "WATCH")
+        self.assertEqual(row["dynamic_final_rank"], 1)
+
+    def test_pattern_domains_are_explicit_without_fabricating_named_shapes(self):
+        technical = technical_setup(snapshot("entry"), "biotech")
+        names = {item["name"] for item in technical["recognized_patterns"]}
+        self.assertIn("Major Base", names)
+        self.assertIn("Tight / Flat Base", names)
+        self.assertIn("Triangle / Consolidation", names)
+        self.assertNotIn("Cup with Handle", names)
+        self.assertNotIn("Double Bottom", names)
+        self.assertEqual(
+            [item["label"] for item in technical["components"]],
+            ["Pattern / Base", "Stage / Trend", "Price / Volume",
+             "Momentum / Relative Strength", "Entry / Invalidation"],
+        )
+        self.assertIn("contraction", technical["volume_state"])
+        self.assertIn("relative_strength_score", technical["momentum_relative_strength"])
+
+    def test_pattern_alone_never_creates_buy_and_extended_is_do_not_chase(self):
+        market = {"securities": {"TEST": snapshot("breakout")}}
+        result = build_swing_trade_engine(candidates(), market, [], biotech_radar())
+        breakout = result["ranked_setups"][0]
+        self.assertEqual(breakout["technical"]["pattern"], "Breakout")
+        self.assertEqual(breakout["action"], "WATCH")
+        extended = technical_setup(snapshot("extended"), "biotech")
+        self.assertEqual(swing_action(extended, {"credible": True}, {}), "DO NOT CHASE")
+
+    def test_phase_six_methodology_and_references_are_disclosed(self):
+        result = build_swing_trade_engine(candidates(), {"securities": {"TEST": snapshot("bottoming")}},
+                                          [], biotech_radar())
+        methodology = result["methodology"]
+        self.assertIn("Pattern → Stage/Trend → Price/Volume", methodology["strategy_logic"])
+        self.assertIn("Jesse Livermore / Edwin Lefèvre", methodology["primary_references"])
+        self.assertIn("Thomas Bulkowski", methodology["primary_references"])
+        from pathlib import Path
+        page = (Path(__file__).resolve().parents[1] / "programs" / "genedrnews.html").read_text()
+        title_at = page.index("<h2>Swing Trade Opportunity</h2>")
+        references_at = page.index('aria-label="Swing Trade references and strategy logic"')
+        reasoning_at = page.index('class="interpretation-grid swing-interpretation"')
+        self.assertLess(title_at, references_at)
+        self.assertLess(references_at, reasoning_at)
 
 
 if __name__ == "__main__":

@@ -65,7 +65,7 @@ def swing_dynamic_final_score(technical, catalyst, transition=None):
     return None if score is None else max(0, min(100, round(score)))
 
 
-def technical_setup(snapshot):
+def technical_setup(snapshot, domain=None):
     snapshot = snapshot or {}
     price = snapshot.get("current_price")
     mas = snapshot.get("moving_averages") or {}
@@ -105,6 +105,7 @@ def technical_setup(snapshot):
     breakout_volume = inputs.get("breakout_volume_ratio")
     breakout = bool(proximity is not None and 0 <= proximity <= 5 and
                     breakout_volume is not None and breakout_volume >= 1.2)
+    failed_pattern = inputs.get("failed_breakout") is True
     extension_signals = [
         price_vs_ma20 is not None and price_vs_ma20 > 12,
         price_vs_ma50 is not None and price_vs_ma50 > 18,
@@ -117,7 +118,9 @@ def technical_setup(snapshot):
     near_ma50 = price_vs_ma50 is not None and -8 <= price_vs_ma50 <= 8
     above_ma20 = price_vs_ma20 is not None and price_vs_ma20 >= 0
     near_ma20 = price_vs_ma20 is not None and price_vs_ma20 >= -3
-    if extended:
+    if failed_pattern:
+        state = "Failed Reversal / Technical Deterioration"
+    elif extended:
         state = "Extended"
     elif breakout:
         state = "Breakout"
@@ -146,14 +149,48 @@ def technical_setup(snapshot):
     accumulation = inputs.get("up_down_volume_ratio_20d")
     contraction = inputs.get("volume_contraction_ratio")
     higher_low = inputs.get("higher_low_confirmed") is True
+    daily_return = returns.get("daily")
+    volume_contracted = contraction is not None and contraction <= .95
+    accumulation_confirmed = accumulation is not None and accumulation >= 1.1
+    breakout_volume_confirmed = breakout
+    distribution_warning = bool(
+        (accumulation is not None and accumulation < .85) or
+        (volume_ratio is not None and volume_ratio >= 1.3 and
+         daily_return is not None and daily_return < 0))
+    exhaustion_warning = bool(volume_ratio is not None and volume_ratio >= 1.8 and
+                              rsi is not None and rsi >= 72)
     volume_score = average([
-        90 if volume_ratio is not None and .8 <= volume_ratio <= 1.5 else 65 if volume_ratio is not None else None,
-        100 if accumulation is not None and accumulation >= 1.3 else 75 if accumulation is not None and accumulation >= 1 else 40 if accumulation is not None else None,
+        95 if breakout_volume_confirmed else 85 if volume_contracted else 55 if contraction is not None else None,
+        95 if accumulation_confirmed else 45 if accumulation is not None else None,
+    ])
+    if distribution_warning:
+        volume_score = min(volume_score or 30, 30)
+    benchmark = "xbi" if domain == "biotech" else "qqq"
+    relative = (snapshot.get("relative_strength") or {}).get(benchmark, {})
+    relative_values = [relative.get(key) for key in ("one_month", "three_month")
+                       if isinstance(relative.get(key), (int, float))]
+    relative_score = (90 if relative_values and max(relative_values) >= 5 else
+                      75 if relative_values and max(relative_values) > 0 else
+                      50 if relative_values and max(relative_values) >= -2 else
+                      25 if relative_values else None)
+    momentum_score = average([
+        95 if macd.get("crossover") == "bullish" else 80 if reversal_signal else 35 if histogram is not None else None,
+        85 if rsi is not None and 40 <= rsi <= 65 else 60 if rsi is not None and 32 <= rsi <= 72 else 25 if rsi is not None else None,
+        relative_score,
+    ])
+    trend_score = (95 if state in ("Entry Zone", "Breakout") else
+                   85 if state == "Early Reversal" else 60 if state == "Bottoming" else
+                   25 if state in ("Falling", "Failed Reversal / Technical Deterioration") else 35)
+    entry_invalidation_score = average([
+        entry_score,
+        90 if inputs.get("invalidation_level") is not None else 60 if ma50 is not None else None,
     ])
     components = [
-        ("Established Wave / Range", wave_score, 20), ("Bottom / Stabilization", bottom_score, 25),
-        ("Early Reversal", reversal_score, 25), ("Entry / Extension", entry_score, 20),
-        ("Volume", volume_score, 10),
+        ("Pattern / Base", wave_score, 20),
+        ("Stage / Trend", average([bottom_score, trend_score]), 20),
+        ("Price / Volume", volume_score, 20),
+        ("Momentum / Relative Strength", momentum_score, 20),
+        ("Entry / Invalidation", entry_invalidation_score, 20),
     ]
     available = sum(weight for _, score, weight in components if score is not None)
     score = (round(sum(score * weight for _, score, weight in components if score is not None) / available)
@@ -174,6 +211,35 @@ def technical_setup(snapshot):
     qualified = bool(established_wave and near_support and selling_exhaustion and
                      confirmed_reversal and state in ("Early Reversal", "Entry Zone") and
                      reward_risk is not None and reward_risk >= 1.5 and not extended and available >= 60)
+    patterns = []
+    def add_pattern(name, confirmed, evidence):
+        if confirmed:
+            patterns.append({"name": name, "evidence": evidence})
+    add_pattern("Major Base", base_sessions in (42, 63) and base_range is not None,
+                f"{base_sessions}-session base with {base_range}% range.")
+    add_pattern("Tight / Flat Base", base_sessions in (42, 63) and tight_range is not None and
+                tight_range <= 15 and volume_contracted,
+                f"{tight_range}% 20-session range with contracting volume.")
+    add_pattern("Triangle / Consolidation", range_transitions is not None and range_transitions >= 3 and
+                tight_range is not None and tight_range <= 18 and volume_contracted,
+                f"{range_transitions} range-zone transitions with price/volume contraction; exact trendlines are not inferred.")
+    add_pattern("Cup with Handle", inputs.get("cup_with_handle_confirmed") is True,
+                "Explicit history-derived cup-with-handle flag is confirmed.")
+    add_pattern("Double Bottom", inputs.get("double_bottom_confirmed") is True,
+                "Explicit history-derived double-bottom flag is confirmed.")
+    add_pattern("Support / MA Pullback", near_support and higher_low,
+                "Price is near calculated support with a confirmed higher low.")
+    add_pattern("Reversal", confirmed_reversal,
+                "Higher low, MA20 reclaim, usable momentum, and reversal evidence are present.")
+    add_pattern("Breakout", breakout,
+                "Price is within 5% above resistance with at least 1.2x breakout volume.")
+    add_pattern("Failed Breakout / Reversal", failed_pattern,
+                "The shared history layer explicitly flags a failed breakout.")
+    primary_pattern = (next((item["name"] for preferred in
+                            ("Failed Breakout / Reversal", "Breakout", "Cup with Handle", "Double Bottom",
+                             "Tight / Flat Base", "Triangle / Consolidation", "Support / MA Pullback",
+                             "Reversal", "Major Base") for item in patterns if item["name"] == preferred),
+                            "Unclassified / Insufficient Pattern Evidence"))
     return {
         "state": state, "technical_setup_score": score, "data_completeness": available,
         "qualified_step_1": qualified, "major_decline_confirmed": major_decline,
@@ -189,6 +255,16 @@ def technical_setup(snapshot):
         "rsi_14": rsi, "macd": macd,
         "returns": returns, "relative_strength": snapshot.get("relative_strength") or {},
         "volume_vs_20d_average": volume_ratio, "up_down_volume_ratio_20d": accumulation,
+        "pattern": primary_pattern, "recognized_patterns": patterns,
+        "pattern_policy": "Named patterns require calculable history evidence; cup-handle and double-bottom labels are never inferred without explicit confirmation.",
+        "volume_state": {"accumulation": accumulation_confirmed,
+                         "contraction": volume_contracted,
+                         "breakout_confirmation": breakout_volume_confirmed,
+                         "distribution_warning": distribution_warning,
+                         "exhaustion_warning": exhaustion_warning},
+        "momentum_relative_strength": {"benchmark": benchmark.upper(),
+                                        "score": momentum_score,
+                                        "relative_strength_score": relative_score},
         "support": round(support, 4) if support is not None else None,
         "resistance": resistance, "reward_risk_to_resistance": reward_risk,
         "breakout_proximity_pct": proximity, "extended": extended,
@@ -455,7 +531,9 @@ def build_explanation(company, technical, catalyst):
                     if technical.get("drawdown_from_high_pct") is not None else
                     "confirmed by available 52-week-position or multi-month return evidence")
     return {
-        "summary": f"{company} passed the technical-first screen as {state} and has a separate source-backed catalyst check.",
+        "summary": (f"{company} passes the complete technical Action screen as {state}."
+                    if technical.get("qualified_step_1") else
+                    f"{company} is ranked as a {state} WATCH setup; pattern recognition alone does not qualify an entry."),
         "why_chart_selected": (f"A major decline is {decline_text}; "
                                f"the 20-session range is {technical.get('bottom_range_20d_pct')}%."),
         "bottom_reversal_stage": (f"The setup is classified {state}; price versus MA20/MA50 is "
@@ -464,6 +542,24 @@ def build_explanation(company, technical, catalyst):
         "catalyst_support": f"{catalyst.get('description')} Timing: {catalyst.get('timing') or 'Missing'}.",
         "invalidation": invalidation,
     }
+
+
+def swing_action(technical, catalyst, transition):
+    """Action is downstream of pattern, stage, confirmation, risk, and reward/risk."""
+    state = (transition or {}).get("current_stage") or (technical or {}).get("state")
+    if (technical or {}).get("extended") or state == "Extended":
+        return "DO NOT CHASE"
+    if state in ("Falling", "Bottoming", "Failed Reversal / Technical Deterioration"):
+        return "WATCH"
+    if not (catalyst or {}).get("credible"):
+        return WAIT_FOR_CATALYST_ACTION
+    if (technical or {}).get("qualified_step_1") is not True:
+        return "WATCH"
+    if state == "Entry Zone":
+        return "BUY"
+    if state == "Early Reversal" and (transition or {}).get("fresh_favorable_transition"):
+        return "SCALE IN"
+    return "WATCH"
 
 
 def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_radar,
@@ -477,6 +573,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
     evaluated_states = []
     qualified_records = []
     unverified_setups = []
+    watch_setups = []
     technical_qualified = []
     tracking = []
     previous_stages = prior_stage_map(previous_section)
@@ -484,8 +581,8 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
         snapshot = (market_data or {}).get("securities", {}).get(ticker)
         if not snapshot:
             continue
-        technical = technical_setup(snapshot)
         domain = candidate.get("domain") or (snapshot.get("domains") or ["ai"])[0]
+        technical = technical_setup(snapshot, domain)
         transition = stage_transition(previous_stages.get(ticker), technical, domain)
         technical["state"] = transition["current_stage"]
         technical["strategy_setup"] = {
@@ -504,53 +601,55 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
             "technical": transition_metrics(technical),
         })
         evaluated_states.append(technical["state"])
-        if not technical["qualified_step_1"]:
-            continue
-        technical_qualified.append(ticker)
         catalyst = catalyst_check(ticker, domain, ai_radar, biotech_radar,
                                   ai_news_section, biotech_news_section, candidate.get("company") or ticker)
-        if not catalyst["credible"]:
-            unverified_record = {
-                "company": candidate.get("company") or ticker, "ticker": ticker,
-                "exchange": candidate.get("exchange", ""), "listing_status": candidate.get("listing_status", "Public"),
-                "domain": domain, "classification": technical["state"], "technical": technical,
-                "stage_transition": transition, "catalyst": catalyst,
-                "catalyst_validation": {"valid": False, "status": THEME_ONLY_STATUS,
-                                        "reason": catalyst.get("validation_reason")},
-                "action": WAIT_FOR_CATALYST_ACTION,
-                "market_data": {key: snapshot.get(key) for key in
-                                ("current_price", "price_date", "currency", "source", "data_status")},
-            }
-            unverified_record["dynamic_final_score"] = swing_dynamic_final_score(
-                technical, catalyst, transition)
-            unverified_setups.append(unverified_record)
-            continue
         explanation = build_explanation(candidate.get("company") or ticker, technical, catalyst)
-        evaluated_record = {
+        common_record = {
             "company": candidate.get("company") or ticker, "ticker": ticker,
             "exchange": candidate.get("exchange", ""), "listing_status": candidate.get("listing_status", "Public"),
             "domain": domain, "classification": technical["state"],
             "technical": technical, "stage_transition": transition, "catalyst": catalyst,
+            "catalyst_validation": {"valid": catalyst.get("credible") is True,
+                                    "status": catalyst.get("status", THEME_ONLY_STATUS),
+                                    "reason": catalyst.get("validation_reason")},
             "why_this_swing_trade_opportunity": explanation,
-            "selection_principle": "Early Technical Reversal + Credible Catalyst",
+            "selection_principle": "Pattern → Stage/Trend → Price/Volume → Momentum/RS → Entry → Invalidation → Target → R/R → Action",
             "market_data": {key: snapshot.get(key) for key in
                             ("current_price", "price_date", "currency", "source", "data_status")},
-            "engine_version": "swing-trade-opportunity-v1.1",
+            "engine_version": "swing-trade-opportunity-v2",
         }
-        evaluated_record["selection_score"] = round(
-            technical["technical_setup_score"] * .8 +
-            (catalyst.get("importance_score") if catalyst.get("importance_score") is not None else 75) * .2)
-        evaluated_record["selection_score_note"] = (
-            "Used only to order candidates that independently passed both steps; it cannot rescue a failed technical setup or missing catalyst.")
+        if not technical["qualified_step_1"]:
+            if technical["state"] not in ("Falling", "Extended", "Failed Reversal / Technical Deterioration") and \
+                    isinstance(technical.get("technical_setup_score"), (int, float)):
+                watch_record = {**common_record, "pool": "Ranked Watch"}
+                watch_record["action"] = swing_action(technical, catalyst, transition)
+                watch_record["dynamic_final_score"] = swing_dynamic_final_score(
+                    technical, catalyst, transition)
+                watch_setups.append(watch_record)
+            continue
+        technical_qualified.append(ticker)
+        if not catalyst["credible"]:
+            unverified_record = {**common_record, "pool": "Ranked Watch"}
+            unverified_record["action"] = swing_action(technical, catalyst, transition)
+            unverified_record["dynamic_final_score"] = swing_dynamic_final_score(
+                technical, catalyst, transition)
+            unverified_setups.append(unverified_record)
+            continue
+        evaluated_record = {**common_record, "pool": "Action Pool"}
+        evaluated_record["action"] = swing_action(technical, catalyst, transition)
         evaluated_record["dynamic_final_score"] = swing_dynamic_final_score(
             technical, catalyst, transition)
+        evaluated_record["selection_score"] = evaluated_record["dynamic_final_score"]
+        evaluated_record["selection_score_note"] = (
+            "Compatibility alias of Dynamic Final Score; no second weighting formula is applied.")
         qualified_records.append(evaluated_record)
     catalyst_qualified_count = len(qualified_records)
     previous_ranks = {row.get("ticker"): row.get("dynamic_final_rank")
-                      for row in list((previous_section or {}).get("opportunities", [])) +
+                      for row in list((previous_section or {}).get("ranked_setups", [])) +
+                      list((previous_section or {}).get("opportunities", [])) +
                       list((previous_section or {}).get("unverified_setups", []))
                       if row.get("ticker") and isinstance(row.get("dynamic_final_rank"), int)}
-    all_ranked = sorted(qualified_records + unverified_setups,
+    all_ranked = sorted(qualified_records + unverified_setups + watch_setups,
                         key=lambda item: (-(item.get("dynamic_final_score") or -1),
                                           0 if item["stage_transition"].get("fresh_favorable_transition") else 1,
                                           STATE_PRIORITY[item["classification"]], item["ticker"]))
@@ -561,29 +660,34 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
         row["rank_movement"] = None if prior_rank is None else prior_rank - rank
     opportunities = sorted(qualified_records, key=lambda item: item["dynamic_final_rank"])
     unverified_setups.sort(key=lambda item: item["dynamic_final_rank"])
+    watch_setups.sort(key=lambda item: item["dynamic_final_rank"])
     opportunities = opportunities[:limit]
-    for row in opportunities:
+    ranked_setups = all_ranked[:limit]
+    for row in all_ranked:
         row["rank"] = row["dynamic_final_rank"]
     state_counts = Counter(evaluated_states)
-    selected_states = Counter(row["classification"] for row in opportunities)
-    selected_names = ", ".join(row["ticker"] for row in opportunities[:4]) or "none"
+    selected_states = Counter(row["classification"] for row in ranked_setups)
+    selected_names = ", ".join(row["ticker"] for row in ranked_setups[:4]) or "none"
     reasoning = [
-        "Step 1 requires a major decline, established 42/63-session wave, proximity to support, selling exhaustion, a higher-low reversal above MA20, and at least 1.5:1 reward/risk to resistance. Bottoming, Falling, Breakout-without-room, and Extended stocks are rejected.",
-        "Step 2 runs only after the technical screen and requires a dated, source-backed company-specific clinical, regulatory, corporate, commercial, financial, product, project, or partnership catalyst; shared industry/theme evidence is insufficient.",
-        "Fresh, multi-signal favorable transitions rank first; otherwise Early Reversal and Entry Zone rank ahead of Bottoming and Breakout.",
+        "Decision order is Pattern → Stage/Trend → Price/Volume → Momentum/RS → Entry → Invalidation → Target → R/R → Action. A named pattern alone never creates BUY.",
+        "Action requires the validated established-wave, near-support, selling-exhaustion, higher-low reversal, entry, invalidation and ≥1.5:1 reward/risk gates plus a company-specific catalyst. Extended is DO NOT CHASE.",
+        "Constructive but incomplete charts remain visible as ranked WATCH setups; fresh multi-signal transitions receive a rank bonus, while one-day price acceleration alone never confirms a transition.",
     ]
-    fresh_selected = sum(row["stage_transition"]["fresh_favorable_transition"] for row in opportunities)
+    fresh_selected = sum(row["stage_transition"]["fresh_favorable_transition"] for row in ranked_setups)
     takeaways = [
         f"{len(technical_qualified)} stocks passed the technical-first screen; {catalyst_qualified_count} also had a credible connected catalyst.",
-        f"Current selected candidates: {selected_names}.",
-        f"Selected-state distribution: {', '.join(f'{state} {count}' for state, count in selected_states.items()) or 'none'}.",
-        f"{fresh_selected} selected setup(s) have a newly confirmed favorable stage transition.",
+        f"Current ranked candidates: {selected_names}.",
+        f"Ranked-state distribution: {', '.join(f'{state} {count}' for state, count in selected_states.items()) or 'none'}.",
+        f"{fresh_selected} ranked setup(s) have a newly confirmed favorable stage transition.",
         "A catalyst cannot compensate for a failed, extended, or one-day-only technical move, and missing data never becomes a positive signal.",
     ]
     return {
         "methodology": {
-            "engine_version": "swing-trade-opportunity-v1.1",
+            "engine_version": "swing-trade-opportunity-v2",
+            "primary_references": ["Jesse Livermore / Edwin Lefèvre", "Thomas Bulkowski", "Sasha Evdakov", "Steve Nison", "Anna Coulling", "John J. Murphy", "Martin Pring", "Constance Brown", "McAllen", "Michael Covel", "Stan Weinstein", "Mark Minervini", "Jesse Stine"],
             "strategy": "Established Range/Wave → Near Support → Selling Exhaustion → Higher-Low Reversal → Upswing, followed by a separate company-specific catalyst check.",
+            "strategy_logic": "Pattern → Stage/Trend → Price/Volume → Momentum/Relative Strength → Entry → Invalidation → Target → Reward/Risk → Action. Pattern alone never equals BUY; incomplete but constructive setups remain ranked WATCH candidates.",
+            "code_attribution": "GeneDr Network implementation informed by common principles in the cited references; pattern rules, scores, thresholds, state transitions, ranks, and Action gates are original and are not the authors' formulas.",
             "technical_setup_engine": "Swing Trade = Wave Bottom / Reversal / Upswing; technical setup drives 95% of Dynamic Final Score inputs when reward/risk is available, while catalyst quality is limited to 5% secondary confirmation.",
             "selection_principle": "Technical wave/reversal quality and >=1.5:1 reward/risk determine qualification and Dynamic Final Rank; a validated company catalyst is secondary confirmation and is still required before an entry action advances beyond WATCH.",
             "state_priority": ["Fresh favorable transition", "Entry Zone", "Early Reversal", "Bottoming", "Breakout", "Extended"],
@@ -593,9 +697,11 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_radar, biotech_rada
         },
         "reasoning": reasoning, "take_home_messages": takeaways,
         "opportunities": opportunities, "unverified_setups": unverified_setups,
+        "watch_setups": watch_setups, "ranked_setups": ranked_setups,
         "stage_tracking": tracking,
         "coverage": {"candidate_pool": len(candidates), "market_evaluated": len(evaluated_states),
                      "technical_qualified": len(technical_qualified), "catalyst_qualified": catalyst_qualified_count,
-                     "selected": len(opportunities),
+                     "selected": len(opportunities), "ranked": len(ranked_setups),
+                     "ranked_watch": sum(row.get("action") not in ("BUY", "SCALE IN") for row in ranked_setups),
                      "state_counts": {state: state_counts.get(state, 0) for state in SWING_STATES}},
     }

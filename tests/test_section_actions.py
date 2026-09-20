@@ -43,8 +43,9 @@ class SectionSpecificActionTests(unittest.TestCase):
 
     def test_swing_action_uses_technical_catalyst_and_risk_reward(self):
         body = self.body("swingTradeAction", "renderSwingTrades")
-        for value in ("catalyst?.credible", "support", "resistance", "riskReward", "Failed Reversal", "Technical Deterioration", "ENTER ON BREAKOUT", "STOP OUT"):
+        for value in ("row.action", "Extended", "DO NOT CHASE", "Failed Reversal", "Technical Deterioration", "WATCH / WAIT FOR VALID CATALYST"):
             self.assertIn(value, body)
+        self.assertNotIn('stage === "Breakout"', body)
 
     def test_watchlist_action_uses_shared_readiness_not_source(self):
         body = self.body("watchlistDecisionAction", "renderWatchlistCard")
