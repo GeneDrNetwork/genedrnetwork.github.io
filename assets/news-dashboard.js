@@ -1041,6 +1041,30 @@ function renderSwingTrades(section = {}) {
   }).join("") || `<p class="loading-state">No stock currently passes both the technical-first screen and the credible-catalyst check.</p>`;
 }
 
+function renderOptionsStrategy(section = {}) {
+  const reasoning = section.reasoning || [];
+  const takeaways = section.take_home_messages || [];
+  document.getElementById("options-reasoning").innerHTML = reasoning.map((item) => `<p>${escapeHtml(item)}</p>`).join("") || `<p>No Options Strategy reasoning is available.</p>`;
+  document.getElementById("options-takeaways").innerHTML = takeaways.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || `<li>No qualifying options conclusion is available.</li>`;
+  const rows = [...(section.assessments || [])].sort((a, b) =>
+    (a.options_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.options_final_rank ?? Number.MAX_SAFE_INTEGER)
+    || (b.directional_score ?? -1) - (a.directional_score ?? -1));
+  const optionMoney = (value) => value === null || value === undefined ? "Missing / Not Yet Confirmed" : typeof value === "number" ? `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : value;
+  document.getElementById("options-opportunities").innerHTML = rows.map((row) => {
+    const rank = row.options_final_rank === null || row.options_final_rank === undefined ? "Unranked" : `#${row.options_final_rank}`;
+    const score = row.options_final_score === null || row.options_final_score === undefined ? "Missing" : `${row.options_final_score}/100`;
+    const liquidity = row.liquidity || {};
+    const gates = Object.entries(row.gates || {}).map(([name, passed]) => `<li class="${passed ? "gate-pass" : "gate-fail"}"><span>${escapeHtml(name.replaceAll("_", " "))}</span><strong>${passed ? "PASS" : "WAIT"}</strong></li>`).join("");
+    const risks = (row.key_risks || []).map((risk) => `<li>${escapeHtml(risk)}</li>`).join("");
+    return `<details class="options-card"><summary class="options-summary"><span class="opportunity-rank">${escapeHtml(rank)}</span><div><h4>${tickerPriceMarkup(row.ticker, row.market_data || {})}</h4><small>${escapeHtml(row.company)} · ${escapeHtml((row.sources || []).join(" + ") || row.source || "Existing thesis")}</small></div><span><small>Options Score</small><strong>${escapeHtml(score)}</strong></span><span><small>Strategy</small><strong>${escapeHtml(row.strategy || "No recommendation")}</strong></span><span class="options-action options-action-${classKey(row.action)}">${escapeHtml(row.action || "WAIT")}</span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+      <div class="options-detail"><p class="options-rationale"><strong>${escapeHtml(row.candidate_structure || "Undetermined")}</strong> · ${escapeHtml(row.rationale || "Reliable option-market evidence is required.")}</p>
+      <dl class="options-grid"><div><dt>Direction / Horizon</dt><dd>${escapeHtml(row.direction || "Missing")} · ${escapeHtml(row.horizon || "Missing")}</dd></div><div><dt>Expected Move</dt><dd>${row.expected_move_pct === null || row.expected_move_pct === undefined ? "Missing / Not Yet Confirmed" : `${escapeHtml(row.expected_move_pct)}%`}</dd></div><div><dt>IV Rank</dt><dd>${row.iv_rank === null || row.iv_rank === undefined ? "Missing / Not Yet Confirmed" : `${escapeHtml(row.iv_rank)}/100`}</dd></div><div><dt>Liquidity / Spread</dt><dd>${liquidity.data_complete ? `${escapeHtml(liquidity.bid_ask_spread_pct)}% spread · OI ${escapeHtml(liquidity.open_interest)} · volume ${escapeHtml(liquidity.contract_volume)}` : "Missing / Not Yet Confirmed"}</dd></div>
+        <div class="options-wide"><dt>Expiration Logic</dt><dd>${escapeHtml(row.expiration_logic || "Missing")}</dd></div><div class="options-wide"><dt>Strike Logic</dt><dd>${escapeHtml(row.strike_logic || "Missing")}</dd></div><div><dt>Maximum Risk</dt><dd>${escapeHtml(optionMoney(row.max_risk))}</dd></div><div><dt>Maximum Reward</dt><dd>${escapeHtml(optionMoney(row.max_reward))}</dd></div><div><dt>Breakeven</dt><dd>${escapeHtml(optionMoney(row.breakeven))}</dd></div><div><dt>Estimated Reward / Risk</dt><dd>${row.estimated_reward_risk_ratio === null || row.estimated_reward_risk_ratio === undefined ? "Missing / Not Yet Confirmed" : `${escapeHtml(row.estimated_reward_risk_ratio)}:1`}</dd></div>
+        <div class="options-wide"><dt>Directional Thesis</dt><dd>${escapeHtml(row.rationale || "Missing")}</dd></div><div class="options-wide"><dt>Missing Requirements</dt><dd>${escapeHtml((row.missing_requirements || []).join(", ").replaceAll("_", " ") || "None")}</dd></div></dl>
+      <ul class="options-gates" aria-label="Options Action gates">${gates}</ul><section class="options-risks"><h5>Key Risks</h5><ul>${risks || "<li>Risk detail unavailable.</li>"}</ul></section></div></details>`;
+  }).join("") || `<p class="loading-state">No existing public-equity directional thesis is available for an options assessment.</p>`;
+}
+
 function automaticWatchlistSelections(data) {
   const selected = new Map();
   const add = (row, source, domain, why, context) => {
@@ -1959,6 +1983,7 @@ function renderDashboard(data) {
   renderSafely(() => renderOpportunities("ai-opportunities", qualifiedHighConvictionRows(data, "ai")), "ai-opportunities");
   renderSafely(() => renderOpportunities("biotech-opportunities", qualifiedHighConvictionRows(data, "biotech")), "biotech-opportunities");
   renderSafely(() => renderSwingTrades(data.swing_trade_opportunities), "swing-opportunities");
+  renderSafely(() => renderOptionsStrategy(data.options_strategy), "options-opportunities");
   renderSafely(() => renderWatchlist(data), "my-watchlist");
   renderSafely(() => renderPendingOrders(), "pending-order-cards");
   renderSafely(() => renderPositions(data), "my-stock-positions");

@@ -35,6 +35,7 @@ try:
     from .growth_opportunities import (build_growth_opportunities,
                                         select_growth_deep_analysis_universe,
                                         select_growth_market_universe)
+    from .options_strategy import build_options_strategy
     from .swing_trade import build_swing_trade_engine
     from .strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                      radar_base_breakout_setup)
@@ -52,6 +53,7 @@ except ImportError:
     from growth_opportunities import (build_growth_opportunities,
                                        select_growth_deep_analysis_universe,
                                        select_growth_market_universe)
+    from options_strategy import build_options_strategy
     from swing_trade import build_swing_trade_engine
     from strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                     radar_base_breakout_setup)
@@ -4001,6 +4003,11 @@ def production_section_status(data, source_health):
         "crypto_stablecoin_radar": {"refreshed": True, "opportunity_count": len((data.get("radar") or {}).get("crypto") or [])},
         "high_conviction": {"refreshed": True, "opportunity_count": sum(len(rows) for rows in (data.get("monthly_picks") or {}).values())},
         "swing_trade_opportunity": {"refreshed": True, "opportunity_count": len((data.get("swing_trade_opportunities") or {}).get("opportunities") or [])},
+        "options_strategy": {
+            "refreshed": True,
+            "assessment_count": len((data.get("options_strategy") or {}).get("assessments") or []),
+            "actionable_count": ((data.get("options_strategy") or {}).get("coverage") or {}).get("actionable", 0),
+        },
         "watchlist_website_selected": {"refreshed": True, "selection_count": sum(len(rows) for rows in watchlists.values())},
         "watchlist_manually_entered": {
             "refreshed": True,
@@ -4046,6 +4053,8 @@ def validate_production_data(data):
             errors.append(f"{key} is malformed")
     if not isinstance((data.get("swing_trade_opportunities") or {}).get("opportunities"), list):
         errors.append("Swing Trade output is malformed")
+    if not isinstance((data.get("options_strategy") or {}).get("assessments"), list):
+        errors.append("Options Strategy output is malformed")
     if not isinstance(data.get("commentary"), dict):
         errors.append("dashboard commentary is missing")
     return errors
@@ -5778,6 +5787,10 @@ def build():
         candidate_discovery, market_data, ai_radar, biotech_radar,
         ai_news_section, biotech_news_section,
         previous_section=previous.get("swing_trade_opportunities"))
+    options_strategy = build_options_strategy(
+        ai_radar, growth_radar, biotech_radar, crypto_radar,
+        high_conviction_engine, swing_trade_opportunities,
+        option_market_data=market_data.get("options"))
     watchlists = build_strategy_watchlists(
         ai_radar, biotech_radar, monthly_picks, swing_trade_opportunities, market_data)
     high_conviction_commentary = annotate_high_conviction(monthly_picks)
@@ -5859,6 +5872,7 @@ def build():
         "high_conviction_engine": high_conviction_engine,
         "entry_timing_engine": entry_timing_engine,
         "swing_trade_opportunities": swing_trade_opportunities,
+        "options_strategy": options_strategy,
         "monthly_picks": monthly_picks, "fda": fda, "markets": markets,
     }
     source_health = {

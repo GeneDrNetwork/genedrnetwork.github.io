@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260910-1" />
+    <link rel="stylesheet" href="../assets/news-dashboard.css?v=20260920-1" />
   </head>
   <body class="news-dashboard-page">
     <header class="site-header">
@@ -35,7 +35,7 @@
       </section>
 
       <nav class="dashboard-nav" aria-label="Dashboard sections">
-        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#my-stocks">Watchlist</a><a href="#pending-orders">Pending Orders</a><a href="#owned-stocks">My Stock</a><a href="#markets">Market Pulse</a>
+        <a href="#top-news">Top News</a><a href="#radar">Investment Radar</a><a href="#opportunities">High-Conviction</a><a href="#swing-trades">Swing Trade</a><a href="#options-strategy">Options</a><a href="#my-stocks">Watchlist</a><a href="#pending-orders">Pending Orders</a><a href="#owned-stocks">My Stock</a><a href="#markets">Market Pulse</a>
       </nav>
 
       <div class="dashboard-shell">
@@ -113,8 +113,15 @@
           <div id="swing-opportunities" class="swing-opportunity-list"><p class="loading-state">Loading swing-trade opportunities...</p></div>
         </section>
 
+        <section class="dashboard-section options-section" id="options-strategy">
+          <div class="section-heading"><div><span class="section-kicker">04 · Downstream risk-structure strategy</span><h2>Options Strategy</h2><p>Existing directional thesis → Horizon/Catalyst → IV/Expected Move → Liquidity/Spread → Contract → Risk/Reward → Action.</p></div><span class="source-note">Options Rank ≠ Action · missing chain data = no recommendation</span></div>
+          <div class="strategy-reference-block" aria-label="Options Strategy references and strategy logic"><p><strong>Primary References</strong> Lawrence G. McMillan, <em>Options as a Strategic Investment</em>; Brian Overby, <em>The Options Playbook</em>; T. Ayers Pelz, <em>The Biotech Trader Handbook, 2nd Edition</em>.</p><p><strong>Strategy Logic</strong> Options consumes existing directional theses; it never selects a new stock. Defined-risk calls, puts, verticals, calendars/diagonals, covered calls, and protective puts are considered only when direction, horizon, expected move, IV, selected-leg liquidity/spread, catalyst timing, ownership, contract terms, and risk objective are reliable. Otherwise Action is WAIT and Strategy is No recommendation.</p><small>Code attribution: GeneDr Network implementation informed by common principles in the references above; strategy routing, thresholds, scores, gates, and calculations are our own and are not the authors' formulas.</small></div>
+          <div class="interpretation-grid options-interpretation"><section class="interpretation-card"><h3>Strategy Reasoning</h3><div id="options-reasoning"><p class="loading-state">Evaluating existing theses and option-market evidence...</p></div></section><section class="interpretation-card takeaways-card"><h3>Take-Home Messages</h3><ol id="options-takeaways"><li>Loading options conclusions...</li></ol></section></div>
+          <div id="options-opportunities" class="options-opportunity-list"><p class="loading-state">Loading options assessments...</p></div>
+        </section>
+
         <section class="dashboard-section" id="my-stocks">
-          <div class="section-heading"><div><span class="section-kicker">04 · Active trade preparation</span><h2>Watchlist</h2><p>Strategy-selected entry candidates and personally entered tickers are monitored separately using the same shared technical analysis.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
+          <div class="section-heading"><div><span class="section-kicker">05 · Active trade preparation</span><h2>Watchlist</h2><p>Strategy-selected entry candidates and personally entered tickers are monitored separately using the same shared technical analysis.</p></div><span class="source-note">Commentary first · shared daily technical data second</span></div>
           <div id="my-watchlist" class="watchlist-groups">
             <section class="watchlist-group website-selected-group"><div class="watchlist-group-heading"><span>W</span><div><h3>Website Selected</h3><p>Up to approximately 20 constructive setups selected automatically from current strategy candidates.</p></div></div><div id="website-selected-watchlist" class="website-watchlist-groups">
               <section class="website-watchlist-subgroup"><div class="website-watchlist-subheading"><span>A</span><div><h4>Top Entry Candidates</h4><p>Strongest actionable setups closest to a practical entry now.</p></div></div><div id="top-entry-watchlist" class="watchlist-cards"><p class="loading-state">Ranking the strongest actionable entry candidates...</p></div></section>
@@ -132,7 +139,7 @@
         </section>
 
         <section class="dashboard-section pending-orders-section" id="pending-orders">
-          <div class="section-heading"><div><span class="section-kicker">05 · Planned limit entries</span><h2>Pending Orders</h2><p>Plan a limit buy with technically derived risk, targets, and fill readiness before moving the position to My Stock.</p></div><span class="source-note">Watchlist → Pending Orders → My Stock</span></div>
+          <div class="section-heading"><div><span class="section-kicker">06 · Planned limit entries</span><h2>Pending Orders</h2><p>Plan a limit buy with technically derived risk, targets, and fill readiness before moving the position to My Stock.</p></div><span class="source-note">Watchlist → Pending Orders → My Stock</span></div>
           <form id="pending-order-form" class="pending-order-form" novalidate>
             <div><label for="pending-order-ticker">Ticker</label><input id="pending-order-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NVDA" required></div>
             <div><label for="pending-order-limit-price">Limit Buy Price</label><input id="pending-order-limit-price" name="limit_price" type="number" min="0.0001" step="any" placeholder="0.00" required></div>
@@ -144,7 +151,7 @@
         </section>
 
         <section class="dashboard-section position-section" id="owned-stocks">
-          <div class="section-heading"><div><span class="section-kicker">06 · Position management after purchase</span><h2>My Stock</h2><p>Owned positions only: current value, unrealized gain/loss, technical structure, thesis monitoring, targets, and sell planning.</p></div><span class="source-note">User-owned positions · never removed by daily updates</span></div>
+          <div class="section-heading"><div><span class="section-kicker">07 · Position management after purchase</span><h2>My Stock</h2><p>Owned positions only: current value, unrealized gain/loss, technical structure, thesis monitoring, targets, and sell planning.</p></div><span class="source-note">User-owned positions · never removed by daily updates</span></div>
           <form id="position-form" class="position-form" novalidate>
             <div><label for="position-ticker">Ticker</label><input id="position-ticker" name="ticker" type="text" inputmode="latin" autocomplete="off" maxlength="10" placeholder="e.g. NVDA" required></div>
             <div><label for="position-buy-price">Average Buy Price</label><input id="position-buy-price" name="buy_price" type="number" min="0.0001" step="any" placeholder="0.00" required></div>
@@ -168,6 +175,6 @@
         <footer class="dashboard-disclaimer"><strong>Important disclaimer</strong><p>GeneDr Investment Intelligence is provided for educational and informational purposes only. It does not constitute medical, financial, investment, legal, or professional advice. Radar scores are evidence-weighted research indicators, not recommendations. Radar models exclude missing factors rather than treating them as zero; Data Completeness and Confidence must be reviewed with every score. Private companies are displayed for information only.</p></footer>
       </div>
     </main>
-    <script src="../assets/news-dashboard.js?v=20260910-1" defer></script>
+    <script src="../assets/news-dashboard.js?v=20260920-1" defer></script>
   </body>
 </html>

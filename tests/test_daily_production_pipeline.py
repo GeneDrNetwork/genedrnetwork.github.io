@@ -27,6 +27,7 @@ def valid_payload():
         "monthly_picks": {"ai": [], "biotech": []},
         "watchlists": {"ai": [], "biotech": []},
         "swing_trade_opportunities": {"opportunities": []},
+        "options_strategy": {"assessments": []},
         "commentary": {},
     }
 
