@@ -2,9 +2,11 @@ import unittest
 
 from scripts.growth_opportunities import (
     build_growth_opportunities,
+    growth_entry_assessment,
     select_growth_deep_analysis_universe,
     select_growth_market_universe,
 )
+from scripts.strategy_technical import radar_base_breakout_setup
 
 
 def listed(ticker, sector="Industrials", **overrides):
@@ -58,6 +60,67 @@ def quality(ticker, score=80):
 
 
 class GrowthOpportunitiesTests(unittest.TestCase):
+    def test_growth_reversal_is_an_independent_entry_path(self):
+        reversal = snapshot(True)
+        reversal["entry_inputs"]["breakout_proximity_pct"] = -2
+        reversal["entry_inputs"]["breakout_volume_ratio"] = 1.0
+        shared_setup = radar_base_breakout_setup(reversal)
+        assessment = growth_entry_assessment(reversal, shared_setup)
+        self.assertEqual(shared_setup["stage"], "Confirmed Reversal")
+        self.assertFalse(shared_setup["actionable"])
+        self.assertEqual(assessment["entry_path"], "Reversal")
+
+    def test_growth_reversal_requires_volume_demand_confirmation(self):
+        reversal = snapshot(True)
+        reversal["entry_inputs"].update({
+            "breakout_proximity_pct": -2, "breakout_volume_ratio": 1.0,
+            "up_down_volume_ratio_20d": .8, "short_term_high_reclaimed": False,
+        })
+        assessment = growth_entry_assessment(reversal)
+        self.assertFalse(assessment["volume_demand_confirmed"])
+        self.assertIsNone(assessment["entry_path"])
+
+    def test_growth_pullback_requires_full_resumption_not_support_touch(self):
+        pullback = snapshot(True)
+        pullback["entry_inputs"].update({
+            "base_duration_sessions": None, "base_range_pct": None,
+            "short_term_high_reclaimed": True, "recent_low_20d": 94,
+            "ma50_slope_20d_pct": 2,
+        })
+        assessment = growth_entry_assessment(pullback)
+        self.assertEqual(assessment["entry_path"], "Pullback-Reacceleration")
+
+        support_only = snapshot(True)
+        support_only["entry_inputs"].update({
+            "base_duration_sessions": None, "base_range_pct": None,
+            "short_term_high_reclaimed": False, "recent_low_20d": 94,
+            "ma50_slope_20d_pct": 2,
+        })
+        support_only["macd"] = {"histogram": -.2, "improving": False, "crossover": None}
+        self.assertIsNone(growth_entry_assessment(support_only)["entry_path"])
+
+    def test_first_bounce_or_one_day_move_does_not_create_growth_entry(self):
+        first_bounce = snapshot(False)
+        first_bounce["returns"]["daily"] = 25
+        first_bounce["entry_inputs"].update({
+            "base_duration_sessions": None, "base_range_pct": None,
+            "short_term_high_reclaimed": True,
+        })
+        assessment = growth_entry_assessment(first_bounce)
+        self.assertIsNone(assessment["entry_path"])
+
+    def test_confirmed_reversal_can_pass_growth_action_without_shared_breakout(self):
+        reversal = snapshot(True)
+        reversal["entry_inputs"]["breakout_proximity_pct"] = -2
+        reversal["entry_inputs"]["breakout_volume_ratio"] = 1.0
+        rows, diagnostics = build_growth_opportunities(
+            [listed("REVERSAL")], {"securities": {"REVERSAL": reversal}},
+            {"records": {"growth:REVERSAL": quality("REVERSAL")}})
+        self.assertEqual(diagnostics["action_pool_count"], 1)
+        self.assertEqual(rows[0]["entry_path"], "Reversal")
+        self.assertEqual(rows[0]["pool"], "Action Pool")
+        self.assertFalse(rows[0]["strategy_technical_setup"]["actionable"])
+
     def test_broad_screen_reports_full_scan_and_excludes_specialized_tickers(self):
         rows = [listed("AI"), listed("GROW"), listed("ILLIQ", daily_volume=10)]
         selected, diagnostics = select_growth_market_universe(rows, {"AI"}, limit=10)
@@ -76,6 +139,7 @@ class GrowthOpportunitiesTests(unittest.TestCase):
         action_snapshot["entry_inputs"]["up_down_volume_ratio_20d"] = 1
         wait_snapshot = snapshot(True)
         wait_snapshot["entry_inputs"]["breakout_volume_ratio"] = 1.0
+        wait_snapshot["entry_inputs"]["up_down_volume_ratio_20d"] = .8
         wait_snapshot["expectation_data"]["valuation"]["target_upside_pct"] = 30
         action_quality = quality("ACTION", 65)
         for component in action_quality["components"]:
@@ -151,6 +215,11 @@ class GrowthOpportunitiesTests(unittest.TestCase):
         self.assertIn("Jesse Stine", growth_section)
         self.assertIn("Philip Fisher", growth_section)
         self.assertIn("Dynamic Final Rank", growth_section)
+
+    def test_growth_details_show_entry_path(self):
+        with open("assets/news-dashboard.js", encoding="utf-8") as handle:
+            script = handle.read()
+        self.assertIn('detailItem("Entry Path", row.entry_path || "Not Confirmed")', script)
 
 
 if __name__ == "__main__":

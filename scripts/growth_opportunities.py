@@ -216,6 +216,78 @@ def _market_demand_score(snapshot):
     return (round(sum(values) / len(values)) if values else None, relative, institutional)
 
 
+def growth_entry_assessment(snapshot, setup=None):
+    """Confirm one of the Growth-only entry paths without changing shared Radar logic."""
+    snapshot = snapshot or {}
+    setup = setup or radar_base_breakout_setup(snapshot)
+    inputs = snapshot.get("entry_inputs") or {}
+    moving_averages = snapshot.get("moving_averages") or {}
+    returns = snapshot.get("returns") or {}
+    macd = snapshot.get("macd") or {}
+    price = _number(snapshot.get("current_price"))
+    ma20 = _number(moving_averages.get("ma20"))
+    ma50 = _number(moving_averages.get("ma50"))
+    ma200 = _number(moving_averages.get("ma200"))
+    histogram = _number(macd.get("histogram"))
+    accumulation = _number(inputs.get("up_down_volume_ratio_20d"))
+    higher_low = inputs.get("higher_low_confirmed") is True
+    momentum_confirmed = bool(
+        macd.get("crossover") == "bullish" or
+        (macd.get("improving") is True and histogram is not None and histogram >= 0))
+    volume_demand_confirmed = accumulation is not None and accumulation >= 1
+
+    breakout = setup.get("breakout_confirmed") is True
+    reversal = bool(
+        setup.get("volatility_contracted") is True and higher_low and
+        setup.get("primary_trend_confirmed") is True and momentum_confirmed and
+        volume_demand_confirmed)
+
+    three_month_return = _number(returns.get("three_month"))
+    established_trend = bool(
+        price is not None and ma50 is not None and ma200 is not None and
+        price > ma200 and ma50 > ma200 and
+        (three_month_return is None or three_month_return > 0))
+    distance20 = ((price / ma20 - 1) * 100
+                  if price is not None and ma20 is not None and ma20 > 0 else None)
+    distance50 = ((price / ma50 - 1) * 100
+                  if price is not None and ma50 is not None and ma50 > 0 else None)
+    healthy_pullback = bool(
+        established_trend and distance50 is not None and 0 <= distance50 <= 12 and
+        (distance20 is None or -5 <= distance20 <= 6))
+    ma50_slope = _number(inputs.get("ma50_slope_20d_pct"))
+    recent_low = _number(inputs.get("recent_low_20d"))
+    support_hold = bool(
+        healthy_pullback and higher_low and price is not None and ma50 is not None and
+        price >= ma50 and ma50_slope is not None and ma50_slope > 0 and
+        (recent_low is None or recent_low >= ma50 * .97))
+    pivot_reclaimed = inputs.get("short_term_high_reclaimed") is True
+    pullback_reacceleration = bool(
+        established_trend and healthy_pullback and support_hold and
+        momentum_confirmed and pivot_reclaimed)
+
+    entry_path = ("Breakout" if breakout else
+                  "Reversal" if reversal else
+                  "Pullback-Reacceleration" if pullback_reacceleration else None)
+    return {
+        "entry_path": entry_path,
+        "confirmed": entry_path is not None,
+        "breakout_confirmed": breakout,
+        "reversal_confirmed": reversal,
+        "pullback_reacceleration_confirmed": pullback_reacceleration,
+        "established_trend": established_trend,
+        "healthy_pullback": healthy_pullback,
+        "support_hold": support_hold,
+        "higher_low_confirmed": higher_low,
+        "momentum_confirmed": momentum_confirmed,
+        "pivot_reclaimed": pivot_reclaimed,
+        "volume_demand_confirmed": volume_demand_confirmed,
+        "policy": ("Growth Action accepts a confirmed breakout, a contraction/higher-low reversal "
+                   "with rising trend, momentum, and volume demand, or an established-trend "
+                   "pullback/support hold with momentum and a short-term-high reclaim. A support "
+                   "touch, first bounce, or one-day move is never sufficient by itself."),
+    }
+
+
 def _upside_score(snapshot):
     target = (((snapshot or {}).get("expectation_data") or {}).get("valuation") or {}).get("target_upside_pct")
     return _band(target, [(30, 95), (20, 85), (10, 70), (0, 50), (-10, 25), (-math.inf, 10)])
@@ -283,16 +355,19 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
             (fundamental, 30), (growth, 30), (catalyst, 15), (market_demand, 15), (upside, 10),
         ])
         setup = radar_base_breakout_setup(snapshot)
+        entry_assessment = growth_entry_assessment(snapshot, setup)
         entry = _entry_risk_reward(snapshot, setup)
         # Opportunity already contains company quality and remaining upside. Keep
         # setup confirmation and entry economics as separate, non-duplicated domains.
-        dynamic = dynamic_alignment_score(opportunity, setup, entry["entry_quality_score"])
+        growth_dynamic_setup = {**setup, "actionable": entry_assessment["confirmed"]}
+        dynamic = dynamic_alignment_score(opportunity, growth_dynamic_setup,
+                                          entry["entry_quality_score"])
         discovery = bool(
             opportunity is not None and opportunity >= 60 and fundamental is not None and fundamental >= 55 and
             (quality or {}).get("data_status") == "current" and (quality or {}).get("data_completeness", 0) >= 50 and
             ((growth is not None and growth >= 55) or (market_demand is not None and market_demand >= 60)))
         action = bool(
-            discovery and opportunity >= 65 and fundamental >= 60 and setup.get("actionable") is True and
+            discovery and opportunity >= 65 and fundamental >= 60 and entry_assessment["confirmed"] and
             not setup.get("falling") and not setup.get("failed_reversal") and not setup.get("extended") and
             relative is not None and relative >= 60 and
             entry["entry_risk_pct"] is not None and entry["entry_risk_pct"] <= 12 and
@@ -303,8 +378,8 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
         pool = "Action Pool" if action else "Discovery Pool"
         expectation = (snapshot.get("expectation_data") or {})
         risks = []
-        if not action:
-            risks.append(f"Technical entry is {setup.get('stage')}; confirmation is still required.")
+        if not entry_assessment["confirmed"]:
+            risks.append(f"Technical entry is {setup.get('stage')}; no Growth entry path is fully confirmed.")
         if catalyst is None or catalyst < 65:
             risks.append("A strong current earnings/revision catalyst is not yet confirmed.")
         if relative is None or relative < 60:
@@ -327,6 +402,8 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
             "relative_strength_score": relative, "institutional_demand_score": institutional_demand,
             "market_demand_score": market_demand, "remaining_upside_score": upside,
             **entry,
+            "entry_path": entry_assessment["entry_path"],
+            "growth_entry_confirmation": entry_assessment,
             "dynamic_final_score": dynamic, "data_completeness": completeness,
             "strategy_technical_setup": setup,
             "market_data": {key: value for key, value in snapshot.items()
@@ -359,7 +436,7 @@ def build_growth_opportunities(candidates, market_data, quality_layer, previous_
         "discovery_tickers": [row["ticker"] for row in evaluated if not row["actionable"]],
         "ranking_policy": "Dynamic Final Score ranks overall opportunity, strategy-specific pattern confirmation, and entry economics. Action is an independent gate and is not hard-sorted ahead of Discovery; Discovery candidates are never promoted into Action by rank alone.",
         "no_action_policy": "If Action Pool count is zero, the UI states that no current entry passed rather than manufacturing a BUY candidate.",
-        "action_entry_gate": "Action requires Discovery quality, Opportunity >=65, Fundamental >=60, a confirmed Radar breakout, S&P 500 relative strength >=60, entry risk <=12%, reward/risk >=1.5x, and Growth or Catalyst >=65; Falling, Failed Reversal, Extended, first-bounce, and unconfirmed bases remain WATCH.",
+        "action_entry_gate": "Action requires Discovery quality, Opportunity >=65, Fundamental >=60, a confirmed Growth entry path (Breakout, Reversal, or Pullback-Reacceleration), S&P 500 relative strength >=60, entry risk <=12%, reward/risk >=1.5x, and Growth or Catalyst >=65; support touch alone, Falling, Failed Reversal, Extended, first-bounce, and one-day moves remain WATCH.",
         "primary_references": ["Jesse Stine — Superstocks", "William J. O'Neil — How to Make Money in Stocks", "Mark Minervini — Trade Like a Stock Market Wizard", "Mark Minervini — Think & Trade Like a Champion", "Peter Lynch — One Up on Wall Street", "Philip Fisher — Common Stocks and Uncommon Profits", "Stan Weinstein — Secrets for Profiting in Bull and Bear Markets"],
         "code_attribution": "GeneDr Network implementation informed by common principles in the cited references; scoring, thresholds, classifications, and combined gates are original and are not the authors' formulas.",
     }
