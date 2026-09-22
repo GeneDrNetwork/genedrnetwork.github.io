@@ -45,6 +45,72 @@ def range_pct(values):
     return round((max(values) / min(values) - 1) * 100, 2)
 
 
+def calculate_gap_continuation_inputs(rows):
+    """Measure the most recent institutional-sized gap without declaring it actionable.
+
+    The Swing engine applies the continuation and entry gates.  Keeping the raw,
+    auditable measurements here lets every strategy reuse the same OHLCV history
+    without changing any existing strategy score.
+    """
+    usable = [row for row in rows if all(row.get(key) is not None
+                                        for key in ("open", "high", "low", "close"))]
+    if len(usable) < 25:
+        return {"detected": False, "reason": "At least 25 complete OHLC sessions are required."}
+    candidates = []
+    for index in range(max(1, len(usable) - 21), len(usable)):
+        row, prior = usable[index], usable[index - 1]
+        prior_close = prior.get("close")
+        if not prior_close or prior_close <= 0:
+            continue
+        gap_pct = (row["open"] / prior_close - 1) * 100
+        if gap_pct < 8:
+            continue
+        prior_volumes = [item.get("volume") for item in usable[max(0, index - 20):index]
+                         if item.get("volume") is not None]
+        average_volume = sum(prior_volumes) / len(prior_volumes) if len(prior_volumes) >= 10 else None
+        volume_ratio = (row.get("volume") / average_volume
+                        if row.get("volume") is not None and average_volume else None)
+        day_range = row["high"] - row["low"]
+        close_position = ((row["close"] - row["low"]) / day_range
+                          if day_range > 0 else None)
+        candidates.append((index, gap_pct, volume_ratio, close_position))
+    if not candidates:
+        return {"detected": False, "reason": "No opening gap of at least 8% occurred in the last 20 sessions."}
+    index, gap_pct, volume_ratio, close_position = max(candidates, key=lambda item: item[0])
+    event = usable[index]
+    follow = usable[index:]
+    current = usable[-1]["close"]
+    days_since = len(usable) - 1 - index
+    gap_midpoint = (event["high"] + event["low"]) / 2
+    post_gap_high = max(item["high"] for item in follow)
+    post_gap_low = min(item["low"] for item in follow)
+    continuation_pivot = (max(item["high"] for item in follow[:-1])
+                          if len(follow) > 1 else event["high"])
+    closes_since = [item["close"] for item in follow]
+    consolidation = range_pct(closes_since[-min(10, len(closes_since)):])
+    hold_gap = current >= gap_midpoint and post_gap_low >= event["low"] * .97
+    return {
+        "detected": True, "event_date": event.get("date"), "days_since_gap": days_since,
+        "gap_pct": round(gap_pct, 2), "gap_open": round(event["open"], 4),
+        "gap_high": round(event["high"], 4), "gap_low": round(event["low"], 4),
+        "gap_close": round(event["close"], 4),
+        "gap_close_position": round(close_position, 3) if close_position is not None else None,
+        "gap_volume_ratio": round(volume_ratio, 2) if volume_ratio is not None else None,
+        "gap_midpoint": round(gap_midpoint, 4), "post_gap_high": round(post_gap_high, 4),
+        "post_gap_low": round(post_gap_low, 4),
+        "continuation_pivot": round(continuation_pivot, 4),
+        "post_gap_consolidation_range_pct": consolidation,
+        "held_gap_support": hold_gap,
+        "vwap": None,
+        "vwap_status": "Unavailable from daily OHLCV; gap midpoint/low are the documented support proxies.",
+        "follow_through_sessions": days_since,
+        "methodology": (
+            "Most recent >=8% opening gap in the last 20 sessions; volume compares with the prior "
+            "20 sessions, close position uses the event-day range, and support requires the latest "
+            "close above the gap midpoint without a >3% break of the gap low."),
+    }
+
+
 def calculate_entry_inputs(rows, moving_averages, macd_record):
     """Create auditable close/volume-derived features without naming chart patterns."""
     closes = [row.get("close") for row in rows if row.get("close") is not None]
@@ -148,6 +214,7 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
         "range_zone_transitions_63d": range_transitions,
         "invalidation_level": round(invalidation, 4) if invalidation else None,
         "macd_improving": macd_record.get("improving"), "macd_crossover": macd_record.get("crossover"),
+        "gap_up_continuation": calculate_gap_continuation_inputs(rows),
         "methodology": {
             "base": "A 63-session close range <=25%, or 42-session close range <=20%; this is a price-range screen, not a discretionary chart-pattern claim.",
             "resistance": "Highest close in the 60 sessions ending five sessions before the current close.",

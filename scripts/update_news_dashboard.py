@@ -36,7 +36,7 @@ try:
                                         select_growth_deep_analysis_universe,
                                         select_growth_market_universe)
     from .options_strategy import build_options_strategy
-    from .swing_trade import build_swing_trade_engine
+    from .swing_trade import build_swing_trade_engine, select_swing_market_universe
     from .strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                      radar_base_breakout_setup)
 except ImportError:
@@ -54,7 +54,7 @@ except ImportError:
                                        select_growth_deep_analysis_universe,
                                        select_growth_market_universe)
     from options_strategy import build_options_strategy
-    from swing_trade import build_swing_trade_engine
+    from swing_trade import build_swing_trade_engine, select_swing_market_universe
     from strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                     radar_base_breakout_setup)
 
@@ -1532,12 +1532,21 @@ def fetch_market_series(yahoo_symbol, stooq_symbol=None):
         result = payload["chart"]["result"][0]
         quote = result["indicators"]["quote"][0]
         timestamps = result.get("timestamp", [])
-        rows = [
-            {"date": datetime.fromtimestamp(timestamp, timezone.utc).date().isoformat(),
-             "close": float(close), "volume": float(volume) if volume is not None else None}
-            for timestamp, close, volume in zip(timestamps, quote.get("close", []), quote.get("volume", []))
-            if close is not None
-        ]
+        rows = []
+        for index, timestamp in enumerate(timestamps):
+            close = (quote.get("close") or [])[index] if index < len(quote.get("close") or []) else None
+            if close is None:
+                continue
+            def quote_value(key):
+                values = quote.get(key) or []
+                value = values[index] if index < len(values) else None
+                return float(value) if value is not None else None
+            rows.append({
+                "date": datetime.fromtimestamp(timestamp, timezone.utc).date().isoformat(),
+                "open": quote_value("open"), "high": quote_value("high"),
+                "low": quote_value("low"), "close": float(close),
+                "volume": quote_value("volume"),
+            })
         return {"symbol": yahoo_symbol, "rows": rows, "source": "Yahoo Finance chart", "currency": result.get("meta", {}).get("currency")}
     except Exception:
         try:
@@ -1547,11 +1556,13 @@ def fetch_market_series(yahoo_symbol, stooq_symbol=None):
             end = datetime.now(timezone.utc).date(); start = end - timedelta(days=760)
             url = f"https://stooq.com/q/d/l/?s={urllib.parse.quote(stooq_symbol)}&d1={start:%Y%m%d}&d2={end:%Y%m%d}&i=d"
             rows = csv.DictReader(io.StringIO(fetch(url).decode("utf-8")))
-            parsed = [
-                {"date": row.get("Date"), "close": float(row["Close"]),
-                 "volume": float(row["Volume"]) if row.get("Volume") not in (None, "", "N/D") else None}
-                for row in rows if row.get("Close") not in (None, "", "N/D")
-            ]
+            def stooq_value(row, key):
+                value = row.get(key)
+                return float(value) if value not in (None, "", "N/D") else None
+            parsed = [{"date": row.get("Date"), "open": stooq_value(row, "Open"),
+                       "high": stooq_value(row, "High"), "low": stooq_value(row, "Low"),
+                       "close": float(row["Close"]), "volume": stooq_value(row, "Volume")}
+                      for row in rows if row.get("Close") not in (None, "", "N/D")]
             return {"symbol": yahoo_symbol, "rows": parsed, "source": "Stooq daily data", "currency": None}
         except Exception as exc:
             print(f"Market data unavailable for {yahoo_symbol}: {exc}")
@@ -5711,10 +5722,14 @@ def build():
     growth_technical_universe, growth_screen_diagnostics = select_growth_market_universe(
         listed_companies, specialized_preliminary,
         fallback_rows=previous.get("radar", {}).get("growth", []))
-    market_candidates = {"candidates": preliminary_candidates.get("candidates", []) + growth_technical_universe}
+    swing_market_universe, swing_screen_diagnostics = select_swing_market_universe(
+        listed_companies,
+        fallback_rows=(previous.get("swing_trade_opportunities", {}).get("opportunities") or []))
+    market_candidates = {"candidates": (preliminary_candidates.get("candidates", []) +
+                                         growth_technical_universe + swing_market_universe)}
     market_data = build_market_data_layer(
         previous, run_at, candidate_pool=market_candidates,
-        manual_watchlist=manual_watchlist_config, defer_expectation_domains={"growth"})
+        manual_watchlist=manual_watchlist_config, defer_expectation_domains={"growth", "swing"})
     attach_watchlist_entry_readiness(market_data)
     manual_watchlist = build_manual_watchlist_output(manual_watchlist_config, market_data)
     data_through = market_data_through(market_data) or previous.get("market_data_through")
@@ -5784,9 +5799,9 @@ def build():
         {"candidates": high_conviction_candidates}, company_quality,
         previous_engine=previous.get("high_conviction_engine"))
     swing_trade_opportunities = build_swing_trade_engine(
-        candidate_discovery, market_data, ai_radar, biotech_radar,
-        ai_news_section, biotech_news_section,
-        previous_section=previous.get("swing_trade_opportunities"))
+        swing_market_universe, market_data, ai_news_section, biotech_news_section,
+        previous_section=previous.get("swing_trade_opportunities"),
+        screen_diagnostics=swing_screen_diagnostics)
     options_strategy = build_options_strategy(
         ai_radar, growth_radar, biotech_radar, crypto_radar,
         high_conviction_engine, swing_trade_opportunities,
@@ -5805,10 +5820,12 @@ def build():
     # candidates belong in the browser payload. Preserve every security used by an
     # existing strategy, watchlist, or manual workflow.
     visible_growth_tickers = {row.get("ticker") for row in growth_radar}
+    visible_swing_tickers = {row.get("ticker") for row in swing_trade_opportunities.get("opportunities", [])}
     market_records = market_data.get("securities", {})
     market_data["securities"] = {
         ticker: record for ticker, record in market_records.items()
-        if ticker in visible_growth_tickers or any(domain != "growth" for domain in record.get("domains", []))
+        if ticker in visible_growth_tickers or ticker in visible_swing_tickers or
+        any(domain not in ("growth", "swing") for domain in record.get("domains", []))
     }
     market_data.setdefault("coverage", {})["deep_screen_current"] = sum(
         record.get("data_status") == "current" for record in market_records.values())
@@ -5881,6 +5898,7 @@ def build():
         "listed_company_universe": len(listed_companies),
         "profiled_ai_companies": len(profiled_companies),
         "growth_market_shortlist": len(growth_quality_candidates),
+        "swing_market_history_evaluated": swing_trade_opportunities.get("coverage", {}).get("market_history_evaluated", 0),
     }
     data["production_pipeline"] = {
         "schema_version": "investment-intelligence-daily-v1",

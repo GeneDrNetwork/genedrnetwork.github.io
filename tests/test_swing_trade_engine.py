@@ -1,281 +1,214 @@
 import unittest
+from pathlib import Path
 
-from scripts.swing_trade import build_swing_trade_engine, stage_transition, swing_action, technical_setup
+from scripts.entry_timing import calculate_gap_continuation_inputs
+from scripts.swing_trade import (
+    assess_gap_continuation,
+    assess_long_base_breakout,
+    build_swing_trade_engine,
+    select_swing_market_universe,
+    stage_transition,
+    technical_setup,
+)
 
 
-def snapshot(state="entry"):
-    price, ma20, ma50 = (100, 98, 102)
-    macd = {"histogram": .4, "previous_histogram": .2, "improving": True, "crossover": None}
-    distance = 12
-    proximity = -5
-    volume = 1.0
-    if state == "early":
-        price, ma20, ma50 = 99, 98, 108
-    elif state == "bottoming":
-        price, ma20, ma50 = 93, 98, 105
-        macd = {"histogram": -.3, "previous_histogram": -.2, "improving": False, "crossover": None}
-    elif state == "breakout":
-        price, ma20, ma50, proximity, volume = 102, 98, 99, 2, 1.3
-    elif state == "extended":
-        price, ma20, ma50, distance = 125, 100, 102, 42
-    return {
-        "ticker": "TEST", "current_price": price, "price_date": "2026-08-29",
-        "currency": "USD", "source": "Test daily data", "data_status": "current",
-        "moving_averages": {"ma20": ma20, "ma50": ma50, "ma200": 110},
-        "returns": {"one_month": 5, "three_month": -25, "six_month": -35},
-        "rsi_14": 52, "macd": macd, "volume_vs_20d_average": volume,
-        "fifty_two_week_position": 20,
-        "entry_inputs": {
-            "fifty_two_week_high": 165, "fifty_two_week_low": 80,
-            "drawdown_from_fifty_two_week_high_pct": -39.4,
-            "recent_low_63d": 92, "distance_from_recent_low_pct": distance,
-            "tight_range_20d_pct": 12, "base_duration_sessions": 42, "base_range_pct": 18,
-            "range_zone_transitions_63d": 3,
-            "volume_contraction_ratio": .8, "up_down_volume_ratio_20d": 1.4,
-            "higher_low_confirmed": True, "resistance_level": 115,
-            "breakout_proximity_pct": proximity, "breakout_volume_ratio": volume,
-            "invalidation_level": 92,
+def market_snapshot(kind="base"):
+    snapshot = {
+        "ticker": "TEST", "current_price": 102, "price_date": "2026-09-18",
+        "currency": "USD", "source": "Test OHLCV", "data_status": "current",
+        "market_cap": 2_000_000_000,
+        "moving_averages": {"ma20": 98, "ma50": 96, "ma200": 88},
+        "returns": {"daily": 2, "one_month": 8, "three_month": 15, "six_month": 22},
+        "rsi_14": 61, "macd": {"histogram": .5, "improving": True, "crossover": None},
+        "volume_vs_20d_average": 1.5, "fifty_two_week_position": 75,
+        "relative_strength": {
+            "sp500": {"one_month": 4, "three_month": 6, "six_month": 8},
+            "xbi": {"one_month": 5, "three_month": 7, "six_month": 9},
         },
+        "entry_inputs": {
+            "base_duration_sessions": 63, "base_range_pct": 15,
+            "tight_range_20d_pct": 8, "volume_contraction_ratio": .8,
+            "higher_low_confirmed": True, "resistance_level": 100,
+            "breakout_proximity_pct": 2, "breakout_volume_ratio": 1.5,
+            "short_term_high_reclaimed": True, "failed_breakout": False,
+            "ma20_slope_10d_pct": 2, "ma50_slope_20d_pct": 1,
+            "up_down_volume_ratio_20d": 1.4, "recent_low_63d": 90,
+            "distance_from_recent_low_pct": 13, "range_zone_transitions_63d": 3,
+            "invalidation_level": 95,
+            "gap_up_continuation": {"detected": False},
+        },
+    }
+    if kind == "gap":
+        snapshot["current_price"] = 55
+        snapshot["moving_averages"] = {"ma20": 50, "ma50": 46, "ma200": 40}
+        snapshot["entry_inputs"].update({
+            "base_duration_sessions": None, "base_range_pct": None,
+            "resistance_level": 54, "breakout_proximity_pct": 1.85,
+            "gap_up_continuation": {
+                "detected": True, "event_date": "2026-09-12", "days_since_gap": 4,
+                "gap_pct": 20, "gap_open": 48, "gap_high": 52, "gap_low": 47,
+                "gap_close": 51.5, "gap_close_position": .9, "gap_volume_ratio": 2.8,
+                "gap_midpoint": 49.5, "post_gap_high": 55.5, "post_gap_low": 48,
+                "continuation_pivot": 54, "post_gap_consolidation_range_pct": 8,
+                "held_gap_support": True, "follow_through_sessions": 4,
+            },
+        })
+    return snapshot
+
+
+def company(ticker="TEST", biotech=False):
+    return {
+        "company": "Test Therapeutics" if biotech else "Test Industrials",
+        "ticker": ticker, "sector": "Health Care" if biotech else "Industrials",
+        "industry": "Biotechnology" if biotech else "Electrical Equipment",
+        "market_cap": 2_000_000_000, "last_price": 102, "daily_volume": 500_000,
+        "exchange": "Nasdaq", "swing_pool": "biotech" if biotech else "non_biotech",
     }
 
 
-def candidates():
-    return {"candidates": [{"company": "Test Bio", "ticker": "TEST", "domain": "biotech",
-                             "exchange": "", "listing_status": "Public"}]}
-
-
-def biotech_radar():
-    return [{"company": "Test Bio", "ticker": "TEST", "program": "TB-1",
-             "catalyst": "Phase 2 clinical results", "expected_timing": "Fourth quarter 2026",
-             "opportunity_score": 70, "sources": [{"title": "Company clinical update",
-                 "url": "https://example.com/clinical", "date": "2026-08-01"}]}]
+def verified_news(ticker="TEST"):
+    return {"stories": [{
+        "ticker": ticker, "company": "Test Therapeutics", "related_tickers": [],
+        "new_information": "The company announced Phase 2 clinical data and a regulatory meeting.",
+        "event_type": "Clinical / Regulatory Catalyst", "news_importance_score": 88,
+        "source": "Company investor relations", "published_at": "2026-09-12",
+        "source_link": "https://example.com/test-catalyst",
+    }]}
 
 
 class SwingTradeEngineTests(unittest.TestCase):
-    def test_large_one_day_gain_alone_does_not_confirm_transition(self):
+    def test_full_listed_universe_screen_is_independent_of_radar(self):
+        rows = [company("BIO", True), company("IND", False),
+                {**company("ILLIQ", False), "daily_volume": 10_000}]
+        selected, diagnostics = select_swing_market_universe(rows)
+        self.assertEqual({row["ticker"] for row in selected}, {"BIO", "IND"})
+        self.assertEqual(diagnostics["total_stocks_scanned"], 3)
+        self.assertEqual(diagnostics["initial_screen_pass"], 2)
+        self.assertIn("No Radar", diagnostics["technical_history_funnel"])
+
+    def test_strategy_a_requires_complete_right_side_breakout(self):
+        result = assess_long_base_breakout(market_snapshot(), biotech=False)
+        self.assertTrue(result["candidate_qualified"])
+        self.assertTrue(result["actionable"])
+        self.assertEqual(result["limit_buy"], 100.2)
+        weak = market_snapshot()
+        weak["entry_inputs"]["higher_low_confirmed"] = False
+        weak_result = assess_long_base_breakout(weak, biotech=False)
+        self.assertFalse(weak_result["actionable"])
+        self.assertIn("higher low", weak_result["failed_gates"])
+
+    def test_strategy_a_rejects_extended_and_unconfirmed_breakout(self):
+        extended = market_snapshot()
+        extended["current_price"] = 121
+        extended["entry_inputs"]["breakout_proximity_pct"] = 21
+        self.assertFalse(assess_long_base_breakout(extended)["actionable"])
+        unconfirmed = market_snapshot()
+        unconfirmed["entry_inputs"]["breakout_volume_ratio"] = 1.0
+        self.assertFalse(assess_long_base_breakout(unconfirmed)["actionable"])
+
+    def test_strategy_b_requires_new_continuation_not_gap_day_chase(self):
+        result = assess_gap_continuation(market_snapshot("gap"))
+        self.assertTrue(result["candidate_qualified"])
+        self.assertTrue(result["actionable"])
+        first_day = market_snapshot("gap")
+        first_day["entry_inputs"]["gap_up_continuation"]["days_since_gap"] = 0
+        self.assertFalse(assess_gap_continuation(first_day)["actionable"])
+        self.assertIn("at least two follow-through sessions",
+                      assess_gap_continuation(first_day)["failed_gates"])
+
+    def test_strategy_a_never_requires_catalyst_even_for_biotech(self):
+        candidate = company(biotech=True)
+        market = {"securities": {"TEST": market_snapshot()}}
+        without = build_swing_trade_engine([candidate], market)
+        row = without["pools"]["biotech"]["strategy_a"]["candidates"][0]
+        self.assertEqual(row["action"], "BUY NOW")
+        self.assertFalse(row["catalyst_validation"]["valid"])
+
+    def test_strategy_b_ranks_unverified_gap_but_requires_catalyst_for_buy(self):
+        candidate = company(biotech=True)
+        market = {"securities": {"TEST": market_snapshot("gap")}}
+        without = build_swing_trade_engine([candidate], market)
+        row = without["pools"]["biotech"]["strategy_b"]["candidates"][0]
+        self.assertEqual(row["action"], "WAIT")
+        self.assertIn("company-specific catalyst not verified", row["why_not_now"])
+        with_news = build_swing_trade_engine([candidate], market,
+                                             biotech_news_section=verified_news())
+        self.assertEqual(with_news["pools"]["biotech"]["strategy_b"]["buy_now"][0]["ticker"], "TEST")
+
+    def test_non_biotech_catalyst_is_optional(self):
+        market = {"securities": {"TEST": market_snapshot()}}
+        result = build_swing_trade_engine([company()], market)
+        row = result["pools"]["non_biotech"]["strategy_a"]["buy_now"][0]
+        self.assertEqual(row["action"], "BUY NOW")
+        self.assertIn("not verified", row["forward_catalyst"].lower())
+
+    def test_four_pool_strategy_outputs_and_price_based_execution_levels(self):
+        candidates = [company("BIOA", True), company("BIOB", True),
+                      company("NONA", False), company("NONB", False)]
+        market = {"securities": {
+            "BIOA": market_snapshot(), "BIOB": market_snapshot("gap"),
+            "NONA": market_snapshot(), "NONB": market_snapshot("gap"),
+        }}
+        news = {"stories": []}
+        for ticker in ("BIOA", "BIOB", "NONA", "NONB"):
+            event = verified_news(ticker)["stories"][0]
+            event["ticker"] = ticker
+            news["stories"].append(event)
+        result = build_swing_trade_engine(candidates, market, biotech_news_section=news)
+        self.assertEqual(len(result["pools"]["biotech"]["strategy_a"]["buy_now"]), 1)
+        self.assertEqual(len(result["pools"]["biotech"]["strategy_b"]["buy_now"]), 1)
+        self.assertEqual(len(result["pools"]["non_biotech"]["strategy_a"]["buy_now"]), 1)
+        self.assertEqual(len(result["pools"]["non_biotech"]["strategy_b"]["buy_now"]), 1)
+        row = result["pools"]["non_biotech"]["strategy_a"]["buy_now"][0]
+        self.assertNotIn("shares_for_200", row)
+        self.assertEqual(row["stop_price"], 85.17)
+        self.assertEqual(row["full_exit_price"], 130.26)
+        self.assertEqual(row["exit_policy"], "Sell the entire position at +30%; no runner.")
+        self.assertEqual(result["pools"]["non_biotech"]["strategy_a"]["candidate_count"], 1)
+
+    def test_gap_measurement_uses_ohlcv_and_follow_through(self):
+        rows = []
+        for index in range(30):
+            close = 10 + index * .02
+            rows.append({"date": f"2026-08-{index + 1:02d}", "open": close,
+                         "high": close * 1.01, "low": close * .99,
+                         "close": close, "volume": 100_000})
+        rows[25].update({"open": 13, "high": 14, "low": 12.8, "close": 13.8, "volume": 300_000})
+        for index in range(26, 30):
+            rows[index].update({"open": 13.7, "high": 14.1, "low": 13.4,
+                                "close": 13.9, "volume": 140_000})
+        result = calculate_gap_continuation_inputs(rows)
+        self.assertTrue(result["detected"])
+        self.assertEqual(result["days_since_gap"], 4)
+        self.assertGreaterEqual(result["gap_volume_ratio"], 2.8)
+
+    def test_legacy_transition_still_rejects_one_day_only_confirmation(self):
         previous = {"stage": "Bottoming", "technical": {"returns": {"daily": 0}}}
-        current = {"state": "Early Reversal", "price_date": "2026-08-29",
+        current = {"state": "Early Reversal", "price_date": "2026-09-18",
                    "returns": {"daily": 6}, "macd": {}, "relative_strength": {}}
         result = stage_transition(previous, current)
         self.assertFalse(result["fresh_favorable_transition"])
         self.assertTrue(result["large_one_day_gain_only"])
 
-    def test_full_screened_universe_can_enter_on_fresh_favorable_transition(self):
-        prior_technical = {
-            "current_price": 92, "ma20": 99, "ma50": 106,
-            "price_vs_ma20_pct": -7.1, "price_vs_ma50_pct": -13.2,
-            "recent_low": 85, "macd": {"improving": False}, "returns": {"daily": 0},
-        }
-        previous = {"stage_tracking": [{
-            "ticker": "TEST", "stage": "Bottoming", "as_of": "2026-08-28",
-            "last_changed_on": "2026-08-25", "technical": prior_technical,
-        }], "opportunities": []}
-        market = {"securities": {"TEST": snapshot("early")}}
-        result = build_swing_trade_engine(
-            candidates(), market, [], biotech_radar(), previous_section=previous)
-        row = result["opportunities"][0]
-        self.assertEqual(row["stage_transition"]["transition"], "Bottoming → Early Reversal")
-        self.assertTrue(row["stage_transition"]["fresh_favorable_transition"])
-        self.assertEqual(row["stage_transition"]["days_since_change"], 0)
-        self.assertEqual(result["stage_tracking"][0]["ticker"], "TEST")
+    def test_ui_has_required_four_tables_and_columns(self):
+        root = Path(__file__).resolve().parents[1]
+        script = (root / "assets" / "news-dashboard.js").read_text()
+        page = (root / "programs" / "genedrnews.html").read_text()
+        for label in ("Biotech Swing", "Non-Biotech Swing", "Strategy A", "Strategy B",
+                      "Candidate Rank", "Pattern", "Trend", "Volume", "Entry Status",
+                      "BUY NOW / WAIT", "Why Not Now / Next Confirmation"):
+            self.assertIn(label, script)
+        self.assertIn("Independent full-market short-term execution", page)
+        self.assertIn("does not source candidates from Radar or High Conviction", page)
 
-    def test_days_since_change_persists_when_stage_is_unchanged(self):
-        current = technical_setup(snapshot("entry"))
-        previous = {"stage": "Entry Zone", "last_changed_on": "2026-08-25",
-                    "as_of": "2026-08-28", "technical": current}
-        transition = stage_transition(previous, current, "biotech")
-        self.assertFalse(transition["changed"])
-        self.assertEqual(transition["days_since_change"], 4)
-
-    def test_recent_transition_label_and_priority_persist_for_five_days(self):
-        current = technical_setup(snapshot("early"))
-        previous = {
-            "stage": "Early Reversal", "last_changed_on": "2026-08-25", "as_of": "2026-08-28",
-            "technical": current, "transition": {
-                "previous_stage": "Bottoming", "current_stage": "Early Reversal",
-                "fresh_favorable_transition": True, "signals": ["Higher trailing low", "MACD reversal momentum improved"],
-            },
-        }
-        transition = stage_transition(previous, current, "biotech")
-        self.assertEqual(transition["transition"], "Bottoming → Early Reversal")
-        self.assertEqual(transition["days_since_change"], 4)
-        self.assertTrue(transition["fresh_favorable_transition"])
-
-    def test_failed_reversal_is_tracked_as_technical_deterioration(self):
-        previous = {"stage": "Early Reversal", "technical": {
-            "support": 95, "current_price": 98, "price_vs_ma20_pct": 1,
-            "macd": {"improving": True},
-        }}
-        current = {"state": "Bottoming", "price_date": "2026-08-29", "current_price": 90,
-                   "price_vs_ma20_pct": -5, "macd": {"crossover": "bearish"},
-                   "returns": {}, "relative_strength": {}}
-        transition = stage_transition(previous, current)
-        self.assertTrue(transition["failed_reversal"])
-        self.assertEqual(transition["current_stage"], "Failed Reversal / Technical Deterioration")
-
-    def test_classifies_requested_technical_states(self):
-        self.assertEqual(technical_setup(snapshot("entry"))["state"], "Entry Zone")
-        self.assertEqual(technical_setup(snapshot("early"))["state"], "Early Reversal")
-        self.assertEqual(technical_setup(snapshot("bottoming"))["state"], "Bottoming")
-        self.assertEqual(technical_setup(snapshot("breakout"))["state"], "Breakout")
-        self.assertEqual(technical_setup(snapshot("extended"))["state"], "Extended")
-
-    def test_technical_step_runs_before_catalyst_and_extended_is_rejected(self):
-        market = {"securities": {"TEST": snapshot("extended")}}
-        result = build_swing_trade_engine(candidates(), market, [], biotech_radar())
-        self.assertEqual(result["opportunities"], [])
-        self.assertEqual(result["coverage"]["technical_qualified"], 0)
-
-    def test_missing_catalyst_cannot_create_opportunity(self):
-        market = {"securities": {"TEST": snapshot("entry")}}
-        result = build_swing_trade_engine(candidates(), market, [], [])
-        self.assertEqual(result["coverage"]["technical_qualified"], 1)
-        self.assertEqual(result["opportunities"], [])
-
-    def test_source_backed_biotech_catalyst_completes_second_step(self):
-        market = {"securities": {"TEST": snapshot("entry")}}
-        result = build_swing_trade_engine(candidates(), market, [], biotech_radar())
-        row = result["opportunities"][0]
-        self.assertEqual(row["classification"], "Entry Zone")
-        self.assertTrue(row["catalyst"]["credible"])
-        self.assertEqual(row["catalyst"]["source_link"], "https://example.com/clinical")
-        self.assertIn("Why", "Why This Swing Trade Opportunity")
-        self.assertIn("why_chart_selected", row["why_this_swing_trade_opportunity"])
-        self.assertEqual(row["technical"]["strategy_setup"]["engine"],
-                         "Swing Trade = Wave Bottom / Reversal / Upswing")
-        self.assertIsNotNone(row["dynamic_final_score"])
-        self.assertEqual(row["selection_score"], row["dynamic_final_score"])
-        self.assertIn("no second weighting", row["selection_score_note"])
-        self.assertEqual(row["dynamic_final_rank"], 1)
-
-    def test_non_biotech_company_can_qualify_from_source_backed_news(self):
-        pool = {"candidates": [{"company": "Test Technology", "ticker": "TEST", "domain": "ai"}]}
-        market = {"securities": {"TEST": snapshot("early")}}
-        news = {"stories": [{"ticker": "TEST", "related_tickers": [],
-            "new_information": "The company announced a material customer deployment.",
-            "event_type": "Commercial Event", "news_importance_score": 82,
-            "source": "Company investor relations", "published_at": "2026-08-20",
-            "source_link": "https://example.com/technology"}]}
-        result = build_swing_trade_engine(pool, market, [], [], ai_news_section=news)
-        self.assertEqual(result["opportunities"][0]["domain"], "ai")
-        self.assertEqual(result["opportunities"][0]["classification"], "Early Reversal")
-
-    def test_nne_cannot_use_nvidia_theme_news_as_company_catalyst(self):
-        pool = {"candidates": [{"company": "Nano Nuclear Energy", "ticker": "NNE", "domain": "ai"}]}
-        market = {"securities": {"NNE": snapshot("early")}}
-        nvidia_event = {
-            "event_id": "nvidia-infrastructure", "event_date": "2026-09-10",
-            "ticker": "NVDA", "company": "NVIDIA", "related_tickers": [],
-            "company_identities": [{"company": "NVIDIA", "ticker": "NVDA"}],
-            "new_information": "NVIDIA and cloud partners announced a 2-gigawatt AI infrastructure buildout.",
-            "event_type": "Partnership / Transaction", "source_link": "https://example.com/nvidia",
-            "news_importance_score": 95,
-        }
-        radar = [{"trend": "Grid/Energy/Materials", "confirming_evidence": [nvidia_event],
-                  "mixed_evidence": [], "beneficiary_records": [{
-                      "company": "Nano Nuclear Energy", "ticker": "NNE",
-                      "evidence_ids": ["nvidia-infrastructure"]}]}]
-        result = build_swing_trade_engine(pool, market, radar, [])
-        self.assertEqual(result["opportunities"], [])
-        self.assertEqual(result["coverage"]["catalyst_qualified"], 0)
-        nne = result["unverified_setups"][0]
-        self.assertEqual(nne["ticker"], "NNE")
-        self.assertEqual(nne["catalyst"]["status"], "THEME ONLY / UNVERIFIED")
-        self.assertEqual(nne["action"], "WATCH / WAIT FOR VALID CATALYST")
-
-    def test_entry_zone_is_prioritized_over_bottoming(self):
-        pool = {"candidates": [
-            {"company": "Bottom Bio", "ticker": "BOT", "domain": "biotech"},
-            {"company": "Entry Bio", "ticker": "ENT", "domain": "biotech"},
-        ]}
-        market = {"securities": {"BOT": snapshot("bottoming"), "ENT": snapshot("entry")}}
-        radar = [
-            {**biotech_radar()[0], "ticker": "BOT"},
-            {**biotech_radar()[0], "ticker": "ENT"},
-        ]
-        result = build_swing_trade_engine(pool, market, [], radar)
-        self.assertEqual([row["ticker"] for row in result["opportunities"]], ["ENT"])
-        self.assertEqual(result["coverage"]["technical_qualified"], 1)
-
-    def test_fresh_confirmed_transition_ranks_ahead_of_static_entry_zone(self):
-        pool = {"candidates": [
-            {"company": "Fresh Bio", "ticker": "FRESH", "domain": "biotech"},
-            {"company": "Static Bio", "ticker": "STATIC", "domain": "biotech"},
-        ]}
-        fresh_snapshot, static_snapshot = snapshot("early"), snapshot("entry")
-        market = {"securities": {"FRESH": fresh_snapshot, "STATIC": static_snapshot}}
-        radar = [
-            {**biotech_radar()[0], "ticker": "FRESH"},
-            {**biotech_radar()[0], "ticker": "STATIC"},
-        ]
-        previous = {"stage_tracking": [
-            {"ticker": "FRESH", "stage": "Bottoming", "as_of": "2026-08-28",
-             "technical": {"current_price": 92, "ma20": 99, "ma50": 106,
-                           "price_vs_ma20_pct": -7.1, "price_vs_ma50_pct": -13.2,
-                           "recent_low": 85, "macd": {"improving": False}, "returns": {"daily": 0}}},
-            {"ticker": "STATIC", "stage": "Entry Zone", "as_of": "2026-08-28",
-             "technical": technical_setup(static_snapshot)},
-        ]}
-        result = build_swing_trade_engine(pool, market, [], radar, previous_section=previous)
-        self.assertEqual([row["ticker"] for row in result["opportunities"]], ["FRESH", "STATIC"])
-
-    def test_swing_cards_show_compact_stage_transition(self):
-        from pathlib import Path
-        script = (Path(__file__).resolve().parents[1] / "assets" / "news-dashboard.js").read_text()
-        self.assertIn("transition.previous_stage", script)
-        self.assertIn("since change", script)
-        self.assertIn("swing-transition", script)
-
-    def test_constructive_watch_setups_remain_ranked_when_no_buy_exists(self):
-        market = {"securities": {"TEST": snapshot("bottoming")}}
-        result = build_swing_trade_engine(candidates(), market, [], biotech_radar())
-        self.assertEqual(result["opportunities"], [])
-        self.assertGreaterEqual(len(result["ranked_setups"]), 1)
-        row = result["ranked_setups"][0]
-        self.assertEqual(row["ticker"], "TEST")
-        self.assertEqual(row["pool"], "Ranked Watch")
-        self.assertEqual(row["action"], "WATCH")
-        self.assertEqual(row["dynamic_final_rank"], 1)
-
-    def test_pattern_domains_are_explicit_without_fabricating_named_shapes(self):
-        technical = technical_setup(snapshot("entry"), "biotech")
-        names = {item["name"] for item in technical["recognized_patterns"]}
-        self.assertIn("Major Base", names)
-        self.assertIn("Tight / Flat Base", names)
-        self.assertIn("Triangle / Consolidation", names)
-        self.assertNotIn("Cup with Handle", names)
-        self.assertNotIn("Double Bottom", names)
-        self.assertEqual(
-            [item["label"] for item in technical["components"]],
-            ["Pattern / Base", "Stage / Trend", "Price / Volume",
-             "Momentum / Relative Strength", "Entry / Invalidation"],
-        )
-        self.assertIn("contraction", technical["volume_state"])
-        self.assertIn("relative_strength_score", technical["momentum_relative_strength"])
-
-    def test_pattern_alone_never_creates_buy_and_extended_is_do_not_chase(self):
-        market = {"securities": {"TEST": snapshot("breakout")}}
-        result = build_swing_trade_engine(candidates(), market, [], biotech_radar())
-        breakout = result["ranked_setups"][0]
-        self.assertEqual(breakout["technical"]["pattern"], "Breakout")
-        self.assertEqual(breakout["action"], "WATCH")
-        extended = technical_setup(snapshot("extended"), "biotech")
-        self.assertEqual(swing_action(extended, {"credible": True}, {}), "DO NOT CHASE")
-
-    def test_phase_six_methodology_and_references_are_disclosed(self):
-        result = build_swing_trade_engine(candidates(), {"securities": {"TEST": snapshot("bottoming")}},
-                                          [], biotech_radar())
-        methodology = result["methodology"]
-        self.assertIn("Pattern → Stage/Trend → Price/Volume", methodology["strategy_logic"])
-        self.assertIn("Jesse Livermore / Edwin Lefèvre", methodology["primary_references"])
-        self.assertIn("Thomas Bulkowski", methodology["primary_references"])
-        from pathlib import Path
-        page = (Path(__file__).resolve().parents[1] / "programs" / "genedrnews.html").read_text()
-        title_at = page.index("<h2>Swing Trade Opportunity</h2>")
-        references_at = page.index('aria-label="Swing Trade references and strategy logic"')
-        reasoning_at = page.index('class="interpretation-grid swing-interpretation"')
-        self.assertLess(title_at, references_at)
-        self.assertLess(references_at, reasoning_at)
+    def test_legacy_pattern_helper_remains_available_for_other_consumers(self):
+        legacy = market_snapshot()
+        legacy["entry_inputs"].update({
+            "drawdown_from_fifty_two_week_high_pct": -30,
+            "distance_from_recent_low_pct": 12,
+            "range_zone_transitions_63d": 3,
+        })
+        self.assertIsNotNone(technical_setup(legacy)["state"])
 
 
 if __name__ == "__main__":

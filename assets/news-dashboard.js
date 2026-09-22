@@ -1073,46 +1073,34 @@ function swingTradeAction(row = {}) {
 }
 
 function renderSwingTrades(section = {}) {
-  const reasoning = section.reasoning || [];
+  const reasoning = section.reasoning || [
+    "Swing Trade independently scans the broad U.S. listed-stock funnel; it does not inherit Radar or High Conviction candidates.",
+    "Primary screen: Pattern → Trend → Volume creates the ranked Candidate Pool before strict BUY NOW confirmation.",
+    "Strategy A never requires a catalyst. Strategy B ranks abnormal-volume gaps first, then requires a verified company catalyst and an actionable Day 1 or subsequent continuation entry for BUY NOW.",
+  ];
   const takeaways = section.take_home_messages || [];
   document.getElementById("swing-reasoning").innerHTML = reasoning.map((item) => `<p>${escapeHtml(item)}</p>`).join("") || `<p>No swing-trade strategy reasoning is available.</p>`;
   document.getElementById("swing-takeaways").innerHTML = takeaways.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || `<li>No qualifying swing-trade conclusions are available.</li>`;
-  const rows = (Array.isArray(section.ranked_setups)
-    ? [...section.ranked_setups]
-    : [...(section.opportunities || []), ...(section.unverified_setups || []), ...(section.watch_setups || [])])
-    .sort((a, b) => (a.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER) - (b.dynamic_final_rank ?? Number.MAX_SAFE_INTEGER));
-  document.getElementById("swing-opportunities").innerHTML = rows.map((row) => {
-    const technical = row.technical || {};
-    const catalyst = row.catalyst || {};
-    const why = row.why_this_swing_trade_opportunity || {};
-    const market = row.market_data || {};
-    const transition = row.stage_transition || {};
-    const daysSince = transition.days_since_change === null || transition.days_since_change === undefined
-      ? "change date unavailable" : transition.days_since_change === 0 ? "changed today" : `${transition.days_since_change} day${transition.days_since_change === 1 ? "" : "s"} since change`;
-    const transitionLabel = `${transition.previous_stage || "Unavailable"} → ${transition.current_stage || row.classification || "Unavailable"} · ${daysSince}`;
-    const sourceUrl = safeSourceUrl(catalyst.source_link);
-    const formatPrice = (value) => value === null || value === undefined ? "N/A / WAIT — unsupported by reliable data" : decisionPrice(value, market.currency || "USD");
-    const action = swingTradeAction(row);
-    const actionNow = ACTION_NOW_LABELS.has(String(action).toUpperCase());
-    const whyNotNow = actionNow ? "N/A — the current Swing Action gate passed."
-      : (why.why_still_early || transition.rationale || "The technical-first Swing Action gate is not yet confirmed.");
-    const nextConfirmation = transition.rationale || technical.strategy_setup?.rationale
-      || "Require support to hold, selling exhaustion, a confirmed reversal, and favorable reward/risk to resistance.";
-    return `<details class="swing-card"><summary class="swing-summary"><span class="opportunity-rank">${escapeHtml(dynamicRankLabel(row))}</span><div><h4>${tickerPriceMarkup(row.ticker, market)}</h4><small>${escapeHtml(row.company)} · Technical ${escapeHtml(technical.technical_setup_score ?? "Missing")}/100</small><small class="swing-transition${transition.fresh_favorable_transition ? " swing-transition-fresh" : ""}">${escapeHtml(transitionLabel)}</small></div><span class="swing-state swing-state-${classKey(row.classification)}">${escapeHtml(row.classification)}<small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
-      <div class="swing-detail"><section class="swing-why"><h4>Why This Swing Trade Opportunity</h4><ol>
-        <li>${escapeHtml(why.why_chart_selected || "Technical selection reasoning unavailable.")}</li>
-        <li>${escapeHtml(why.bottom_reversal_stage || "Bottom/reversal stage unavailable.")}</li>
-        <li>${escapeHtml(why.why_still_early || "Entry-timing interpretation unavailable.")}</li>
-        <li>${escapeHtml(why.catalyst_support || "Catalyst support unavailable.")}</li>
-        <li>${escapeHtml(why.invalidation || "Invalidation condition unavailable.")}</li>
-      </ol></section>
-      <dl class="swing-technical-grid"><div><dt>Dynamic Final Rank</dt><dd>${escapeHtml(dynamicRankLabel(row))} · ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</dd></div><div><dt>Strategy Setup</dt><dd>${escapeHtml(technical.strategy_setup?.engine || "Swing Trade = Wave Bottom / Reversal / Upswing")}</dd></div><div><dt>Primary Pattern</dt><dd>${escapeHtml(technical.pattern || "Unclassified / Insufficient Pattern Evidence")}<small>${escapeHtml((technical.recognized_patterns || []).map((item) => `${item.name}: ${item.evidence}`).join("; ") || technical.pattern_policy || "Pattern evidence unavailable.")}</small></dd></div><div><dt>Stage Change</dt><dd>${escapeHtml(transitionLabel)}</dd></div><div><dt>Action</dt><dd><strong>${escapeHtml(action)}</strong></dd></div><div><dt>Transition Evidence</dt><dd>${escapeHtml((transition.signals || []).join("; ") || "No fresh transition evidence available.")}</dd></div><div><dt>Entry Path</dt><dd>${escapeHtml(inferredEntryPath(row, "swing"))}</dd></div><div><dt>Current Price</dt><dd>${escapeHtml(formatPrice(technical.current_price))}</dd></div><div><dt>Breakout Entry</dt><dd>${escapeHtml(technical.resistance === null || technical.resistance === undefined ? "N/A / WAIT — no calculated resistance trigger" : `${formatPrice(technical.resistance)} · confirmation required`)}</dd></div><div><dt>Pullback Entry</dt><dd>${escapeHtml(technical.support === null || technical.support === undefined ? "N/A / WAIT — no calculated support" : `${formatPrice(technical.support)} · support hold and reversal confirmation required`)}</dd></div><div><dt>Suggested Entry</dt><dd>N/A / WAIT — the Swing engine does not publish an unsupported entry price</dd></div><div><dt>MA20 / MA50</dt><dd>${escapeHtml(formatPrice(technical.ma20))} / ${escapeHtml(formatPrice(technical.ma50))}</dd></div>
-        <div><dt>Price vs MA20 / MA50</dt><dd>${escapeHtml(formatChange(technical.price_vs_ma20_pct))} / ${escapeHtml(formatChange(technical.price_vs_ma50_pct))}</dd></div><div><dt>Decline from 52W High</dt><dd>${escapeHtml(formatChange(technical.drawdown_from_high_pct))}</dd></div><div><dt>Recent Low</dt><dd>${escapeHtml(formatPrice(technical.recent_low))}</dd></div><div><dt>Distance From Bottom</dt><dd>${escapeHtml(formatChange(technical.distance_from_bottom_pct))}</dd></div>
-        <div><dt>Bottom Formation</dt><dd>${technical.bottom_stabilized ? "Stabilization rule passed" : "Still forming / not confirmed"}${technical.base_duration_sessions ? ` · ${escapeHtml(technical.base_duration_sessions)} sessions` : ""}</dd></div><div><dt>Early Reversal</dt><dd>${technical.early_reversal_confirmed ? "Confirmed by available momentum rules" : "Not yet confirmed"}</dd></div><div><dt>Momentum / Relative Strength</dt><dd>${escapeHtml(technical.momentum_relative_strength?.score ?? "Missing")}/100 · benchmark ${escapeHtml(technical.momentum_relative_strength?.benchmark || "Missing")} · RS ${escapeHtml(technical.momentum_relative_strength?.relative_strength_score ?? "Missing")}/100</dd></div><div><dt>Volume Evidence</dt><dd>${escapeHtml([technical.volume_state?.accumulation ? "Accumulation" : null, technical.volume_state?.contraction ? "Contraction" : null, technical.volume_state?.breakout_confirmation ? "Breakout confirmed" : null, technical.volume_state?.distribution_warning ? "Distribution warning" : null, technical.volume_state?.exhaustion_warning ? "Exhaustion warning" : null].filter(Boolean).join(" · ") || "No confirmed volume state")} · ${technical.volume_vs_20d_average === null || technical.volume_vs_20d_average === undefined ? "volume ratio unavailable" : `${escapeHtml(technical.volume_vs_20d_average)}x 20D`}</dd></div>
-        <div><dt>Support</dt><dd>${escapeHtml(formatPrice(technical.support))}</dd></div><div><dt>Target / Resistance</dt><dd>${escapeHtml(formatPrice(technical.resistance))}</dd></div><div><dt>Invalidation</dt><dd>${escapeHtml(technical.invalidation_level === null || technical.invalidation_level === undefined ? "N/A / WAIT — no calculated invalidation support" : formatPrice(technical.invalidation_level))}</dd></div><div><dt>Reward / Risk</dt><dd>${technical.reward_risk_to_resistance === null || technical.reward_risk_to_resistance === undefined ? "Unavailable" : `${escapeHtml(technical.reward_risk_to_resistance)}:1`}</dd></div><div><dt>Extended?</dt><dd>${technical.extended ? "Yes — DO NOT CHASE" : "No"}</dd></div><div><dt>Why Not Now</dt><dd>${escapeHtml(whyNotNow)}</dd></div><div><dt>Next Confirmation</dt><dd>${escapeHtml(nextConfirmation)}</dd></div></dl>
-      <section class="swing-catalyst"><h5>Step 2 · Credible Catalyst Check</h5><p><strong>${escapeHtml(catalyst.status || catalystStatus(row))}</strong></p><p><strong>Company-Specific Catalyst:</strong> ${escapeHtml(catalyst.company_specific_catalyst || "Missing: no validated company-specific catalyst.")}</p><p><strong>Industry / Theme Catalyst:</strong> ${escapeHtml(catalyst.industry_theme_catalyst || (!hasValidCompanyCatalyst(row) ? catalyst.description : null) || "Missing")}</p><p>Timing: ${escapeHtml(catalyst.timing || "Missing")} · Source: ${escapeHtml(catalyst.source || "Missing")}${catalyst.date ? ` · ${escapeHtml(catalyst.date)}` : ""}</p><p>${escapeHtml(catalyst.basis || catalyst.validation_reason || "Missing")}</p>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Read Source</a>` : ""}</section>
-      ${watchlistAction(row.ticker, row.company, "Swing Trade", row.domain || "ai")}</div></details>`;
-  }).join("") || `<p class="loading-state">No stock currently passes both the technical-first screen and the credible-catalyst check.</p>`;
+  const money = (value, currency = "USD") => value === null || value === undefined ? "N/A" : decisionPrice(value, currency);
+  const renderTable = (group = {}, poolName, strategyKey) => {
+    const rows = group.candidates || [];
+    if (!rows.length) return `<div class="swing-empty"><strong>No qualified Candidate Pool</strong><p>No stock passed the primary Pattern → Trend → Volume screen for ${escapeHtml(group.label || strategyKey)}. Standards were not lowered.</p></div>`;
+    const body = rows.map((row) => {
+      const market = row.market_data || {};
+      const catalyst = row.catalyst || {};
+      const sourceUrl = safeSourceUrl(catalyst.source_link);
+      const execution = row.action === "BUY NOW"
+        ? `Limit ${money(row.limit_buy, market.currency)} · stop ${money(row.stop_price, market.currency)} · full exit ${money(row.full_exit_price, market.currency)}`
+        : `Reference ${money(row.entry_reference, market.currency)} · invalidation ${money(row.invalidation, market.currency)} · R/R ${row.reward_risk ?? "N/A"}`;
+      const catalystText = row.forward_catalyst || (strategyKey === "Strategy A" ? "Optional / not verified" : "Required / not verified");
+      return `<tr data-swing-row data-ticker="${escapeHtml(row.ticker)}"><td><strong>#${escapeHtml(row.candidate_rank ?? row.rank)}</strong><small>${tickerPriceMarkup(row.ticker, market)}</small></td><td>${escapeHtml(row.pattern || "Missing")}</td><td>${escapeHtml(row.trend || "Missing")}</td><td>${escapeHtml(row.volume || "Missing")}</td><td><strong>${escapeHtml(row.entry_status || "WAIT")}</strong><small>${escapeHtml(execution)}</small></td><td><span class="swing-action swing-action-${classKey(row.action)}">${escapeHtml(row.action || "WAIT")}</span></td><td><strong>${escapeHtml(row.why_not_now || "Missing")}</strong><small>${escapeHtml(row.next_confirmation || "Missing")}</small><small>Catalyst: ${escapeHtml(catalystText)}${sourceUrl ? ` · <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Source</a>` : ""}</small></td></tr>`;
+    }).join("");
+    return `<div class="swing-table-wrap"><table class="swing-buy-table"><caption><span class="decision-action-label">Candidate Pool</span> ${escapeHtml(group.candidate_count ?? rows.length)} qualified · ${escapeHtml(group.buy_now_count ?? 0)} BUY NOW · displaying Top ${escapeHtml(rows.length)}</caption><thead><tr><th>Candidate Rank</th><th>Pattern</th><th>Trend</th><th>Volume</th><th>Entry Status</th><th>BUY NOW / WAIT</th><th>Why Not Now / Next Confirmation</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  };
+  const pool = (key, title) => {
+    const group = section.pools?.[key] || {};
+    return `<section class="swing-pool"><div class="subsection-title"><span class="radar-icon${key === "biotech" ? " radar-icon-bio" : ""}" aria-hidden="true">${key === "biotech" ? "BIO" : "US"}</span><div><h3>${escapeHtml(title)}</h3><p>Strategy A catalyst optional · Strategy B verified company catalyst required for BUY NOW</p></div></div><section class="swing-strategy"><h4>Strategy A · Long-Base Right-Side Breakout</h4>${renderTable(group.strategy_a, key, "Strategy A")}</section><section class="swing-strategy"><h4>Strategy B · Catalyst Gap-Up Continuation</h4>${renderTable(group.strategy_b, key, "Strategy B")}</section></section>`;
+  document.getElementById("swing-opportunities").innerHTML = pool("biotech", "Biotech Swing") + pool("non_biotech", "Non-Biotech Swing");
 }
 
 function renderOptionsStrategy(section = {}) {
