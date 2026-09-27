@@ -51,11 +51,25 @@ def company_name_variants(company):
     name = _normalized(company)
     if not name:
         return []
+    # Listed-company feeds commonly append the security class to the issuer
+    # name.  Those words are not part of the identity and previously made a
+    # headline containing e.g. "Definium Therapeutics" fail to match
+    # "Definium Therapeutics Inc. Common Shares".
     suffixes = {"inc", "incorporated", "corp", "corporation", "company", "co", "ltd",
-                "limited", "plc", "holdings", "holding", "group"}
-    parts = name.split()
-    simplified = " ".join(part for part in parts if part not in suffixes)
-    return [value for value in dict.fromkeys((name, simplified)) if len(value) >= 4]
+                "limited", "plc", "holdings", "holding", "group", "common", "stock",
+                "stocks", "share", "shares", "ordinary", "depositary", "depository",
+                "receipt", "receipts", "adr", "ads", "class", "unit", "units"}
+    dba_parts = re.split(r"\b(?:d b a|doing business as|formerly known as|f k a)\b", name)
+    variants = []
+    for part in dba_parts:
+        parts = [token for token in part.split() if token not in suffixes and not token.isdigit()]
+        simplified = " ".join(parts)
+        variants.extend((part.strip(), simplified))
+        # A distinctive issuer root is a useful alias for biotech names whose
+        # headlines omit "Therapeutics" or "Pharmaceuticals".
+        if parts and len(parts[0]) >= 6:
+            variants.append(parts[0])
+    return [value for value in dict.fromkeys(variants) if len(value) >= 4]
 
 
 def company_catalyst_validation(event, ticker, company=None, linked_names=None):
@@ -75,10 +89,12 @@ def company_catalyst_validation(event, ticker, company=None, linked_names=None):
                 "reason": f"The source event explicitly identifies {ticker}."}
 
     text = _normalized(event_text(event))
-    for name in company_name_variants(company):
-        if re.search(rf"(?<![a-z0-9]){re.escape(name)}(?![a-z0-9])", text):
-            return {"valid": True, "status": VALID_COMPANY_STATUS,
-                    "reason": f"The source event directly names {company}."}
+    aliases = [company, *(event.get("target_aliases") or []), *(linked_names or [])]
+    for alias in aliases:
+        for name in company_name_variants(alias):
+            if re.search(rf"(?<![a-z0-9]){re.escape(name)}(?![a-z0-9])", text):
+                return {"valid": True, "status": VALID_COMPANY_STATUS,
+                        "reason": f"The source event directly names {company or alias}."}
     for linked_name in linked_names or []:
         name = _normalized(linked_name)
         if len(name) >= 4 and re.search(rf"(?<![a-z0-9]){re.escape(name)}(?![a-z0-9])", text):

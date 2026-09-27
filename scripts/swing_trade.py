@@ -8,15 +8,19 @@ compatibility, but they do not select production Swing candidates.
 """
 
 from collections import Counter
-from datetime import date
+from datetime import date, datetime
+from email.utils import parsedate_to_datetime
 import math
+import re
 
 try:
     from .catalyst_validation import (THEME_ONLY_STATUS, WAIT_FOR_CATALYST_ACTION,
-                                      company_catalyst_validation, company_evidence_source_priority)
+                                      company_catalyst_validation, company_evidence_source_priority,
+                                      company_name_variants)
 except ImportError:
     from catalyst_validation import (THEME_ONLY_STATUS, WAIT_FOR_CATALYST_ACTION,
-                                     company_catalyst_validation, company_evidence_source_priority)
+                                     company_catalyst_validation, company_evidence_source_priority,
+                                     company_name_variants)
 
 
 SWING_STATES = ("Falling", "Bottoming", "Early Reversal", "Entry Zone", "Breakout",
@@ -34,6 +38,12 @@ FAVORABLE_TRANSITION_PRIORITY = {
 SWING_TECHNICAL_SCAN_LIMIT = None
 SWING_BIOTECH_SCAN_LIMIT = None
 SWING_BUY_NOW_LIMIT = 10
+STRATEGY_B_CATALYST_STATUSES = (
+    "QUALIFYING", "IDENTITY_FAILED", "SOURCE_UNAVAILABLE", "OUTSIDE_WINDOW",
+    "NO_COMPANY_CATALYST",
+)
+STRATEGY_B_CATALYST_LOOKBACK_DAYS = 3
+MATERIAL_INSIDER_PURCHASE_USD = 250_000
 BIOTECH_TERMS = (
     "biotech", "biotechnology", "pharmaceutical", "therapeutic", "drug manufacturer",
     "diagnostic", "life science", "genomic", "clinical research",
@@ -522,6 +532,183 @@ def matching_news_catalyst(ticker, section, company=None):
     }
 
 
+def _event_datetime(value):
+    if not value:
+        return None
+    text = str(value).strip()
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        try:
+            parsed = parsedate_to_datetime(text)
+        except (TypeError, ValueError, OverflowError):
+            return None
+    return parsed.date()
+
+
+def strategy_b_identity_terms(candidate, retrieval=None):
+    """Build reusable current/former-name, ticker and product identity terms."""
+    retrieval = retrieval or {}
+    terms = [candidate.get("company"), candidate.get("name"), candidate.get("ticker")]
+    for key in ("aliases", "former_names", "dba_names", "products", "programs", "drug_names"):
+        value = candidate.get(key) or retrieval.get(key) or []
+        terms.extend(value if isinstance(value, (list, tuple, set)) else [value])
+    expanded = []
+    for term in terms:
+        if not term:
+            continue
+        expanded.append(str(term).strip())
+        expanded.extend(company_name_variants(term))
+    return list(dict.fromkeys(item for item in expanded if item))
+
+
+def strategy_b_event_category(event):
+    """Classify source events without allowing analyst or peer news into the core gate."""
+    text = " ".join(str(event.get(key) or "") for key in (
+        "headline", "new_information", "description", "event_type", "form", "transaction_type",
+    )).lower()
+    if event.get("theme_only") or event.get("peer_readthrough") or any(
+            term in text for term in ("peer read-through", "peer readthrough", "sector read-through",
+                                      "sector readthrough", "rival's results", "competitor's results")):
+        return "THEME_EVIDENCE"
+    if event.get("analyst_action") or any(term in text for term in (
+            "analyst upgrade", "upgraded to", "initiates coverage", "initiated coverage",
+            "price target", "reiterates buy", "reiterated buy")):
+        return "ANALYST_ACTION"
+    if event.get("catalyst_category"):
+        return event["catalyst_category"]
+    purchase_value = event.get("purchase_value_usd")
+    transaction_code = str(event.get("transaction_code") or "").upper()
+    open_market = event.get("open_market_purchase") is True or transaction_code == "P" or any(
+        term in text for term in ("open-market purchase", "open market purchase", "insider bought", "insider purchase"))
+    if open_market and isinstance(purchase_value, (int, float)) and purchase_value >= MATERIAL_INSIDER_PURCHASE_USD:
+        return "MATERIAL_INSIDER_PURCHASE"
+    if "trial" in text and any(term in text for term in ("surges on", "jumps on", "rallies on")):
+        return "CLINICAL_DATA"
+    categories = (
+        ("EARNINGS_GUIDANCE_BUYBACK", ("earnings", "financial results", "revenue", "guidance",
+                                        "outlook", "share repurchase", "buyback")),
+        ("CLINICAL_DATA", ("clinical results", "trial results", "trial win", "topline", "readout", "primary endpoint",
+                           "phase 1", "phase 2", "phase 3", "pivotal")),
+        ("REGULATORY", ("fda", "approval", "approved", "complete response letter", "clinical hold",
+                        "bla", "nda", "pdufa", "fast track", "breakthrough therapy")),
+        ("TRANSACTION", ("acquisition", "acquires", "merger", "license", "licensing", "partnership",
+                         "contract", "deal")),
+        ("CAPITAL_OR_COMMERCIAL", ("financing", "offering", "launch", "commercial", "sales",
+                                   "reimbursement", "manufacturing", "orders", "backlog")),
+    )
+    return next((label for label, terms in categories if any(term in text for term in terms)), None)
+
+
+def _strategy_b_result(status, reason, event=None, category=None, theme_event=None, analyst_event=None):
+    event = event or {}
+    qualifying = status == "QUALIFYING"
+    description = (event.get("new_information") or event.get("headline")
+                   if qualifying else "Missing / Not Yet Confirmed")
+    return {
+        "credible": qualifying,
+        "status": status,
+        "catalyst_status": status,
+        "description": description,
+        "validation_reason": reason,
+        "company_specific_catalyst": description if qualifying else None,
+        "industry_theme_catalyst": ((theme_event or {}).get("new_information") or
+                                     (theme_event or {}).get("headline")),
+        "analyst_evidence": ((analyst_event or {}).get("new_information") or
+                             (analyst_event or {}).get("headline")),
+        "event_type": category or event.get("event_type"),
+        "timing": event.get("published_at") or event.get("date"),
+        "source": event.get("source"),
+        "date": event.get("published_at") or event.get("date"),
+        "source_link": event.get("source_link") or event.get("url"),
+        "importance_score": event.get("news_importance_score"),
+        "basis": reason,
+    }
+
+
+def resolve_strategy_b_catalyst(candidate, assessment, retrieval=None,
+                                ai_news_section=None, biotech_news_section=None):
+    """Resolve a company catalyst only after a qualifying Strategy B gap exists."""
+    ticker = str(candidate.get("ticker") or "").upper()
+    company = candidate.get("company") or candidate.get("name") or ticker
+    gap_date = _event_datetime((assessment.get("gap") or {}).get("event_date"))
+    retrieval = retrieval or {}
+    events = list(retrieval.get("events") or [])
+    # Retained news is supplemental evidence. It is still subjected to the
+    # candidate identity and gap-date checks below.
+    events.extend(section_events(ai_news_section))
+    events.extend(section_events(biotech_news_section))
+    aliases = strategy_b_identity_terms(candidate, retrieval)
+    products = list(retrieval.get("products") or []) + list(retrieval.get("programs") or [])
+    deduped, seen = [], set()
+    for event in events:
+        key = (event.get("source_link") or event.get("url"), event.get("headline"),
+               event.get("published_at") or event.get("date"), event.get("ticker"))
+        if key in seen:
+            continue
+        seen.add(key); deduped.append(event)
+
+    qualifying, outside, identity_failed = [], [], []
+    theme_events, analyst_events = [], []
+    for event in deduped:
+        category = strategy_b_event_category(event)
+        if category == "THEME_EVIDENCE":
+            theme_events.append(event); continue
+        if category == "ANALYST_ACTION":
+            analyst_events.append(event); continue
+        if not category:
+            continue
+        validation = company_catalyst_validation(event, ticker, company, linked_names=aliases + products)
+        event_date = _event_datetime(event.get("published_at") or event.get("date"))
+        if not validation["valid"]:
+            if event.get("identity_hint"):
+                identity_failed.append((event, category, validation))
+            continue
+        if not gap_date or not event_date:
+            outside.append((event, category, validation)); continue
+        age = (gap_date - event_date).days
+        if 0 <= age <= STRATEGY_B_CATALYST_LOOKBACK_DAYS:
+            qualifying.append((event, category, validation))
+        else:
+            outside.append((event, category, validation))
+
+    if qualifying:
+        event, category, validation = max(qualifying, key=lambda item: (
+            company_evidence_source_priority(item[0]),
+            item[0].get("published_at") or item[0].get("date") or ""))
+        return _strategy_b_result(
+            "QUALIFYING",
+            f"{validation['reason']} The {category.lower().replace('_', ' ')} event occurred within "
+            f"{STRATEGY_B_CATALYST_LOOKBACK_DAYS} calendar days before/on the detected gap.",
+            event, category, theme_events[0] if theme_events else None,
+            analyst_events[0] if analyst_events else None)
+    if identity_failed:
+        event, category, validation = identity_failed[0]
+        return _strategy_b_result("IDENTITY_FAILED", validation["reason"], event, category,
+                                  theme_events[0] if theme_events else None,
+                                  analyst_events[0] if analyst_events else None)
+    if outside:
+        event, category, _validation = max(outside, key=lambda item: (
+            item[0].get("published_at") or item[0].get("date") or ""))
+        return _strategy_b_result(
+            "OUTSIDE_WINDOW",
+            f"A company-specific {category.lower().replace('_', ' ')} event was found, but it did not occur "
+            f"within {STRATEGY_B_CATALYST_LOOKBACK_DAYS} calendar days before/on the detected gap.",
+            event, category, theme_events[0] if theme_events else None,
+            analyst_events[0] if analyst_events else None)
+    if retrieval.get("attempted") and retrieval.get("source_available") is False:
+        return _strategy_b_result(
+            "SOURCE_UNAVAILABLE", "Candidate-specific news/IR and SEC retrieval did not return an available source.",
+            theme_event=theme_events[0] if theme_events else None,
+            analyst_event=analyst_events[0] if analyst_events else None)
+    reason = ("Only peer/sector Theme Evidence was found; it cannot satisfy the company catalyst gate."
+              if theme_events else
+              "Candidate-specific sources contained no qualifying company catalyst aligned with the detected gap.")
+    return _strategy_b_result("NO_COMPANY_CATALYST", reason,
+                              theme_event=theme_events[0] if theme_events else None,
+                              analyst_event=analyst_events[0] if analyst_events else None)
+
+
 def biotech_radar_catalyst(ticker, rows):
     matches = [row for row in rows or [] if row.get("ticker") == ticker and row.get("catalyst") and
                not str(row.get("catalyst")).startswith("Missing") and row.get("sources")]
@@ -894,8 +1081,10 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
         entry_status = "Day 1 gap detected / WAIT"
         next_confirmation = "Verify the company catalyst and require a non-chasing hold or later continuation entry."
     elif catalyst.get("credible") is not True:
-        entry_status = "Gap candidate / catalyst unverified"
-        next_confirmation = "Verify the company-specific catalyst, then require support hold and a new continuation entry."
+        catalyst_status = catalyst.get("catalyst_status") or catalyst.get("status") or "NO_COMPANY_CATALYST"
+        entry_status = f"Gap candidate / {catalyst_status}"
+        next_confirmation = (f"Resolve catalyst status {catalyst_status}, then require support hold and a new "
+                             "continuation entry.")
     else:
         entry_status = "Post-gap setup / continuation incomplete"
         next_confirmation = "Require gap support, tight consolidation, and a confirmed continuation pivot with volume."
@@ -906,7 +1095,9 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
             ("Extended / Do Not Chase" if assessment.get("extended") else
              "Technical failure below the entry structure; Strategy A catalyst is optional."))
     forward_catalyst = (catalyst.get("description") if catalyst.get("credible") else
-                        "Optional / not verified" if strategy_a else "Required / not verified")
+                        "Optional / not verified" if strategy_a else
+                        f"{catalyst.get('catalyst_status') or catalyst.get('status') or 'NO_COMPANY_CATALYST'}: "
+                        f"{catalyst.get('validation_reason') or 'Required company catalyst not verified'}")
     return {
         "company": candidate.get("company") or candidate.get("name") or candidate.get("ticker"),
         "ticker": candidate.get("ticker"), "exchange": candidate.get("exchange", ""),
@@ -935,6 +1126,7 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
         "catalyst_validation": {"valid": catalyst.get("credible") is True,
                                 "status": catalyst.get("status"),
                                 "reason": catalyst.get("validation_reason")},
+        "catalyst_status": catalyst.get("catalyst_status") or catalyst.get("status"),
         "market_data": {key: snapshot.get(key) for key in
                         ("current_price", "price_date", "currency", "source", "data_status")},
         "technical": {"current_price": snapshot.get("current_price"),
@@ -956,7 +1148,8 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
 
 def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                              biotech_news_section=None, limit=SWING_BUY_NOW_LIMIT,
-                             previous_section=None, screen_diagnostics=None):
+                             previous_section=None, screen_diagnostics=None,
+                             strategy_b_catalyst_data=None):
     """Build four ranked candidate pools, then apply separate BUY NOW gates."""
     candidates = list(candidate_pool or [])
     if isinstance(candidate_pool, dict):
@@ -965,6 +1158,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
              "non_biotech": {"label": "Non-Biotech Swing", "strategy_a": [], "strategy_b": []}}
     evaluated = 0
     catalyst_verified = 0
+    catalyst_status_counts = Counter()
     for candidate in candidates:
         ticker = candidate.get("ticker")
         snapshot = ((market_data or {}).get("securities") or {}).get(ticker)
@@ -973,12 +1167,22 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
         evaluated += 1
         pool_name = candidate.get("swing_pool") or ("biotech" if is_biotech_company(candidate) else "non_biotech")
         biotech = pool_name == "biotech"
-        catalyst = _independent_catalyst(ticker, candidate.get("company") or ticker,
-                                         ai_news_section, biotech_news_section)
-        if catalyst.get("credible"):
-            catalyst_verified += 1
-        for key, assessment in (("strategy_a", assess_long_base_breakout(snapshot, biotech)),
-                                ("strategy_b", assess_gap_continuation(snapshot, biotech))):
+        strategy_a_assessment = assess_long_base_breakout(snapshot, biotech)
+        strategy_b_assessment = assess_gap_continuation(snapshot, biotech)
+        optional_catalyst = _independent_catalyst(ticker, candidate.get("company") or ticker,
+                                                  ai_news_section, biotech_news_section)
+        strategy_b_catalyst = None
+        if strategy_b_assessment.get("candidate_qualified"):
+            strategy_b_catalyst = resolve_strategy_b_catalyst(
+                candidate, strategy_b_assessment,
+                (strategy_b_catalyst_data or {}).get(ticker),
+                ai_news_section, biotech_news_section)
+            catalyst_status_counts[strategy_b_catalyst["catalyst_status"]] += 1
+            if strategy_b_catalyst.get("credible"):
+                catalyst_verified += 1
+        for key, assessment, catalyst in (
+                ("strategy_a", strategy_a_assessment, optional_catalyst),
+                ("strategy_b", strategy_b_assessment, strategy_b_catalyst or optional_catalyst)):
             if not assessment.get("candidate_qualified"):
                 continue
             # Strategy A never requires a catalyst. Strategy B is explicitly a
@@ -1011,6 +1215,8 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
             ranked_setups.extend(rows)
     coverage = {**(screen_diagnostics or {}), "market_history_evaluated": evaluated,
                 "verified_company_catalysts": catalyst_verified,
+                "strategy_b_verified_gap_aligned_catalysts": catalyst_verified,
+                "strategy_b_catalyst_status_counts": dict(catalyst_status_counts),
                 "buy_now_total": len(opportunities),
                 "biotech_strategy_a_candidates": pools["biotech"]["strategy_a"]["candidate_count"],
                 "biotech_strategy_b_candidates": pools["biotech"]["strategy_b"]["candidate_count"],

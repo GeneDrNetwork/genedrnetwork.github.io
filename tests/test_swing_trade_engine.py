@@ -6,6 +6,7 @@ from scripts.swing_trade import (
     assess_gap_continuation,
     assess_long_base_breakout,
     build_swing_trade_engine,
+    resolve_strategy_b_catalyst,
     select_swing_market_universe,
     stage_transition,
     technical_setup,
@@ -134,6 +135,96 @@ class SwingTradeEngineTests(unittest.TestCase):
         with_news = build_swing_trade_engine([candidate], market,
                                              biotech_news_section=verified_news())
         self.assertEqual(with_news["pools"]["biotech"]["strategy_b"]["buy_now"][0]["ticker"], "TEST")
+
+    def test_audited_strategy_b_company_catalysts_and_absences(self):
+        assessment = assess_gap_continuation(market_snapshot("gap"))
+
+        def resolve(ticker, issuer, events, aliases=None):
+            candidate = {**company(ticker, ticker in {"DFTX", "ROIV", "VKTX", "MAZE", "HELP"}),
+                         "company": issuer}
+            return resolve_strategy_b_catalyst(
+                candidate, assessment,
+                {"attempted": True, "source_available": True, "events": events,
+                 "aliases": aliases or []})
+
+        audited = {
+            "ATEC": resolve("ATEC", "Alphatec Holdings Inc. Common Stock", [{
+                "ticker": "ATEC", "headline": "Alphatec CEO reports open-market purchase",
+                "transaction_code": "P", "open_market_purchase": True,
+                "purchase_value_usd": 1_013_150, "published_at": "2026-09-12",
+                "source": "SEC EDGAR", "source_link": "https://sec.example/atec-form4",
+            }]),
+            "SIG": resolve("SIG", "Signet Jewelers Limited Common Shares", [{
+                "ticker": "SIG", "headline": "Signet reports earnings, raises guidance and expands buyback",
+                "published_at": "2026-09-12", "source": "Signet investor relations",
+                "source_link": "https://ir.example/sig-results",
+            }]),
+            "DFTX": resolve("DFTX", "Definium Therapeutics Inc. Common Shares", [{
+                "headline": "Definium announces positive topline Phase 3 trial results",
+                "published_at": "2026-09-12", "source": "Definium investor relations",
+                "source_link": "https://ir.example/dftx-results",
+            }]),
+            "ROIV": resolve("ROIV", "Roivant Sciences Ltd. Common Shares", [{
+                "headline": "Roivant announces positive Phase 2 PHocus clinical results",
+                "published_at": "2026-09-12", "source": "Roivant investor relations",
+                "source_link": "https://ir.example/roiv-results",
+            }]),
+            "VKTX": resolve("VKTX", "Viking Therapeutics Inc. Common Stock", [{
+                "ticker": "VKTX", "headline": "Viking stock surges on weight-loss drug trial",
+                "published_at": "2026-09-12", "source": "Viking investor relations",
+                "source_link": "https://ir.example/vktx-results",
+            }]),
+        }
+        self.assertTrue(all(result["status"] == "QUALIFYING" for result in audited.values()))
+        self.assertEqual(audited["ATEC"]["event_type"], "MATERIAL_INSIDER_PURCHASE")
+
+        maze = resolve("MAZE", "Maze Therapeutics Inc. Common Stock", [{
+            "headline": "Maze rises after rival Vertex APOL1 clinical results",
+            "peer_readthrough": True, "published_at": "2026-09-12",
+            "source": "Reliable biotech news", "source_link": "https://example.com/vertex",
+        }])
+        self.assertEqual(maze["status"], "NO_COMPANY_CATALYST")
+        self.assertIn("Theme Evidence", maze["validation_reason"])
+        self.assertEqual(resolve("VFF", "Village Farms International Inc. Common Shares", [{
+            "ticker": "VFF", "headline": "Village Farms insider open-market purchase",
+            "transaction_code": "P", "open_market_purchase": True,
+            "purchase_value_usd": 101_258, "published_at": "2026-09-12",
+            "source": "SEC EDGAR", "source_link": "https://sec.example/vff-form4",
+        }])["status"], "NO_COMPANY_CATALYST")
+        self.assertEqual(resolve("HELP", "Cybin Inc. Common Stock", [], ["Helus Pharma"])["status"],
+                         "NO_COMPANY_CATALYST")
+
+    def test_strategy_b_rejects_old_events_and_analyst_actions(self):
+        assessment = assess_gap_continuation(market_snapshot("gap"))
+        candidate = {**company("MAZE", True), "company": "Maze Therapeutics Inc. Common Stock"}
+        result = resolve_strategy_b_catalyst(candidate, assessment, {
+            "attempted": True, "source_available": True, "events": [{
+                "ticker": "MAZE", "headline": "Maze positive Phase 2 clinical results",
+                "published_at": "2026-08-01", "source_link": "https://example.com/old",
+            }, {
+                "ticker": "MAZE", "headline": "Analyst upgrades Maze and raises price target",
+                "published_at": "2026-09-12", "source_link": "https://example.com/analyst",
+            }],
+        })
+        self.assertEqual(result["status"], "OUTSIDE_WINDOW")
+        self.assertFalse(result["credible"])
+        self.assertIn("Analyst upgrades", result["analyst_evidence"])
+
+    def test_strategy_b_records_source_and_identity_failures(self):
+        assessment = assess_gap_continuation(market_snapshot("gap"))
+        candidate = {**company("TEST", True), "company": "Test Therapeutics Common Stock"}
+        unavailable = resolve_strategy_b_catalyst(candidate, assessment, {
+            "attempted": True, "source_available": False, "events": [],
+        })
+        self.assertEqual(unavailable["status"], "SOURCE_UNAVAILABLE")
+        identity_failed = resolve_strategy_b_catalyst(candidate, assessment, {
+            "attempted": True, "source_available": True, "events": [{
+                "headline": "Unresolved company announces positive Phase 2 results",
+                "identity_hint": True, "published_at": "2026-09-12",
+                "source_link": "https://example.com/unresolved",
+            }],
+        })
+        self.assertEqual(identity_failed["status"], "IDENTITY_FAILED")
 
     def test_non_biotech_catalyst_is_optional(self):
         market = {"securities": {"TEST": market_snapshot()}}

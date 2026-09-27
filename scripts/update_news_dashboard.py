@@ -36,7 +36,8 @@ try:
                                         select_growth_deep_analysis_universe,
                                         select_growth_market_universe)
     from .options_strategy import build_options_strategy
-    from .swing_trade import build_swing_trade_engine, select_swing_market_universe
+    from .swing_trade import (assess_gap_continuation, build_swing_trade_engine,
+                              select_swing_market_universe, strategy_b_identity_terms)
     from .strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                      radar_base_breakout_setup)
 except ImportError:
@@ -54,7 +55,8 @@ except ImportError:
                                        select_growth_deep_analysis_universe,
                                        select_growth_market_universe)
     from options_strategy import build_options_strategy
-    from swing_trade import build_swing_trade_engine, select_swing_market_universe
+    from swing_trade import (assess_gap_continuation, build_swing_trade_engine,
+                             select_swing_market_universe, strategy_b_identity_terms)
     from strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                     radar_base_breakout_setup)
 
@@ -62,6 +64,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "news-dashboard.json"
 MANUAL_WATCHLIST_PATH = ROOT / "data" / "manual_watchlist.json"
 USER_AGENT = "GeneDrNetwork-Daily-Dashboard/2.0 (+https://genedrnetwork.github.io/)"
+SEC_USER_AGENT = "GeneDrNetwork catalyst-research info@genedrnetwork.org"
 try:
     import certifi
     SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
@@ -1460,6 +1463,13 @@ TREND_CHANGE_TERMS = (
 
 def fetch(url, timeout=20):
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
+        return response.read()
+
+
+def fetch_sec(url, timeout=20):
+    request = urllib.request.Request(url, headers={"User-Agent": SEC_USER_AGENT,
+                                                   "Accept-Encoding": "identity"})
     with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
         return response.read()
 
@@ -4794,6 +4804,248 @@ def collect_biotech_investment_news(run_at=None):
     return combined
 
 
+def _strategy_b_rss_items(query, limit=20):
+    """Return targeted Google News results plus an explicit availability bit."""
+    url = "https://news.google.com/rss/search?q=" + urllib.parse.quote(query) + "&hl=en-US&gl=US&ceid=US:en"
+    try:
+        root = ET.fromstring(fetch(url, timeout=12))
+        items = []
+        for item in root.findall(".//item")[:limit]:
+            publisher = item.find("source")
+            items.append({
+                "title": item.findtext("title", "Latest coverage"),
+                "url": item.findtext("link", news_url(query)),
+                "date": item.findtext("pubDate", ""),
+                "source": (publisher.text or "").strip() if publisher is not None else "",
+                "publisher_url": publisher.get("url", "") if publisher is not None else "",
+            })
+        return items, True
+    except Exception as exc:
+        print(f"Strategy B targeted RSS unavailable for {query}: {exc}")
+        return [], False
+
+
+def _sec_ticker_map():
+    try:
+        rows = fetch_sec("https://www.sec.gov/include/ticker.txt", timeout=20).decode("utf-8", "ignore")
+        result = {}
+        for line in rows.splitlines():
+            parts = line.strip().split("\t")
+            if len(parts) == 2 and parts[1].isdigit():
+                result[parts[0].upper()] = {"ticker": parts[0].upper(), "cik_str": int(parts[1])}
+        return result, bool(result)
+    except Exception as exc:
+        print(f"SEC ticker map unavailable: {exc}")
+        return {}, False
+
+
+def _sec_material_category(form, filing_items, filing_text):
+    lowered = filing_text.lower()
+    item_set = {item.strip() for item in str(filing_items or "").split(",") if item.strip()}
+    if "2.02" in item_set or any(term in lowered for term in (
+            "reports quarterly results", "reports financial results", "announced its financial results",
+            "raises fiscal", "raised fiscal", "raises full-year", "raised full-year")):
+        return "EARNINGS_GUIDANCE_BUYBACK"
+    if any(term in lowered for term in (
+            "positive topline results", "positive results from its phase", "clinical trial met its primary endpoint",
+            "study met its primary endpoint", "announced topline data", "announced positive clinical")):
+        return "CLINICAL_DATA"
+    if any(term in lowered for term in (
+            "fda has approved", "food and drug administration has approved", "received fda approval",
+            "fda accepted the", "complete response letter", "clinical hold", "pdufa target action date",
+            "breakthrough therapy designation", "fast track designation")):
+        return "REGULATORY"
+    if any(term in lowered for term in (
+            "entered into a definitive merger agreement", "completed its acquisition of",
+            "will acquire all outstanding", "exclusive licensing agreement", "strategic partnership")):
+        return "TRANSACTION"
+    if any(term in lowered for term in (
+            "increased its share repurchase authorization", "authorized a new share repurchase",
+            "announced a share repurchase program")):
+        return "EARNINGS_GUIDANCE_BUYBACK"
+    return None
+
+
+def _sec_material_summary(company, form, category, filing_text):
+    labels = {
+        "EARNINGS_GUIDANCE_BUYBACK": "reported material earnings, guidance, or buyback information",
+        "CLINICAL_DATA": "reported material company clinical-data results",
+        "REGULATORY": "reported a material company regulatory event",
+        "TRANSACTION": "reported a material company transaction or partnership",
+    }
+    return f"{company} {labels.get(category, 'reported a material company event')} in a Form {form} filing."
+
+
+def _sec_filing_event(candidate, cik, form, filing_date, accession, primary_document, filing_items=None):
+    accession_path = str(accession or "").replace("-", "")
+    base = f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession_path}"
+    document_url = f"{base}/{primary_document}" if primary_document else f"{base}/{accession}.txt"
+    try:
+        if form == "4":
+            source_link = f"{base}/{accession}.txt"
+            raw = fetch_sec(source_link, timeout=12).decode("utf-8", "ignore")
+            codes = re.findall(r"<transactionCode>\s*([^<]+)", raw, flags=re.IGNORECASE)
+            shares = [parse_market_number(value) for value in re.findall(
+                r"<transactionShares>.*?<value>\s*([^<]+)", raw, flags=re.IGNORECASE | re.DOTALL)]
+            prices = [parse_market_number(value) for value in re.findall(
+                r"<transactionPricePerShare>.*?<value>\s*([^<]+)", raw,
+                flags=re.IGNORECASE | re.DOTALL)]
+            purchases = [share * price for code, share, price in zip(codes, shares, prices)
+                         if code.strip().upper() == "P" and share is not None and price is not None]
+            if not purchases:
+                return None
+            purchase_value = round(sum(purchases), 2)
+            description = f"A company insider reported open-market purchases totaling approximately ${purchase_value:,.0f}."
+            return {
+                "headline": f"{candidate['company']} insider open-market purchase reported on Form 4",
+                "new_information": description, "description": description,
+                "company": candidate.get("company"), "ticker": candidate.get("ticker"),
+                "form": form, "transaction_code": "P", "open_market_purchase": True,
+                "purchase_value_usd": purchase_value, "event_type": "Material Insider Purchase",
+                "published_at": filing_date, "source": "SEC EDGAR", "source_type": "Company filing",
+                "source_link": source_link, "source_verified": True,
+            }
+        raw = fetch_sec(document_url, timeout=12).decode("utf-8", "ignore")
+        filing_text = plain_text(raw)[:50000]
+        category = _sec_material_category(form, filing_items, filing_text)
+        if not category:
+            return None
+        summary = _sec_material_summary(candidate["company"], form, category, filing_text)
+        return {
+            "headline": f"{candidate['company']} filed Form {form}",
+            "new_information": summary, "description": filing_text,
+            "company": candidate.get("company"), "ticker": candidate.get("ticker"),
+            "form": form, "event_type": "SEC Company Filing", "catalyst_category": category,
+            "published_at": filing_date,
+            "source": "SEC EDGAR", "source_type": "Company filing", "source_link": document_url,
+            "source_verified": True,
+        }
+    except Exception as exc:
+        print(f"SEC filing unavailable for {candidate.get('ticker')} {form} {accession}: {exc}")
+        return None
+
+
+def _strategy_b_sec_events(candidate, sec_record):
+    if not sec_record:
+        return [], [], False
+    cik = sec_record.get("cik_str")
+    try:
+        submissions = json.loads(fetch_sec(
+            f"https://data.sec.gov/submissions/CIK{int(cik):010d}.json", timeout=15))
+    except Exception as exc:
+        print(f"SEC submissions unavailable for {candidate.get('ticker')}: {exc}")
+        return [], [], False
+    recent = (submissions.get("filings") or {}).get("recent") or {}
+    rows = [dict(zip(recent, values)) for values in zip(*(recent.get(key, []) for key in recent))] if recent else []
+    gap_date = datetime.fromisoformat(candidate["gap_date"]).date()
+    relevant = []
+    for row in rows:
+        if row.get("form") not in {"8-K", "6-K", "4"}:
+            continue
+        try:
+            filing_day = datetime.fromisoformat(row.get("filingDate", "")).date()
+        except ValueError:
+            continue
+        if -2 <= (gap_date - filing_day).days <= 20:
+            relevant.append(row)
+    events = []
+    for row in relevant[:8]:
+        event = _sec_filing_event(candidate, cik, row.get("form"), row.get("filingDate"),
+                                  row.get("accessionNumber"), row.get("primaryDocument"), row.get("items"))
+        if event:
+            events.append(event)
+    former_names = [item.get("name") for item in submissions.get("formerNames", []) if item.get("name")]
+    return events, former_names, True
+
+
+def _targeted_news_is_reliable(item, candidate, aliases):
+    source = str(item.get("source") or "").lower()
+    publisher = str(item.get("publisher_url") or "").lower()
+    official = any(alias.lower() in source for alias in aliases if len(alias) >= 6)
+    trusted = any(term in source for term in (
+        *RELIABLE_FINANCIAL_SOURCES, *BIOTECH_INDUSTRY_SOURCES, "yahoo finance", "nasdaq",
+        "business wire", "globe newswire", "pr newswire", "accesswire"))
+    investor_domain = any(term in publisher for term in ("/investor", "investor.", "ir."))
+    return official or trusted or investor_domain
+
+
+def _collect_one_strategy_b_candidate(candidate, sec_record):
+    aliases = strategy_b_identity_terms(candidate)
+    security_words = {"common", "stock", "shares", "ordinary", "adr", "ads", "depositary", "class"}
+    company_aliases = [alias for alias in aliases if " " in alias and
+                       not security_words.intersection(alias.lower().split())]
+    company_query = min(company_aliases, key=len) if company_aliases else (
+        candidate.get("company") or candidate.get("ticker"))
+    product_terms = list(candidate.get("products") or []) + list(candidate.get("programs") or [])
+    event_terms = ("earnings OR guidance OR buyback OR clinical OR trial OR FDA OR approval OR contract OR "
+                   "acquisition OR partnership OR filing OR insider purchase")
+    identity_query = f'"{candidate.get("ticker")}" OR "{company_query}"'
+    if product_terms:
+        identity_query += " OR " + " OR ".join(f'"{term}"' for term in product_terms[:3])
+    items, rss_available = _strategy_b_rss_items(f"({identity_query}) ({event_terms}) when:30d", 20)
+    news_events = []
+    for item in items:
+        headline = clean_news_headline(item.get("title", ""), item.get("source", ""))
+        event = {
+            "headline": headline, "new_information": headline, "description": headline,
+            "published_at": parse_publication_time(item.get("date", "")),
+            "source": item.get("source"), "source_link": item.get("url"),
+            "publisher_url": item.get("publisher_url"), "target_ticker": candidate.get("ticker"),
+            "identity_hint": any(contains_term(headline, alias) for alias in aliases),
+            "source_verified": _targeted_news_is_reliable(item, candidate, aliases),
+        }
+        amount = re.search(r"\$\s*([\d,.]+)\s*(million|billion)?", headline, flags=re.IGNORECASE)
+        if any(term in headline.lower() for term in ("insider bought", "insider purchase", "open-market purchase",
+                                                      "open market purchase")) and amount:
+            value = parse_market_number(amount.group(1))
+            multiplier = 1_000_000_000 if str(amount.group(2)).lower() == "billion" else (
+                1_000_000 if str(amount.group(2)).lower() == "million" else 1)
+            event.update({"open_market_purchase": True,
+                          "purchase_value_usd": value * multiplier if value is not None else None,
+                          "event_type": "Material Insider Purchase"})
+        if event["source_verified"]:
+            news_events.append(event)
+    sec_events, former_names, sec_available = _strategy_b_sec_events(candidate, sec_record)
+    return candidate.get("ticker"), {
+        "attempted": True, "source_available": rss_available or sec_available,
+        "events": news_events + sec_events, "aliases": aliases,
+        "former_names": former_names, "products": product_terms,
+        "retrieval_sources": {"targeted_news": rss_available, "sec": sec_available},
+    }
+
+
+def collect_strategy_b_candidate_catalysts(candidates, market_data):
+    """Retrieve catalysts only for technically detected Strategy B candidates."""
+    detected = []
+    securities = (market_data or {}).get("securities") or {}
+    for candidate in candidates or []:
+        snapshot = securities.get(candidate.get("ticker"))
+        if not snapshot or snapshot.get("data_status") != "current":
+            continue
+        assessment = assess_gap_continuation(snapshot, candidate.get("swing_pool") == "biotech")
+        if assessment.get("candidate_qualified"):
+            detected.append({**candidate, "gap_date": (assessment.get("gap") or {}).get("event_date")})
+    sec_map, _sec_map_available = _sec_ticker_map()
+    results = {}
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = [executor.submit(_collect_one_strategy_b_candidate, candidate,
+                                   sec_map.get(str(candidate.get("ticker") or "").upper()))
+                   for candidate in detected]
+        for future in as_completed(futures):
+            try:
+                ticker, record = future.result()
+                results[ticker] = record
+            except Exception as exc:
+                print(f"Strategy B candidate catalyst retrieval failed: {exc}")
+    for candidate in detected:
+        results.setdefault(candidate["ticker"], {
+            "attempted": True, "source_available": False, "events": [],
+            "aliases": strategy_b_identity_terms(candidate), "former_names": [], "products": [],
+            "retrieval_sources": {"targeted_news": False, "sec": False},
+        })
+    return results
+
+
 def biotech_news_radar_interface(current_stories, archived_stories):
     events = []
     for archived, stories in ((False, current_stories), (True, archived_stories)):
@@ -5798,10 +6050,13 @@ def build():
         ai_radar, biotech_radar, market_data, score_date,
         {"candidates": high_conviction_candidates}, company_quality,
         previous_engine=previous.get("high_conviction_engine"))
+    strategy_b_catalyst_data = collect_strategy_b_candidate_catalysts(
+        swing_market_universe, market_data)
     swing_trade_opportunities = build_swing_trade_engine(
         swing_market_universe, market_data, ai_news_section, biotech_news_section,
         previous_section=previous.get("swing_trade_opportunities"),
-        screen_diagnostics=swing_screen_diagnostics)
+        screen_diagnostics=swing_screen_diagnostics,
+        strategy_b_catalyst_data=strategy_b_catalyst_data)
     options_strategy = build_options_strategy(
         ai_radar, growth_radar, biotech_radar, crypto_radar,
         high_conviction_engine, swing_trade_opportunities,
