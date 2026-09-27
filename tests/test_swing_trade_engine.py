@@ -201,6 +201,23 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertIn("Independent full-market short-term execution", page)
         self.assertIn("does not source candidates from Radar or High Conviction", page)
 
+    def test_swing_renderer_closes_pool_builder_and_renders_zero_buy_groups(self):
+        root = Path(__file__).resolve().parents[1]
+        script = (root / "assets" / "news-dashboard.js").read_text()
+        page = (root / "programs" / "genedrnews.html").read_text()
+        self.assertIn(
+            'return `<section class="swing-pool"',
+            script,
+        )
+        self.assertIn(
+            '  };\n  document.getElementById("swing-opportunities").innerHTML = '
+            'pool("biotech", "Biotech Swing") + pool("non_biotech", "Non-Biotech Swing");',
+            script,
+        )
+        self.assertIn('group.candidates || []', script)
+        self.assertIn('group.buy_now_count ?? 0', script)
+        self.assertIn('news-dashboard.js?v=20260926-1', page)
+
     def test_legacy_pattern_helper_remains_available_for_other_consumers(self):
         legacy = market_snapshot()
         legacy["entry_inputs"].update({

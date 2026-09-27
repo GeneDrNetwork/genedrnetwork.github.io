@@ -1100,6 +1100,7 @@ function renderSwingTrades(section = {}) {
   const pool = (key, title) => {
     const group = section.pools?.[key] || {};
     return `<section class="swing-pool"><div class="subsection-title"><span class="radar-icon${key === "biotech" ? " radar-icon-bio" : ""}" aria-hidden="true">${key === "biotech" ? "BIO" : "US"}</span><div><h3>${escapeHtml(title)}</h3><p>Strategy A catalyst optional · Strategy B verified company catalyst required for BUY NOW</p></div></div><section class="swing-strategy"><h4>Strategy A · Long-Base Right-Side Breakout</h4>${renderTable(group.strategy_a, key, "Strategy A")}</section><section class="swing-strategy"><h4>Strategy B · Catalyst Gap-Up Continuation</h4>${renderTable(group.strategy_b, key, "Strategy B")}</section></section>`;
+  };
   document.getElementById("swing-opportunities").innerHTML = pool("biotech", "Biotech Swing") + pool("non_biotech", "Non-Biotech Swing");
 }
 
