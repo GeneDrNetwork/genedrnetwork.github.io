@@ -11,6 +11,7 @@ from scripts.update_news_dashboard import (
     expectation_assessment,
     market_timing_signal,
     score_biotech_catalyst,
+    security_display_metadata,
 )
 
 
@@ -61,12 +62,33 @@ class MarketTechnicalLayerTests(unittest.TestCase):
     def test_shared_layer_has_benchmarks_relative_strength_and_missing_cap(self):
         layer = market_layer()
         nvda = layer["securities"]["NVDA"]
-        self.assertEqual(layer["schema_version"], "shared-market-expectation-v1")
+        self.assertEqual(layer["schema_version"], "shared-market-expectation-v2")
         self.assertEqual(nvda["market_cap"], 4_000_000_000_000)
         self.assertIsNotNone(nvda["relative_strength"]["sp500"]["three_month"])
         self.assertIsNotNone(nvda["relative_strength"]["qqq"]["three_month"])
         self.assertIsNotNone(nvda["relative_strength"]["xbi"]["three_month"])
         self.assertIsNone(layer["securities"].get("AMD"))
+
+    def test_display_security_type_uses_domicile_not_exchange(self):
+        us = security_display_metadata("AAPL", {"company": "Apple Inc.", "country": "United States", "exchange": "NASDAQ"})
+        adr = security_display_metadata("TSM", {"company": "Taiwan Semiconductor Manufacturing Co. Ltd. American Depositary Shares", "country": "Taiwan", "exchange": "NYSE"})
+        foreign_listed = security_display_metadata("CRSP", {"company": "CRISPR Therapeutics AG", "country": "Switzerland", "exchange": "NASDAQ"})
+        otc = security_display_metadata("XYZY", {"company": "Example plc", "country": "United Kingdom", "exchange": "OTCQX"})
+        self.assertEqual(us["security_type"], "US")
+        self.assertEqual(adr["security_type"], "Foreign ADR")
+        self.assertEqual(foreign_listed["security_type"], "Foreign – US Listed")
+        self.assertEqual(otc["security_type"], "Foreign – OTC")
+        self.assertEqual(foreign_listed["domicile_country"], "Switzerland")
+
+    def test_known_adr_source_omissions_use_central_symbol_override(self):
+        tsm = security_display_metadata("TSM", {"company": "Taiwan Semiconductor Manufacturing Company Ltd.", "country": "Taiwan", "exchange": "NYSE"})
+        kt = security_display_metadata("KT", {"company": "KT Corporation Common Stock", "country": "South Korea", "exchange": "NYSE"})
+        self.assertEqual(tsm["security_type"], "Foreign ADR")
+        self.assertEqual(kt["security_type"], "Foreign ADR")
+
+    def test_unknown_domicile_is_not_inferred_as_us_from_exchange(self):
+        record = security_display_metadata("TEST", {"company": "Test plc", "country": "", "exchange": "NASDAQ"})
+        self.assertEqual(record["security_type"], "N/A")
 
     def test_failed_refresh_retains_stale_record_without_signal(self):
         prior = {"market_data": {"securities": {"AMD": {

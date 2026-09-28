@@ -319,8 +319,9 @@ class HighConvictionStockPickEngineTests(unittest.TestCase):
         self.assertIn("Stop / Invalidation", script)
         self.assertIn("T1 / T2", script)
         self.assertIn("data-high-conviction-analysis-card", script)
-        self.assertIn('tickerAnchor.closest("[data-high-conviction-analysis-card]")', script)
-        self.assertIn("highConvictionCard.open = true", script)
+        self.assertIn('target="_blank"', script)
+        self.assertNotIn('tickerAnchor.closest("[data-high-conviction-analysis-card]")', script)
+        self.assertNotIn("highConvictionCard.open = true", script)
 
     def test_frontend_uses_canonical_ranked_output_and_backend_action(self):
         from pathlib import Path

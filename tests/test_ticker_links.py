@@ -17,6 +17,7 @@ class TickerLinkTests(unittest.TestCase):
         self.assertIn("encodeURIComponent(ticker)", self.script)
         self.assertIn("target=\"_blank\"", self.script)
         self.assertIn("rel=\"noopener noreferrer\"", self.script)
+        self.assertIn('ticker.replace(/\\./g, "-")', self.script)
 
     def test_representative_tickers_normalize_to_expected_quote_urls(self):
         for ticker in ("NVDA", "BE", "FCX", "BEAM", "LRCX"):
@@ -29,8 +30,8 @@ class TickerLinkTests(unittest.TestCase):
     def test_all_strategy_renderers_use_the_shared_ticker_markup(self):
         expected_rendering_calls = (
             "tickerLink(ticker)",
-            "tickerLink(alert.ticker)",
-            "tickerLink(row.ticker)",
+            "tickerPriceMarkup(alert.ticker, market)",
+            "tickerPriceMarkup(row.ticker, row.snapshot)",
             "companyTickerMarkup(row)",
             "tickerPriceMarkup(row.ticker, market)",
             "tickerPriceMarkup(row.ticker, row.market_data)",
@@ -38,9 +39,17 @@ class TickerLinkTests(unittest.TestCase):
         for call in expected_rendering_calls:
             self.assertIn(call, self.script)
 
-        self.assertGreaterEqual(len(re.findall(r"tickerLink\(row\.ticker\)", self.script)), 5)
+        self.assertGreaterEqual(len(re.findall(r"tickerPriceMarkup\(row\.ticker", self.script)), 8)
         self.assertIn(".ticker-link:hover", self.styles)
         self.assertIn(".ticker-link:focus-visible", self.styles)
+
+    def test_site_wide_identity_helper_includes_price_and_security_type(self):
+        helper = self.script.split("function tickerPriceMarkup", 1)[1].split("function marketSnapshotText", 1)[0]
+        self.assertIn("tickerLink(normalized)", helper)
+        self.assertIn("currentPriceLabel", helper)
+        self.assertIn("securityTypeLabel", helper)
+        self.assertIn('return "N/A"', self.script)
+        self.assertEqual(self.script.count("tickerLink(row.ticker)"), 0)
 
 
 if __name__ == "__main__":

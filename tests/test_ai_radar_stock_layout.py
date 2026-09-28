@@ -43,7 +43,7 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         self.assertIn("beneficiary.thesis_evidence", script)
         self.assertIn("beneficiary.confirmation_evidence", script)
         company_start = script.index('<span class="ai-stock-identity">')
-        price_start = script.index("currentPriceLabel(ticker, beneficiary.market_data)")
+        price_start = script.index("tickerPriceMarkup(ticker, beneficiary.market_data)")
         self.assertLess(company_start, price_start)
 
     def test_biotech_renderer_remains_separate(self):

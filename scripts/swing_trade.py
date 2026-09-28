@@ -1128,7 +1128,8 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
                                 "reason": catalyst.get("validation_reason")},
         "catalyst_status": catalyst.get("catalyst_status") or catalyst.get("status"),
         "market_data": {key: snapshot.get(key) for key in
-                        ("current_price", "price_date", "currency", "source", "data_status")},
+                        ("current_price", "price_date", "currency", "source", "data_status",
+                         "security_type", "domicile_country", "listing_exchange", "security_name")},
         "technical": {"current_price": snapshot.get("current_price"),
                       "resistance": assessment.get("pivot"),
                       "invalidation_level": assessment.get("invalidation"),

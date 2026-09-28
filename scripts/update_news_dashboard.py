@@ -1557,7 +1557,10 @@ def fetch_market_series(yahoo_symbol, stooq_symbol=None):
                 "low": quote_value("low"), "close": float(close),
                 "volume": quote_value("volume"),
             })
-        return {"symbol": yahoo_symbol, "rows": rows, "source": "Yahoo Finance chart", "currency": result.get("meta", {}).get("currency")}
+        meta = result.get("meta", {})
+        return {"symbol": yahoo_symbol, "rows": rows, "source": "Yahoo Finance chart",
+                "currency": meta.get("currency"), "exchange": meta.get("exchangeName") or meta.get("fullExchangeName"),
+                "instrument_type": meta.get("instrumentType"), "security_name": meta.get("longName") or meta.get("shortName")}
     except Exception:
         try:
             stooq_symbol = stooq_symbol or stooq_symbol_for(yahoo_symbol)
@@ -1676,6 +1679,8 @@ def calculate_market_technicals(ticker, series, benchmark_records=None, market_c
         "fifty_two_week_position": year_position, "relative_strength": relative_strength,
         "entry_inputs": calculate_entry_inputs(rows, moving_averages, macd_record),
         "source": series.get("source"), "data_status": "current",
+        "exchange": series.get("exchange"), "instrument_type": series.get("instrument_type"),
+        "security_name": series.get("security_name"),
         "missing_fields": [name for name, value in (("market_cap", market_cap), ("volume", current_volume),
                            ("ma200", moving_average(closes, 200)), ("fifty_two_week_position", year_position)) if value is None],
     }
@@ -1793,6 +1798,39 @@ def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
         print(f"Listed-company discovery universe unavailable: {exc}")
         return [], {"status": "unavailable", "source": NASDAQ_LISTED_COMPANY_URL,
                     "retrieved_at": run_at.isoformat(timespec="seconds"), "error": str(exc)}
+
+
+US_COUNTRY_NAMES = {"US", "USA", "UNITED STATES", "UNITED STATES OF AMERICA"}
+ADR_NAME_PATTERN = re.compile(
+    r"\b(?:ADR|ADS|AMERICAN DEPOSITARY (?:RECEIPT|RECEIPTS|SHARE|SHARES))\b", re.IGNORECASE)
+OTC_EXCHANGE_TERMS = ("OTC", "PINK", "PNK", "OTCQX", "OTCQB")
+# The Nasdaq screener omits the depositary-share descriptor for a small set of
+# established ADR programs. Keep these source exceptions centralized rather
+# than inferring ADR status from a NYSE/Nasdaq listing.
+ADR_SYMBOL_OVERRIDES = {"ABB", "AZN", "BABA", "BIDU", "JD", "KT", "NVO", "NVS", "PDD", "SNY", "TSM"}
+
+
+def security_display_metadata(ticker, listing=None, market_record=None):
+    """Return display-only domicile/listing metadata without inferring domicile from exchange."""
+    listing = listing or {}
+    market_record = market_record or {}
+    country = str(listing.get("country") or market_record.get("domicile_country") or "").strip()
+    exchange = str(listing.get("exchange") or market_record.get("exchange") or "").strip()
+    security_name = str(listing.get("company") or market_record.get("security_name") or "").strip()
+    is_foreign = bool(country) and country.upper() not in US_COUNTRY_NAMES
+    is_otc = any(term in exchange.upper() for term in OTC_EXCHANGE_TERMS)
+    if not country:
+        security_type = "N/A"
+    elif not is_foreign:
+        security_type = "US"
+    elif is_otc:
+        security_type = "Foreign – OTC"
+    elif str(ticker or "").upper() in ADR_SYMBOL_OVERRIDES or ADR_NAME_PATTERN.search(security_name):
+        security_type = "Foreign ADR"
+    else:
+        security_type = "Foreign – US Listed"
+    return {"security_type": security_type, "domicile_country": country or None,
+            "listing_exchange": exchange or None, "security_name": security_name or None}
 
 
 def _profile_size_group(company):
@@ -2845,7 +2883,7 @@ def shared_market_ticker_domains(previous=None, candidate_pool=None, manual_watc
 
 def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps=None, expectations_by_ticker=None,
                             candidate_pool=None, manual_watchlist=None,
-                            defer_expectation_domains=None):
+                            defer_expectation_domains=None, listed_companies=None):
     ticker_domains = shared_market_ticker_domains(previous, candidate_pool, manual_watchlist)
     benchmark_symbols = {"sp500": "^GSPC", "qqq": "QQQ", "xbi": "XBI", "btc": "BTC-USD"}
     dashboard_symbols = set(MARKETS) | set(benchmark_symbols.values())
@@ -2884,6 +2922,7 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
                 }
     previous_layer = (previous or {}).get("market_data", {})
     previous_securities = previous_layer.get("securities", {})
+    listed_by_ticker = {str(row.get("ticker") or "").upper(): row for row in (listed_companies or [])}
     securities = {}
     for ticker, domains in ticker_domains.items():
         record = calculate_market_technicals(
@@ -2894,9 +2933,12 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
                 record["market_cap"] = expectation["valuation"]["market_cap"]
                 record["missing_fields"] = [field for field in record.get("missing_fields", []) if field != "market_cap"]
             record["expectation_data"] = expectation
+            record.update(security_display_metadata(ticker, listed_by_ticker.get(ticker), record))
             securities[ticker] = {**record, "domains": domains}
         elif ticker in previous_securities:
-            securities[ticker] = {**previous_securities[ticker], "domains": domains, "data_status": "stale"}
+            retained = {**previous_securities[ticker], "domains": domains, "data_status": "stale"}
+            retained.update(security_display_metadata(ticker, listed_by_ticker.get(ticker), retained))
+            securities[ticker] = retained
     indexes = {}
     for symbol in MARKETS:
         record = calculate_market_technicals(symbol, series_by_symbol.get(symbol, {"rows": []}))
@@ -2905,7 +2947,7 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
         elif symbol in previous_layer.get("indexes", {}):
             indexes[symbol] = {**previous_layer["indexes"][symbol], "data_status": "stale"}
     return {
-        "schema_version": "shared-market-expectation-v1", "updated_at": run_at.isoformat(timespec="seconds"),
+        "schema_version": "shared-market-expectation-v2", "updated_at": run_at.isoformat(timespec="seconds"),
         "sources": ["Yahoo Finance chart (primary price/volume history)", "Stooq daily data (fallback)",
                     "Yahoo Finance quote endpoint (market cap when available)",
                     "Nasdaq company summary, analyst ratings, earnings forecast, and short-interest endpoints"],
@@ -2917,6 +2959,7 @@ def build_market_data_layer(previous, run_at, series_by_symbol=None, market_caps
             "expectation_state": "Requires at least two input groups. Underpriced, Fairly Priced, and Crowded / Priced In use transparent target-upside, forward-P/E, price-run-up, estimate-revision, and positioning signals; missing inputs remain null.",
             "price_run_up": "Uses existing 1M/3M/6M close-to-close returns as a recent pre-event proxy unless a verified event-specific anchor is available.",
             "missing_data": "Unavailable fields remain null; prior successful security records may be retained with data_status=stale.",
+            "security_display": "Domicile comes from the listed-company source, never from the trading exchange. Foreign ADR, foreign U.S.-listed, and foreign OTC labels are display metadata only.",
         },
         "benchmarks": benchmarks, "indexes": indexes, "securities": securities,
         "coverage": {"requested": len(ticker_domains), "current": sum(record.get("data_status") == "current" for record in securities.values()),
@@ -5981,7 +6024,8 @@ def build():
                                          growth_technical_universe + swing_market_universe)}
     market_data = build_market_data_layer(
         previous, run_at, candidate_pool=market_candidates,
-        manual_watchlist=manual_watchlist_config, defer_expectation_domains={"growth", "swing"})
+        manual_watchlist=manual_watchlist_config, defer_expectation_domains={"growth", "swing"},
+        listed_companies=listed_companies)
     attach_watchlist_entry_readiness(market_data)
     manual_watchlist = build_manual_watchlist_output(manual_watchlist_config, market_data)
     data_through = market_data_through(market_data) or previous.get("market_data_through")

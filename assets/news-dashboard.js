@@ -29,7 +29,7 @@ function normalizedTicker(value) {
 
 function yahooFinanceTicker(value) {
   const ticker = normalizedTicker(value);
-  return ticker && !["PRIVATE", "N/A", "MISSING"].includes(ticker) ? ticker : "";
+  return ticker && !["PRIVATE", "N/A", "MISSING"].includes(ticker) ? ticker.replace(/\./g, "-") : "";
 }
 
 function yahooFinanceUrl(value) {
@@ -38,10 +38,11 @@ function yahooFinanceUrl(value) {
 }
 
 function tickerLink(value, label = null) {
-  const ticker = yahooFinanceTicker(value);
-  const text = label === null ? ticker || "Ticker missing" : String(label);
-  if (!ticker) return escapeHtml(text);
-  return `<a class="ticker-link" href="${escapeHtml(yahooFinanceUrl(ticker))}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(ticker)} on Yahoo Finance">${escapeHtml(text)}</a>`;
+  const displayTicker = normalizedTicker(value);
+  const yahooTicker = yahooFinanceTicker(value);
+  const text = label === null ? displayTicker || "Ticker missing" : String(label);
+  if (!yahooTicker) return escapeHtml(text);
+  return `<a class="ticker-link" href="${escapeHtml(yahooFinanceUrl(yahooTicker))}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(displayTicker)} on Yahoo Finance">${escapeHtml(text)}</a>`;
 }
 
 function writeWatchlistState() {
@@ -233,8 +234,8 @@ function currentPriceLabel(ticker, snapshot = null) {
   const normalizedTicker = String(ticker || "").trim();
   if (!normalizedTicker || ["Private", "N/A", "Missing"].includes(normalizedTicker)) return "";
   const hasPrice = (market) => market?.current_price !== null && market?.current_price !== undefined && market?.current_price !== "" && Number.isFinite(Number(market.current_price));
-  const market = hasPrice(snapshot) ? snapshot : sharedMarketSecurities[normalizedTicker.toUpperCase()] || snapshot || null;
-  if (!hasPrice(market)) return "Price unavailable";
+  const market = { ...(sharedMarketSecurities[normalizedTicker.toUpperCase()] || {}), ...(snapshot || {}) };
+  if (!hasPrice(market)) return "N/A";
   const price = Number(market.current_price);
   const currency = /^[A-Z]{3}$/.test(String(market?.currency || "")) ? market.currency : "USD";
   try {
@@ -244,18 +245,26 @@ function currentPriceLabel(ticker, snapshot = null) {
   }
 }
 
+function securityTypeLabel(ticker, snapshot = null) {
+  const normalized = normalizedTicker(ticker);
+  const market = { ...(sharedMarketSecurities[normalized] || {}), ...(snapshot || {}) };
+  const securityType = market.security_type || "N/A";
+  const country = String(market.domicile_country || "").trim();
+  return securityType.startsWith("Foreign") && country ? `${securityType} (${country})` : securityType;
+}
+
 function tickerPriceLabel(ticker, snapshot = null) {
   const normalizedTicker = String(ticker || "").trim();
   if (!normalizedTicker || normalizedTicker === "Missing") return "Ticker missing";
   const price = currentPriceLabel(normalizedTicker, snapshot);
-  return price ? `${normalizedTicker} ${price}` : normalizedTicker;
+  return `${normalizedTicker} · ${price || "N/A"} · ${securityTypeLabel(normalizedTicker, snapshot)}`;
 }
 
 function tickerPriceMarkup(ticker, snapshot = null) {
-  const normalized = yahooFinanceTicker(ticker);
+  const normalized = normalizedTicker(ticker);
   if (!normalized) return tickerLink(ticker);
   const price = currentPriceLabel(normalized, snapshot);
-  return `${tickerLink(normalized)}${price ? ` ${escapeHtml(price)}` : ""}`;
+  return `${tickerLink(normalized)}<span class="stock-display-meta"> · ${escapeHtml(price || "N/A")} · ${escapeHtml(securityTypeLabel(normalized, snapshot))}</span>`;
 }
 
 function marketSnapshotText(snapshot, benchmark = "sp500") {
@@ -264,7 +273,7 @@ function marketSnapshotText(snapshot, benchmark = "sp500") {
   const returns = snapshot.returns || {};
   const macd = snapshot.macd || {};
   const relative = snapshot.relative_strength?.[benchmark] || {};
-  return `Price ${currentPriceLabel(snapshot.ticker, snapshot) || "unavailable"} · Market cap ${formatMarketCap(snapshot.market_cap)} · MA20/50/200 ${formatMarketValue(averages.ma20)}/${formatMarketValue(averages.ma50)}/${formatMarketValue(averages.ma200)} · 1M/3M/6M ${formatChange(returns.one_month)}/${formatChange(returns.three_month)}/${formatChange(returns.six_month)} · RSI ${formatMarketValue(snapshot.rsi_14)} · MACD ${formatMarketValue(macd.value, 4)} (${formatMarketValue(macd.histogram, 4)} histogram) · Volume/20D ${formatMarketValue(snapshot.volume_vs_20d_average)}x · 52W position ${formatMarketValue(snapshot.fifty_two_week_position)}% · 3M RS vs ${benchmark.toUpperCase()} ${formatChange(relative.three_month)} · ${snapshot.data_status || "status missing"}.`;
+  return `Price ${currentPriceLabel(snapshot.ticker, snapshot) || "N/A"} · ${securityTypeLabel(snapshot.ticker, snapshot)} · Market cap ${formatMarketCap(snapshot.market_cap)} · MA20/50/200 ${formatMarketValue(averages.ma20)}/${formatMarketValue(averages.ma50)}/${formatMarketValue(averages.ma200)} · 1M/3M/6M ${formatChange(returns.one_month)}/${formatChange(returns.three_month)}/${formatChange(returns.six_month)} · RSI ${formatMarketValue(snapshot.rsi_14)} · MACD ${formatMarketValue(macd.value, 4)} (${formatMarketValue(macd.histogram, 4)} histogram) · Volume/20D ${formatMarketValue(snapshot.volume_vs_20d_average)}x · 52W position ${formatMarketValue(snapshot.fifty_two_week_position)}% · 3M RS vs ${benchmark.toUpperCase()} ${formatChange(relative.three_month)} · ${snapshot.data_status || "status missing"}.`;
 }
 
 function renderMarketSnapshot(snapshot, benchmark) {
@@ -505,7 +514,7 @@ function renderAiRadar(rows, targetId = "ai-radar") {
     const action = aiRadarAction(beneficiary);
     const companyNarrative = beneficiary.company_narrative || {};
     return `<details class="radar-item ai-stock-radar-item"><summary>
-      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(beneficiary))}<small>Final ${escapeHtml(beneficiary.dynamic_final_score ?? "Missing")}/100</small></span><span class="ai-stock-identity"><strong>${tickerLink(ticker)}</strong><small>${escapeHtml(beneficiary.company)} · ${escapeHtml(currentPriceLabel(ticker, beneficiary.market_data) || "Price unavailable")}</small></span>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(beneficiary))}<small>Final ${escapeHtml(beneficiary.dynamic_final_score ?? "Missing")}/100</small></span><span class="ai-stock-identity"><strong>${tickerPriceMarkup(ticker, beneficiary.market_data)}</strong><small>${escapeHtml(beneficiary.company)}</small></span>
       ${renderScore(opportunity_score, "Bottleneck Opportunity")}${renderScore(multibagger_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(price_discovery_stage)}</b></span><span><b class="radar-stage-pill priced-${classKey(already_priced_in)}">${escapeHtml(already_priced_in)}</b></span><span><b class="radar-stage-pill entry-${classKey(entry_stage)}">${escapeHtml(entry_stage)}</b><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid ai-stock-details">
@@ -542,12 +551,11 @@ function renderAiReaccelerationAlerts(section = {}) {
   const target = document.getElementById("ai-reacceleration-alerts");
   if (!target) return;
   target.innerHTML = alerts.map((alert) => {
-    const price = alert.current_price === null || alert.current_price === undefined
-      ? "Price unavailable" : currentPriceLabel(alert.ticker, { current_price: alert.current_price, currency: alert.currency });
+    const market = { current_price: alert.current_price, currency: alert.currency };
     const signal = alert.reacceleration_signal || (Array.isArray(alert.reasons) ? alert.reasons[0] : null) || "Alert reason unavailable.";
     const action = hasValidCompanyCatalyst(alert) ? (alert.action || "WATCH") : "WATCH / WAIT FOR VALID CATALYST";
     return `<article class="reacceleration-card">
-      <div class="reacceleration-identity"><strong>${tickerLink(alert.ticker)}</strong><small>${escapeHtml(alert.company || "Company missing")} · ${escapeHtml(price)}</small></div>
+      <div class="reacceleration-identity"><strong>${tickerPriceMarkup(alert.ticker, market)}</strong><small>${escapeHtml(alert.company || "Company missing")}</small></div>
       <div class="reacceleration-reason"><strong>Re-Acceleration Signal</strong><p>${escapeHtml(signal)}</p></div>
       <div class="reacceleration-stage"><small>Entry Stage</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(alert.entry_stage || "Unavailable")}</b><small>Catalyst</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(catalystStatus(alert))}</b><small>Action</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(action)}</b></div>
       <div class="reacceleration-context"><small>Price Discovery</small><span>${escapeHtml(alert.price_discovery_stage || "Missing")} · Priced In ${escapeHtml(alert.already_priced_in || "Missing")}</span></div>
@@ -715,7 +723,7 @@ function renderGrowthRadar(rows, diagnostics = {}, targetId = "growth-radar") {
       return url ? `<li><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>` : `<li>${escapeHtml(label)}</li>`;
     }).join("");
     return `<details class="radar-item growth-radar-item"><summary>
-      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(row.sector)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerPriceMarkup(row.ticker, row.market_data)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(row.sector)}</small></span>
       ${renderScore(row.opportunity_score, "Growth Opportunity")}${renderScore(row.growth_acceleration_score, "Growth Acceleration")}
       <span><b class="radar-stage-pill">${escapeHtml(row.pool)}</b></span><span><b class="radar-stage-pill">${escapeHtml(setup.stage || "Unavailable")}</b></span><span><b class="decision-action">${escapeHtml(row.action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid growth-details">
@@ -748,7 +756,7 @@ function renderBiotechRadar(rows, targetId = "biotech-radar") {
   document.getElementById(targetId).innerHTML = rankedRows.map((row) => {
     const action = biotechRadarAction(row);
     return `<details class="radar-item biotech-radar-item"><summary>
-      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerPriceMarkup(row.ticker, row.market_data)}</strong><small>${escapeHtml(row.company)}</small></span>
       ${renderScore(row.biotech_opportunity_score ?? row.opportunity_score, "Biotech Opportunity")}${renderScore(row.multibagger_potential_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(row.price_discovery_stage || "Emerging")}</b></span><span><b class="radar-stage-pill priced-${classKey(row.already_priced_in || "NO")}">${escapeHtml(row.already_priced_in || "NO")}</b></span><span><b class="radar-stage-pill entry-${classKey(row.entry_stage?.stage || "Unavailable")}">${escapeHtml(row.entry_stage?.stage || "Unavailable")}</b><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid biotech-details">
@@ -788,7 +796,7 @@ function renderCryptoRadar(rows, targetId = "crypto-radar") {
   document.getElementById(targetId).innerHTML = rankedRows.map((row) => {
     const action = cryptoRadarAction(row);
     return `<details class="radar-item crypto-radar-item"><summary>
-      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(currentPriceLabel(row.ticker, row.market_data) || "Price unavailable")}</small></span>
+      <span class="opportunity-rank dynamic-rank">${escapeHtml(dynamicRankLabel(row))}<small>Final ${escapeHtml(row.dynamic_final_score ?? "Missing")}/100</small></span><span class="radar-name"><strong>${tickerPriceMarkup(row.ticker, row.market_data)}</strong><small>${escapeHtml(row.company)}</small></span>
       ${renderScore(row.crypto_opportunity_score, "Crypto Opportunity")}${renderScore(row.multibagger_potential_score, "Multibagger Potential")}
       <span><b class="radar-stage-pill">${escapeHtml(row.price_discovery_stage || "Emerging")}</b></span><span><b class="radar-stage-pill priced-${classKey(row.already_priced_in || "NO")}">${escapeHtml(row.already_priced_in || "NO")}</b></span><span><b class="radar-stage-pill entry-${classKey(row.entry_stage?.stage || "Unavailable")}">${escapeHtml(row.entry_stage?.stage || "Unavailable")}</b><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(action)}</b></span><span class="expand-control" aria-hidden="true">+</span>
     </summary><dl class="detail-grid crypto-details">
@@ -848,7 +856,7 @@ function renderMarketOnlyRadarAnalysis(ticker, domain, context) {
   const priced = context?.already_priced_in || "Unavailable";
   const entry = context?.entry_stage?.stage || "Unavailable";
   document.getElementById("radar-analyze-details").innerHTML = `<details class="radar-item ai-stock-radar-item"><summary>
-    <span class="ai-stock-identity"><strong>${tickerLink(ticker)}</strong><small>${escapeHtml(currentPriceLabel(ticker, market) || "Price unavailable")} · ${escapeHtml(domain === "biotech" ? "Biotechnology" : domain === "growth" ? "Growth Opportunities" : "AI / Technology")}</small></span>
+    <span class="ai-stock-identity"><strong>${tickerPriceMarkup(ticker, market)}</strong><small>${escapeHtml(domain === "biotech" ? "Biotechnology" : domain === "growth" ? "Growth Opportunities" : "AI / Technology")}</small></span>
     ${renderScore(null, "Opportunity Score")}${renderScore(null, "Multibagger Potential")}
     <span><b class="radar-stage-pill">${escapeHtml(discovery)}</b></span><span><b class="radar-stage-pill">${escapeHtml(priced)}</b></span><span><b class="radar-stage-pill">${escapeHtml(entry)}</b></span><span class="expand-control" aria-hidden="true">+</span>
   </summary><dl class="detail-grid"><div class="detail-item detail-wide"><dt>Evidence Boundary</dt><dd>${escapeHtml(context?.score_note || "No company-specific Radar thesis is connected, so Opportunity and Multibagger scores remain missing.")}</dd></div>
@@ -1310,7 +1318,7 @@ function renderWatchlistCard(row, manualAdded) {
   const buyStatus = dataUnavailable ? "Data Unavailable" : extendedStage ? "EXTENDED / TOO LATE" : technical.buy_status || "WAIT";
   const action = watchlistDecisionAction({ ...technical, buy_status: buyStatus, extended: extendedStage }, dataUnavailable);
   const validationNote = dataUnavailable ? `<p class="watchlist-pending-note"><strong>Data Unavailable:</strong> this Manual selection remains saved. The page will retry against the refreshed shared market-data and Entry Readiness pipeline on every load; no quote or score is fabricated.</p>` : "";
-  const manualIdentity = `<span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company)}</small><small>Current Price: ${escapeHtml(dataUnavailable ? "Data Unavailable" : formatTechnicalPrice(technical.current_price))}</small></span>`;
+  const manualIdentity = `<span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${tickerPriceMarkup(row.ticker, row.market_data)}</strong><small>${escapeHtml(row.company)}</small><small>Current Price: ${escapeHtml(dataUnavailable ? "N/A" : formatTechnicalPrice(technical.current_price))}</small></span>`;
   const automaticIdentity = `<span class="position-identity"><span class="stock-category">${escapeHtml(row.category)}</span><span class="watchlist-source">${sourcePrefix}: ${escapeHtml(sources.join(" + "))}</span><strong>${tickerPriceMarkup(row.ticker, row.market_data)}</strong><small>${escapeHtml(row.company)}</small></span>`;
   const summary = manualAdded
     ? `<summary class="watchlist-summary manual-watchlist-summary">${manualIdentity}<span><small>Entry Readiness</small><strong>${escapeHtml(readinessScore)}</strong></span><span><small>Entry Stage</small><strong>${escapeHtml(entryStage)}</strong></span><span><small>Buy Status</small><strong class="watch-buy-status watch-buy-${classKey(buyStatus)}">${escapeHtml(buyStatus)}</strong></span><span><small>Action</small><b class="decision-action">${escapeHtml(action)}</b></span><button type="button" class="watchlist-action watchlist-remove manual-watchlist-remove" data-watchlist-remove data-ticker="${escapeHtml(row.ticker)}" aria-label="Remove ${escapeHtml(row.ticker)} from Manually Entered">Remove</button><span class="opportunity-expand" aria-hidden="true"></span></summary>`
@@ -1447,7 +1455,7 @@ function renderPendingOrderCard(row) {
       : `${positionPrice(row.suggested_entry_low, currency)} – ${positionPrice(row.suggested_entry_high, currency)}`;
   const differenceText = row.limit_difference === null ? "Unavailable"
     : `${row.limit_difference >= 0 ? "+" : "−"}${positionPrice(Math.abs(row.limit_difference), currency)} (${row.limit_difference_pct >= 0 ? "+" : ""}${row.limit_difference_pct.toFixed(2)}%)`;
-  return `<details class="pending-order-card"><summary class="pending-order-summary"><span class="pending-order-company"><strong>${tickerLink(row.ticker)}</strong><small>${escapeHtml(row.company || row.ticker)}</small><button type="button" class="position-action position-remove pending-order-summary-remove" data-pending-order-remove data-ticker="${escapeHtml(row.ticker)}" aria-label="Remove ${escapeHtml(row.ticker)} from Pending Orders">Remove</button></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.current_price, currency))}</strong></span><span><small>Your Limit</small><strong>${escapeHtml(positionPrice(row.limit_price, currency))}</strong></span><span><small>Shares</small><strong>${escapeHtml(row.shares)}</strong></span><span><small>Entry Stage</small><strong>${escapeHtml(row.entry_stage)}</strong></span><span><small>Order Status</small><strong class="pending-order-status pending-order-status-${classKey(row.order_status)}">${escapeHtml(row.order_status)}</strong><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(row.action)}</b></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+  return `<details class="pending-order-card"><summary class="pending-order-summary"><span class="pending-order-company"><strong>${tickerPriceMarkup(row.ticker, row.snapshot)}</strong><small>${escapeHtml(row.company || row.ticker)}</small><button type="button" class="position-action position-remove pending-order-summary-remove" data-pending-order-remove data-ticker="${escapeHtml(row.ticker)}" aria-label="Remove ${escapeHtml(row.ticker)} from Pending Orders">Remove</button></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.current_price, currency))}</strong></span><span><small>Your Limit</small><strong>${escapeHtml(positionPrice(row.limit_price, currency))}</strong></span><span><small>Shares</small><strong>${escapeHtml(row.shares)}</strong></span><span><small>Entry Stage</small><strong>${escapeHtml(row.entry_stage)}</strong></span><span><small>Order Status</small><strong class="pending-order-status pending-order-status-${classKey(row.order_status)}">${escapeHtml(row.order_status)}</strong><small class="decision-action-label">Action</small><b class="decision-action">${escapeHtml(row.action)}</b></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
     <div class="pending-order-detail"><div class="pending-order-workflow" aria-label="Pending order price workflow"><div><small>Current Price</small><strong>${escapeHtml(positionPrice(row.current_price, currency))}</strong></div><span>→</span><div><small>Your Limit</small><strong>${escapeHtml(positionPrice(row.limit_price, currency))}</strong></div><span>→</span><div><small>Suggested Entry</small><strong>${escapeHtml(suggestedEntryText)}</strong></div><span>→</span><div><small>Stop Loss</small><strong>${escapeHtml(positionPrice(row.stop, currency))}</strong></div><span>→</span><div><small>Target 1</small><strong>${escapeHtml(positionPrice(row.actionable_otoco ? row.target_1 : null, currency))}</strong></div><span>→</span><div><small>Target 2</small><strong>${escapeHtml(positionPrice(row.actionable_otoco ? row.target_2 : null, currency))}</strong></div></div>
     <div class="pending-order-decision"><span><small>Limit vs Suggested Entry</small><strong>${escapeHtml(differenceText)}</strong></span><span><small>Recommendation</small><strong class="pending-order-recommendation recommendation-${classKey(row.limit_recommendation)}">${escapeHtml(row.limit_recommendation)}</strong></span>${row.limit_recommendation === "WAIT" ? `<p>WAIT — No technical entry recommended yet. Reversal confirmation is missing or the setup is deteriorating.</p>` : ""}</div>
     <section class="pending-order-otoco"><div class="pending-order-otoco-heading"><h4>OTOCO Recommendation</h4><strong class="otoco-status otoco-status-${classKey(row.otoco_status)}">${escapeHtml(row.otoco_status)}</strong></div><dl class="pending-order-metrics"><div><dt>Suggested Entry / Zone</dt><dd>${escapeHtml(suggestedEntryText)}</dd></div><div><dt>Recommended Stop Loss</dt><dd>${escapeHtml(positionPrice(row.stop, currency))}</dd></div><div><dt>Target 1</dt><dd>${escapeHtml(positionPrice(row.actionable_otoco ? row.target_1 : null, currency))}</dd></div><div><dt>Target 2</dt><dd>${escapeHtml(positionPrice(row.actionable_otoco ? row.target_2 : null, currency))}</dd></div>${!row.actionable_otoco && row.reference_resistance !== null ? `<div><dt>Reference Resistance</dt><dd>${escapeHtml(positionPrice(row.reference_resistance, currency))}</dd></div>` : ""}<div><dt>Max Loss $</dt><dd>${escapeHtml(positionDollars(row.actionable_otoco ? row.max_loss : null, currency))}</dd></div><div><dt>Potential Profit $</dt><dd>${row.actionable_otoco ? `${escapeHtml(positionDollars(row.potential_profit_1, currency))} at Target 1${row.potential_profit_2 === null ? "" : `<br>${escapeHtml(positionDollars(row.potential_profit_2, currency))} at Target 2`}` : "Unavailable — OTOCO is not ready"}</dd></div><div><dt>Risk / Reward</dt><dd>${escapeHtml(row.actionable_otoco && row.risk_reward !== null ? `1 : ${row.risk_reward.toFixed(2)}` : "Unavailable — OTOCO is not ready")}</dd></div><div><dt>Entry Stage</dt><dd>${escapeHtml(row.entry_stage)}</dd></div><div><dt>Action</dt><dd><strong>${escapeHtml(row.action)}</strong></dd></div><div><dt>Order Status</dt><dd>${escapeHtml(row.order_status)}</dd></div></dl></section>
@@ -1721,7 +1729,7 @@ function renderPositionCard(row) {
   const gainClass = row.gain_loss_pct > 0 ? "position-gain" : row.gain_loss_pct < 0 ? "position-loss" : "";
   const targetRows = row.targets.targets.map((target) => `<li><strong>${escapeHtml(target.label)}:</strong> ${escapeHtml(positionPrice(target.price, currency))}${target.gain_pct === null ? "" : ` · ${escapeHtml(formatChange(target.gain_pct))} from buy`}<br><small>${escapeHtml(target.basis)}</small></li>`).join("");
   const sources = positionSourceNames(row.strategy_sources).join(" + ");
-  return `<details class="position-card"><summary class="position-summary"><span class="position-company"><strong>${tickerLink(row.ticker)} · ${escapeHtml(row.company)}</strong><small>${escapeHtml(sources)}</small></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.snapshot.current_price, currency))}</strong></span><span><small>Buy Price</small><strong>${escapeHtml(positionPrice(row.buy_price, currency))}</strong></span><span><small>Gain / Loss</small><strong class="${gainClass}">${escapeHtml(row.gain_loss_pct === null ? "Unavailable" : formatChange(row.gain_loss_pct))}</strong></span><span><small>Action</small><strong class="position-status position-status-${classKey(row.status)}">${escapeHtml(row.status)}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
+  return `<details class="position-card"><summary class="position-summary"><span class="position-company"><strong>${tickerPriceMarkup(row.ticker, row.snapshot)}</strong><small>${escapeHtml(row.company)} · ${escapeHtml(sources)}</small></span><span><small>Current Price</small><strong>${escapeHtml(positionPrice(row.snapshot.current_price, currency))}</strong></span><span><small>Buy Price</small><strong>${escapeHtml(positionPrice(row.buy_price, currency))}</strong></span><span><small>Gain / Loss</small><strong class="${gainClass}">${escapeHtml(row.gain_loss_pct === null ? "Unavailable" : formatChange(row.gain_loss_pct))}</strong></span><span><small>Action</small><strong class="position-status position-status-${classKey(row.status)}">${escapeHtml(row.status)}</strong></span><span class="opportunity-expand" aria-hidden="true"></span></summary>
     <div class="position-detail"><section class="position-commentary"><h4>Position Commentary</h4><p><strong>Current trend:</strong> ${escapeHtml(row.commentary.trend)}</p><p><strong>Relative to buy price:</strong> ${escapeHtml(row.commentary.relative_to_buy)}</p><p><strong>Technical structure:</strong> ${escapeHtml(row.commentary.structure)}</p><p><strong>Support / resistance / averages:</strong> ${escapeHtml(row.commentary.support_resistance)}</p><p><strong>Momentum:</strong> ${escapeHtml(row.commentary.momentum)}</p><p><strong>Volume confirmation:</strong> ${escapeHtml(row.commentary.volume)}</p><p><strong>Accumulation / distribution:</strong> ${escapeHtml(row.commentary.accumulation)}</p><p><strong>Original thesis:</strong> ${escapeHtml(row.commentary.thesis)}</p><p><strong>Extension:</strong> ${escapeHtml(row.commentary.extension)}</p><p><strong>Risk:</strong> ${escapeHtml(row.commentary.risk)}</p></section>
     <dl class="position-metrics"><div><dt>Current Price</dt><dd>${escapeHtml(positionPrice(row.snapshot.current_price, currency))}</dd></div><div><dt>Average Buy Price</dt><dd>${escapeHtml(positionPrice(row.buy_price, currency))}</dd></div><div><dt>Shares</dt><dd>${escapeHtml(row.shares === null ? "Not entered" : row.shares)}</dd></div><div><dt>Purchase Date</dt><dd>${escapeHtml(row.purchase_date)}</dd></div><div><dt>Days Held</dt><dd>${escapeHtml(row.days_held === null ? "Unavailable" : row.days_held)}</dd></div><div><dt>Position Cost</dt><dd>${escapeHtml(positionDollars(row.cost, currency))}</dd></div><div><dt>Current Market Value</dt><dd>${escapeHtml(positionDollars(row.market_value, currency))}</dd></div><div><dt>Unrealized Gain/Loss $</dt><dd class="${gainClass}">${escapeHtml(positionDollars(row.gain_loss, currency))}</dd></div><div><dt>Unrealized Gain/Loss %</dt><dd class="${gainClass}">${escapeHtml(row.gain_loss_pct === null ? "Unavailable" : formatChange(row.gain_loss_pct))}</dd></div><div><dt>Strategy Source</dt><dd>${escapeHtml(sources)}</dd></div><div><dt>Action</dt><dd>${escapeHtml(row.status)}</dd></div></dl>
     <dl class="position-analysis-grid"><div><dt>MA20 / MA50</dt><dd>${escapeHtml(positionPrice(row.technical.ma20, currency))} / ${escapeHtml(positionPrice(row.technical.ma50, currency))}</dd></div><div><dt>Support</dt><dd>${escapeHtml(positionPrice(row.technical.support, currency))}</dd></div><div><dt>Resistance</dt><dd>${escapeHtml(positionPrice(row.technical.resistance, currency))}</dd></div><div><dt>Technical Structure</dt><dd>${escapeHtml(row.technical.chart_pattern)}</dd></div><div><dt>Momentum</dt><dd>${escapeHtml(row.commentary.momentum)}</dd></div><div><dt>Volume Confirmation</dt><dd>${escapeHtml(row.technical.volume_confirmation)}</dd></div><div><dt>Accumulation / Distribution</dt><dd>${escapeHtml(row.technical.accumulation_signal)}</dd></div><div><dt>Thesis Status</dt><dd>${escapeHtml(row.evidence.thesis_status)}</dd></div></dl>
@@ -1905,13 +1913,6 @@ function removeWatchlistItem(ticker) {
 document.addEventListener("click", (event) => {
   const tickerAnchor = event.target.closest("a.ticker-link");
   if (tickerAnchor) {
-    const highConvictionCard = tickerAnchor.closest("[data-high-conviction-analysis-card]");
-    if (highConvictionCard && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-      event.preventDefault();
-      event.stopPropagation();
-      highConvictionCard.open = true;
-      return;
-    }
     event.stopPropagation();
     return;
   }
