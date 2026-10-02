@@ -5724,6 +5724,9 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
                 "reasons": [], "trigger_types": [],
                 "trends": [], "source_events": [], "daily_return": daily_return,
                 "volume_vs_20d_average": volume_ratio,
+                "relative_strength_1m": relative_1m,
+                "relative_strength_3m": relative_3m,
+                "one_month_return": one_month_return,
             })
             trend = row.get("trend")
             if trend and trend not in alert["trends"]:
@@ -5738,17 +5741,85 @@ def build_ai_reacceleration_alerts(rows, market_data=None, limit=8):
     for alert in alerts.values():
         alert["reacceleration_signal"] = " ".join(alert["reasons"][:2])
 
-    priority = {"Significant new catalyst/news": 4, "Renewed earnings/order/backlog acceleration": 3,
-                "Abnormal price/volume acceleration": 3, "Technical breakout/reversal": 3,
-                "Improving relative strength": 2, "Constructive price/volume": 2}
+        triggers = set(alert["trigger_types"])
+        stage = alert.get("entry_stage") or "Unavailable"
+
+        # Re-Acceleration is deliberately scored as an independent monitoring
+        # surface. None of these values flow back into the Early Discovery rank.
+        technical_score = 15
+        if "Improving relative strength" in triggers:
+            technical_score += 25
+        if "Constructive price/volume" in triggers:
+            technical_score += 20
+        if "Technical breakout/reversal" in triggers:
+            technical_score += 25
+        if "Abnormal price/volume acceleration" in triggers:
+            technical_score += 15
+        technical_score += {"Bottoming": 8, "Reversal": 15, "Entry Zone": 13,
+                            "Breakout": 10, "Falling": -15, "Extended": -10}.get(stage, 0)
+        technical_score = max(0, min(100, technical_score))
+
+        validated = bool((alert.get("catalyst_validation") or {}).get("valid"))
+        catalyst_score = 15
+        if validated:
+            catalyst_score = 65
+            if "Significant new catalyst/news" in triggers:
+                catalyst_score += 20
+            if "Renewed earnings/order/backlog acceleration" in triggers:
+                catalyst_score += 15
+        catalyst_score = min(100, catalyst_score)
+
+        entry_score = {"Reversal": 92, "Entry Zone": 90, "Bottoming": 68,
+                       "Breakout": 75, "Falling": 20, "Extended": 10}.get(stage, 35)
+        discovery = str(alert.get("price_discovery_stage") or "Missing").lower()
+        priced_in = str(alert.get("already_priced_in") or "Missing").lower()
+        if "early" in discovery:
+            discovery_score = 95
+        elif "emerg" in discovery:
+            discovery_score = 85
+        elif "re-rating" in discovery or "rerating" in discovery:
+            discovery_score = 65
+        elif "already ran" in discovery:
+            discovery_score = 15
+        else:
+            discovery_score = 50
+        if priced_in in ("no", "not yet", "not yet priced in"):
+            discovery_score = min(100, discovery_score + 5)
+        elif priced_in in ("yes", "fully priced in"):
+            discovery_score = max(0, discovery_score - 20)
+
+        weighted = (technical_score * .40 + catalyst_score * .25 +
+                    entry_score * .20 + discovery_score * .15)
+        penalties = []
+        if stage == "Extended":
+            penalties.append({"reason": "Extended / already ran", "points": 15})
+        if stage == "Falling":
+            penalties.append({"reason": "Deteriorating technicals", "points": 12})
+        if not validated:
+            penalties.append({"reason": "Theme-only / unverified catalyst", "points": 8})
+        if "already ran" in discovery or priced_in in ("yes", "fully priced in"):
+            penalties.append({"reason": "Move appears fully priced in", "points": 10})
+        final_score = round(max(0, min(100, weighted - sum(item["points"] for item in penalties))))
+        alert["reacceleration_score"] = final_score
+        alert["score_components"] = {
+            "technical_reacceleration": {"score": technical_score, "weight": 40},
+            "fundamental_catalyst_support": {"score": catalyst_score, "weight": 25},
+            "entry_quality": {"score": entry_score, "weight": 20},
+            "price_discovery": {"score": discovery_score, "weight": 15},
+        }
+        alert["score_penalties"] = penalties
+
     ordered = sorted(alerts.values(), key=lambda item: (
-        -sum(priority.get(trigger, 0) for trigger in item["trigger_types"]),
+        -item["reacceleration_score"],
         -(item.get("daily_return") if item.get("daily_return") is not None else -999), item["ticker"]))
+    for rank, alert in enumerate(ordered, 1):
+        alert["reacceleration_rank"] = rank
     return {
         "alerts": ordered[:limit], "alert_count": len(ordered),
         "methodology": {
             "scope": "Secondary alert surface for previously identified public AI beneficiaries.",
             "selection_boundary": "Alerts do not alter, promote into, or rescore the main Early Discovery ranking.",
+            "ranking": "Re-Acceleration Score ranks this secondary surface only: Technical Re-Acceleration 40%, Fundamental/Catalyst Support 25%, Entry Quality 20%, and Price Discovery 15%, followed by explicit risk penalties.",
             "news_trigger": "Ticker-identity-matched confirming evidence aged 0–7 days, Importance Score of at least 80, a credible event type, and a source link.",
             "price_volume_trigger": "Daily gain of at least 4% with volume at least 1.5 times the 20-day average.",
             "commercial_trigger": "Fresh company-linked evidence referencing earnings, orders, backlog, revenue, bookings, or guidance.",

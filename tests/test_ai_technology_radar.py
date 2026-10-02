@@ -81,6 +81,52 @@ class AiTechnologyRadarTests(unittest.TestCase):
         self.assertIn("Technical breakout/reversal", alert["trigger_types"])
         self.assertEqual(alert["source_events"][0]["matched_ticker"], "KNOWN")
         self.assertIn("Orders and backlog accelerated", alert["reacceleration_signal"])
+        self.assertEqual(alert["reacceleration_rank"], 1)
+        self.assertGreaterEqual(alert["reacceleration_score"], 0)
+        self.assertLessEqual(alert["reacceleration_score"], 100)
+        self.assertEqual(alert["score_components"]["technical_reacceleration"]["weight"], 40)
+        self.assertEqual(alert["score_components"]["fundamental_catalyst_support"]["weight"], 25)
+        self.assertEqual(alert["score_components"]["entry_quality"]["weight"], 20)
+        self.assertEqual(alert["score_components"]["price_discovery"]["weight"], 15)
+        self.assertEqual(rows, original)
+
+    def test_reacceleration_score_ranks_secondary_alerts_without_changing_early_rank(self):
+        def company_event(ticker, company, event_id):
+            return {
+                **evidence(event_id), "age_band": "Fresh", "signal": "confirming",
+                "company": company, "ticker": ticker, "related_tickers": [],
+                "company_identities": [{"company": company, "ticker": ticker,
+                                        "exchange": "", "listing_status": "Public"}],
+                "new_information": "Revenue, orders, and backlog growth accelerated after customer expansion.",
+            }
+
+        rows = [{"trend": "Compute", "confirming_evidence": [
+            company_event("EARLY", "Early Recovery", "early-event"),
+            company_event("RAN", "Already Ran", "ran-event"),
+        ], "beneficiary_records": [
+            {"company": "Early Recovery", "ticker": "EARLY", "listing_status": "Public",
+             "evidence_ids": ["early-event"], "price_discovery_stage": "Early Discovery",
+             "already_priced_in": "NO", "radar_rank_score": 20},
+            {"company": "Already Ran", "ticker": "RAN", "listing_status": "Public",
+             "evidence_ids": ["ran-event"], "price_discovery_stage": "Already Ran",
+             "already_priced_in": "YES", "radar_rank_score": 99},
+        ]}]
+        market = {"securities": {
+            "EARLY": {"current_price": 30, "data_status": "current",
+                      "returns": {"daily": 2, "one_month": 8}, "volume_vs_20d_average": 1.3,
+                      "moving_averages": {"ma20": 28}, "macd": {"crossover": "bullish"},
+                      "relative_strength": {"qqq": {"one_month": 6, "three_month": -2}},
+                      "entry_inputs": {"up_down_volume_ratio_20d": 1.2},
+                      "watchlist_entry_readiness": {"ai": {"state_key": "near-buy-zone"}}},
+            "RAN": {"current_price": 90, "data_status": "current", "returns": {},
+                    "relative_strength": {"qqq": {}}, "moving_averages": {}, "macd": {},
+                    "entry_inputs": {}, "watchlist_entry_readiness": {"ai": {"state_key": "extended"}}},
+        }}
+        original = deepcopy(rows)
+        result = build_ai_reacceleration_alerts(rows, market)
+        self.assertEqual([item["ticker"] for item in result["alerts"]], ["EARLY", "RAN"])
+        self.assertGreater(result["alerts"][0]["reacceleration_score"], result["alerts"][1]["reacceleration_score"])
+        self.assertIn("Move appears fully priced in", [item["reason"] for item in result["alerts"][1]["score_penalties"]])
         self.assertEqual(rows, original)
 
     def test_reacceleration_does_not_inherit_unlinked_category_news(self):

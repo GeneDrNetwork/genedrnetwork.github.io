@@ -79,6 +79,12 @@ class AiRadarStockLayoutTests(unittest.TestCase):
         self.assertIn('id="ai-reacceleration-alerts"', page)
         self.assertIn("function renderAiReaccelerationAlerts", script)
         self.assertIn("data.radar.ai_reacceleration_alerts", script)
+        self.assertIn('class="reacceleration-columns"', script)
+        self.assertIn("alert.reacceleration_rank", script)
+        self.assertIn("alert.reacceleration_score", script)
+        self.assertIn("<details class=\"reacceleration-card\">", script)
+        for label in ("Rank", "Ticker / Price", "Score", "Signal", "Entry Stage", "Catalyst", "Price Discovery", "Action"):
+            self.assertIn(label, script)
         self.assertLess(page.index('id="ai-reacceleration-alerts"'), page.index('id="ai-radar"'))
 
 

@@ -29,8 +29,9 @@ def market_snapshot(kind="base"):
         "entry_inputs": {
             "base_duration_sessions": 63, "base_range_pct": 15,
             "tight_range_20d_pct": 8, "volume_contraction_ratio": .8,
-            "higher_low_confirmed": True, "resistance_level": 100,
-            "breakout_proximity_pct": 2, "breakout_volume_ratio": 1.5,
+            "higher_low_confirmed": True, "resistance_level": 115,
+            "breakout_proximity_pct": -11.3, "breakout_volume_ratio": 1.0,
+            "short_term_high_10d": 100,
             "short_term_high_reclaimed": True, "failed_breakout": False,
             "ma20_slope_10d_pct": 2, "ma50_slope_20d_pct": 1,
             "up_down_volume_ratio_20d": 1.4, "recent_low_63d": 90,
@@ -87,10 +88,11 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(diagnostics["initial_screen_pass"], 2)
         self.assertIn("No Radar", diagnostics["technical_history_funnel"])
 
-    def test_strategy_a_requires_complete_right_side_breakout(self):
+    def test_strategy_a_enters_on_confirmed_early_right_side_without_major_breakout(self):
         result = assess_long_base_breakout(market_snapshot(), biotech=False)
         self.assertTrue(result["candidate_qualified"])
         self.assertTrue(result["actionable"])
+        self.assertEqual(result["stage"], "Early Right-Side")
         self.assertEqual(result["limit_buy"], 100.2)
         weak = market_snapshot()
         weak["entry_inputs"]["higher_low_confirmed"] = False
@@ -98,14 +100,53 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertFalse(weak_result["actionable"])
         self.assertIn("higher low", weak_result["failed_gates"])
 
-    def test_strategy_a_rejects_extended_and_unconfirmed_breakout(self):
+    def test_strategy_a_rejects_extended_but_does_not_require_breakout_volume(self):
         extended = market_snapshot()
         extended["current_price"] = 121
         extended["entry_inputs"]["breakout_proximity_pct"] = 21
         self.assertFalse(assess_long_base_breakout(extended)["actionable"])
         unconfirmed = market_snapshot()
-        unconfirmed["entry_inputs"]["breakout_volume_ratio"] = 1.0
-        self.assertFalse(assess_long_base_breakout(unconfirmed)["actionable"])
+        unconfirmed["entry_inputs"]["breakout_volume_ratio"] = .7
+        self.assertTrue(assess_long_base_breakout(unconfirmed)["actionable"])
+
+    def test_strategy_a_stage_progression_and_early_stage_rank_priority(self):
+        early = assess_long_base_breakout(market_snapshot())
+        bottom = market_snapshot()
+        bottom["entry_inputs"]["higher_low_confirmed"] = False
+        bottom["entry_inputs"]["short_term_high_reclaimed"] = False
+        bottom["macd"] = {"histogram": -.1, "improving": False, "crossover": None}
+        bottom_result = assess_long_base_breakout(bottom)
+        ready = market_snapshot()
+        ready["entry_inputs"]["breakout_proximity_pct"] = -2
+        ready_result = assess_long_base_breakout(ready)
+        breakout = market_snapshot()
+        breakout["entry_inputs"]["breakout_proximity_pct"] = 1
+        breakout["entry_inputs"]["breakout_volume_ratio"] = 1.5
+        breakout_result = assess_long_base_breakout(breakout)
+        self.assertEqual(bottom_result["stage"], "Bottoming")
+        self.assertEqual(ready_result["stage"], "Breakout Ready")
+        self.assertEqual(breakout_result["stage"], "Breakout")
+        self.assertGreater(early["score"], bottom_result["score"])
+        self.assertGreater(bottom_result["score"], ready_result["score"])
+        self.assertGreater(ready_result["score"], breakout_result["score"])
+
+    def test_strategy_a_rejects_one_day_bounce_and_persistent_downtrend(self):
+        bounce = market_snapshot()
+        bounce["returns"]["daily"] = 10
+        bounce["entry_inputs"]["short_term_high_reclaimed"] = False
+        bounce["macd"]["crossover"] = None
+        self.assertFalse(assess_long_base_breakout(bounce)["actionable"])
+        falling = market_snapshot()
+        falling["current_price"] = 92
+        falling["moving_averages"].update({"ma20": 96, "ma50": 100})
+        falling["entry_inputs"].update({"higher_low_confirmed": False,
+                                         "short_term_high_reclaimed": False,
+                                         "ma20_slope_10d_pct": -2,
+                                         "ma50_slope_20d_pct": -2})
+        falling["macd"] = {"histogram": -.5, "improving": False, "crossover": None}
+        result = assess_long_base_breakout(falling)
+        self.assertEqual(result["stage"], "Falling")
+        self.assertFalse(result["candidate_qualified"])
 
     def test_strategy_b_requires_new_continuation_not_gap_day_chase(self):
         result = assess_gap_continuation(market_snapshot("gap"))
@@ -287,7 +328,9 @@ class SwingTradeEngineTests(unittest.TestCase):
         page = (root / "programs" / "genedrnews.html").read_text()
         for label in ("Biotech Swing", "Non-Biotech Swing", "Strategy A", "Strategy B",
                       "Candidate Rank", "Pattern", "Trend", "Volume", "Entry Status",
-                      "BUY NOW / WAIT", "Why Not Now / Next Confirmation"):
+                      "BUY NOW / WAIT", "Why Not Now / Next Confirmation", "Stage",
+                      "Technical Pattern", "Support / Entry Zone", "Confirmation",
+                      "Catalyst / Fundamental Support", "Action"):
             self.assertIn(label, script)
         self.assertIn("Independent full-market short-term execution", page)
         self.assertIn("does not source candidates from Radar or High Conviction", page)

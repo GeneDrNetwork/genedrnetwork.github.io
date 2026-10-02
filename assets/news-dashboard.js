@@ -550,17 +550,42 @@ function renderAiReaccelerationAlerts(section = {}) {
   const alerts = Array.isArray(section.alerts) ? section.alerts : [];
   const target = document.getElementById("ai-reacceleration-alerts");
   if (!target) return;
-  target.innerHTML = alerts.map((alert) => {
+  const rows = alerts.map((alert) => {
     const market = { current_price: alert.current_price, currency: alert.currency };
     const signal = alert.reacceleration_signal || (Array.isArray(alert.reasons) ? alert.reasons[0] : null) || "Alert reason unavailable.";
+    const signalLabel = Array.isArray(alert.trigger_types) && alert.trigger_types.length ? alert.trigger_types.slice(0, 2).join(" + ") : "Re-Acceleration";
     const action = hasValidCompanyCatalyst(alert) ? (alert.action || "WATCH") : "WATCH / WAIT FOR VALID CATALYST";
-    return `<article class="reacceleration-card">
-      <div class="reacceleration-identity"><strong>${tickerPriceMarkup(alert.ticker, market)}</strong><small>${escapeHtml(alert.company || "Company missing")}</small></div>
-      <div class="reacceleration-reason"><strong>Re-Acceleration Signal</strong><p>${escapeHtml(signal)}</p></div>
-      <div class="reacceleration-stage"><small>Entry Stage</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(alert.entry_stage || "Unavailable")}</b><small>Catalyst</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(catalystStatus(alert))}</b><small>Action</small><b class="radar-stage-pill entry-${classKey(alert.entry_stage)}">${escapeHtml(action)}</b></div>
-      <div class="reacceleration-context"><small>Price Discovery</small><span>${escapeHtml(alert.price_discovery_stage || "Missing")} · Priced In ${escapeHtml(alert.already_priced_in || "Missing")}</span></div>
-    </article>`;
-  }).join("") || `<p class="loading-state">No known AI beneficiary currently meets a re-acceleration trigger.</p>`;
+    const catalyst = hasValidCompanyCatalyst(alert) ? "Verified" : "Theme only";
+    const components = alert.score_components || {};
+    const componentText = [
+      ["Technical Re-Acceleration", components.technical_reacceleration, 40],
+      ["Fundamental / Catalyst Support", components.fundamental_catalyst_support, 25],
+      ["Entry Quality", components.entry_quality, 20],
+      ["Price Discovery", components.price_discovery, 15],
+    ].map(([label, item, weight]) => `${label}: ${item?.score ?? "N/A"}/100 × ${item?.weight ?? weight}%`).join(" · ");
+    const penalties = Array.isArray(alert.score_penalties) && alert.score_penalties.length
+      ? alert.score_penalties.map((item) => `${item.reason} −${item.points}`).join(" · ") : "None";
+    return `<details class="reacceleration-card">
+      <summary>
+        <span class="reacceleration-rank">#${escapeHtml(alert.reacceleration_rank ?? "—")}</span>
+        <span class="reacceleration-identity"><strong>${tickerPriceMarkup(alert.ticker, market)}</strong><small>${escapeHtml(alert.company || "Company missing")}</small></span>
+        <span class="reacceleration-score"><strong>${escapeHtml(alert.reacceleration_score ?? "N/A")}</strong><small>/100</small></span>
+        <span><b class="reacceleration-badge">${escapeHtml(signalLabel)}</b></span>
+        <span><b class="reacceleration-badge entry-${classKey(alert.entry_stage)}">${escapeHtml(alert.entry_stage || "Unavailable")}</b></span>
+        <span><b class="reacceleration-badge catalyst-${classKey(catalyst)}">${escapeHtml(catalyst)}</b></span>
+        <span class="reacceleration-context">${escapeHtml(alert.price_discovery_stage || "Missing")}<small>Priced In ${escapeHtml(alert.already_priced_in || "Missing")}</small></span>
+        <span><b class="reacceleration-badge action-${classKey(action)}">${escapeHtml(action)}</b></span>
+        <span class="expand-control" aria-hidden="true">+</span>
+      </summary>
+      <div class="reacceleration-detail">
+        <div><strong>Re-Acceleration Signal</strong><p>${escapeHtml(signal)}</p></div>
+        <div><strong>Score Breakdown</strong><p>${escapeHtml(componentText)}</p></div>
+        <div><strong>Penalties</strong><p>${escapeHtml(penalties)}</p></div>
+        <div><strong>Catalyst Evidence</strong><p>${escapeHtml(alert.company_specific_catalyst || alert.industry_theme_catalyst || "No catalyst evidence available.")}</p></div>
+      </div>
+    </details>`;
+  }).join("");
+  target.innerHTML = rows ? `<div class="reacceleration-columns" aria-hidden="true"><span>Rank</span><span>Ticker / Price</span><span>Score</span><span>Signal</span><span>Entry Stage</span><span>Catalyst</span><span>Price Discovery</span><span>Action</span><span></span></div>${rows}` : `<p class="loading-state">No known AI beneficiary currently meets a re-acceleration trigger.</p>`;
 }
 
 function safeSourceUrl(value) {
@@ -1101,13 +1126,17 @@ function renderSwingTrades(section = {}) {
         ? `Limit ${money(row.limit_buy, market.currency)} · stop ${money(row.stop_price, market.currency)} · full exit ${money(row.full_exit_price, market.currency)}`
         : `Reference ${money(row.entry_reference, market.currency)} · invalidation ${money(row.invalidation, market.currency)} · R/R ${row.reward_risk ?? "N/A"}`;
       const catalystText = row.forward_catalyst || (strategyKey === "Strategy A" ? "Optional / not verified" : "Required / not verified");
+      if (strategyKey === "Strategy A") return `<tr data-swing-row data-ticker="${escapeHtml(row.ticker)}"><td><strong>${escapeHtml(row.stage || "Missing")}</strong><small>#${escapeHtml(row.candidate_rank ?? row.rank)} · ${tickerPriceMarkup(row.ticker, market)}</small></td><td><strong>${escapeHtml(row.technical_pattern || row.pattern || "Missing")}</strong><small>${escapeHtml(row.trend || "Missing")}</small></td><td><strong>${escapeHtml(row.support_entry_zone || "N/A")}</strong><small>Entry ${money(row.entry_reference, market.currency)} · invalidation ${money(row.invalidation, market.currency)} · major resistance ${money(row.major_resistance, market.currency)}</small></td><td><strong>${escapeHtml(row.confirmation || "Missing")}</strong><small>${escapeHtml(row.why_not_now || "Missing")}</small><small>Next: ${escapeHtml(row.next_confirmation || "Missing")}</small></td><td><strong>${escapeHtml(catalystText)}</strong>${sourceUrl ? `<small><a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Source</a></small>` : ""}</td><td><span class="swing-action swing-action-${classKey(row.action)}">${escapeHtml(row.action || "WAIT")}</span>${row.action === "BUY NOW" ? `<small>${escapeHtml(execution)}</small>` : ""}</td></tr>`;
       return `<tr data-swing-row data-ticker="${escapeHtml(row.ticker)}"><td><strong>#${escapeHtml(row.candidate_rank ?? row.rank)}</strong><small>${tickerPriceMarkup(row.ticker, market)}</small></td><td>${escapeHtml(row.pattern || "Missing")}</td><td>${escapeHtml(row.trend || "Missing")}</td><td>${escapeHtml(row.volume || "Missing")}</td><td><strong>${escapeHtml(row.entry_status || "WAIT")}</strong><small>${escapeHtml(execution)}</small></td><td><span class="swing-action swing-action-${classKey(row.action)}">${escapeHtml(row.action || "WAIT")}</span></td><td><strong>${escapeHtml(row.why_not_now || "Missing")}</strong><small>${escapeHtml(row.next_confirmation || "Missing")}</small><small>Catalyst: ${escapeHtml(catalystText)}${sourceUrl ? ` · <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Source</a>` : ""}</small></td></tr>`;
     }).join("");
-    return `<div class="swing-table-wrap"><table class="swing-buy-table"><caption><span class="decision-action-label">Candidate Pool</span> ${escapeHtml(group.candidate_count ?? rows.length)} qualified · ${escapeHtml(group.buy_now_count ?? 0)} BUY NOW · displaying Top ${escapeHtml(rows.length)}</caption><thead><tr><th>Candidate Rank</th><th>Pattern</th><th>Trend</th><th>Volume</th><th>Entry Status</th><th>BUY NOW / WAIT</th><th>Why Not Now / Next Confirmation</th></tr></thead><tbody>${body}</tbody></table></div>`;
+    const headings = strategyKey === "Strategy A"
+      ? "<th>Stage</th><th>Technical Pattern</th><th>Support / Entry Zone</th><th>Confirmation</th><th>Catalyst / Fundamental Support</th><th>Action</th>"
+      : "<th>Candidate Rank</th><th>Pattern</th><th>Trend</th><th>Volume</th><th>Entry Status</th><th>BUY NOW / WAIT</th><th>Why Not Now / Next Confirmation</th>";
+    return `<div class="swing-table-wrap"><table class="swing-buy-table"><caption><span class="decision-action-label">Candidate Pool</span> ${escapeHtml(group.candidate_count ?? rows.length)} qualified · ${escapeHtml(group.buy_now_count ?? 0)} BUY NOW · displaying Top ${escapeHtml(rows.length)}</caption><thead><tr>${headings}</tr></thead><tbody>${body}</tbody></table></div>`;
   };
   const pool = (key, title) => {
     const group = section.pools?.[key] || {};
-    return `<section class="swing-pool"><div class="subsection-title"><span class="radar-icon${key === "biotech" ? " radar-icon-bio" : ""}" aria-hidden="true">${key === "biotech" ? "BIO" : "US"}</span><div><h3>${escapeHtml(title)}</h3><p>Strategy A catalyst optional · Strategy B verified company catalyst required for BUY NOW</p></div></div><section class="swing-strategy"><h4>Strategy A · Long-Base Right-Side Breakout</h4>${renderTable(group.strategy_a, key, "Strategy A")}</section><section class="swing-strategy"><h4>Strategy B · Catalyst Gap-Up Continuation</h4>${renderTable(group.strategy_b, key, "Strategy B")}</section></section>`;
+    return `<section class="swing-pool"><div class="subsection-title"><span class="radar-icon${key === "biotech" ? " radar-icon-bio" : ""}" aria-hidden="true">${key === "biotech" ? "BIO" : "US"}</span><div><h3>${escapeHtml(title)}</h3><p>Strategy A catalyst optional · Strategy B verified company catalyst required for BUY NOW</p></div></div><section class="swing-strategy"><h4>Strategy A · Bottoming / Early Right-Side Reversal</h4>${renderTable(group.strategy_a, key, "Strategy A")}</section><section class="swing-strategy"><h4>Strategy B · Catalyst Gap-Up Continuation</h4>${renderTable(group.strategy_b, key, "Strategy B")}</section></section>`;
   };
   document.getElementById("swing-opportunities").innerHTML = pool("biotech", "Biotech Swing") + pool("non_biotech", "Non-Biotech Swing");
 }
