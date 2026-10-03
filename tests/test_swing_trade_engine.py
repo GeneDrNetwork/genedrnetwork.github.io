@@ -33,12 +33,13 @@ def market_snapshot(kind="base"):
             "tight_range_20d_pct": 8, "volume_contraction_ratio": .8,
             "higher_low_confirmed": True, "resistance_level": 115,
             "breakout_proximity_pct": -11.3, "breakout_volume_ratio": 1.0,
-            "short_term_high_10d": 100,
+            "short_term_high_10d": 102,
             "short_term_high_reclaimed": True, "failed_breakout": False,
             "ma20_slope_10d_pct": 2, "ma50_slope_20d_pct": 1,
             "up_down_volume_ratio_20d": 1.4, "recent_low_63d": 90,
             "distance_from_recent_low_pct": 13, "range_zone_transitions_63d": 3,
             "invalidation_level": 95,
+            "fifty_two_week_low": 90, "fifty_two_week_high": 160,
             "gap_up_continuation": {"detected": False},
         },
     }
@@ -48,12 +49,13 @@ def market_snapshot(kind="base"):
         snapshot["entry_inputs"].update({
             "base_duration_sessions": None, "base_range_pct": None,
             "resistance_level": 54, "breakout_proximity_pct": 1.85,
+            "fifty_two_week_low": 46, "fifty_two_week_high": 80,
             "gap_up_continuation": {
                 "detected": True, "event_date": "2026-09-12", "days_since_gap": 4,
                 "gap_pct": 20, "gap_open": 48, "gap_high": 52, "gap_low": 47,
                 "gap_close": 51.5, "gap_close_position": .9, "gap_volume_ratio": 2.8,
                 "gap_midpoint": 49.5, "post_gap_high": 55.5, "post_gap_low": 48,
-                "continuation_pivot": 54, "post_gap_consolidation_range_pct": 8,
+                "continuation_pivot": 55, "post_gap_consolidation_range_pct": 8,
                 "held_gap_support": True, "follow_through_sessions": 4,
             },
         })
@@ -130,7 +132,7 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertTrue(result["candidate_qualified"])
         self.assertTrue(result["actionable"])
         self.assertEqual(result["stage"], "Early Right-Side")
-        self.assertEqual(result["limit_buy"], 100.2)
+        self.assertEqual(result["limit_buy"], 102.2)
         weak = market_snapshot()
         weak["entry_inputs"]["higher_low_confirmed"] = False
         weak_result = assess_long_base_breakout(weak, biotech=False)
@@ -311,6 +313,71 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(row["action"], "BUY NOW")
         self.assertIn("not verified", row["forward_catalyst"].lower())
 
+    def test_swing_52_week_position_is_context_not_a_buy_gate(self):
+        snapshot = market_snapshot()
+        snapshot["entry_inputs"].update({"fifty_two_week_low": 50,
+                                          "fifty_two_week_high": 105})
+        result = build_swing_trade_engine(
+            [company("EGBN")], {"securities": {"EGBN": snapshot}})
+        row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        self.assertEqual(row["action"], "BUY NOW")
+        self.assertEqual(row["pct_above_52_week_low"], 104.0)
+        self.assertEqual(row["pct_below_52_week_high"], 2.86)
+        self.assertEqual(row["support_pivot_level"], 102)
+        self.assertEqual(row["pct_above_support_pivot"], 0)
+
+    def test_swing_material_extension_from_nearest_entry_level_is_do_not_chase(self):
+        snapshot = market_snapshot()
+        snapshot["moving_averages"].update({"ma20": 94, "ma50": 93})
+        snapshot["entry_inputs"]["short_term_high_10d"] = 96
+        result = build_swing_trade_engine(
+            [company("EXT")], {"securities": {"EXT": snapshot}})
+        row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        self.assertEqual(row["action"], "DO NOT CHASE — Extended: +6.2% above pivot")
+        self.assertEqual(row["support_pivot_level"], 96)
+        self.assertEqual(row["pct_above_support_pivot"], 6.25)
+
+    def test_fresh_volume_confirmed_strategy_a_breakout_can_be_buy_now(self):
+        snapshot = market_snapshot()
+        snapshot["current_price"] = 101.1
+        snapshot["entry_inputs"].update({
+            "resistance_level": 101, "breakout_proximity_pct": 1,
+            "breakout_volume_ratio": 1.5, "short_term_high_10d": 100,
+            "recent_breakout_attempt": True, "breakout_age_sessions": 0,
+        })
+        result = build_swing_trade_engine(
+            [company("BREAK")], {"securities": {"BREAK": snapshot}})
+        row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        self.assertEqual(row["stage"], "Breakout")
+        self.assertEqual(row["action"], "BUY NOW")
+        self.assertTrue(row["fresh_breakout"])
+        self.assertEqual(row["breakout_age_sessions"], 0)
+        self.assertEqual(row["support_pivot_level"], 101)
+        self.assertEqual(row["limit_buy"], 101.2)
+
+        stale = market_snapshot()
+        stale["current_price"] = 101.1
+        stale["entry_inputs"].update({
+            "resistance_level": 101, "breakout_proximity_pct": 1,
+            "breakout_volume_ratio": 1.5, "short_term_high_10d": 100,
+            "recent_breakout_attempt": True, "breakout_age_sessions": 5,
+        })
+        stale_result = build_swing_trade_engine(
+            [company("STALE")], {"securities": {"STALE": stale}})
+        stale_row = stale_result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        self.assertEqual(stale_row["action"], "WAIT")
+        self.assertFalse(stale_row["fresh_breakout"])
+
+    def test_swing_limit_below_current_is_not_buy_now(self):
+        snapshot = market_snapshot()
+        snapshot["entry_inputs"]["short_term_high_10d"] = 100
+        result = build_swing_trade_engine(
+            [company("LIMIT")], {"securities": {"LIMIT": snapshot}})
+        row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        self.assertEqual(row["action"], "SET LIMIT $100.20 — wait for pullback")
+        self.assertEqual(row["limit_buy"], 100.2)
+        self.assertFalse(row["actionable"])
+
     def test_four_pool_strategy_outputs_and_price_based_execution_levels(self):
         candidates = [company("BIOA", True), company("BIOB", True),
                       company("NONA", False), company("NONB", False)]
@@ -340,6 +407,12 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(funnel["universe"], 4)
         self.assertEqual(funnel["data_liquidity"], 4)
         self.assertEqual(funnel["buy_now"], 4)
+        for pool in ("biotech", "non_biotech"):
+            for strategy in ("strategy_a", "strategy_b"):
+                for buy in result["pools"][pool][strategy]["buy_now"]:
+                    self.assertTrue(buy["near_support_or_pivot"] or buy["fresh_breakout"])
+                    self.assertLessEqual(buy["pct_above_support_pivot"], 5)
+                    self.assertGreaterEqual(buy["limit_buy"], buy["current_price"])
 
     def test_buy_now_is_displayed_first_without_changing_candidate_rank(self):
         rows = [{"ticker": f"WAIT{i}", "action": "WAIT", "candidate_rank": i}
@@ -389,6 +462,10 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertIn("diagnostic funnel", script)
         self.assertIn("no initial fixed stop", script)
         self.assertNotIn("row.stop_price", script)
+        self.assertIn("% above 52-wk low ·", script)
+        self.assertIn("% below 52-wk high", script)
+        self.assertIn("Support/Pivot", script)
+        self.assertIn("above level", script)
 
     def test_swing_renderer_closes_pool_builder_and_renders_zero_buy_groups(self):
         root = Path(__file__).resolve().parents[1]

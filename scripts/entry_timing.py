@@ -173,6 +173,14 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
     short_term_high = max(closes[-11:-1]) if len(closes) >= 11 else None
     short_term_high_reclaimed = bool(short_term_high is not None and current >= short_term_high)
     recent_breakout_attempt = bool(resistance and len(closes) >= 5 and max(closes[-5:]) > resistance)
+    consecutive_closes_above_resistance = 0
+    if resistance:
+        for close in reversed(closes[-5:]):
+            if close <= resistance:
+                break
+            consecutive_closes_above_resistance += 1
+    breakout_age_sessions = (consecutive_closes_above_resistance - 1
+                             if consecutive_closes_above_resistance else None)
     failed_breakout = bool(recent_breakout_attempt and resistance and current < resistance * .98)
     range_values = closes[-63:] if len(closes) >= 63 else closes[-42:] if len(closes) >= 42 else []
     range_transitions = None
@@ -210,7 +218,9 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
         "ma20_slope_10d_pct": ma20_slope, "ma50_slope_20d_pct": ma50_slope,
         "short_term_high_10d": round(short_term_high, 4) if short_term_high else None,
         "short_term_high_reclaimed": short_term_high_reclaimed,
-        "recent_breakout_attempt": recent_breakout_attempt, "failed_breakout": failed_breakout,
+        "recent_breakout_attempt": recent_breakout_attempt,
+        "breakout_age_sessions": breakout_age_sessions,
+        "failed_breakout": failed_breakout,
         "range_zone_transitions_63d": range_transitions,
         "invalidation_level": round(invalidation, 4) if invalidation else None,
         "macd_improving": macd_record.get("improving"), "macd_crossover": macd_record.get("crossover"),
@@ -224,6 +234,7 @@ def calculate_entry_inputs(rows, moving_averages, macd_record):
             "higher_low": "The trailing 20-session closing low must be at least 0.5% above the preceding 20-session closing low.",
             "ma_slopes": "MA20 compares with the equivalent 20-session average ending 10 sessions ago; MA50 compares with the equivalent average ending 20 sessions ago.",
             "failed_breakout": "A close more than 2% below prior resistance after any of the last five closes exceeded that resistance.",
+            "breakout_age": "Sessions since the first close in the current uninterrupted run above resistance, limited to the existing five-session recent-breakout window; current-session breakouts are age 0.",
             "range_transitions": "Counts alternating visits between the lower and upper quartiles of the trailing 63-session close range (42 sessions when 63 are unavailable).",
         },
     }
