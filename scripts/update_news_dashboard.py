@@ -36,8 +36,9 @@ try:
                                         select_growth_deep_analysis_universe,
                                         select_growth_market_universe)
     from .options_strategy import build_options_strategy
-    from .swing_trade import (assess_gap_continuation, build_swing_trade_engine,
-                              select_swing_market_universe, strategy_b_identity_terms)
+    from .swing_trade import (assess_gap_continuation, biotech_classification_needs_profile,
+                              build_swing_trade_engine, select_swing_market_universe,
+                              strategy_b_identity_terms)
     from .strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                      radar_base_breakout_setup)
 except ImportError:
@@ -55,8 +56,9 @@ except ImportError:
                                        select_growth_deep_analysis_universe,
                                        select_growth_market_universe)
     from options_strategy import build_options_strategy
-    from swing_trade import (assess_gap_continuation, build_swing_trade_engine,
-                             select_swing_market_universe, strategy_b_identity_terms)
+    from swing_trade import (assess_gap_continuation, biotech_classification_needs_profile,
+                             build_swing_trade_engine, select_swing_market_universe,
+                             strategy_b_identity_terms)
     from strategy_technical import (dynamic_alignment_score, high_conviction_continuation_setup,
                                     radar_base_breakout_setup)
 
@@ -1798,6 +1800,47 @@ def fetch_listed_company_universe(run_at, fetcher=fetch_nasdaq_json):
         print(f"Listed-company discovery universe unavailable: {exc}")
         return [], {"status": "unavailable", "source": NASDAQ_LISTED_COMPANY_URL,
                     "retrieved_at": run_at.isoformat(timespec="seconds"), "error": str(exc)}
+
+
+def enrich_ambiguous_biotech_profiles(listed_companies, run_at, fetcher=fetch_nasdaq_json):
+    """Resolve mixed Nasdaq biotech categories with company business evidence."""
+    ambiguous = [row for row in listed_companies or []
+                 if biotech_classification_needs_profile(row)]
+    enriched_by_ticker = {}
+    failures = []
+
+    def load(company):
+        ticker = company["ticker"]
+        data = fetcher(NASDAQ_COMPANY_PROFILE_URL.format(ticker=ticker), timeout=15) or {}
+        value = lambda key: ((data.get(key) or {}).get("value")
+                             if isinstance(data.get(key), dict) else data.get(key))
+        description = value("CompanyDescription")
+        if not description:
+            raise ValueError("Company description unavailable")
+        return {**company, "sector": value("Sector") or company.get("sector", ""),
+                "industry": value("Industry") or company.get("industry", ""),
+                "description": description,
+                "classification_evidence_source": "Nasdaq company profile",
+                "classification_evidence_date": run_at.isoformat(timespec="seconds")}
+
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        futures = {executor.submit(load, company): company for company in ambiguous}
+        for future in as_completed(futures):
+            company = futures[future]
+            try:
+                result = future.result()
+                enriched_by_ticker[result["ticker"]] = result
+            except Exception as exc:
+                failures.append({"ticker": company["ticker"], "reason": str(exc)})
+    rows = [enriched_by_ticker.get(row.get("ticker"), row) for row in listed_companies or []]
+    return rows, {
+        "ambiguous_profiles_requested": len(ambiguous),
+        "ambiguous_profiles_loaded": len(enriched_by_ticker),
+        "profile_failures": failures,
+        "policy": ("Mixed taxonomy requires company-description evidence of direct human-therapeutic "
+                   "development; consumer, distributor, CRO/service, diagnostics-only, instruments, "
+                   "and animal-health-only businesses remain outside Biotech."),
+    }
 
 
 US_COUNTRY_NAMES = {"US", "USA", "UNITED STATES", "UNITED STATES OF AMERICA"}
@@ -6067,6 +6110,9 @@ def build():
     previous_biotech_news = previous.get("top_investment_news", {}).get("biotech_healthcare", {})
     biotech_news_section = build_biotech_news_section(biotech_news_candidates, previous_biotech_news, run_at)
     listed_companies, listed_company_status = fetch_listed_company_universe(run_at)
+    listed_companies, biotech_classification_status = enrich_ambiguous_biotech_profiles(
+        listed_companies, run_at)
+    listed_company_status["biotech_classification_enrichment"] = biotech_classification_status
     profiled_companies, profile_discovery_status = fetch_ai_company_profiles(
         ai_news_section, listed_companies, run_at)
     listed_company_status["profile_enrichment"] = profile_discovery_status

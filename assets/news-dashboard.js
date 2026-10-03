@@ -1112,7 +1112,16 @@ function renderSwingTrades(section = {}) {
     "Strategy A never requires a catalyst. Strategy B ranks abnormal-volume gaps first, then requires a verified company catalyst and an actionable Day 1 or subsequent continuation entry for BUY NOW.",
   ];
   const takeaways = section.take_home_messages || [];
-  document.getElementById("swing-reasoning").innerHTML = reasoning.map((item) => `<p>${escapeHtml(item)}</p>`).join("") || `<p>No swing-trade strategy reasoning is available.</p>`;
+  const funnel = section.coverage?.diagnostic_funnel?.overall || {};
+  const funnelMarkup = funnel.universe === undefined ? "" : `<div class="swing-funnel" aria-label="Swing Trade diagnostic funnel">
+    <span><small>Universe</small><strong>${escapeHtml(funnel.universe)}</strong></span>
+    <i>→</i><span><small>Data / Liquidity</small><strong>${escapeHtml(funnel.data_liquidity ?? 0)}</strong></span>
+    <i>→</i><span><small>Technical</small><strong>${escapeHtml(funnel.technical ?? 0)}</strong></span>
+    <i>→</i><span><small>Fundamental / Catalyst</small><strong>${escapeHtml(funnel.fundamental_catalyst ?? 0)}</strong></span>
+    <i>→</i><span><small>Entry</small><strong>${escapeHtml(funnel.entry ?? 0)}</strong></span>
+    <i>→</i><span><small>BUY NOW</small><strong>${escapeHtml(funnel.buy_now ?? 0)}</strong></span>
+  </div>`;
+  document.getElementById("swing-reasoning").innerHTML = funnelMarkup + (reasoning.map((item) => `<p>${escapeHtml(item)}</p>`).join("") || `<p>No swing-trade strategy reasoning is available.</p>`);
   document.getElementById("swing-takeaways").innerHTML = takeaways.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || `<li>No qualifying swing-trade conclusions are available.</li>`;
   const money = (value, currency = "USD") => value === null || value === undefined ? "N/A" : decisionPrice(value, currency);
   const renderTable = (group = {}, poolName, strategyKey) => {
@@ -1123,7 +1132,7 @@ function renderSwingTrades(section = {}) {
       const catalyst = row.catalyst || {};
       const sourceUrl = safeSourceUrl(catalyst.source_link);
       const execution = row.action === "BUY NOW"
-        ? `Limit ${money(row.limit_buy, market.currency)} · stop ${money(row.stop_price, market.currency)} · full exit ${money(row.full_exit_price, market.currency)}`
+        ? `Limit ${money(row.limit_buy, market.currency)} · no initial fixed stop · +30%: 20% trail · +50%: 15% trail · tighten on sudden 1M/5D acceleration`
         : `Reference ${money(row.entry_reference, market.currency)} · invalidation ${money(row.invalidation, market.currency)} · R/R ${row.reward_risk ?? "N/A"}`;
       const catalystText = row.forward_catalyst || (strategyKey === "Strategy A" ? "Optional / not verified" : "Required / not verified");
       if (strategyKey === "Strategy A") return `<tr data-swing-row data-ticker="${escapeHtml(row.ticker)}"><td><strong>${escapeHtml(row.stage || "Missing")}</strong><small>#${escapeHtml(row.candidate_rank ?? row.rank)} · ${tickerPriceMarkup(row.ticker, market)}</small></td><td><strong>${escapeHtml(row.technical_pattern || row.pattern || "Missing")}</strong><small>${escapeHtml(row.trend || "Missing")}</small></td><td><strong>${escapeHtml(row.support_entry_zone || "N/A")}</strong><small>Entry ${money(row.entry_reference, market.currency)} · invalidation ${money(row.invalidation, market.currency)} · major resistance ${money(row.major_resistance, market.currency)}</small></td><td><strong>${escapeHtml(row.confirmation || "Missing")}</strong><small>${escapeHtml(row.why_not_now || "Missing")}</small><small>Next: ${escapeHtml(row.next_confirmation || "Missing")}</small></td><td><strong>${escapeHtml(catalystText)}</strong>${sourceUrl ? `<small><a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Source</a></small>` : ""}</td><td><span class="swing-action swing-action-${classKey(row.action)}">${escapeHtml(row.action || "WAIT")}</span>${row.action === "BUY NOW" ? `<small>${escapeHtml(execution)}</small>` : ""}</td></tr>`;

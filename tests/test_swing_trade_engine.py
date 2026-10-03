@@ -6,6 +6,8 @@ from scripts.swing_trade import (
     assess_gap_continuation,
     assess_long_base_breakout,
     build_swing_trade_engine,
+    buy_now_first_display,
+    is_biotech_company,
     resolve_strategy_b_catalyst,
     select_swing_market_universe,
     stage_transition,
@@ -79,6 +81,41 @@ def verified_news(ticker="TEST"):
 
 
 class SwingTradeEngineTests(unittest.TestCase):
+    def test_biotech_classification_requires_genuine_drug_development_profile(self):
+        self.assertTrue(is_biotech_company({"company": "Example Therapeutics",
+                                            "sector": "Health Care", "industry": "Biotechnology"}))
+        self.assertTrue(is_biotech_company({"company": "Example Pharma",
+                                            "sector": "Health Care", "industry": "Drug Manufacturers"}))
+        self.assertTrue(is_biotech_company({
+            "company": "Example Discovery Corp.", "sector": "Health Care",
+            "industry": "Biotechnology: Commercial Physical & Biological Resarch",
+            "description": ("A clinical-stage biopharmaceutical company focused on discovery and "
+                            "development of proprietary therapeutics for patients with cancer."),
+        }))
+        self.assertTrue(is_biotech_company({
+            "company": "Example Retina Sciences", "sector": "Health Care",
+            "industry": "Biotechnology: Biological Products (No Diagnostic Substances)",
+        }))
+        self.assertTrue(is_biotech_company({
+            "company": "Example Medicines", "sector": "Health Care",
+            "industry": "Biotechnology: Commercial Physical & Biological Resarch",
+            "description": "An established portfolio of medicines and next-generation medicines for patients in oncology.",
+        }))
+        false_positives = [
+            {"company": "Herbalife Ltd.", "sector": "Health Care",
+             "industry": "Other Pharmaceuticals"},
+            {"company": "Phibro Animal Health", "sector": "Health Care",
+             "industry": "Drug Manufacturers - Specialty & Generic"},
+            {"company": "Example Diagnostics", "sector": "Health Care",
+             "industry": "Diagnostics & Research"},
+            {"company": "Example Instruments", "sector": "Health Care",
+             "industry": "Medical Instruments & Supplies"},
+            {"company": "Example Research plc", "sector": "Health Care",
+             "industry": "Biotechnology: Commercial Physical & Biological Resarch",
+             "description": "A contract research organization providing clinical trial services to sponsors."},
+        ]
+        self.assertTrue(all(not is_biotech_company(row) for row in false_positives))
+
     def test_full_listed_universe_screen_is_independent_of_radar(self):
         rows = [company("BIO", True), company("IND", False),
                 {**company("ILLIQ", False), "daily_volume": 10_000}]
@@ -293,10 +330,25 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(len(result["pools"]["non_biotech"]["strategy_b"]["buy_now"]), 1)
         row = result["pools"]["non_biotech"]["strategy_a"]["buy_now"][0]
         self.assertNotIn("shares_for_200", row)
-        self.assertEqual(row["stop_price"], 85.17)
-        self.assertEqual(row["full_exit_price"], 130.26)
-        self.assertEqual(row["exit_policy"], "Sell the entire position at +30%; no runner.")
+        self.assertNotIn("stop_price", row)
+        self.assertNotIn("full_exit_price", row)
+        self.assertEqual(row["trailing_stop_policy"]["initial_stop"], "No initial fixed stop")
+        self.assertIn("20% trailing stop", row["trailing_stop_policy"]["gain_30"])
+        self.assertIn("15% trailing stop", row["trailing_stop_policy"]["gain_50"])
         self.assertEqual(result["pools"]["non_biotech"]["strategy_a"]["candidate_count"], 1)
+        funnel = result["coverage"]["diagnostic_funnel"]["overall"]
+        self.assertEqual(funnel["universe"], 4)
+        self.assertEqual(funnel["data_liquidity"], 4)
+        self.assertEqual(funnel["buy_now"], 4)
+
+    def test_buy_now_is_displayed_first_without_changing_candidate_rank(self):
+        rows = [{"ticker": f"WAIT{i}", "action": "WAIT", "candidate_rank": i}
+                for i in range(1, 12)]
+        rows.append({"ticker": "BUY", "action": "BUY NOW", "candidate_rank": 12})
+        displayed = buy_now_first_display(rows, 10)
+        self.assertEqual(displayed[0]["ticker"], "BUY")
+        self.assertEqual(displayed[0]["candidate_rank"], 12)
+        self.assertEqual(len(displayed), 10)
 
     def test_gap_measurement_uses_ohlcv_and_follow_through(self):
         rows = []
@@ -334,6 +386,9 @@ class SwingTradeEngineTests(unittest.TestCase):
             self.assertIn(label, script)
         self.assertIn("Independent full-market short-term execution", page)
         self.assertIn("does not source candidates from Radar or High Conviction", page)
+        self.assertIn("diagnostic funnel", script)
+        self.assertIn("no initial fixed stop", script)
+        self.assertNotIn("row.stop_price", script)
 
     def test_swing_renderer_closes_pool_builder_and_renders_zero_buy_groups(self):
         root = Path(__file__).resolve().parents[1]

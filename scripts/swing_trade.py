@@ -45,8 +45,21 @@ STRATEGY_B_CATALYST_STATUSES = (
 STRATEGY_B_CATALYST_LOOKBACK_DAYS = 3
 MATERIAL_INSIDER_PURCHASE_USD = 250_000
 BIOTECH_TERMS = (
-    "biotech", "biotechnology", "pharmaceutical", "therapeutic", "drug manufacturer",
-    "diagnostic", "life science", "genomic", "clinical research",
+    "biotech", "biotechnology", "biopharma", "biopharmaceutical", "pharmaceutical",
+    "therapeutic", "drug manufacturer", "drug development", "genomic medicine",
+)
+BIOTECH_AMBIGUOUS_TERMS = (
+    "animal health", "veterinary", "livestock", "nutrition", "nutritional", "dietary supplement",
+    "consumer health", "medical device", "medical instrument", "laboratory instrument",
+    "diagnostic", "clinical research service", "contract research", "health care plan",
+    "medical distribution", "other pharmaceuticals",
+    "commercial physical & biological research", "commercial physical & biological resarch",
+)
+HUMAN_THERAPEUTIC_EVIDENCE = (
+    "clinical-stage biopharmaceutical", "commercial-stage biopharmaceutical",
+    "develops and commercializes medicines", "develops and commercializes therapies",
+    "discovery and development of therapeutics", "pipeline of drug candidates",
+    "proprietary therapeutics", "human therapeutics", "medicines for patients",
 )
 
 
@@ -54,9 +67,55 @@ def _number(value):
     return value if isinstance(value, (int, float)) and math.isfinite(value) else None
 
 
+def biotech_classification_needs_profile(company):
+    sector = str(company.get("sector") or "").lower()
+    industry = str(company.get("industry") or "").lower()
+    name = str(company.get("company") or company.get("name") or "").lower()
+    text = " ".join((sector, industry, name)).replace("no diagnostic substances", "")
+    healthcare_sector = any(term in sector for term in ("health", "medical", "biotech", "pharma"))
+    biotech_taxonomy = healthcare_sector and any(term in text for term in BIOTECH_TERMS)
+    return bool(biotech_taxonomy and any(term in text for term in BIOTECH_AMBIGUOUS_TERMS))
+
+
+def _direct_human_therapeutic_evidence(company):
+    description = " ".join(str(company.get(key) or "") for key in
+                           ("description", "business_description", "business_evidence")).lower()
+    if any(term in description for term in HUMAN_THERAPEUTIC_EVIDENCE):
+        return True
+    develops = any(term in description for term in
+                   ("develops", "developing", "discovers", "discovery", "researching",
+                    "clinical pipeline"))
+    therapeutic = any(term in description for term in
+                      ("therapeutic", "drug candidate", "medicine", "treatment"))
+    human = any(term in description for term in
+                ("human", "patient", "oncology", "disease", "clinical-stage"))
+    proprietary = any(term in description for term in
+                      ("proprietary", "our pipeline", "its pipeline", "commercializes",
+                       "commercializing"))
+    medicine_portfolio = "portfolio" in description and any(
+        term in description for term in ("medicine", "therapeutic", "drug candidate"))
+    return bool((develops or medicine_portfolio) and therapeutic and human and
+                (proprietary or medicine_portfolio))
+
+
 def is_biotech_company(company):
-    text = " ".join(str(company.get(key) or "") for key in ("sector", "industry", "company")).lower()
-    return any(term in text for term in BIOTECH_TERMS)
+    sector = str(company.get("sector") or "").lower()
+    industry = str(company.get("industry") or "").lower()
+    name = str(company.get("company") or company.get("name") or "").lower()
+    text = " ".join((sector, industry, name)).replace("no diagnostic substances", "")
+    healthcare_sector = any(term in sector for term in ("health", "medical", "biotech", "pharma"))
+    if not (healthcare_sector and any(term in text for term in BIOTECH_TERMS)):
+        return False
+    if any(term in text for term in BIOTECH_AMBIGUOUS_TERMS):
+        return _direct_human_therapeutic_evidence(company)
+    return True
+
+
+def buy_now_first_display(rows, limit):
+    """Keep independent candidate rank while guaranteeing visible BUY NOW rows."""
+    buy_now = [row for row in rows if row.get("action") == "BUY NOW"]
+    waiting = [row for row in rows if row.get("action") != "BUY NOW"]
+    return (buy_now + waiting)[:limit]
 
 
 def select_swing_market_universe(listed_companies, limit=SWING_TECHNICAL_SCAN_LIMIT,
@@ -1238,6 +1297,7 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
     return {
         "company": candidate.get("company") or candidate.get("name") or candidate.get("ticker"),
         "ticker": candidate.get("ticker"), "exchange": candidate.get("exchange", ""),
+        "source_sector": candidate.get("sector"), "source_industry": candidate.get("industry"),
         "listing_status": "Public", "domain": "biotech" if biotech else "swing",
         "swing_pool": pool_name, "strategy": assessment["strategy"],
         "strategy_name": assessment["strategy_name"], "classification": "Candidate Pool",
@@ -1249,9 +1309,13 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
         "dynamic_final_score": rank_score,
         "selection_score": rank_score, "current_price": snapshot.get("current_price"),
         "limit_buy": limit_buy,
-        "stop_price": round(limit_buy * .85, 2) if limit_buy else None,
-        "full_exit_price": round(limit_buy * 1.30, 2) if limit_buy else None,
-        "exit_policy": "Sell the entire position at +30%; no runner.",
+        "trailing_stop_policy": {
+            "initial_stop": "No initial fixed stop",
+            "gain_30": "At or above +30%, use a 20% trailing stop.",
+            "gain_50": "At or above +50%, tighten to a 15% trailing stop.",
+            "acceleration": "Tighten further during sudden 1-month / 5-day acceleration.",
+        },
+        "exit_policy": "No initial fixed stop; activate profit-protecting trailing stops only after the stated gain thresholds.",
         "pattern": assessment.get("pattern_summary") or assessment.get("pattern"),
         "technical_pattern": assessment.get("technical_pattern"),
         "support_entry_zone": assessment.get("support_entry_zone"),
@@ -1281,9 +1345,7 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
             "summary": f"Independent full-market {assessment['strategy_name']} {action} candidate.",
             "why_chart_selected": assessment.get("pattern"),
             "catalyst_support": forward_catalyst,
-            "invalidation": (f"Execution stop {round(limit_buy * .85, 2)}; structural invalidation "
-                             f"{assessment.get('invalidation')}." if limit_buy else
-                             f"Structural invalidation {assessment.get('invalidation') or 'unavailable'}."),
+            "invalidation": f"Structural invalidation {assessment.get('invalidation') or 'unavailable'}; no initial fixed stop is prescribed.",
         },
         "engine_version": "swing-full-market-v4",
     }
@@ -1300,16 +1362,27 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
     pools = {"biotech": {"label": "Biotech Swing", "strategy_a": [], "strategy_b": []},
              "non_biotech": {"label": "Non-Biotech Swing", "strategy_a": [], "strategy_b": []}}
     evaluated = 0
+    evaluated_by_pool = Counter()
     catalyst_verified = 0
     catalyst_status_counts = Counter()
+    funnel_by_group = {
+        pool: {strategy: {"technical": 0, "fundamental_catalyst": 0, "entry": 0, "buy_now": 0}
+               for strategy in ("strategy_a", "strategy_b")}
+        for pool in ("biotech", "non_biotech")
+    }
+    funnel_tickers = {stage: set() for stage in
+                      ("technical", "fundamental_catalyst", "entry", "buy_now")}
     for candidate in candidates:
         ticker = candidate.get("ticker")
         snapshot = ((market_data or {}).get("securities") or {}).get(ticker)
         if not ticker or not snapshot or snapshot.get("data_status") != "current":
             continue
         evaluated += 1
-        pool_name = candidate.get("swing_pool") or ("biotech" if is_biotech_company(candidate) else "non_biotech")
+        # Re-evaluate the shared classification here so stale/fallback pool labels
+        # cannot preserve earlier broad-keyword false positives.
+        pool_name = "biotech" if is_biotech_company(candidate) else "non_biotech"
         biotech = pool_name == "biotech"
+        evaluated_by_pool[pool_name] += 1
         strategy_a_assessment = assess_long_base_breakout(snapshot, biotech)
         strategy_b_assessment = assess_gap_continuation(snapshot, biotech)
         optional_catalyst = _independent_catalyst(ticker, candidate.get("company") or ticker,
@@ -1333,6 +1406,19 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
             # the gap/abnormal-volume candidate screen.
             final_actionable = bool(assessment["actionable"] and
                                     (key == "strategy_a" or catalyst.get("credible") is True))
+            group_funnel = funnel_by_group[pool_name][key]
+            group_funnel["technical"] += 1
+            funnel_tickers["technical"].add(ticker)
+            fundamental_pass = key == "strategy_a" or catalyst.get("credible") is True
+            if fundamental_pass:
+                group_funnel["fundamental_catalyst"] += 1
+                funnel_tickers["fundamental_catalyst"].add(ticker)
+            if fundamental_pass and assessment.get("actionable") is True:
+                group_funnel["entry"] += 1
+                funnel_tickers["entry"].add(ticker)
+            if final_actionable:
+                group_funnel["buy_now"] += 1
+                funnel_tickers["buy_now"].add(ticker)
             action = "BUY NOW" if final_actionable else (
                 "DO NOT CHASE" if assessment.get("extended") else "WAIT")
             pools[pool_name][key].append(
@@ -1346,8 +1432,8 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                 row["candidate_rank"] = rank
                 row["rank"] = rank
                 row["dynamic_final_rank"] = rank
-            rows = all_rows[:limit]
             buy_now = [row for row in all_rows if row.get("action") == "BUY NOW"][:limit]
+            rows = buy_now_first_display(all_rows, limit)
             pools[pool_name][key] = {"label": rows[0]["strategy_name"] if rows else
                                     ("Bottoming / Early Right-Side Reversal" if key == "strategy_a" else
                                      "Catalyst Gap-Up Continuation"),
@@ -1356,6 +1442,24 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                                     "wait_count": sum(row.get("action") != "BUY NOW" for row in all_rows)}
             opportunities.extend(buy_now)
             ranked_setups.extend(rows)
+    for pool_name, strategies in funnel_by_group.items():
+        for values in strategies.values():
+            values["universe"] = evaluated_by_pool[pool_name]
+            values["data_liquidity"] = evaluated_by_pool[pool_name]
+    diagnostic_funnel = {
+        "overall": {
+            "universe": (screen_diagnostics or {}).get("total_stocks_scanned", evaluated),
+            "data_liquidity": (screen_diagnostics or {}).get("initial_screen_pass", evaluated),
+            **{stage: len(tickers) for stage, tickers in funnel_tickers.items()},
+        },
+        "by_pool_strategy": funnel_by_group,
+        "definitions": {
+            "technical": "Unique stocks qualifying for Strategy A and/or Strategy B technical Candidate Pool.",
+            "fundamental_catalyst": "Strategy A passes through because catalyst is optional; Strategy B requires a verified company-specific catalyst.",
+            "entry": "Technical entry confirmation after the applicable fundamental/catalyst gate.",
+            "buy_now": "All existing technical, catalyst (when required), entry, extension, and failure gates pass.",
+        },
+    }
     coverage = {**(screen_diagnostics or {}), "market_history_evaluated": evaluated,
                 "verified_company_catalysts": catalyst_verified,
                 "strategy_b_verified_gap_aligned_catalysts": catalyst_verified,
@@ -1368,7 +1472,8 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                 "biotech_strategy_a_buy_now": len(pools["biotech"]["strategy_a"]["buy_now"]),
                 "biotech_strategy_b_buy_now": len(pools["biotech"]["strategy_b"]["buy_now"]),
                 "non_biotech_strategy_a_buy_now": len(pools["non_biotech"]["strategy_a"]["buy_now"]),
-                "non_biotech_strategy_b_buy_now": len(pools["non_biotech"]["strategy_b"]["buy_now"])}
+                "non_biotech_strategy_b_buy_now": len(pools["non_biotech"]["strategy_b"]["buy_now"]),
+                "diagnostic_funnel": diagnostic_funnel}
     return {
         "methodology": {
             "engine_version": "swing-full-market-v4",
@@ -1378,7 +1483,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
             "strategy_b": "Candidate: >=8% gap + >=1.8x event volume. Then verify the company catalyst and evaluate Day 1 or subsequent hold/fade, consolidation, continuation pivot, entry, invalidation, and reward/risk.",
             "catalyst_policy": "Strategy A catalyst is optional. Strategy B requires a verified company-specific catalyst for BUY NOW, but unverified gap candidates remain ranked WAIT candidates.",
             "buy_now_policy": "No support touch, first bounce, candlestick, one-day move, unconfirmed pivot, failed setup, or Extended chart can enter BUY NOW.",
-            "execution_math": "Stop=Limit Buy x 0.85; Full Exit=Limit Buy x 1.30; sell all at target with no runner.",
+            "execution_policy": "No initial fixed stop. At +30% activate a 20% trailing stop; at +50% tighten it to 15%; tighten further during sudden 1-month / 5-day acceleration.",
             "missing_data_policy": "Missing measurements fail the relevant gate and never create an entry price.",
         },
         "pools": pools, "opportunities": opportunities, "ranked_setups": ranked_setups,

@@ -101,6 +101,11 @@
 .strategy-reference-block p + p { margin-top: 7px; }
 .strategy-reference-block strong { color: var(--dash-ink); }
 .strategy-reference-block small { display: block; margin-top: 8px; color: #6c7d90; font-size: .59rem; line-height: 1.45; }
+.swing-funnel { display: flex; align-items: stretch; gap: 5px; margin-bottom: 9px; overflow-x: auto; }
+.swing-funnel > span { display: grid; min-width: 82px; padding: 6px 8px; border: 1px solid #dbe4ee; border-radius: 6px; background: #fff; }
+.swing-funnel small { color: #6b7c91; font-size: .5rem; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
+.swing-funnel strong { margin-top: 2px; color: var(--dash-ink); font-size: .72rem; }
+.swing-funnel i { align-self: center; color: #8393a7; font-size: .62rem; font-style: normal; }
 .ai-stock-radar-item, .ai-stock-radar-item summary, .ai-stock-radar-item summary > * { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
 .ai-stock-radar-item summary { min-height: 80px; grid-auto-rows: auto; align-items: start; }
 .ai-stock-identity strong { display: block; color: var(--dash-ink); font-size: .76rem; line-height: 1.3; overflow-wrap: anywhere; }.ai-stock-identity small { display: block; margin-top: 5px; color: #60738a; font-size: .62rem; font-weight: 700; }.ai-stock-category { color: #40566f; font-size: .66rem; font-weight: 750; line-height: 1.4; overflow-wrap: anywhere; }.ai-stock-stage { display: inline-block; width: fit-content; max-width: 100%; padding: 5px 8px; border-radius: 999px; background: #edf3fc; color: #345f9c; font-size: .57rem; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }.ai-stock-why, .ai-stock-risk { color: #40556d; font-size: .63rem; line-height: 1.48; overflow-wrap: anywhere; word-break: break-word; }.ai-stock-risk { color: #6e5360; }
