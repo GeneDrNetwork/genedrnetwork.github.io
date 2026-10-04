@@ -236,16 +236,16 @@ class SwingTradeEngineTests(unittest.TestCase):
                                              biotech_news_section=verified_news())
         self.assertEqual(with_news["pools"]["biotech"]["strategy_a"]["buy_now"][0]["ticker"], "TEST")
 
-    def test_biotech_strategy_b_requires_catalyst_for_buy(self):
+    def test_biotech_primary_strategy_requires_catalyst_for_buy(self):
         candidate = company(biotech=True)
         market = {"securities": {"TEST": market_snapshot()}}
         without = build_swing_trade_engine([candidate], market)
-        row = without["pools"]["biotech"]["strategy_b"]["candidates"][0]
+        row = without["pools"]["biotech"]["strategy_c"]["candidates"][0]
         self.assertEqual(row["action"], "WAIT")
         self.assertIn("company-specific catalyst not verified", row["why_not_now"])
         with_news = build_swing_trade_engine([candidate], market,
                                              biotech_news_section=verified_news())
-        self.assertEqual(with_news["pools"]["biotech"]["strategy_b"]["buy_now"][0]["ticker"], "TEST")
+        self.assertEqual(with_news["pools"]["biotech"]["strategy_c"]["buy_now"][0]["ticker"], "TEST")
 
     def test_audited_strategy_b_company_catalysts_and_absences(self):
         assessment = assess_gap_continuation(market_snapshot("gap"))
@@ -340,7 +340,7 @@ class SwingTradeEngineTests(unittest.TestCase):
     def test_non_biotech_catalyst_is_optional(self):
         market = {"securities": {"TEST": market_snapshot()}}
         result = build_swing_trade_engine([company()], market)
-        row = result["pools"]["non_biotech"]["strategy_b"]["buy_now"][0]
+        row = result["pools"]["non_biotech"]["strategy_c"]["buy_now"][0]
         self.assertEqual(row["action"], "BUY NOW")
         self.assertIn("not verified", row["forward_catalyst"].lower())
 
@@ -350,7 +350,7 @@ class SwingTradeEngineTests(unittest.TestCase):
                                           "fifty_two_week_high": 105})
         result = build_swing_trade_engine(
             [company("EGBN")], {"securities": {"EGBN": snapshot}})
-        row = result["pools"]["non_biotech"]["strategy_b"]["candidates"][0]
+        row = result["pools"]["non_biotech"]["strategy_c"]["candidates"][0]
         self.assertEqual(row["action"], "BUY NOW")
         self.assertEqual(row["pct_above_52_week_low"], 104.0)
         self.assertEqual(row["pct_below_52_week_high"], 2.86)
@@ -398,7 +398,8 @@ class SwingTradeEngineTests(unittest.TestCase):
         })
         stale_result = build_swing_trade_engine(
             [company("STALE")], {"securities": {"STALE": stale}})
-        stale_row = stale_result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        stale_row = next(row for row in stale_result["secondary_strategy_matches"]
+                         if row["ticker"] == "STALE" and row["strategy"] == "A")
         self.assertEqual(stale_row["action"], "WAIT")
         self.assertFalse(stale_row["fresh_breakout"])
 
@@ -408,7 +409,7 @@ class SwingTradeEngineTests(unittest.TestCase):
         snapshot["moving_averages"]["ma20"] = 98
         result = build_swing_trade_engine(
             [company("LIMIT")], {"securities": {"LIMIT": snapshot}})
-        row = result["pools"]["non_biotech"]["strategy_b"]["candidates"][0]
+        row = result["pools"]["non_biotech"]["strategy_c"]["candidates"][0]
         self.assertEqual(row["action"], "SET LIMIT $100.20 — wait for pullback")
         self.assertEqual(row["limit_buy"], 100.2)
         self.assertFalse(row["actionable"])
@@ -431,13 +432,14 @@ class SwingTradeEngineTests(unittest.TestCase):
 
     def test_strategy_a_first_retest_is_classified_separately_from_strategy(self):
         snapshot = market_snapshot()
-        snapshot["current_price"] = 114
+        snapshot["current_price"] = 115.2
         snapshot["moving_averages"].update({"ma20": 112, "ma50": 105})
         snapshot["entry_inputs"].update({"recent_breakout_attempt": True,
                                          "breakout_age_sessions": 2,
                                          "resistance_level": 115,
-                                         "breakout_proximity_pct": -.9,
-                                         "short_term_high_10d": 114})
+                                         "breakout_proximity_pct": .17,
+                                         "breakout_volume_ratio": 1.05,
+                                         "short_term_high_10d": 115})
         result = build_swing_trade_engine(
             [company("RETEST")], {"securities": {"RETEST": snapshot}})
         row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
@@ -446,11 +448,55 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(row["entry_classification"],
                          "Entry 2 — First Pullback/Retest")
 
+    def test_strategy_a_retest_requires_reclaim_and_renewed_current_volume(self):
+        valid = market_snapshot()
+        valid["current_price"] = 115.2
+        valid["moving_averages"].update({"ma20": 112, "ma50": 105})
+        valid["volume_vs_20d_average"] = 1.05
+        valid["entry_inputs"].update({
+            "recent_breakout_attempt": True, "resistance_level": 115,
+            "breakout_proximity_pct": .17, "breakout_volume_ratio": 1.05,
+            "short_term_high_10d": 115, "short_term_high_reclaimed": True,
+            "volume_contraction_ratio": .85,
+        })
+        assessment = assess_long_base_breakout(valid)
+        self.assertTrue(assessment["signals"]["first_retest"])
+        self.assertTrue(assessment["signals"]["controlled_pullback"])
+        self.assertTrue(assessment["signals"]["breakout_support_reclaimed"])
+        self.assertTrue(assessment["signals"]["renewed_price_volume"])
+
+        low_volume = {**valid, "volume_vs_20d_average": .55,
+                      "entry_inputs": {**valid["entry_inputs"], "breakout_volume_ratio": .55}}
+        self.assertFalse(assess_long_base_breakout(low_volume)["signals"]["first_retest"])
+        below_support = {**valid, "current_price": 113.6,
+                         "entry_inputs": {**valid["entry_inputs"],
+                                          "breakout_proximity_pct": -1.22,
+                                          "short_term_high_reclaimed": False}}
+        self.assertFalse(assess_long_base_breakout(below_support)["signals"]["first_retest"])
+
+    def test_each_ticker_has_one_primary_strategy_and_secondary_matches_are_internal(self):
+        result = build_swing_trade_engine([company()],
+                                          {"securities": {"TEST": market_snapshot()}})
+        primary_rows = [row for key in ("strategy_a", "strategy_b", "strategy_c")
+                        for row in result["pools"]["non_biotech"][key]["candidates"]]
+        self.assertEqual([row["ticker"] for row in primary_rows], ["TEST"])
+        self.assertTrue(primary_rows[0]["is_primary_strategy"])
+        self.assertEqual(primary_rows[0]["primary_strategy_key"], "strategy_c")
+        self.assertEqual({row["strategy"] for row in result["secondary_strategy_matches"]},
+                         {"A", "B"})
+
     def test_six_pool_strategy_outputs_and_price_based_execution_levels(self):
-        candidates = [company("BIO", True), company("NON", False)]
-        market = {"securities": {"BIO": market_snapshot(), "NON": market_snapshot()}}
+        candidates = [company("BIO", True), company("NON", False),
+                      company("BIOB", True), company("NONB", False)]
+        stage2_bio, stage2_non = market_snapshot(), market_snapshot()
+        for snapshot in (stage2_bio, stage2_non):
+            snapshot["entry_inputs"].update({"base_duration_sessions": None,
+                                             "base_range_pct": None,
+                                             "volume_contraction_ratio": 1.1})
+        market = {"securities": {"BIO": market_snapshot(), "NON": market_snapshot(),
+                                  "BIOB": stage2_bio, "NONB": stage2_non}}
         news = {"stories": []}
-        for ticker in ("BIO", "NON"):
+        for ticker in ("BIO", "NON", "BIOB", "NONB"):
             event = verified_news(ticker)["stories"][0]
             event["ticker"] = ticker
             news["stories"].append(event)
@@ -459,7 +505,7 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(len(result["pools"]["biotech"]["strategy_c"]["buy_now"]), 1)
         self.assertEqual(len(result["pools"]["non_biotech"]["strategy_b"]["buy_now"]), 1)
         self.assertEqual(len(result["pools"]["non_biotech"]["strategy_c"]["buy_now"]), 1)
-        row = result["pools"]["non_biotech"]["strategy_b"]["buy_now"][0]
+        row = result["pools"]["non_biotech"]["strategy_c"]["buy_now"][0]
         self.assertNotIn("shares_for_200", row)
         self.assertNotIn("stop_price", row)
         self.assertNotIn("full_exit_price", row)
@@ -468,9 +514,9 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertIn("15% trailing stop", row["trailing_stop_policy"]["gain_50"])
         self.assertEqual(result["pools"]["non_biotech"]["strategy_b"]["candidate_count"], 1)
         funnel = result["coverage"]["diagnostic_funnel"]["overall"]
-        self.assertEqual(funnel["universe"], 2)
-        self.assertEqual(funnel["data_liquidity"], 2)
-        self.assertEqual(funnel["buy_now"], 2)
+        self.assertEqual(funnel["universe"], 4)
+        self.assertEqual(funnel["data_liquidity"], 4)
+        self.assertEqual(funnel["buy_now"], 4)
         for pool in ("biotech", "non_biotech"):
             for strategy in ("strategy_a", "strategy_b", "strategy_c"):
                 for buy in result["pools"][pool][strategy]["buy_now"]:
