@@ -1,10 +1,10 @@
 """Independent full-market Swing Trade execution system.
 
 The production engine receives a broad U.S.-listed universe directly, never a
-Radar or High-Conviction shortlist.  It separates biotech from non-biotech and
-evaluates long-base right-side breakouts and catalyst gap-up continuations as
-independent strategies.  Legacy helpers remain below for historical payload
-compatibility, but they do not select production Swing candidates.
+Radar or High-Conviction shortlist. It separates biotech from non-biotech and
+applies three shared technical definitions: Stage 1 launch, Stage 2 trend
+continuation, and post-advance re-base/re-acceleration. Catalyst validation is
+a separate pool-specific decision layer, not a technical classifier.
 """
 
 from collections import Counter
@@ -956,58 +956,101 @@ def _swing_position_metrics(snapshot):
     }
 
 
+def _swing_mountain_position(snapshot, support, extended=False):
+    """Locate price within the current advance, independent of 52-week position."""
+    price = _number(snapshot.get("current_price"))
+    distance = ((price - support) / support * 100
+                if price is not None and support is not None and support > 0 else None)
+    one_month = _number((snapshot.get("returns") or {}).get("one_month"))
+    if extended or (distance is not None and distance > 12) or (one_month is not None and one_month > 25):
+        return "Upper"
+    if distance is not None and distance <= 5:
+        return "Lower"
+    return "Middle"
+
+
 def _swing_entry_context(assessment, snapshot):
-    """Describe proximity to the existing setup's nearest valid execution level."""
+    """Map each strategy to its current support/pivot execution levels."""
     price = _number(snapshot.get("current_price"))
     mas = snapshot.get("moving_averages") or {}
-    strategy_a = assessment.get("strategy") == "A"
+    inputs = snapshot.get("entry_inputs") or {}
+    returns = snapshot.get("returns") or {}
+    macd = snapshot.get("macd") or {}
+    strategy = assessment.get("strategy")
     signals = assessment.get("signals") or {}
     stage = assessment.get("stage")
-    fresh_breakout = bool(
-        strategy_a and stage == "Breakout" and assessment.get("candidate_qualified") and
-        signals.get("pivot_cleared") and signals.get("volume_confirmed") and
-        signals.get("recent_breakout") and
-        not assessment.get("extended")
-    )
-    if not strategy_a:
-        fresh_breakout = assessment.get("actionable") is True
-    if fresh_breakout and strategy_a:
-        level = _number(assessment.get("major_resistance"))
-        level_kind = "breakout pivot"
-    elif not strategy_a:
-        level = _number(assessment.get("pivot"))
-        level_kind = "continuation pivot"
-    else:
-        candidates = [
-            (_number(assessment.get("pivot")), "pivot"),
-            (_number(assessment.get("support")), "support"),
-            (_number(mas.get("ma20")), "20D support"),
-            (_number(mas.get("ma50")), "50D support"),
-        ]
-        usable = [(value, label) for value, label in candidates
-                  if value is not None and value > 0 and price is not None and value <= price]
-        level, level_kind = max(usable, default=(None, "support/pivot"), key=lambda item: item[0])
-    distance = (round((price - level) / level * 100, 2)
+    support_candidates = [_number(assessment.get("support"))]
+    if strategy in ("B", "C"):
+        support_candidates.extend([_number(mas.get("ma20")), _number(mas.get("ma50"))])
+    pivot = _number(assessment.get("major_resistance") or assessment.get("pivot"))
+    usable_supports = [value for value in support_candidates
+                       if value is not None and value > 0 and price is not None and value <= price]
+    support = max(usable_supports, default=None)
+
+    def distance_from(level):
+        return (round((price - level) / level * 100, 2)
                 if price is not None and level is not None and level > 0 else None)
+
+    support_distance = distance_from(support)
+    pivot_distance = distance_from(pivot)
     # Five percent is the engine's existing pivot-extension boundary. Reuse it
     # here rather than adding a new strategy or ranking threshold.
-    near_level = bool(distance is not None and 0 <= distance <= 5)
+    near_support = bool(support_distance is not None and 0 <= support_distance <= 5)
+    near_pivot = bool(pivot_distance is not None and 0 <= pivot_distance <= 5)
+    breakout_age = assessment.get("breakout_age_sessions")
+    fresh_breakout = bool(assessment.get("candidate_qualified") and
+                          signals.get("fresh_breakout") and near_pivot and
+                          not assessment.get("extended"))
+    support_reversal = bool(assessment.get("candidate_qualified") and
+                            signals.get("support_reversal") and near_support and
+                            not assessment.get("extended"))
+    if strategy == "A":
+        fresh_breakout = bool(fresh_breakout and signals.get("recent_breakout"))
+        # Entry 2 is specifically the first retest of the former Stage 1 pivot.
+        retest_distance = pivot_distance
+        support_reversal = bool(
+            signals.get("first_retest") and retest_distance is not None and
+            -2 <= retest_distance <= 5 and not assessment.get("extended"))
+        if support_reversal:
+            support = pivot
+            support_distance = pivot_distance
+            near_support = True
+    entry_qualified = support_reversal or fresh_breakout
+    if fresh_breakout:
+        level = pivot
+        level_kind = {"A": "Stage 1 base pivot", "B": "Stage 2 continuation pivot",
+                      "C": "re-base pivot"}.get(strategy, "pivot")
+        entry_stage = {"A": "Entry 1 — Initial Breakout",
+                       "B": "Trend Continuation Breakout",
+                       "C": "Re-Base Breakout"}.get(strategy, "Fresh Breakout")
+    elif support_reversal:
+        level = support
+        level_kind = {"A": "Stage 1 breakout support", "B": "rising Stage 2 support",
+                      "C": "re-base support"}.get(strategy, "support")
+        entry_stage = {"A": "Entry 2 — First Pullback/Retest",
+                       "B": "Pullback / Tight-Consolidation Renewal",
+                       "C": "Re-Base Support Retest"}.get(strategy, "Fresh Reversal Near Support")
+    elif pivot_distance is not None and pivot_distance >= 0:
+        level, level_kind = pivot, "current pivot"
+        entry_stage = "Breakout Stale / Unconfirmed"
+    else:
+        level, level_kind = support, "current support"
+        entry_stage = "Waiting for Reversal"
+    distance = distance_from(level)
     materially_extended = bool(assessment.get("extended") or
                                (distance is not None and distance > 5))
-    entry_qualified = bool((assessment.get("actionable") and near_level) or fresh_breakout)
-    limit_price = _number(assessment.get("limit_buy"))
-    if fresh_breakout and strategy_a and limit_price is None and level is not None:
-        limit_price = round(level * 1.002, 2)
-    breakout_age = assessment.get("breakout_age_sessions")
+    limit_price = round(level * 1.002, 2) if entry_qualified and level is not None else None
     reason = (f"Fresh {breakout_age}-session volume-confirmed breakout at {level_kind}"
-              if fresh_breakout and strategy_a else
-              f"Fresh volume-confirmed continuation at {level_kind}" if fresh_breakout else
-              f"Confirmed setup near {level_kind}" if entry_qualified else
+              if fresh_breakout else
+              f"Fresh confirmed reversal near {level_kind}" if support_reversal else
               f"Extended above {level_kind}" if materially_extended else
               "Existing entry confirmation is incomplete")
     return {
         "level": level, "level_kind": level_kind, "distance_pct": distance,
-        "near_level": near_level, "fresh_breakout": fresh_breakout,
+        "base_support": support, "base_pivot": pivot,
+        "support_distance_pct": support_distance, "pivot_distance_pct": pivot_distance,
+        "near_level": near_support or near_pivot, "support_reversal": support_reversal,
+        "fresh_breakout": fresh_breakout, "entry_stage": entry_stage,
         "materially_extended": materially_extended,
         "entry_qualified": entry_qualified, "limit_price": limit_price,
         "qualification_reason": reason, "breakout_age_sessions": breakout_age,
@@ -1029,18 +1072,49 @@ def _swing_execution_action(company_gate_passed, assessment, snapshot, entry_con
         return "WAIT — actionable entry price unavailable"
     if limit_price < current * .99:
         return f"SET LIMIT ${limit_price:.2f} — wait for pullback"
-    if limit_price < current:
-        return f"WAIT — current price above ${limit_price:.2f} limit"
     return "BUY NOW"
 
 
-def assess_long_base_breakout(snapshot, biotech=False):
-    """Assess Strategy A's bottom-to-early-right-side transition.
+def _swing_strategy_entry_classification(assessment, entry_context):
+    """Classify strategy and entry independently without changing qualification."""
+    if assessment.get("strategy") == "A":
+        strategy = "Strategy A — Stage 1 → Stage 2 Launch"
+        if entry_context.get("fresh_breakout"):
+            entry = "Entry 1 — Initial Breakout"
+            cycle_stage = "Stage 1 → Stage 2"
+        elif (entry_context.get("support_reversal") and
+              (assessment.get("signals") or {}).get("recent_breakout_attempt")):
+            entry = "Entry 2 — First Pullback/Retest"
+            cycle_stage = "Stage 2 — First Retest"
+        elif assessment.get("stage") == "Extended":
+            entry = "No Entry — Extended"
+            cycle_stage = "Stage 2 / Stage 3 Watch"
+        else:
+            entry = "Monitoring — Stage 1 Base"
+            cycle_stage = "Stage 1"
+    elif assessment.get("strategy") == "B":
+        strategy = "Strategy B — Stage 2 Trend Continuation"
+        if entry_context.get("fresh_breakout"):
+            entry = "Continuation Pivot Breakout"
+        elif entry_context.get("support_reversal"):
+            entry = "Pullback / Tight-Consolidation Renewal"
+        else:
+            entry = "Monitoring — Stage 2 Continuation"
+        cycle_stage = "Healthy Stage 2 Advance"
+    else:
+        strategy = "Strategy C — Re-Base / Re-Acceleration"
+        if entry_context.get("fresh_breakout"):
+            entry = "Fresh Re-Base Breakout"
+        elif entry_context.get("support_reversal"):
+            entry = "Re-Base Pullback/Retest"
+        else:
+            entry = "Monitoring — Re-Base"
+        cycle_stage = "Post-Advance Re-Base"
+    return {"strategy": strategy, "entry": entry, "cycle_stage": cycle_stage}
 
-    Candidate discovery is intentionally earlier than a classic breakout. A
-    confirmed major-pivot breakout is a later stage and is never required for
-    Strategy A qualification or BUY NOW.
-    """
+
+def assess_long_base_breakout(snapshot, biotech=False):
+    """Assess a genuine Stage 1 base for launch or first breakout retest."""
     inputs = snapshot.get("entry_inputs") or {}
     mas = snapshot.get("moving_averages") or {}
     returns = snapshot.get("returns") or {}
@@ -1143,12 +1217,13 @@ def assess_long_base_breakout(snapshot, biotech=False):
     demand_confirmation = bool((accumulation is not None and accumulation >= 1.05) or
                                (current_volume is not None and current_volume >= 1 and
                                 daily_return is not None and daily_return > 0))
-    early_entry_confirmation = bool(
-        stage in ("Early Reversal", "Early Right-Side") and higher_low and
-        momentum_improving and ma_turning and demand_confirmation and
-        not one_day_bounce and (short_reclaim or macd.get("crossover") == "bullish") and
-        reward_risk is not None and reward_risk >= 1.5)
-    actionable = bool(candidate_qualified and early_entry_confirmation and not extended)
+    first_retest = bool(
+        inputs.get("recent_breakout_attempt") is True and not breakout and
+        pivot is not None and price is not None and pivot * .98 <= price <= pivot * 1.05 and
+        higher_low and momentum_improving and demand_confirmation and not one_day_bounce and
+        not inputs.get("failed_breakout"))
+    fresh_initial_breakout = bool(breakout and recent_breakout and not extended)
+    actionable = bool(candidate_qualified and (fresh_initial_breakout or first_retest) and not extended)
     limit_buy = round(entry_reference * 1.002, 2) if actionable and entry_reference else None
     stage_score = {"Early Reversal": 100, "Early Right-Side": 98, "Bottoming": 86,
                    "Breakout Ready": 72, "Breakout": 55, "Falling": 15,
@@ -1220,7 +1295,7 @@ def assess_long_base_breakout(snapshot, biotech=False):
                     f"{'yes' if short_reclaim else 'no'} · momentum {'improving' if momentum_improving else 'not confirmed'} "
                     f"· demand {'confirmed' if demand_confirmation else 'not confirmed'}")
     return {
-        "strategy": "A", "strategy_name": "Bottoming / Early Right-Side Reversal",
+        "strategy": "A", "strategy_name": "Stage 1 → Stage 2 Launch",
         "stage": stage, "technical_pattern": pattern_label,
         "support_entry_zone": support_entry_zone, "confirmation": confirmation,
         "pattern": (f"{base_sessions}-session base; {base_range}% range; major resistance {pivot}"
@@ -1240,6 +1315,10 @@ def assess_long_base_breakout(snapshot, biotech=False):
                     "volume_structure": volume_structure, "accumulation": accumulation,
                     "pivot_cleared": pivot_cleared, "volume_confirmed": volume_confirmed,
                     "recent_breakout": recent_breakout,
+                    "fresh_breakout": fresh_initial_breakout,
+                    "first_retest": first_retest,
+                    "support_reversal": first_retest,
+                    "recent_breakout_attempt": inputs.get("recent_breakout_attempt") is True,
                     "relative_strength_confirmed": rs_confirmed, "relative_strength": relative},
         "pattern_summary": pattern_label,
         "trend_summary": (f"{stage} · higher low {'confirmed' if higher_low else 'missing'} · "
@@ -1302,7 +1381,7 @@ def assess_gap_continuation(snapshot, biotech=False):
         ("tight post-gap consolidation", tight), ("new continuation pivot/volume confirmation", continuation),
         ("not failed", not inputs.get("failed_breakout")), ("not Extended", not extended)) if not passed]
     return {
-        "strategy": "B", "strategy_name": "Catalyst Gap-Up Continuation",
+        "strategy": "B", "strategy_name": "Re-Acceleration / Continuation",
         "pattern": (f"{gap.get('gap_pct')}% gap on {gap.get('event_date')}; "
                     f"{gap.get('days_since_gap')} sessions; continuation pivot {pivot}"
                     if major_gap else "No qualifying >=8% gap in the last 20 sessions"),
@@ -1321,6 +1400,188 @@ def assess_gap_continuation(snapshot, biotech=False):
     }
 
 
+def _renewal_signals(snapshot):
+    inputs = snapshot.get("entry_inputs") or {}
+    returns = snapshot.get("returns") or {}
+    macd = snapshot.get("macd") or {}
+    histogram = _number(macd.get("histogram"))
+    current_volume = _number(snapshot.get("volume_vs_20d_average"))
+    daily_return = _number(returns.get("daily"))
+    momentum = bool(macd.get("crossover") == "bullish" or macd.get("improving") is True or
+                    (histogram is not None and histogram > 0))
+    demand = bool(current_volume is not None and current_volume >= 1 and
+                  daily_return is not None and daily_return > 0)
+    volume_confirmed = bool(
+        (_number(inputs.get("breakout_volume_ratio")) is not None and
+         _number(inputs.get("breakout_volume_ratio")) >= 1.2) or
+        (current_volume is not None and current_volume >= 1.15))
+    return momentum, demand, volume_confirmed
+
+
+def assess_stage2_continuation(snapshot, biotech=False):
+    """Assess healthy established Stage 2 winners; a long Stage 1 base is not required."""
+    inputs = snapshot.get("entry_inputs") or {}
+    mas = snapshot.get("moving_averages") or {}
+    returns = snapshot.get("returns") or {}
+    price = _number(snapshot.get("current_price"))
+    ma20, ma50, ma200 = (_number(mas.get("ma20")), _number(mas.get("ma50")),
+                         _number(mas.get("ma200")))
+    ma20_slope = _number(inputs.get("ma20_slope_10d_pct"))
+    ma50_slope = _number(inputs.get("ma50_slope_20d_pct"))
+    tight_range = _number(inputs.get("tight_range_20d_pct"))
+    pivot = _number(inputs.get("short_term_high_10d") or inputs.get("resistance_level"))
+    invalidation = _number(inputs.get("invalidation_level") or inputs.get("recent_low_20d"))
+    supports = [value for value in (ma20, ma50, _number(inputs.get("recent_low_20d")))
+                if value is not None and price is not None and value <= price]
+    support = max(supports, default=invalidation)
+    support_distance = ((price - support) / support * 100
+                        if price is not None and support is not None and support > 0 else None)
+    six_month = _number(returns.get("six_month"))
+    three_month = _number(returns.get("three_month"))
+    established_uptrend = bool(price and ma50 and ma200 and price > ma50 > ma200 and
+                               (ma50_slope is None or ma50_slope > 0) and
+                               (six_month is None or six_month > 0))
+    rising_support = bool(support is not None and
+                          (ma20_slope is None or ma20_slope >= 0) and
+                          (ma50_slope is None or ma50_slope > 0))
+    healthy_pullback = bool(support_distance is not None and 0 <= support_distance <= 8 and
+                            (tight_range is None or tight_range <= 15))
+    higher_low = inputs.get("higher_low_confirmed") is True
+    momentum, demand, volume_confirmed = _renewal_signals(snapshot)
+    reclaim = inputs.get("short_term_high_reclaimed") is True
+    proximity = ((price - pivot) / pivot * 100
+                 if price is not None and pivot is not None and pivot > 0 else None)
+    fresh_breakout = bool(reclaim and volume_confirmed and proximity is not None and
+                          0 <= proximity <= 5 and not inputs.get("failed_breakout"))
+    support_reversal = bool(healthy_pullback and higher_low and momentum and demand and reclaim)
+    extended = _extension(snapshot, pivot)
+    mountain = _swing_mountain_position(snapshot, support, extended)
+    candidate_qualified = bool(established_uptrend and rising_support and
+                               (healthy_pullback or (tight_range is not None and tight_range <= 15)) and
+                               not inputs.get("failed_breakout"))
+    actionable = bool(candidate_qualified and (support_reversal or fresh_breakout) and
+                      mountain != "Upper" and not extended)
+    pattern_score = _score([100 if established_uptrend else 25,
+                            90 if healthy_pullback else 55,
+                            90 if tight_range is not None and tight_range <= 12 else 55])
+    trend_score = _score([95 if rising_support else 30, 95 if higher_low else 55,
+                          90 if three_month is not None and three_month > 0 else 55])
+    volume_score = _score([95 if demand else 45, 95 if volume_confirmed else 50])
+    decision_score = _score([100 if support_reversal or fresh_breakout else 40,
+                             95 if momentum else 35, 10 if mountain == "Upper" else 90])
+    score = _score([pattern_score, trend_score, volume_score, decision_score])
+    failures = [label for label, passed in (
+        ("established Stage 2 uptrend", established_uptrend),
+        ("rising support", rising_support), ("healthy pullback/tight consolidation", healthy_pullback),
+        ("higher low", higher_low), ("momentum improving", momentum),
+        ("short-term reclaim", reclaim), ("demand confirmation", demand),
+        ("volume/RVOL confirmation", volume_confirmed),
+        ("not failed", not inputs.get("failed_breakout")),
+        ("not Extended", not extended and mountain != "Upper")) if not passed]
+    return {
+        "strategy": "B", "strategy_name": "Stage 2 Trend Continuation",
+        "stage": f"Stage 2 — {mountain}", "mountain_position": mountain,
+        "candidate_qualified": candidate_qualified, "actionable": actionable,
+        "candidate_score": _score([pattern_score, trend_score, volume_score]),
+        "decision_score": decision_score, "score": score,
+        "pivot": pivot, "major_resistance": pivot, "support": support,
+        "invalidation": invalidation, "reward_risk": None, "extended": extended,
+        "breakout_age_sessions": inputs.get("breakout_age_sessions"),
+        "failed_gates": failures,
+        "signals": {"fresh_breakout": fresh_breakout, "support_reversal": support_reversal,
+                    "volume_confirmed": volume_confirmed, "higher_low": higher_low,
+                    "momentum_improving": momentum, "demand_confirmation": demand},
+        "pattern": "Established Stage 2 uptrend with pullback/tight-consolidation continuation setup",
+        "pattern_summary": "Stage 2 Pullback" if healthy_pullback else "Stage 2 Tight Consolidation",
+        "technical_pattern": "Healthy Stage 2 Trend Continuation",
+        "support_entry_zone": f"Rising support {round(support, 2)}" if support else "N/A",
+        "confirmation": (f"Higher low {'yes' if higher_low else 'no'} · momentum "
+                         f"{'improving' if momentum else 'unconfirmed'} · demand "
+                         f"{'confirmed' if demand else 'unconfirmed'}"),
+        "trend_summary": f"Established Stage 2 · Mountain {mountain}",
+        "volume_summary": f"Current RVOL {snapshot.get('volume_vs_20d_average', 'N/A')}x",
+    }
+
+
+def assess_rebase_reacceleration(snapshot, biotech=False):
+    """Assess a shorter post-advance base and its support retest or new breakout."""
+    inputs = snapshot.get("entry_inputs") or {}
+    mas = snapshot.get("moving_averages") or {}
+    returns = snapshot.get("returns") or {}
+    price = _number(snapshot.get("current_price"))
+    ma20, ma50, ma200 = (_number(mas.get("ma20")), _number(mas.get("ma50")),
+                         _number(mas.get("ma200")))
+    tight_range = _number(inputs.get("tight_range_20d_pct"))
+    contraction = _number(inputs.get("volume_contraction_ratio"))
+    pivot = _number(inputs.get("short_term_high_10d") or inputs.get("resistance_level"))
+    recent_low = _number(inputs.get("recent_low_20d") or inputs.get("recent_low_63d"))
+    supports = [value for value in (recent_low, ma20, ma50)
+                if value is not None and price is not None and value <= price]
+    support = max(supports, default=_number(inputs.get("invalidation_level")))
+    support_distance = ((price - support) / support * 100
+                        if price is not None and support is not None and support > 0 else None)
+    prior_advance = bool(((_number(returns.get("three_month")) or 0) > 8 or
+                          (_number(returns.get("six_month")) or 0) > 15) and
+                         (ma200 is None or (price is not None and price > ma200)))
+    shorter_base = bool(tight_range is not None and tight_range <= 15 and
+                        (contraction is None or contraction <= 1.05))
+    higher_low = inputs.get("higher_low_confirmed") is True
+    momentum, demand, volume_confirmed = _renewal_signals(snapshot)
+    reclaim = inputs.get("short_term_high_reclaimed") is True
+    proximity = ((price - pivot) / pivot * 100
+                 if price is not None and pivot is not None and pivot > 0 else None)
+    fresh_breakout = bool(shorter_base and reclaim and volume_confirmed and
+                          proximity is not None and 0 <= proximity <= 5 and
+                          not inputs.get("failed_breakout"))
+    support_reversal = bool(shorter_base and support_distance is not None and
+                            0 <= support_distance <= 5 and higher_low and momentum and demand and reclaim)
+    extended = _extension(snapshot, pivot)
+    mountain = _swing_mountain_position(snapshot, support, extended)
+    candidate_qualified = bool(prior_advance and shorter_base and support is not None and
+                               not inputs.get("failed_breakout"))
+    actionable = bool(candidate_qualified and (fresh_breakout or support_reversal) and
+                      not extended and mountain != "Upper")
+    pattern_score = _score([100 if prior_advance else 25, 95 if shorter_base else 35,
+                            90 if higher_low else 50])
+    volume_score = _score([90 if contraction is not None and contraction <= 1 else 55,
+                           95 if demand or volume_confirmed else 40])
+    decision_score = _score([100 if fresh_breakout or support_reversal else 40,
+                             95 if momentum else 35, 10 if extended else 90])
+    score = _score([pattern_score, volume_score, decision_score])
+    failures = [label for label, passed in (
+        ("prior advance", prior_advance), ("shorter re-base", shorter_base),
+        ("higher low", higher_low), ("momentum improving", momentum),
+        ("short-term reclaim", reclaim), ("demand confirmation", demand),
+        ("volume/RVOL confirmation", volume_confirmed),
+        ("not failed", not inputs.get("failed_breakout")),
+        ("not Extended", not extended and mountain != "Upper")) if not passed]
+    return {
+        "strategy": "C", "strategy_name": "Re-Base / Re-Acceleration",
+        "stage": "Re-Base", "mountain_position": mountain,
+        "candidate_qualified": candidate_qualified, "actionable": actionable,
+        "candidate_score": _score([pattern_score, volume_score]),
+        "decision_score": decision_score, "score": score,
+        "pivot": pivot, "major_resistance": pivot, "support": support,
+        "invalidation": _number(inputs.get("invalidation_level") or recent_low),
+        "reward_risk": None, "extended": extended,
+        "breakout_age_sessions": inputs.get("breakout_age_sessions"),
+        "failed_gates": failures,
+        "signals": {"fresh_breakout": fresh_breakout, "support_reversal": support_reversal,
+                    "volume_confirmed": volume_confirmed, "higher_low": higher_low,
+                    "momentum_improving": momentum, "demand_confirmation": demand},
+        "pattern": "Post-advance shorter base with a current support/pivot execution structure",
+        "pattern_summary": "Post-Advance Re-Base",
+        "technical_pattern": "Re-Base / Re-Acceleration",
+        "support_entry_zone": f"Re-base support {round(support, 2)}" if support else "N/A",
+        "confirmation": (f"Higher low {'yes' if higher_low else 'no'} · reclaim "
+                         f"{'yes' if reclaim else 'no'} · volume "
+                         f"{'confirmed' if volume_confirmed else 'unconfirmed'}"),
+        "trend_summary": f"Prior advance → Re-Base · Mountain {mountain}",
+        "volume_summary": (f"Contraction {contraction if contraction is not None else 'N/A'}x · "
+                           f"current RVOL {snapshot.get('volume_vs_20d_average', 'N/A')}x"),
+    }
+
+
 def _dilution_risk(candidate, snapshot):
     market_cap = _number(candidate.get("market_cap")) or _number(snapshot.get("market_cap"))
     price = _number(snapshot.get("current_price"))
@@ -1333,18 +1594,20 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
                       position=None, entry_context=None):
     position = position or _swing_position_metrics(snapshot)
     entry_context = entry_context or _swing_entry_context(assessment, snapshot)
+    classification = _swing_strategy_entry_classification(assessment, entry_context)
     limit_buy = entry_context.get("limit_price")
     biotech = pool_name == "biotech"
-    strategy_a = assessment.get("strategy") == "A"
     rank_score = assessment.get("score")
-    if not strategy_a and _number(rank_score) is not None:
+    if _number(rank_score) is not None:
         rank_score = max(0, min(100, rank_score + (5 if catalyst.get("credible") else -5)))
     failures = list(assessment.get("failed_gates") or [])
     primary_failures = {"long/mature base", "volatility contraction", "support hold/tightening",
                         "constructive base volume",
-                        "major >=8% catalyst gap"}
+                        "major >=8% catalyst gap", "established Stage 2 uptrend",
+                        "rising support", "healthy pullback/tight consolidation",
+                        "prior advance", "shorter re-base"}
     decision_failures = [item for item in failures if item not in primary_failures]
-    if not strategy_a and catalyst.get("credible") is not True:
+    if biotech and catalyst.get("credible") is not True:
         decision_failures.append("verified company catalyst")
     failure_explanations = {
         "pivot cleared": "pivot not yet cleared",
@@ -1383,39 +1646,25 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
     elif assessment.get("extended"):
         entry_status = "Extended / DO NOT CHASE"
         next_confirmation = "Wait for a new base or orderly pullback and fresh confirmation."
-    elif strategy_a and assessment.get("stage") == "Breakout":
-        entry_status = "Breakout / later-stage entry"
-        next_confirmation = "Do not chase; require an orderly pullback, support hold, and a fresh early-entry structure."
-    elif strategy_a and assessment.get("stage") == "Breakout Ready":
-        entry_status = "Breakout Ready / later-stage watch"
-        next_confirmation = "Prefer a controlled support retest or new higher-low entry instead of requiring the major breakout."
-    elif strategy_a:
-        entry_status = f"{assessment.get('stage') or 'Bottoming'} / confirmation incomplete"
-        next_confirmation = "Require a higher low plus improving momentum/demand and an early higher-high or short-term reclaim; a one-day bounce is insufficient."
-    elif gap.get("days_since_gap") == 0:
-        entry_status = "Day 1 gap detected / WAIT"
-        next_confirmation = "Verify the company catalyst and require a non-chasing hold or later continuation entry."
-    elif catalyst.get("credible") is not True:
+    elif biotech and catalyst.get("credible") is not True:
         catalyst_status = catalyst.get("catalyst_status") or catalyst.get("status") or "NO_COMPANY_CATALYST"
-        entry_status = f"Gap candidate / {catalyst_status}"
-        next_confirmation = (f"Resolve catalyst status {catalyst_status}, then require support hold and a new "
-                             "continuation entry.")
+        entry_status = f"Technical candidate / {catalyst_status}"
+        next_confirmation = f"Verify a company-specific biotech catalyst, then require the stated technical entry."
     else:
-        entry_status = "Post-gap setup / continuation incomplete"
-        next_confirmation = "Require gap support, tight consolidation, and a confirmed continuation pivot with volume."
+        entry_status = f"{assessment.get('stage') or 'Technical setup'} / entry incomplete"
+        next_confirmation = "Require a fresh price-and-volume confirmation near the current valid support or pivot."
     execution_reason = (action if action.startswith(("DO NOT CHASE — Extended:", "SET LIMIT", "WAIT —"))
                         else None)
     why_not_now = ("None — all BUY NOW gates passed." if action == "BUY NOW" else
                    execution_reason or "; ".join(decision_failure_text) or
                    "Entry confirmation remains incomplete.")
     risk = (_dilution_risk(candidate, snapshot) if biotech else
-            "Company-specific gap catalyst is not verified." if not strategy_a and not catalyst.get("credible") else
             ("Extended / Do Not Chase" if entry_context.get("materially_extended") else
-             "Technical failure below the entry structure; Strategy A catalyst is optional."))
+             "Technical failure below the active support/pivot; catalyst is optional for non-biotech."))
     forward_catalyst = (catalyst.get("description") if catalyst.get("credible") else
-                        "Optional / not verified" if strategy_a else
+                        "Optional / not verified" if not biotech else
                         f"{catalyst.get('catalyst_status') or catalyst.get('status') or 'NO_COMPANY_CATALYST'}: "
-                        f"{catalyst.get('validation_reason') or 'Required company catalyst not verified'}")
+                        f"{catalyst.get('validation_reason') or 'Required biotech company catalyst not verified'}")
     return {
         "company": candidate.get("company") or candidate.get("name") or candidate.get("ticker"),
         "ticker": candidate.get("ticker"), "exchange": candidate.get("exchange", ""),
@@ -1423,6 +1672,12 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
         "listing_status": "Public", "domain": "biotech" if biotech else "swing",
         "swing_pool": pool_name, "strategy": assessment["strategy"],
         "strategy_name": assessment["strategy_name"], "classification": "Candidate Pool",
+        "strategy_classification": classification["strategy"],
+        "entry_classification": classification["entry"],
+        "cycle_stage": classification["cycle_stage"],
+        "mountain_position": assessment.get("mountain_position") or
+                             _swing_mountain_position(snapshot, entry_context.get("base_support"),
+                                                      assessment.get("extended")),
         "stage": assessment.get("stage"),
         "pool": "Action Pool" if action == "BUY NOW" else "Candidate Pool",
         "candidate_qualified": True, "actionable": action == "BUY NOW", "action": action,
@@ -1438,7 +1693,13 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
         "support_pivot_level": entry_context.get("level"),
         "support_pivot_kind": entry_context.get("level_kind"),
         "pct_above_support_pivot": entry_context.get("distance_pct"),
+        "base_support": entry_context.get("base_support"),
+        "base_pivot": entry_context.get("base_pivot"),
+        "pct_above_base_support": entry_context.get("support_distance_pct"),
+        "pct_above_base_pivot": entry_context.get("pivot_distance_pct"),
+        "entry_stage": entry_context.get("entry_stage"),
         "near_support_or_pivot": entry_context.get("near_level") is True,
+        "support_reversal": entry_context.get("support_reversal") is True,
         "fresh_breakout": entry_context.get("fresh_breakout") is True,
         "breakout_age_sessions": entry_context.get("breakout_age_sessions"),
         "entry_qualification_reason": entry_context.get("qualification_reason"),
@@ -1480,7 +1741,7 @@ def _candidate_record(candidate, snapshot, assessment, catalyst, pool_name, acti
             "catalyst_support": forward_catalyst,
             "invalidation": f"Structural invalidation {assessment.get('invalidation') or 'unavailable'}; no initial fixed stop is prescribed.",
         },
-        "engine_version": "swing-full-market-v4",
+        "engine_version": "swing-full-market-v5",
     }
 
 
@@ -1488,19 +1749,21 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                              biotech_news_section=None, limit=SWING_BUY_NOW_LIMIT,
                              previous_section=None, screen_diagnostics=None,
                              strategy_b_catalyst_data=None):
-    """Build four ranked candidate pools, then apply separate BUY NOW gates."""
+    """Build six technical pools, then apply pool-specific company gates."""
     candidates = list(candidate_pool or [])
     if isinstance(candidate_pool, dict):
         candidates = list(candidate_pool.get("candidates") or [])
-    pools = {"biotech": {"label": "Biotech Swing", "strategy_a": [], "strategy_b": []},
-             "non_biotech": {"label": "Non-Biotech Swing", "strategy_a": [], "strategy_b": []}}
+    strategy_keys = ("strategy_a", "strategy_b", "strategy_c")
+    pools = {name: {"label": label, **{key: [] for key in strategy_keys}}
+             for name, label in (("biotech", "Biotech Swing"),
+                                 ("non_biotech", "Non-Biotech Swing"))}
     evaluated = 0
     evaluated_by_pool = Counter()
     catalyst_verified = 0
     catalyst_status_counts = Counter()
     funnel_by_group = {
         pool: {strategy: {"technical": 0, "fundamental_catalyst": 0, "entry": 0, "buy_now": 0}
-               for strategy in ("strategy_a", "strategy_b")}
+               for strategy in strategy_keys}
         for pool in ("biotech", "non_biotech")
     }
     funnel_tickers = {stage: set() for stage in
@@ -1516,28 +1779,34 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
         pool_name = "biotech" if is_biotech_company(candidate) else "non_biotech"
         biotech = pool_name == "biotech"
         evaluated_by_pool[pool_name] += 1
-        strategy_a_assessment = assess_long_base_breakout(snapshot, biotech)
-        strategy_b_assessment = assess_gap_continuation(snapshot, biotech)
+        assessments = {
+            "strategy_a": assess_long_base_breakout(snapshot, biotech),
+            "strategy_b": assess_stage2_continuation(snapshot, biotech),
+            "strategy_c": assess_rebase_reacceleration(snapshot, biotech),
+        }
         optional_catalyst = _independent_catalyst(ticker, candidate.get("company") or ticker,
                                                   ai_news_section, biotech_news_section)
-        strategy_b_catalyst = None
-        if strategy_b_assessment.get("candidate_qualified"):
-            strategy_b_catalyst = resolve_strategy_b_catalyst(
-                candidate, strategy_b_assessment,
+        # Preserve the gap/date-aligned retrieval as catalyst evidence only. It
+        # no longer defines a technical strategy.
+        gap_assessment = assess_gap_continuation(snapshot, biotech)
+        validated_catalyst = optional_catalyst
+        if gap_assessment.get("candidate_qualified"):
+            gap_catalyst = resolve_strategy_b_catalyst(
+                candidate, gap_assessment,
                 (strategy_b_catalyst_data or {}).get(ticker),
                 ai_news_section, biotech_news_section)
-            catalyst_status_counts[strategy_b_catalyst["catalyst_status"]] += 1
-            if strategy_b_catalyst.get("credible"):
+            catalyst_status_counts[gap_catalyst["catalyst_status"]] += 1
+            if gap_catalyst.get("credible"):
                 catalyst_verified += 1
-        for key, assessment, catalyst in (
-                ("strategy_a", strategy_a_assessment, optional_catalyst),
-                ("strategy_b", strategy_b_assessment, strategy_b_catalyst or optional_catalyst)):
+                validated_catalyst = gap_catalyst
+        for key, assessment in assessments.items():
             if not assessment.get("candidate_qualified"):
                 continue
-            # Strategy A never requires a catalyst. Strategy B is explicitly a
-            # catalyst-gap strategy, so the company catalyst is a BUY gate after
-            # the gap/abnormal-volume candidate screen.
-            company_gate_passed = key == "strategy_a" or catalyst.get("credible") is True
+            catalyst = validated_catalyst
+            # Technical definitions are identical across pools. Biotech retains
+            # its verified company-catalyst/fundamental gate; non-biotech retains
+            # catalyst as optional ranking support.
+            company_gate_passed = not biotech or catalyst.get("credible") is True
             position = _swing_position_metrics(snapshot)
             entry_context = _swing_entry_context(assessment, snapshot)
             action = _swing_execution_action(company_gate_passed, assessment, snapshot,
@@ -1546,7 +1815,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
             group_funnel = funnel_by_group[pool_name][key]
             group_funnel["technical"] += 1
             funnel_tickers["technical"].add(ticker)
-            fundamental_pass = key == "strategy_a" or catalyst.get("credible") is True
+            fundamental_pass = company_gate_passed
             if fundamental_pass:
                 group_funnel["fundamental_catalyst"] += 1
                 funnel_tickers["fundamental_catalyst"].add(ticker)
@@ -1561,7 +1830,7 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                                   position, entry_context))
     opportunities, ranked_setups = [], []
     for pool_name in ("biotech", "non_biotech"):
-        for key in ("strategy_a", "strategy_b"):
+        for key in strategy_keys:
             all_rows = sorted(pools[pool_name][key],
                               key=lambda row: (-(row.get("dynamic_final_score") or -1), row["ticker"]))
             for rank, row in enumerate(all_rows, 1):
@@ -1569,12 +1838,19 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                 row["rank"] = rank
                 row["dynamic_final_rank"] = rank
             buy_now = [row for row in all_rows if row.get("action") == "BUY NOW"][:limit]
+            set_limit = [row for row in all_rows
+                         if str(row.get("action") or "").startswith("SET LIMIT")][:limit]
             rows = buy_now_first_display(all_rows, limit)
-            pools[pool_name][key] = {"label": rows[0]["strategy_name"] if rows else
-                                    ("Bottoming / Early Right-Side Reversal" if key == "strategy_a" else
-                                     "Catalyst Gap-Up Continuation"),
+            fallback_labels = {"strategy_a": "Stage 1 → Stage 2 Launch",
+                               "strategy_b": "Stage 2 Trend Continuation",
+                               "strategy_c": "Re-Base / Re-Acceleration"}
+            pools[pool_name][key] = {"label": rows[0]["strategy_name"] if rows else fallback_labels[key],
                                     "candidate_count": len(all_rows), "candidates": rows,
                                     "buy_now": buy_now, "buy_now_count": len(buy_now),
+                                    "set_limit": set_limit,
+                                    "set_limit_count": sum(
+                                        str(row.get("action") or "").startswith("SET LIMIT")
+                                        for row in all_rows),
                                     "wait_count": sum(row.get("action") != "BUY NOW" for row in all_rows)}
             opportunities.extend(buy_now)
             ranked_setups.extend(rows)
@@ -1590,10 +1866,10 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
         },
         "by_pool_strategy": funnel_by_group,
         "definitions": {
-            "technical": "Unique stocks qualifying for Strategy A and/or Strategy B technical Candidate Pool.",
-            "fundamental_catalyst": "Strategy A passes through because catalyst is optional; Strategy B requires a verified company-specific catalyst.",
+            "technical": "Unique stocks qualifying for Strategy A, B, and/or C technical Candidate Pool.",
+            "fundamental_catalyst": "Biotech requires verified company-specific catalyst/fundamental support; non-biotech catalyst is optional for every technical strategy.",
             "entry": "Technical entry confirmation after the applicable fundamental/catalyst gate.",
-            "buy_now": "All existing gates pass, the setup is near valid support/pivot or a fresh volume-confirmed breakout, it is not extended from that level, and the limit is at or above current price.",
+            "buy_now": "All existing gates pass, the setup is a fresh confirmed reversal near current base support or a fresh confirmed breakout near the current base pivot, it is not extended, and its entry limit is no more than 1% below market.",
         },
     }
     coverage = {**(screen_diagnostics or {}), "market_history_evaluated": evaluated,
@@ -1603,22 +1879,27 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
                 "buy_now_total": len(opportunities),
                 "biotech_strategy_a_candidates": pools["biotech"]["strategy_a"]["candidate_count"],
                 "biotech_strategy_b_candidates": pools["biotech"]["strategy_b"]["candidate_count"],
+                "biotech_strategy_c_candidates": pools["biotech"]["strategy_c"]["candidate_count"],
                 "non_biotech_strategy_a_candidates": pools["non_biotech"]["strategy_a"]["candidate_count"],
                 "non_biotech_strategy_b_candidates": pools["non_biotech"]["strategy_b"]["candidate_count"],
+                "non_biotech_strategy_c_candidates": pools["non_biotech"]["strategy_c"]["candidate_count"],
                 "biotech_strategy_a_buy_now": len(pools["biotech"]["strategy_a"]["buy_now"]),
                 "biotech_strategy_b_buy_now": len(pools["biotech"]["strategy_b"]["buy_now"]),
+                "biotech_strategy_c_buy_now": len(pools["biotech"]["strategy_c"]["buy_now"]),
                 "non_biotech_strategy_a_buy_now": len(pools["non_biotech"]["strategy_a"]["buy_now"]),
                 "non_biotech_strategy_b_buy_now": len(pools["non_biotech"]["strategy_b"]["buy_now"]),
+                "non_biotech_strategy_c_buy_now": len(pools["non_biotech"]["strategy_c"]["buy_now"]),
                 "diagnostic_funnel": diagnostic_funnel}
     return {
         "methodology": {
-            "engine_version": "swing-full-market-v4",
+            "engine_version": "swing-full-market-v5",
             "architecture": "Independent full-market short-term execution; never sourced from Radar or High Conviction.",
             "primary_screen": "Pattern → Trend → Volume creates the ranked Candidate Pool before confirmation or execution gates.",
-            "strategy_a": "Candidate: long base/decline + support stabilization + declining selling pressure. Preferred stages remain Bottoming, Early Reversal, and Early Right-Side; BUY NOW accepts either a multi-signal confirmed setup near support/pivot or a fresh volume-confirmed breakout that is not extended. Catalyst is never required.",
-            "strategy_b": "Candidate: >=8% gap + >=1.8x event volume. Then verify the company catalyst and evaluate Day 1 or subsequent hold/fade, consolidation, continuation pivot, entry, invalidation, and reward/risk.",
-            "catalyst_policy": "Strategy A catalyst is optional. Strategy B requires a verified company-specific catalyst for BUY NOW, but unverified gap candidates remain ranked WAIT candidates.",
-            "buy_now_policy": "BUY NOW requires a confirmed setup near valid support/pivot or a fresh volume-confirmed breakout. A first bounce, failed setup, move extended from its entry level, or limit below current price cannot enter BUY NOW; 52-week position is context only.",
+            "strategy_a": "Stage 1 → Stage 2 Launch requires a genuine 42/63-session mature base. Entry 1 is a fresh volume-confirmed initial breakout near the base pivot; Entry 2 is the first confirmed pullback/retest of that pivot as support.",
+            "strategy_b": "Stage 2 Trend Continuation requires an established rising Stage 2 structure, then a healthy pullback/tight consolidation near rising support and renewed price/volume confirmation. It does not require a long Stage 1 base.",
+            "strategy_c": "Re-Base / Re-Acceleration requires a prior advance followed by a shorter, contracting new base. Entry is a fresh confirmed breakout near the new pivot or a confirmed retest/reversal near new support.",
+            "catalyst_policy": "Catalyst does not define A/B/C. Biotech retains a verified company-specific catalyst/fundamental BUY gate across all three; non-biotech catalyst support remains optional.",
+            "buy_now_policy": "BUY NOW requires either a fresh confirmed reversal near the current valid base support or a fresh confirmed breakout near the current base pivot. A valid entry more than 1% below market is SET LIMIT; an entry extended more than the existing 5% boundary from its active support/pivot is DO NOT CHASE. 52-week position is context only.",
             "execution_policy": "No initial fixed stop. At +30% activate a 20% trailing stop; at +50% tighten it to 15%; tighten further during sudden 1-month / 5-day acceleration.",
             "missing_data_policy": "Missing measurements fail the relevant gate and never create an entry price.",
         },
@@ -1627,8 +1908,8 @@ def build_swing_trade_engine(candidate_pool, market_data, ai_news_section=None,
         "coverage": coverage,
         "take_home_messages": [
             f"{evaluated} independently sourced full-market candidates had current price history.",
-            f"{len(ranked_setups)} top-ranked candidates are displayed across four independent pools; {len(opportunities)} are BUY NOW.",
-            "Strategy A catalyst is optional; Strategy B catalyst verification is a downstream BUY gate.",
+            f"{len(ranked_setups)} top-ranked candidates are displayed across six independent pools; {len(opportunities)} are BUY NOW.",
+            "A/B/C share technical definitions across pools; Biotech and Non-Biotech retain separate company-validation rules.",
             "WAIT candidates remain visible with the exact missing confirmation; pullback entries are labeled SET LIMIT rather than BUY NOW.",
         ],
     }

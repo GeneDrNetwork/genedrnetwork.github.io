@@ -5,6 +5,8 @@ from scripts.entry_timing import calculate_gap_continuation_inputs
 from scripts.swing_trade import (
     assess_gap_continuation,
     assess_long_base_breakout,
+    assess_rebase_reacceleration,
+    assess_stage2_continuation,
     build_swing_trade_engine,
     buy_now_first_display,
     is_biotech_company,
@@ -20,7 +22,7 @@ def market_snapshot(kind="base"):
         "ticker": "TEST", "current_price": 102, "price_date": "2026-09-18",
         "currency": "USD", "source": "Test OHLCV", "data_status": "current",
         "market_cap": 2_000_000_000,
-        "moving_averages": {"ma20": 98, "ma50": 96, "ma200": 88},
+        "moving_averages": {"ma20": 101, "ma50": 96, "ma200": 88},
         "returns": {"daily": 2, "one_month": 8, "three_month": 15, "six_month": 22},
         "rsi_14": 61, "macd": {"histogram": .5, "improving": True, "crossover": None},
         "volume_vs_20d_average": 1.5, "fifty_two_week_position": 75,
@@ -127,26 +129,26 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(diagnostics["initial_screen_pass"], 2)
         self.assertIn("No Radar", diagnostics["technical_history_funnel"])
 
-    def test_strategy_a_enters_on_confirmed_early_right_side_without_major_breakout(self):
+    def test_strategy_a_tracks_stage1_base_but_does_not_enter_before_launch(self):
         result = assess_long_base_breakout(market_snapshot(), biotech=False)
         self.assertTrue(result["candidate_qualified"])
-        self.assertTrue(result["actionable"])
+        self.assertFalse(result["actionable"])
         self.assertEqual(result["stage"], "Early Right-Side")
-        self.assertEqual(result["limit_buy"], 102.2)
+        self.assertIsNone(result["limit_buy"])
         weak = market_snapshot()
         weak["entry_inputs"]["higher_low_confirmed"] = False
         weak_result = assess_long_base_breakout(weak, biotech=False)
         self.assertFalse(weak_result["actionable"])
         self.assertIn("higher low", weak_result["failed_gates"])
 
-    def test_strategy_a_rejects_extended_but_does_not_require_breakout_volume(self):
+    def test_strategy_a_rejects_extended_and_requires_breakout_volume(self):
         extended = market_snapshot()
         extended["current_price"] = 121
         extended["entry_inputs"]["breakout_proximity_pct"] = 21
         self.assertFalse(assess_long_base_breakout(extended)["actionable"])
         unconfirmed = market_snapshot()
         unconfirmed["entry_inputs"]["breakout_volume_ratio"] = .7
-        self.assertTrue(assess_long_base_breakout(unconfirmed)["actionable"])
+        self.assertFalse(assess_long_base_breakout(unconfirmed)["actionable"])
 
     def test_strategy_a_stage_progression_and_early_stage_rank_priority(self):
         early = assess_long_base_breakout(market_snapshot())
@@ -197,17 +199,46 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertIn("at least two follow-through sessions",
                       assess_gap_continuation(first_day)["failed_gates"])
 
-    def test_strategy_a_never_requires_catalyst_even_for_biotech(self):
+    def test_three_technical_strategies_are_independent_of_catalyst_and_long_base(self):
+        stage2 = market_snapshot()
+        stage2["entry_inputs"].update({"base_duration_sessions": None,
+                                        "base_range_pct": None})
+        strategy_b = assess_stage2_continuation(stage2)
+        self.assertTrue(strategy_b["candidate_qualified"])
+        self.assertTrue(strategy_b["actionable"])
+        self.assertEqual(strategy_b["mountain_position"], "Lower")
+
+        rebase = assess_rebase_reacceleration(stage2)
+        self.assertTrue(rebase["candidate_qualified"])
+        self.assertTrue(rebase["actionable"])
+        self.assertEqual(rebase["strategy"], "C")
+
+        no_prior_advance = market_snapshot()
+        no_prior_advance["returns"].update({"three_month": -2, "six_month": 3})
+        self.assertFalse(assess_rebase_reacceleration(no_prior_advance)["candidate_qualified"])
+
+    def test_biotech_preserves_verified_catalyst_gate_for_strategy_a(self):
         candidate = company(biotech=True)
-        market = {"securities": {"TEST": market_snapshot()}}
+        snapshot = market_snapshot()
+        snapshot["current_price"] = 115.5
+        snapshot["moving_averages"].update({"ma20": 112, "ma50": 110})
+        snapshot["entry_inputs"].update({
+            "resistance_level": 115, "breakout_proximity_pct": .4,
+            "breakout_volume_ratio": 1.5, "recent_breakout_attempt": True,
+            "breakout_age_sessions": 1,
+        })
+        market = {"securities": {"TEST": snapshot}}
         without = build_swing_trade_engine([candidate], market)
         row = without["pools"]["biotech"]["strategy_a"]["candidates"][0]
-        self.assertEqual(row["action"], "BUY NOW")
+        self.assertEqual(row["action"], "WAIT")
         self.assertFalse(row["catalyst_validation"]["valid"])
+        with_news = build_swing_trade_engine([candidate], market,
+                                             biotech_news_section=verified_news())
+        self.assertEqual(with_news["pools"]["biotech"]["strategy_a"]["buy_now"][0]["ticker"], "TEST")
 
-    def test_strategy_b_ranks_unverified_gap_but_requires_catalyst_for_buy(self):
+    def test_biotech_strategy_b_requires_catalyst_for_buy(self):
         candidate = company(biotech=True)
-        market = {"securities": {"TEST": market_snapshot("gap")}}
+        market = {"securities": {"TEST": market_snapshot()}}
         without = build_swing_trade_engine([candidate], market)
         row = without["pools"]["biotech"]["strategy_b"]["candidates"][0]
         self.assertEqual(row["action"], "WAIT")
@@ -309,7 +340,7 @@ class SwingTradeEngineTests(unittest.TestCase):
     def test_non_biotech_catalyst_is_optional(self):
         market = {"securities": {"TEST": market_snapshot()}}
         result = build_swing_trade_engine([company()], market)
-        row = result["pools"]["non_biotech"]["strategy_a"]["buy_now"][0]
+        row = result["pools"]["non_biotech"]["strategy_b"]["buy_now"][0]
         self.assertEqual(row["action"], "BUY NOW")
         self.assertIn("not verified", row["forward_catalyst"].lower())
 
@@ -319,12 +350,12 @@ class SwingTradeEngineTests(unittest.TestCase):
                                           "fifty_two_week_high": 105})
         result = build_swing_trade_engine(
             [company("EGBN")], {"securities": {"EGBN": snapshot}})
-        row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        row = result["pools"]["non_biotech"]["strategy_b"]["candidates"][0]
         self.assertEqual(row["action"], "BUY NOW")
         self.assertEqual(row["pct_above_52_week_low"], 104.0)
         self.assertEqual(row["pct_below_52_week_high"], 2.86)
-        self.assertEqual(row["support_pivot_level"], 102)
-        self.assertEqual(row["pct_above_support_pivot"], 0)
+        self.assertEqual(row["base_support"], 101)
+        self.assertEqual(row["pct_above_base_support"], 0.99)
 
     def test_swing_material_extension_from_nearest_entry_level_is_do_not_chase(self):
         snapshot = market_snapshot()
@@ -333,9 +364,9 @@ class SwingTradeEngineTests(unittest.TestCase):
         result = build_swing_trade_engine(
             [company("EXT")], {"securities": {"EXT": snapshot}})
         row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
-        self.assertEqual(row["action"], "DO NOT CHASE — Extended: +6.2% above pivot")
-        self.assertEqual(row["support_pivot_level"], 96)
-        self.assertEqual(row["pct_above_support_pivot"], 6.25)
+        self.assertEqual(row["action"], "DO NOT CHASE — Extended: +7.4% above current support")
+        self.assertEqual(row["support_pivot_level"], 95)
+        self.assertEqual(row["pct_above_support_pivot"], 7.37)
 
     def test_fresh_volume_confirmed_strategy_a_breakout_can_be_buy_now(self):
         snapshot = market_snapshot()
@@ -352,6 +383,9 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertEqual(row["action"], "BUY NOW")
         self.assertTrue(row["fresh_breakout"])
         self.assertEqual(row["breakout_age_sessions"], 0)
+        self.assertEqual(row["strategy_classification"],
+                         "Strategy A — Stage 1 → Stage 2 Launch")
+        self.assertEqual(row["entry_classification"], "Entry 1 — Initial Breakout")
         self.assertEqual(row["support_pivot_level"], 101)
         self.assertEqual(row["limit_buy"], 101.2)
 
@@ -371,48 +405,79 @@ class SwingTradeEngineTests(unittest.TestCase):
     def test_swing_limit_below_current_is_not_buy_now(self):
         snapshot = market_snapshot()
         snapshot["entry_inputs"]["short_term_high_10d"] = 100
+        snapshot["moving_averages"]["ma20"] = 98
         result = build_swing_trade_engine(
             [company("LIMIT")], {"securities": {"LIMIT": snapshot}})
-        row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        row = result["pools"]["non_biotech"]["strategy_b"]["candidates"][0]
         self.assertEqual(row["action"], "SET LIMIT $100.20 — wait for pullback")
         self.assertEqual(row["limit_buy"], 100.2)
         self.assertFalse(row["actionable"])
 
-    def test_four_pool_strategy_outputs_and_price_based_execution_levels(self):
-        candidates = [company("BIOA", True), company("BIOB", True),
-                      company("NONA", False), company("NONB", False)]
-        market = {"securities": {
-            "BIOA": market_snapshot(), "BIOB": market_snapshot("gap"),
-            "NONA": market_snapshot(), "NONB": market_snapshot("gap"),
-        }}
+    def test_strategy_c_rebase_support_reversal_can_be_buy_now(self):
+        snapshot = market_snapshot()
+        market = {"securities": {"TEST": snapshot}}
+        result = build_swing_trade_engine(
+            [company("TEST", True)], market, biotech_news_section=verified_news())
+        row = result["pools"]["biotech"]["strategy_c"]["candidates"][0]
+        self.assertEqual(row["action"], "BUY NOW")
+        self.assertTrue(row["support_reversal"])
+        self.assertEqual(row["entry_stage"], "Re-Base Breakout")
+        self.assertEqual(row["strategy_classification"],
+                         "Strategy C — Re-Base / Re-Acceleration")
+        self.assertEqual(row["entry_classification"],
+                         "Fresh Re-Base Breakout")
+        self.assertEqual(row["base_support"], 101)
+        self.assertEqual(row["base_pivot"], 102)
+
+    def test_strategy_a_first_retest_is_classified_separately_from_strategy(self):
+        snapshot = market_snapshot()
+        snapshot["current_price"] = 114
+        snapshot["moving_averages"].update({"ma20": 112, "ma50": 105})
+        snapshot["entry_inputs"].update({"recent_breakout_attempt": True,
+                                         "breakout_age_sessions": 2,
+                                         "resistance_level": 115,
+                                         "breakout_proximity_pct": -.9,
+                                         "short_term_high_10d": 114})
+        result = build_swing_trade_engine(
+            [company("RETEST")], {"securities": {"RETEST": snapshot}})
+        row = result["pools"]["non_biotech"]["strategy_a"]["candidates"][0]
+        self.assertEqual(row["strategy_classification"],
+                         "Strategy A — Stage 1 → Stage 2 Launch")
+        self.assertEqual(row["entry_classification"],
+                         "Entry 2 — First Pullback/Retest")
+
+    def test_six_pool_strategy_outputs_and_price_based_execution_levels(self):
+        candidates = [company("BIO", True), company("NON", False)]
+        market = {"securities": {"BIO": market_snapshot(), "NON": market_snapshot()}}
         news = {"stories": []}
-        for ticker in ("BIOA", "BIOB", "NONA", "NONB"):
+        for ticker in ("BIO", "NON"):
             event = verified_news(ticker)["stories"][0]
             event["ticker"] = ticker
             news["stories"].append(event)
         result = build_swing_trade_engine(candidates, market, biotech_news_section=news)
-        self.assertEqual(len(result["pools"]["biotech"]["strategy_a"]["buy_now"]), 1)
         self.assertEqual(len(result["pools"]["biotech"]["strategy_b"]["buy_now"]), 1)
-        self.assertEqual(len(result["pools"]["non_biotech"]["strategy_a"]["buy_now"]), 1)
+        self.assertEqual(len(result["pools"]["biotech"]["strategy_c"]["buy_now"]), 1)
         self.assertEqual(len(result["pools"]["non_biotech"]["strategy_b"]["buy_now"]), 1)
-        row = result["pools"]["non_biotech"]["strategy_a"]["buy_now"][0]
+        self.assertEqual(len(result["pools"]["non_biotech"]["strategy_c"]["buy_now"]), 1)
+        row = result["pools"]["non_biotech"]["strategy_b"]["buy_now"][0]
         self.assertNotIn("shares_for_200", row)
         self.assertNotIn("stop_price", row)
         self.assertNotIn("full_exit_price", row)
         self.assertEqual(row["trailing_stop_policy"]["initial_stop"], "No initial fixed stop")
         self.assertIn("20% trailing stop", row["trailing_stop_policy"]["gain_30"])
         self.assertIn("15% trailing stop", row["trailing_stop_policy"]["gain_50"])
-        self.assertEqual(result["pools"]["non_biotech"]["strategy_a"]["candidate_count"], 1)
+        self.assertEqual(result["pools"]["non_biotech"]["strategy_b"]["candidate_count"], 1)
         funnel = result["coverage"]["diagnostic_funnel"]["overall"]
-        self.assertEqual(funnel["universe"], 4)
-        self.assertEqual(funnel["data_liquidity"], 4)
-        self.assertEqual(funnel["buy_now"], 4)
+        self.assertEqual(funnel["universe"], 2)
+        self.assertEqual(funnel["data_liquidity"], 2)
+        self.assertEqual(funnel["buy_now"], 2)
         for pool in ("biotech", "non_biotech"):
-            for strategy in ("strategy_a", "strategy_b"):
+            for strategy in ("strategy_a", "strategy_b", "strategy_c"):
                 for buy in result["pools"][pool][strategy]["buy_now"]:
                     self.assertTrue(buy["near_support_or_pivot"] or buy["fresh_breakout"])
                     self.assertLessEqual(buy["pct_above_support_pivot"], 5)
-                    self.assertGreaterEqual(buy["limit_buy"], buy["current_price"])
+                    self.assertGreaterEqual(buy["limit_buy"], buy["current_price"] * .99)
+                    self.assertIn(buy["mountain_position"], ("Lower", "Middle", "Upper"))
 
     def test_buy_now_is_displayed_first_without_changing_candidate_rank(self):
         rows = [{"ticker": f"WAIT{i}", "action": "WAIT", "candidate_rank": i}
@@ -447,15 +512,14 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertFalse(result["fresh_favorable_transition"])
         self.assertTrue(result["large_one_day_gain_only"])
 
-    def test_ui_has_required_four_tables_and_columns(self):
+    def test_ui_has_required_six_tables_and_common_columns(self):
         root = Path(__file__).resolve().parents[1]
         script = (root / "assets" / "news-dashboard.js").read_text()
         page = (root / "programs" / "genedrnews.html").read_text()
         for label in ("Biotech Swing", "Non-Biotech Swing", "Strategy A", "Strategy B",
-                      "Candidate Rank", "Pattern", "Trend", "Volume", "Entry Status",
-                      "BUY NOW / WAIT", "Why Not Now / Next Confirmation", "Stage",
-                      "Technical Pattern", "Support / Entry Zone", "Confirmation",
-                      "Catalyst / Fundamental Support", "Action"):
+                      "Strategy C", "Stage 1 → Stage 2 Launch", "Stage 2 Trend Continuation",
+                      "Re-Base / Re-Acceleration", "Mountain Position", "Support / Pivot",
+                      "% Distance", "Volume", "Action"):
             self.assertIn(label, script)
         self.assertIn("Independent full-market short-term execution", page)
         self.assertIn("does not source candidates from Radar or High Conviction", page)
@@ -464,8 +528,11 @@ class SwingTradeEngineTests(unittest.TestCase):
         self.assertNotIn("row.stop_price", script)
         self.assertIn("% above 52-wk low ·", script)
         self.assertIn("% below 52-wk high", script)
-        self.assertIn("Support/Pivot", script)
-        self.assertIn("above level", script)
+        self.assertIn("Base Support", script)
+        self.assertIn("entry_stage", script)
+        self.assertIn("Re-Base / Re-Acceleration", script)
+        self.assertIn("strategy_classification", script)
+        self.assertIn("entry_classification", script)
 
     def test_swing_renderer_closes_pool_builder_and_renders_zero_buy_groups(self):
         root = Path(__file__).resolve().parents[1]
